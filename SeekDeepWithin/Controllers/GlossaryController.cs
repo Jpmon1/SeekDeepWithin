@@ -162,7 +162,9 @@ namespace SeekDeepWithin.Controllers
       /// <returns>The list of possible terms for the given item.</returns>
       public ActionResult AutoComplete (string term)
       {
-         return Json (this.m_Db.GlossaryTerms.Get(t => t.Name.Contains(term)).Select(t => t.Name));
+         var result = new { suggestions = this.m_Db.GlossaryTerms.Get (t => t.Name.Contains (term))
+                                                                 .Select (t => new { value = t.Name, data = t.Id }) };
+         return Json (result, JsonRequestBehavior.AllowGet);
       }
    }
 }

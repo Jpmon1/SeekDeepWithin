@@ -1,13 +1,10 @@
 ﻿$(document).ready(function() {
    $('#GlossaryTerm').autocomplete({
-      source: '/Glossary/AutoComplete',
-      data: $('#GlossaryTerm').val(),
-      success: function(data) {
-         alert(data);
-      }
+      serviceUrl: '/Glossary/AutoComplete',
+      paramName: 'term'
    });
-   $('#passageText').keyup(setSelection);
-   $('#passageText').mouseup(setSelection);
+   $('#text').keyup(setSelection);
+   $('#text').mouseup(setSelection);
 });
 
 function setSelection(event) {

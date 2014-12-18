@@ -53,7 +53,7 @@ namespace SeekDeepWithin.Controllers
       /// <summary>
       /// Gets the page to create a new book.
       /// </summary>
-      [Authorize (Roles = "AddBook")]
+      [Authorize (Roles = "Creator")]
       public ActionResult Create ()
       {
          if (Request.IsAuthenticated)
@@ -71,7 +71,7 @@ namespace SeekDeepWithin.Controllers
       /// <returns></returns>
       [HttpPost]
       [ValidateAntiForgeryToken]
-      [Authorize (Roles = "AddBook")]
+      [Authorize (Roles = "Creator")]
       public ActionResult Create (BookViewModel bookViewModel)
       {
          if (ModelState.IsValid)
@@ -89,7 +89,7 @@ namespace SeekDeepWithin.Controllers
       /// </summary>
       /// <param name="id">The id of the book to edit.</param>
       /// <returns>The edit view for a book.</returns>
-      [Authorize (Roles = "EditBook")]
+      [Authorize (Roles = "Editor")]
       public ActionResult Edit (int id)
       {
          if (Request.IsAuthenticated)
@@ -112,7 +112,7 @@ namespace SeekDeepWithin.Controllers
       /// <returns></returns>
       [HttpPost]
       [ValidateAntiForgeryToken]
-      [Authorize (Roles = "EditBook")]
+      [Authorize (Roles = "Editor")]
       public ActionResult Edit (BookViewModel bookViewModel)
       {
          if (ModelState.IsValid)

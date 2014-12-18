@@ -41,9 +41,9 @@
       {
          <ul class="pricing-table">
             <li class="title">Edit Actions</li>
-            <li class="bullet-item">@Html.ActionLink("edit chapter", "Edit", new { id = Model.Id })</li>
+            <li class="bullet-item">@Html.ActionLink("Edit Chapter", "Edit", new { id = Model.Id })</li>
             @if (User.IsInRole ("Creator")) {
-               <li class="bullet-item">@Html.ActionLink("add passage", "Create", "Passage", new {chapterId = Model.Id}, null)</li>
+               <li class="bullet-item">@Html.ActionLink("Add Passage", "Create", "Passage", new {chapterId = Model.Id}, null)</li>
             }
          </ul>
       }

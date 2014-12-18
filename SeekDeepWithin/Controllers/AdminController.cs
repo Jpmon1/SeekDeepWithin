@@ -11,6 +11,7 @@ namespace SeekDeepWithin.Controllers
       /// Gets the index of the controller.
       /// </summary>
       /// <returns>The index view.</returns>
+      [Authorize (Roles = "Administrator")]
       public ActionResult Index ()
       {
          return View ();

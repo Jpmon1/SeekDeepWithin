@@ -28,7 +28,7 @@
          }
       </p>
       <p>
-         @Html.Raw(HtmlSanitizer.Sanitize (Model.Summary))
+         @Html.Raw(Model.RenderAbout())
       </p>
       @if (!string.IsNullOrWhiteSpace (Model.SourceUrl)) {
          <div class="panel" style="padding: 3px 10px;">
@@ -41,10 +41,10 @@
          <ul class="pricing-table">
             <li class="title">Edit Actions</li>
             <li class="bullet-item">@Html.ActionLink("Edit Book", "Edit", "Book", new { id = Model.Book.Id }, null)</li>
-            <li class="bullet-item">@Html.ActionLink("Edit Version", "Edit", "Version", new { Model.Id }, null)</li>
+            <li class="bullet-item">@Html.ActionLink("Edit Version", "Edit", new { Model.Id })</li>
             <li class="bullet-item">@Html.ActionLink("Add Author/Translator", "AssignWriter", new { id = Model.Id })</li>
             <li class="bullet-item">@Html.ActionLink("Edit Source", "EditSource", "Source", new { id = Model.Id, type = "version" }, null)</li>
-            <li class="bullet-item">@Html.ActionLink("Add Link", "AddLink", new { id = Model.Id })</li>
+            <li class="bullet-item">@Html.ActionLink("Add Link", "AddLink", "Link", new { id = Model.Id, type = "version" }, null)</li>
             @if (User.IsInRole ("Creator")) {
                <li class="bullet-item">
                   @Html.ActionLink("Add Sub Book", "Create", "SubBook", new {versionId = Model.Id}, null)

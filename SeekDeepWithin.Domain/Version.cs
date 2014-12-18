@@ -33,9 +33,9 @@ namespace SeekDeepWithin.Domain
       public string PublishDate { get; set; }
 
       /// <summary>
-      /// Gets or Sets the summary.
+      /// Gets or Sets the about summary.
       /// </summary>
-      public string Summary { get; set; }
+      public string About { get; set; }
 
       /// <summary>
       /// Gets or Sets the book of the version
@@ -48,12 +48,12 @@ namespace SeekDeepWithin.Domain
       public virtual ICollection<VersionSource> VersionSources { get; set; }
 
       /// <summary>
-      /// Gets or Sets the source of this version.
+      /// Gets or Sets the links for this version's about.
       /// </summary>
       public virtual ICollection<VersionAboutLink> VersionAboutLinks { get; set; }
 
       /// <summary>
-      /// Gets or Sets the source of this version.
+      /// Gets or Sets the styles for this version's about.
       /// </summary>
       public virtual ICollection<VersionAboutStyle> VersionAboutStyles { get; set; }
 

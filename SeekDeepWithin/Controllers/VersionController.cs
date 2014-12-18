@@ -105,7 +105,7 @@ namespace SeekDeepWithin.Controllers
             Book = book,
             Name = viewModel.Name,
             PublishDate = viewModel.PublishDate,
-            Summary = viewModel.Summary,
+            About = viewModel.About,
             TitleFormat = viewModel.TitleFormat
          };
          book.Versions.Add (version);

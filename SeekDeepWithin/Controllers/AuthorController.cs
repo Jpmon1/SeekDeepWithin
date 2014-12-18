@@ -62,7 +62,7 @@ namespace SeekDeepWithin.Controllers
       /// </summary>
       /// <param name="id">The id of the author to edit.</param>
       /// <returns>The edit author view.</returns>
-      [Authorize (Roles = "EditBook")]
+      [Authorize (Roles = "Editor")]
       public ActionResult Edit (int id)
       {
          var author = this.m_Db.Authors.Get (id);
@@ -77,7 +77,7 @@ namespace SeekDeepWithin.Controllers
       /// <returns>The edit version page.</returns>
       [HttpPost]
       [ValidateAntiForgeryToken]
-      [Authorize (Roles = "EditBook")]
+      [Authorize (Roles = "Editor")]
       public ActionResult Edit (AuthorViewModel viewModel)
       {
          if (ModelState.IsValid)
@@ -99,7 +99,7 @@ namespace SeekDeepWithin.Controllers
       /// Gets the create view.
       /// </summary>
       /// <returns>The create view.</returns>
-      [Authorize (Roles = "EditBook")]
+      [Authorize (Roles = "Editor")]
       public ActionResult Create ()
       {
          if (Request.UrlReferrer != null) TempData["RefUrl"] = Request.UrlReferrer.ToString ();
@@ -112,7 +112,7 @@ namespace SeekDeepWithin.Controllers
       /// <returns>The create view.</returns>
       [HttpPost]
       [ValidateAntiForgeryToken]
-      [Authorize (Roles = "EditBook")]
+      [Authorize (Roles = "Editor")]
       public ActionResult Create (AuthorViewModel viewModel)
       {
          this.m_Db.Authors.Insert (new Author { Name = viewModel.Name, About = viewModel.About });

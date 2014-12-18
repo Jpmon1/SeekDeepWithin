@@ -42,7 +42,7 @@ namespace SeekDeepWithin.Models
          if (deepCopy)
          {
             foreach (var version in book.Versions)
-               viewModel.Versions.Add (version.ToViewModel ());
+               viewModel.Versions.Add (version.ToViewModel (false));
          }
          return viewModel;
       }
@@ -62,11 +62,12 @@ namespace SeekDeepWithin.Models
             Name = version.Name,
             BookId = version.Book.Id,
             Abbreviation = version.Abbreviation,
-            Summary = version.Summary,
+            About = version.About,
             TitleFormat = version.TitleFormat,
             PublishDate = version.PublishDate,
             SubBooks = new Collection <SubBookViewModel> (),
             Writers = new Collection <WriterLink> (),
+            VersionAboutLinks = new Collection <LinkViewModel> (),
             Book = version.Book.ToViewModel (false),
             SourceName = source == null ? string.Empty : source.Source.Name,
             SourceUrl = source == null ? string.Empty : source.Source.Url
@@ -75,6 +76,16 @@ namespace SeekDeepWithin.Models
          {
             foreach (var subBook in version.SubBooks.OrderBy (sb => sb.Order))
                viewModel.SubBooks.Add (subBook.ToViewModel ());
+            foreach (var link in version.VersionAboutLinks)
+            {
+               viewModel.VersionAboutLinks.Add (new LinkViewModel
+               {
+                  StartIndex = link.StartIndex,
+                  EndIndex = link.EndIndex,
+                  Url = link.Link.Url,
+                  OpenInNewWindow = link.OpenInNewWindow
+               });
+            }
             foreach (var writer in version.Writers)
             {
                viewModel.Writers.Add (new WriterLink
@@ -155,16 +166,16 @@ namespace SeekDeepWithin.Models
             Text = passage.Text,
             Id = passage.Id,
             PassageEntries = new Collection <PassageEntryViewModel> (),
-            PassageLinks = new Collection <PassageLinkViewModel> ()
+            PassageLinks = new Collection <LinkViewModel> ()
          };
          foreach (var passageLink in passage.PassageLinks)
          {
-            viewModel.PassageLinks.Add (new PassageLinkViewModel
+            viewModel.PassageLinks.Add (new LinkViewModel
             {
                StartIndex = passageLink.StartIndex,
                EndIndex = passageLink.EndIndex,
                Url = passageLink.Link.Url,
-               OpenInNewWindow = passageLink.Link.OpenInNewWindow
+               OpenInNewWindow = passageLink.OpenInNewWindow
             });
          }
          if (deepCopy)

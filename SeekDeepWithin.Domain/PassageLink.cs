@@ -21,6 +21,11 @@
       public int EndIndex { get; set; }
 
       /// <summary>
+      /// Gets or Sets if the link should open in a new window.
+      /// </summary>
+      public bool OpenInNewWindow { get; set; }
+
+      /// <summary>
       /// Gets or Sets the passage.
       /// </summary>
       public virtual Passage Passage { get; set; }

@@ -24,7 +24,8 @@ namespace SeekDeepWithin
          bundles.Add (new ScriptBundle ("~/bundles/modernizr").Include (
             "~/Scripts/modernizr-*"));
 
-         bundles.Add (new ScriptBundle ("~/bundles/sdw.addlink").Include ("~/Scripts/selection.js",
+         bundles.Add (new ScriptBundle ("~/bundles/sdw.addlink").Include ("~/Scripts/jquery.autocomplete.min.js",
+            "~/Scripts/selection.js",
             "~/Scripts/sdw.addlink.js"));
 
          bundles.Add (new ScriptBundle ("~/bundles/jstree").Include ("~/Scripts/jstree.min.js"));

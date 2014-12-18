@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Web.Mvc;
+using DotNetOpenAuth.Messaging;
+using SeekDeepWithin.Controllers;
 
 namespace SeekDeepWithin.Models
 {
@@ -57,8 +58,7 @@ namespace SeekDeepWithin.Models
       /// <summary>
       /// Gets or Sets the summary.
       /// </summary>
-      [AllowHtml]
-      public string Summary { get; set; }
+      public string About { get; set; }
 
       /// <summary>
       /// Gets or Sets the source name.
@@ -76,6 +76,11 @@ namespace SeekDeepWithin.Models
       public BookViewModel Book { get; set; }
 
       /// <summary>
+      /// Gets or Sets the links of this version.
+      /// </summary>
+      public virtual ICollection<LinkViewModel> VersionAboutLinks { get; set; }
+
+      /// <summary>
       /// Gets or Sets the list of authors.
       /// </summary>
       public ICollection<WriterLink> Writers { get; set; }
@@ -84,5 +89,16 @@ namespace SeekDeepWithin.Models
       /// Gets or Sets the list of sub books.
       /// </summary>
       public ICollection<SubBookViewModel> SubBooks { get; set; }
+
+      /// <summary>
+      /// Renders the about content.
+      /// </summary>
+      /// <returns>Html for about content.</returns>
+      public string RenderAbout ()
+      {
+         var renderer = new SdwRenderer { Text = this.About };
+         renderer.Links.AddRange (this.VersionAboutLinks);
+         return renderer.Render ();
+      }
    }
 }

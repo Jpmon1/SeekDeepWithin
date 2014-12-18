@@ -22,6 +22,6 @@ namespace SeekDeepWithin.Models
       /// <summary>
       /// Gets the list of links for this passage.
       /// </summary>
-      public ICollection<PassageLinkViewModel> PassageLinks { get; set; }
+      public ICollection<LinkViewModel> PassageLinks { get; set; }
    }
 }

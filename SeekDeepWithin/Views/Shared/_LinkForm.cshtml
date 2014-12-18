@@ -1,4 +1,4 @@
-﻿@model SeekDeepWithin.Models.LinkViewModel
+﻿@model SeekDeepWithin.Models.EditLinkViewModel
 
 <h3>Add Link</h3>
 
@@ -6,7 +6,8 @@
    @Html.AntiForgeryToken()
    @Html.ValidationSummary()
 
-   @Html.HiddenFor(model => model.PassageId)
+   @Html.HiddenFor(model => model.Id)
+   @Html.HiddenFor(model => model.Type)
    <dl class="tabs" data-tab>
       <dd class="active"><a href="#tabGlossary">Glossary Link</a></dd>
       <dd><a href="#tabRead">Read Link</a></dd>
@@ -84,7 +85,7 @@
 
    <div class="row">
       <div class="small-12 large-8 columns">
-         @Html.TextArea("passageText", Model.PassageText, 7, 80, new { @readonly = "readonly" })
+         @Html.TextArea("text", Model.Text, 7, 80, new { @readonly = "readonly" })
       </div>
    </div>
    <div class="row">

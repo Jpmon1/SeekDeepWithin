@@ -1,47 +1,33 @@
 ﻿using System.Collections.Generic;
-using DotNetOpenAuth.Messaging;
-using SeekDeepWithin.Controllers;
+using System.Collections.ObjectModel;
+using SeekDeepWithin.Models;
 
-namespace SeekDeepWithin.Models
+namespace SeekDeepWithin.Controllers
 {
-   public class PassageEntryViewModel
+   /// <summary>
+   /// Renders content for sdw.
+   /// </summary>
+   public class SdwRenderer
    {
       private readonly Dictionary<int, int> m_Insertions = new Dictionary<int, int> ();
 
       /// <summary>
-      /// Gets or Sets the id of the passage entry.
+      /// Initializes the renderer.
       /// </summary>
-      public int Id { get; set; }
+      public SdwRenderer ()
+      {
+         this.Links = new Collection <LinkViewModel> ();
+      }
 
       /// <summary>
-      /// Gets or Sets the passage id.
+      /// Gets or Sets the text ot render.
       /// </summary>
-      public int PassageId { get; set; }
+      public string Text { get; set; }
 
       /// <summary>
-      /// Gets or Sets the chapter id.
+      /// Gets the collection of links.
       /// </summary>
-      public int ChapterId { get; set; }
-
-      /// <summary>
-      /// Gets or Sets the number of the passage entry.
-      /// </summary>
-      public int Number { get; set; }
-
-      /// <summary>
-      /// Gets or Sets the order of the passage entry.
-      /// </summary>
-      public int Order { get; set; }
-
-      /// <summary>
-      /// Gets or Sets the chapter of this entry.
-      /// </summary>
-      public ChapterViewModel Chapter { get; set; }
-
-      /// <summary>
-      /// Gets or Sets the passage of this entry.
-      /// </summary>
-      public PassageViewModel Passage { get; set; }
+      public ICollection<LinkViewModel> Links { get; private set; }
 
       /// <summary>
       /// Renders the passage entry.
@@ -49,9 +35,24 @@ namespace SeekDeepWithin.Models
       /// <returns>The rendered html of the passage entry.</returns>
       public string Render ()
       {
-         var renderer = new SdwRenderer {Text = this.Passage.Text};
-         renderer.Links.AddRange(this.Passage.PassageLinks);
-         return renderer.Render();
+         this.m_Insertions.Clear ();
+         var html = this.Text;
+         foreach (var link in this.Links)
+         {
+            var index = this.GetInsertionIndex (link.StartIndex);
+            var insertion = "<a href=\"" + link.Url + "\"";
+            if (link.OpenInNewWindow)
+               insertion += " target=\"_blank\"";
+            insertion += ">";
+            html = html.Insert (index, insertion);
+            this.AddLength (link.StartIndex, insertion.Length);
+
+            insertion = "</a>";
+            index = this.GetInsertionIndex (link.EndIndex);
+            html = html.Insert (index, insertion);
+            this.AddLength (link.EndIndex, insertion.Length);
+         }
+         return html;
       }
 
       /// <summary>

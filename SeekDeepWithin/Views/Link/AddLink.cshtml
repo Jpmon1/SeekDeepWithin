@@ -1,0 +1,12 @@
+﻿@model SeekDeepWithin.Models.EditLinkViewModel
+
+@{
+    ViewBag.Title = "Add Link";
+}
+
+@Html.Partial("_LinkForm", Model)
+
+@section scripts {
+   @Scripts.Render("~/bundles/jqueryval")
+   @Scripts.Render("~/bundles/sdw.addlink")
+}

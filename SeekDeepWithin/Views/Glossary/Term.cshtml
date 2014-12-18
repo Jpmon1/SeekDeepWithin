@@ -6,7 +6,7 @@
 }
 <h3>
    @Model.Name
-   @if (Request.IsAuthenticated && User.IsInRole ("EditGlossary")) {
+   @if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
       <span style="font-size: small">@Html.ActionLink("add entry", "CreateEntry", new { termId = Model.Id, termName = Model.Name })</span>
    }
 </h3>
@@ -16,7 +16,7 @@
       @foreach (var entry in Model.Entries) {
          <div id="entry_@entry.Id">
             <div class="panel" style="padding: 3px 10px;">
-               @if (Request.IsAuthenticated && User.IsInRole ("EditGlossary")) {
+               @if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
                   <small>@Html.ActionLink("edit", "EditEntry", new { id = entry.Id, termId = Model.Id, termName = Model.Name })</small>
                }
                @if (!string.IsNullOrWhiteSpace (entry.SourceUrl)) {
