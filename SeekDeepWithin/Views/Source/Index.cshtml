@@ -3,38 +3,19 @@
 @{
     ViewBag.Title = "Sources";
 }
-<hgroup class="title">
-   <h1>Sources</h1>
-</hgroup>
+<h3>Sources</h3>
 @if (Request.IsAuthenticated && User.IsInRole ("Creator")) {
    <small>
       @Html.ActionLink("new source", "Create")
    </small>
 }
-<table>
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Url)
-        </th>
-        <th></th>
-    </tr>
-
+<dl>
 @foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Url)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-        </td>
-    </tr>
+   <dt>
+      @Html.ActionLink(item.Name, "Edit", new { id = item.Id })
+   </dt>
+   <dd>
+      @Html.DisplayFor(modelItem => item.Url) <a href="@item.Url" target="_blank"><i class="icon-newtab"></i></a>
+   </dd>
 }
-
-</table>
+</dl>

@@ -8,6 +8,11 @@
       public int Id { get; set; }
 
       /// <summary>
+      /// Gets or Sets the type of source (entry, version, etc...)
+      /// </summary>
+      public string Type { get; set; }
+
+      /// <summary>
       /// Gets or Sets the name of this source.
       /// </summary>
       public string Name { get; set; }

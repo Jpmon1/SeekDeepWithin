@@ -152,49 +152,5 @@ namespace SeekDeepWithin.Controllers
          this.m_Db.Save ();
          return RedirectToAction ("About", new { id = versionId });
       }
-
-      /// <summary>
-      /// Gets the edit source view.
-      /// </summary>
-      /// <returns>Edit source view.</returns>
-      [Authorize (Roles = "Editor")]
-      public ActionResult EditSource (int id)
-      {
-         if (Request.UrlReferrer != null) TempData["RefUrl"] = Request.UrlReferrer.ToString ();
-         var version = this.m_Db.Versions.Get (id);
-         var source = version.VersionSources.FirstOrDefault ();
-         return View (new VersionSourceViewModel
-         {
-            SourceName = source == null ? string.Empty : source.Source.Name,
-            SourceUrl = source == null ? string.Empty : source.Source.Url,
-            VersionId = id
-         });
-      }
-
-      /// <summary>
-      /// Posts the edit source updates.
-      /// </summary>
-      /// <returns>Version about view.</returns>
-      [HttpPost]
-      [ValidateAntiForgeryToken]
-      [Authorize (Roles = "Editor")]
-      public ActionResult EditSource (VersionSourceViewModel viewModel)
-      {
-         if (ModelState.IsValid)
-         {
-            var version = this.m_Db.Versions.Get (viewModel.VersionId);
-            var source = this.GetSource (viewModel);
-            if (version.VersionSources.Count == 1 && version.VersionSources.First ().Source.Id == source.Id)
-               this.m_Db.Save ();
-            else
-            {
-               version.VersionSources.Clear ();
-               version.VersionSources.Add (new VersionSource { Source = source, Version = version });
-               this.m_Db.Save ();
-            }
-            return RedirectToAction ("About", new { id = viewModel.VersionId });
-         }
-         return View (viewModel);
-      }
    }
 }
