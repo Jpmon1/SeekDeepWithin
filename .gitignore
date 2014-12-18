@@ -1,3 +1,10 @@
+_ReSharper*
+/packages
+*/bin
+*/obj
+*.suo
+*/App_Data
+
 # Windows image file caches
 Thumbs.db
 ehthumbs.db
@@ -41,3 +48,7 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+
+SeekDeepWithin/Web.config
+SeekDeepWithin/Web.Release.config
+*.config

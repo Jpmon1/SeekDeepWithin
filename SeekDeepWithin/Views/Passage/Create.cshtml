@@ -1,0 +1,40 @@
+﻿@{
+    ViewBag.Title = "New Passage";
+}
+
+<h3>Add new Passage</h3>
+@using (Html.BeginForm ())
+{
+   @Html.AntiForgeryToken()
+   <fieldset>
+      <legend>Passage Details</legend>
+
+      <input type="hidden" id="chapterId" name="chapterId" value="@ViewBag.ChapterId" />
+      <div class="row">
+         <div class="small-12 large-6 columns">
+            Order:
+            @Html.TextBox("order")
+         </div>
+      </div>
+      
+      <div class="row">
+         <div class="small-12 large-6 columns">
+            Number:
+            @Html.TextBox("number")
+         </div>
+      </div>
+
+      <div class="row">
+         <div class="small-12 large-6 columns">
+            Text:
+            @Html.TextArea("text")
+         </div>
+      </div>
+
+      <input type="submit" value="Add" class="button" /> <a href="@TempData["RefUrl"]" class="button secondary small">cancel</a>
+</fieldset>
+}
+
+@section scripts {
+   @Scripts.Render("~/bundles/jqueryval")
+}

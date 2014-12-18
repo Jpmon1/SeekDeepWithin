@@ -1,0 +1,65 @@
+﻿@{
+   ViewBag.Title = "Welcome";
+}
+@section featured {
+   <div class="panel">
+      <hgroup class="title">
+         <h1>@ViewBag.Title. <span style="font-size: large">@ViewBag.Message</span></h1>
+      </hgroup>
+      <p>
+         This site is currently under construction, please bear with us until it is fully functional.<br />
+         If you like what we are doing, send us a comment from the about page.
+      </p>
+   </div>
+}
+
+@{
+   var panelSize = 3;
+   if (Request.IsAuthenticated) {
+      panelSize = 4;
+   }
+}
+
+<div class="row text-center">
+   <div class="large-@panelSize columns">
+      <a href="@Url.Action("Index", "Book")">
+         <i class="icon-book" style="font-size: xx-large"> </i>
+         <h4>Read</h4>
+      </a>
+      <p>
+         We are attempting to offer many books and new content is imported almost daily.
+         Take a look in the library to check out the books we currently have.
+      </p>
+   </div>
+   <div class="large-@panelSize columns">
+      <a href="@Url.Action("Index", "Glossary")">
+         <i class="icon-list" style="font-size: xx-large"> </i>
+         <h4>Study</h4>
+      </a>
+      <p>
+         Curious about a certain word you stumbled upon while reading?
+         Visit the glossary to see if we can provide you with a definition.
+      </p>
+   </div>
+   <div class="large-@panelSize columns">
+      <a href="@Url.Action("Index", "Search")">
+         <i class="icon-search" style="font-size: xx-large"> </i>
+         <h4>Search</h4>
+      </a>
+      <p>
+         Search through every bit of information we have on the site. Narrow down
+         your criteria to find exactly what you are looking for.
+      </p>
+   </div>
+   @if (!Request.IsAuthenticated) {
+      <div class="large-3 columns">
+         <a href="@Url.Action("Register", "Account")">
+            <i class="icon-ok-sign" style="font-size: xx-large"> </i>
+            <h4>Register</h4>
+         </a>
+         <p>
+            Registering and Logging in to SeekDeepWithin.com enables you to have more control over your content.
+         </p>
+      </div>
+   }
+</div>

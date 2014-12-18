@@ -1,0 +1,16 @@
+﻿@model IEnumerable <SeekDeepWithin.Models.GlossaryTermViewModel>
+
+@{
+    ViewBag.Title = "Glossary";
+}
+<h3>
+   Glossary
+   @if (Request.IsAuthenticated && User.IsInRole ("Creator")) {
+      <span style="font-size: small">@Html.ActionLink("new term", "CreateTerm")</span>
+   }
+</h3>
+<ul>
+   @foreach (var item in Model) {
+      <li>@Html.ActionLink(item.Name, "Term", new { id = item.Id })</li>
+   }
+</ul>

@@ -1,0 +1,46 @@
+﻿@model SeekDeepWithin.Models.PassageViewModel
+
+@{
+   var passageEntry = Model.PassageEntries.FirstOrDefault ();
+   var title = "Edit Passage";
+   if (passageEntry != null)
+   {
+      title = passageEntry.Chapter.SubBook.Version.Title;
+      if (passageEntry.Chapter.SubBook.Name != "default")
+      {
+         title += " | " + passageEntry.Chapter.SubBook.Name;
+      }
+      if (passageEntry.Chapter.Name != "default")
+      {
+         title += " | " + passageEntry.Chapter.Name;
+      }
+      title += " | " + passageEntry.Number;
+   }
+   ViewBag.Title = "Edit Passage";
+}
+
+<h3>Editing @title</h3>
+
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>Passage Text</legend>
+
+        @Html.HiddenFor(model => model.Id)
+       
+       <div class="row">
+          <div class="small-12 large-8 columns">
+             @Html.TextAreaFor(model => model.Text, 8, 10, null)
+             @Html.ValidationMessageFor(model => model.Text)
+          </div>
+       </div>
+
+        <input type="submit" value="Save" class="button" /> <a href="@TempData["RefUrl"]" class="button secondary small">cancel</a>
+    </fieldset>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

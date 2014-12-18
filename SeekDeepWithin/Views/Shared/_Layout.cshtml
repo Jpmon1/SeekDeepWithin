@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html>
+<!--[if IE 9]><html class="lt-ie10" lang="en" > <![endif]-->
+<html class="no-js" lang="en">
+   <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <meta name="description" content="Study spiritual text from all of the world." />
+      <meta name="author" content="SeekDeepWithin.com" />
+      <meta name="copyright" content="SeekDeepWithin Copyright (c) @DateTime.Now.Year" />
+      <title>@ViewBag.Title - Seek Deep Within</title>
+      <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+      @Styles.Render("~/Content/css")
+      @Scripts.Render("~/bundles/modernizr")
+   </head>
+   <body>
+
+      <div class="contain-to-grid fixed">
+         <nav class="top-bar" data-topbar role="navigation">
+            <ul class="title-area">
+               <li class="name">
+                  <h1><a href="@Url.Action("Index", "Home")">Seek Deep Within</a></h1>
+               </li>
+               <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
+               <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
+            </ul>
+
+            <section class="top-bar-section">
+               <!-- Right Nav Section -->
+               <ul class="right">
+                  <li><a href="@Url.Action("Index", "Book")"><i class="icon-book"></i> Read</a></li>
+                  <li><a href="@Url.Action("Index", "Glossary")"><i class="icon-list"></i> Glossary</a></li>
+                  <li><a href="@Url.Action("Index", "Search")"><i class="icon-search"></i> Search</a></li>
+                  <li class="has-dropdown">
+                     <a href="#"><i class="icon-addtolist"></i> More...</a>
+                     <ul class="dropdown">
+                        <li><a href="@Url.Action("About", "Home")"><i class="icon-question-sign"></i> About</a></li>
+                     </ul>
+                  </li>
+               </ul>
+
+               <!-- Left Nav Section -->
+               <ul class="left">
+                  @if (Request.IsAuthenticated) {
+                     <li><a href="@Url.Action("Manage", "Account")">Welcome @User.Identity.Name!</a></li>
+                     <li><a href="javascript:document.getElementById('logoutForm').submit()"><i class="icon-exit"></i> Log out</a></li>
+                  } else {
+                     <li><a href="@Url.Action("Register", "Account")"><i class="icon-ok-sign"></i> Register</a></li>
+                     <li><a href="@Url.Action("Login", "Account")"><i class="icon-enter"></i> Log in</a></li>
+                  }
+               </ul>
+            </section>
+         </nav>
+      </div>
+   
+      <div class="row" style="margin-top: 10px">
+         <div class="small-12 large-12 columns">
+            @RenderSection("featured", required: false)
+            <section class="content-wrapper main-content clear-fix">
+               @RenderBody()
+            </section>
+         </div>
+      </div>
+
+      @if (Request.IsAuthenticated) {
+         <!-- LOG OUT FORM-->
+         <div style="display: none;">
+            @using (Html.BeginForm ("LogOff", "Account", FormMethod.Post, new {id = "logoutForm"})) {
+               @Html.AntiForgeryToken()
+               <a href="javascript:document.getElementById('logoutForm').submit()">Log off</a>
+            }
+         </div>
+      }
+      
+      <!-- FOOTER -->
+      <hr />
+      <div class="row">
+         <div class="large-6 columns">
+            <p>&copy; @DateTime.Now.Year - Seek Deep Within</p>
+         </div>
+      </div>
+
+      @Scripts.Render("~/bundles/jquery")
+      @RenderSection("scripts", required: false)
+      <script>
+         $(document).foundation();
+      </script>
+   </body>
+</html>

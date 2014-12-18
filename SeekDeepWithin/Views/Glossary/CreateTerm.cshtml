@@ -1,0 +1,32 @@
+﻿@model SeekDeepWithin.Models.GlossaryTermViewModel
+
+@{
+    ViewBag.Title = "New Glossary Item";
+}
+
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>New Glossary Term</legend>
+
+        <div class="row">
+           <div class="small-12 large-6 columns">
+              @Html.LabelFor(model => model.Name)
+              @Html.EditorFor(model => model.Name)
+              @Html.ValidationMessageFor(model => model.Name)
+           </div>
+         </div>
+       
+       <div class="row">
+          <div class="small-12 large-6 columns">
+             <input type="submit" value="Create" class="button" /> @Html.ActionLink("cancel", "Index")
+          </div>
+       </div>
+    </fieldset>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

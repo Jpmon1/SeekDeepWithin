@@ -1,0 +1,14 @@
+﻿@{
+    ViewBag.Title = "Search";
+}
+<h3><i class="icon-search"></i> Search</h3>
+@using (Html.BeginForm("Query", "Search")) {
+   <fieldset>
+      <legend>Search</legend>
+      
+      <p>
+         @Html.TextBox("searchFor")
+      </p>
+      <input type="submit" value="Search" class="button" />
+   </fieldset>
+}

@@ -1,0 +1,63 @@
+﻿@using System.Globalization
+@model SeekDeepWithin.Models.ChapterViewModel
+
+@{
+   var title = Model.SubBook.Version.Title;
+   if (Model.SubBook.Name != "default") {
+      title += " | " + Model.SubBook.Name;
+   }
+   if (Model.Name != "default") {
+      title += " | " + Model.Name;
+   }
+   ViewBag.Title = title;
+}
+
+<div class="row">
+   <div class="small-12 large-8 columns">
+      <ul class="breadcrumbs" role="menubar" aria-label="breadcrumbs">
+         <li role="menuitem"><a href="@Url.Action("About", "Version", new { id = @Model.SubBook.Version.Id })">@Model.SubBook.Version.Title</a></li>
+         @if (Model.SubBook.Name != "default") {
+            <li role="menuitem"><a href="@Url.Action("About", "SubBook", new { id = @Model.SubBook.Id })">@Model.SubBook.Name</a></li>
+         }
+         <li role="menuitem" class="current"><a href="#">@Model.Name</a></li>
+      </ul>
+      @foreach (var passage in Model.Passages)
+      {
+         <div class="row">
+            @if (passage.Number > 0)
+            {
+               <div class="small-6 medium-2 large-1 columns">
+                  <blockquote>
+                     @Html.ActionLink(passage.Number.ToString (CultureInfo.InvariantCulture), "Details", "Passage", new { id = passage.PassageId, entryId = passage.Id }, null)
+                  </blockquote>
+               </div>
+            }
+            <div class="medium-10 large-11 columns">@Html.Raw(passage.Render ())</div>
+         </div>
+      }
+   </div>
+   <div class="small-12 large-4 columns">
+      @if (Request.IsAuthenticated && User.IsInRole ("Editor"))
+      {
+         <ul class="pricing-table">
+            <li class="title">Edit Actions</li>
+            <li class="bullet-item">@Html.ActionLink("edit chapter", "Edit", new { id = Model.Id })</li>
+            @if (User.IsInRole ("Creator")) {
+               <li class="bullet-item">@Html.ActionLink("add passage", "Create", "Passage", new {chapterId = Model.Id}, null)</li>
+            }
+         </ul>
+      }
+      <h4>Contents</h4>
+      <ul>
+         @foreach (var subBook in Model.SubBook.Version.SubBooks) {
+            if (subBook.Name != "default") {
+               <li>subBook.Name</li>
+            }
+            foreach (var chapter in subBook.Chapters) {
+               <li>@Html.ActionLink(chapter.Name, "Read", "Chapter", new { id = chapter.Id }, null)</li>
+            }
+         }
+      </ul>
+   </div>
+
+</div>

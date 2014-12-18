@@ -1,0 +1,70 @@
+﻿@model IEnumerable<SeekDeepWithin.Models.BookViewModel>
+
+@{
+   ViewBag.Title = "Read";
+}
+<h3>
+   Read
+   @if (Request.IsAuthenticated && User.IsInRole ("Creator")) {
+      <small>
+         @Html.ActionLink("new book", "Create")
+      </small>
+   }
+</h3>
+<div class="row">
+   <div class="large-3 small-12 columns">
+      <h3>Filters....</h3>
+   </div>
+   <div class="large-9 columns">
+      @{
+         int index = 0;
+      }
+      @foreach (var book in Model) {
+         if (index == 0) {
+            @Html.Raw("<div class=\"row\" data-equalizer>")
+         }
+         <div class="large-6 small-12 columns">
+            <ul class="pricing-table" data-equalizer-watch>
+               <li class="title">@if (book.Versions.Count == 1 && book.Versions.First ().Name == "default") {
+                      @book.Versions.First().Title
+                   } else {
+                      @book.Title
+                   }
+               </li>
+               <li class="description">
+                  @book.Summary
+               </li>
+               @if (book.Versions.Count == 0) {
+                  <li class="bullet-item"><span class="label secondary">No information has been entered for this book!</span></li>
+               } else if (book.Versions.Count == 1) {
+                  <li class="cta-button">
+                     <a href="@Url.Action("About", "Version", new {id = book.Versions.First ().Id})" class="button">
+                        <i class="icon-book"></i> Read
+                     </a>
+                  </li>
+               } else {
+                  <li class="bullet-item"><strong>Versions:</strong></li>
+                     foreach (var version in book.Versions) {
+                        <li class="bullet-item">@Html.ActionLink(version.Title, "About", "Version", new{id=version.Id}, null)</li>
+                  }
+               }
+               @if (Request.IsAuthenticated && User.IsInRole ("Creator")) {
+                  <li class="bullet-item">
+                     <small>
+                        @Html.ActionLink("Add Version", "Create", "Version", new { bookId = book.Id }, null)
+                     </small>
+                  </li>
+               }
+            </ul>
+         </div>
+         index++;
+         if (index == 2) {
+            @Html.Raw("</div>")
+            index = 0;
+         }
+      }
+      @if (index != 0) {
+         Html.Raw ("</div>");
+      }
+   </div>
+</div>

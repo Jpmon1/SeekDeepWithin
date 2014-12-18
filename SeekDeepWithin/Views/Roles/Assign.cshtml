@@ -1,0 +1,22 @@
+﻿@{
+    ViewBag.Title = "Assign Role";
+}
+
+<h2>Assign a Role to a User</h2>
+
+@using (Html.BeginForm ())
+{
+   @Html.AntiForgeryToken()
+   @Html.ValidationSummary(true)
+   
+   <fieldset>
+      <legend>Assign Role</legend>
+      <div class="message-success">@ViewBag.ResultMessage</div>
+      <p>
+         User: @Html.TextBox("userName")
+         Role: @Html.DropDownList("roleName", ViewBag.Roles as SelectList)
+      </p>
+
+      <input type="submit" value="Save" />
+   </fieldset>
+}

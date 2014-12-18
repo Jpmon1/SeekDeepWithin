@@ -1,0 +1,78 @@
+﻿@using SeekDeepWithin.Controllers
+@model SeekDeepWithin.Models.VersionViewModel
+
+@{
+   ViewBag.Title = "About " + @Model.Title;
+}
+
+<div class="row">
+   <div class="small-12 large-8 columns">
+      <h3>@Model.Title</h3>
+      <p>
+         @{
+            var writers = Model.Writers.Where (w => !w.IsTranslator).ToList ();
+            if (writers.Count > 0) {
+               <em>written by:</em>
+               foreach (var writer in writers) {
+                  <span>@Html.ActionLink(writer.Author.Name, "Details", "Author", new { id = writer.Author.Id }, null) </span>
+               }
+            }
+            var translators = Model.Writers.Where (w => w.IsTranslator).ToList ();
+            if (translators.Count > 0) {
+               <br />
+               <em>translated by:</em>
+               foreach (var writer in Model.Writers.Where (w => w.IsTranslator)) {
+                  <span>@Html.ActionLink(writer.Author.Name, "Details", "Author", new { id = writer.Author.Id }, null) </span>
+               }
+            }
+         }
+      </p>
+      <p>
+         @Html.Raw(HtmlSanitizer.Sanitize (Model.Summary))
+      </p>
+      @if (!string.IsNullOrWhiteSpace (Model.SourceUrl)) {
+         <div class="panel" style="padding: 3px 10px;">
+            <small>source: <a href="@Model.SourceUrl" target="_blank">@Model.SourceName</a></small>
+         </div>
+      }
+   </div>
+   <div class="small-12 large-4 columns">
+      @if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
+         <ul class="pricing-table">
+            <li class="title">Edit Actions</li>
+            <li class="bullet-item">@Html.ActionLink("Edit Book", "Edit", "Book", new { id = Model.Book.Id }, null)</li>
+            <li class="bullet-item">@Html.ActionLink("Edit Version", "Edit", "Version", new { Model.Id }, null)</li>
+            <li class="bullet-item">@Html.ActionLink("Add Author/Translator", "AssignWriter", new { id = Model.Id })</li>
+            <li class="bullet-item">@Html.ActionLink("Edit Source", "EditSource", new { id = Model.Id })</li>
+            <li class="bullet-item">@Html.ActionLink("Add Link", "AddLink", new { id = Model.Id })</li>
+            @if (User.IsInRole ("Creator")) {
+               <li class="bullet-item">
+                  @Html.ActionLink("Add Sub Book", "Create", "SubBook", new {versionId = Model.Id}, null)
+               </li>
+               <li class="bullet-item">
+                  @if (Model.SubBooks.Count > 0) {
+                     @Html.ActionLink("Add Chapter", "Create", "Chapter", new {versionId = Model.Id}, null)
+                  } else {
+                     <em>add a sub book to add a chapter</em>
+                  }
+               </li>
+            }
+         </ul>
+      }
+      <h4>Contents</h4>
+      <div id="contents_tree">
+         <ul>
+            @foreach (var subBook in Model.SubBooks) {
+               if (subBook.Name != "default" || (Request.IsAuthenticated && User.IsInRole ("Editor"))) {
+                  <li>@subBook.Name <small>@Html.ActionLink("[edit]", "Edit", "SubBook", new {id = subBook.Id }, null)</small></li>
+               }
+               foreach (var chapter in subBook.Chapters) {
+                  <li>
+                     @Html.ActionLink(chapter.Name, "Read", "Chapter", new { id = chapter.Id }, null)
+                  </li>
+               }
+            }
+         </ul>
+      </div>
+   </div>
+</div>

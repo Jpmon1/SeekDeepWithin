@@ -1,0 +1,39 @@
+﻿@{
+    ViewBag.Title = "New Chapter";
+}
+
+<h2>Add new Chapter</h2>
+
+@using (Html.BeginForm ())
+{
+   @Html.AntiForgeryToken()
+   <fieldset>
+      <legend>Chapter Details</legend>
+
+      <input type="hidden" id="versionId" name="versionId" value="@ViewBag.VersionId" />
+      <div class="row">
+         <div class="small-12 large-6 columns">
+            @Html.Label("subBookId", "Sub Book to add Chapter to")
+            @Html.DropDownList("subBookId", ViewBag.SubBooks as SelectList)
+         </div>
+      </div>
+      <div class="row">
+         <div class="small-12 large-6 columns">
+            @Html.Label("name", "Name")
+            @Html.TextBox("name")
+         </div>
+      </div>
+      <div class="row">
+         <div class="small-12 large-6 columns">
+            @Html.Label("order", "Order")
+            @Html.TextBox("order")
+         </div>
+      </div>
+
+      <input type="submit" value="Add" class="button" /> <a href="@TempData["RefUrl"]" class="button secondary small">cancel</a>
+</fieldset>
+}
+
+@section scripts {
+   @Scripts.Render("~/bundles/jqueryval")
+}

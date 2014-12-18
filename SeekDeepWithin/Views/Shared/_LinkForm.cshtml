@@ -1,0 +1,110 @@
+﻿@model SeekDeepWithin.Models.LinkViewModel
+
+<h3>Add Link</h3>
+
+@using (Html.BeginForm ()) {
+   @Html.AntiForgeryToken()
+   @Html.ValidationSummary()
+
+   @Html.HiddenFor(model => model.PassageId)
+   <dl class="tabs" data-tab>
+      <dd class="active"><a href="#tabGlossary">Glossary Link</a></dd>
+      <dd><a href="#tabRead">Read Link</a></dd>
+      <dd><a href="#tabSearch">Search Link</a></dd>
+      <dd><a href="#tabExternal">External Link</a></dd>
+   </dl>
+   <div class="tabs-content">
+      <div id="tabGlossary" class="content active">
+         <div class="row">
+            <div class="small-12 large-6 columns">
+               Glossary Term
+               @Html.EditorFor(model => model.GlossaryTerm)
+            </div>
+         </div>
+      </div>
+      <div id="tabRead" class="content">
+         <div class="row">
+            <div class="small-12 large-6 columns">
+               Book
+               @Html.EditorFor(model => model.Book)
+            </div>
+         </div>
+         <div class="row">
+            <div class="small-12 large-6 columns">
+               Version
+               @Html.EditorFor(model => model.Version)
+            </div>
+         </div>
+         <div class="row">
+            <div class="small-12 large-6 columns">
+               Sub Book
+               @Html.EditorFor(model => model.SubBook)
+            </div>
+         </div>
+         <div class="row">
+            <div class="small-12 large-6 columns">
+               Chapter
+               @Html.EditorFor(model => model.Chapter)
+            </div>
+         </div>
+      </div>
+      <div id="tabSearch" class="content">
+         <div class="row">
+            <div class="small-12 large-6 columns">
+               Search
+               @Html.EditorFor(model => model.Search)
+            </div>
+         </div>
+      </div>
+      <div id="tabExternal" class="content">
+         <div class="row">
+            <div class="small-12 large-6 columns">
+               Link
+               @Html.EditorFor(model => model.Link)
+            </div>
+         </div>
+      </div>
+   </div>
+
+   <hr />
+
+   <div class="row">
+      <div class="small-12 large-6 columns">
+         Anchor
+         @Html.EditorFor(model => model.Anchor)
+      </div>
+   </div>
+   <div class="row">
+      <div class="small-12 large-6 columns">
+         @Html.EditorFor(model => model.OpenInNewWindow) Open in New Window
+      </div>
+   </div>
+   
+   <hr />
+
+   <div class="row">
+      <div class="small-12 large-8 columns">
+         @Html.TextArea("passageText", Model.PassageText, 7, 80, new { @readonly = "readonly" })
+      </div>
+   </div>
+   <div class="row">
+      <div class="small-5 large-3 columns">
+         Start Index
+         @Html.EditorFor(model => model.StartIndex)
+      </div>
+      <div class="small-5 large-3 columns">
+         End Index
+         @Html.EditorFor(model => model.EndIndex)
+      </div>
+      <div class="small-2 large-6 columns">
+      </div>
+   </div>
+
+   <input type="submit" value="Save" class="button" /> <a href="@TempData["RefUrl"]" class="button secondary small">cancel</a>
+}
+
+@section scripts {
+   @Scripts.Render("~/bundles/jqueryui")
+   @Scripts.Render("~/bundles/jqueryval")
+   @Scripts.Render("~/bundles/sdw.addlink")
+}

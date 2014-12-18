@@ -1,0 +1,39 @@
+﻿@model SeekDeepWithin.Models.SubBookViewModel
+
+@{
+    ViewBag.Title = "Edit Sub Book: " + Model.Name;
+}
+<h3>Editing Sub Book - @Model.Name</h3>
+@using (Html.BeginForm ()) {
+   @Html.AntiForgeryToken()
+   @Html.ValidationSummary(true)
+
+   <fieldset>
+      <legend>Sub Book Details</legend>
+
+      @Html.HiddenFor(model => model.Id)
+      @Html.HiddenFor(model => model.VersionId)
+      
+      <div class="row">
+         <div class="small-12 large-6 columns">
+            @Html.LabelFor(model => model.Name)
+            @Html.EditorFor(model => model.Name)
+            @Html.ValidationMessageFor(model => model.Name)
+         </div>
+      </div>
+      
+      <div class="row">
+         <div class="small-12 large-6 columns">
+            @Html.LabelFor(model => model.Order)
+            @Html.EditorFor(model => model.Order)
+            @Html.ValidationMessageFor(model => model.Order)
+         </div>
+      </div>
+
+      <input type="submit" value="Save" class="button" /> <a href="@TempData["RefUrl"]" class="button secondary small">cancel</a>
+   </fieldset>
+}
+
+@section Scripts {
+   @Scripts.Render("~/bundles/jqueryval")
+}
