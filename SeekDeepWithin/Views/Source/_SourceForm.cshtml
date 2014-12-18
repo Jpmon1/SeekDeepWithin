@@ -1,0 +1,33 @@
+﻿@model SeekDeepWithin.Models.SourceViewModel
+
+<h3>Edit Source</h3>
+
+@using (Html.BeginForm ())
+{
+   @Html.AntiForgeryToken()
+   @Html.ValidationSummary(true)
+
+   <fieldset>
+      <legend>Source Details</legend>
+
+      @Html.HiddenFor(model => model.Id)
+      @Html.HiddenFor(model => model.Type)
+      <div class="row">
+         <div class="small-12 large-6 columns">
+            @Html.LabelFor(model => model.Name)
+            @Html.EditorFor(model => model.Name)
+            @Html.ValidationMessageFor(model => model.Name)
+         </div>
+      </div>
+
+      <div class="row">
+         <div class="small-12 large-8 columns">
+            @Html.LabelFor(model => model.Url)
+            @Html.EditorFor(model => model.Url)
+            @Html.ValidationMessageFor(model => model.Url)
+         </div>
+      </div>
+
+      <input type="submit" value="Save" class="button" /> <a href="@TempData["RefUrl"]" class="button secondary small">cancel</a>
+   </fieldset>
+}

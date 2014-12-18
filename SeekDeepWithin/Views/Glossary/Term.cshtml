@@ -22,6 +22,7 @@
                @if (!string.IsNullOrWhiteSpace (entry.SourceUrl)) {
                   <a href="@entry.SourceUrl" class="right" target="_blank">@entry.SourceName</a>
                }
+               <small>@Html.ActionLink("edit source", "EditSource", "Source", new { id = entry.Id, type = "entry", parentId = Model.Id }, null)</small>
             </div>
             @Html.Raw(HtmlSanitizer.Sanitize (entry.Text))
          </div>

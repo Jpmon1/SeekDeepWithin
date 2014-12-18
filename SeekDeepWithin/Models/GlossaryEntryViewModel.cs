@@ -30,15 +30,11 @@ namespace SeekDeepWithin.Models
       /// <summary>
       /// Gets or Sets the source name.
       /// </summary>
-      [Required]
-      [Display (Name = "Source Name")]
       public string SourceName { get; set; }
 
       /// <summary>
       /// Gets or Sets the source url.
       /// </summary>
-      [Required]
-      [Display (Name = "Source Url")]
       public string SourceUrl { get; set; }
    }
 }

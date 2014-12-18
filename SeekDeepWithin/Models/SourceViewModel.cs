@@ -1,4 +1,6 @@
-﻿namespace SeekDeepWithin.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SeekDeepWithin.Models
 {
    public class SourceViewModel
    {
@@ -15,11 +17,20 @@
       /// <summary>
       /// Gets or Sets the name of this source.
       /// </summary>
+      [Required]
+      [Display (Name = "Source Name")]
       public string Name { get; set; }
 
       /// <summary>
       /// Gets or Sets the url for the source.
       /// </summary>
+      [Required]
+      [Display (Name = "Source Url")]
       public string Url { get; set; }
+
+      /// <summary>
+      /// Gets or Sets the parent id, if needed.
+      /// </summary>
+      public int ParentId { get; set; }
    }
 }

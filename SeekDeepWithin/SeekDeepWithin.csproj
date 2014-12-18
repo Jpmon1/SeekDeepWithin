@@ -364,6 +364,9 @@
     <Content Include="Content\fonts\webhostinghub-glyphs.eot" />
     <Content Include="Content\fonts\webhostinghub-glyphs.svg" />
     <Content Include="Content\fonts\webhostinghub-glyphs.ttf" />
+    <Content Include="..\README.md">
+      <Link>README.md</Link>
+    </Content>
     <None Include="Properties\PublishProfiles\SeekDeepWithin.pubxml" />
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
     <Content Include="Scripts\fastclick.js" />
@@ -489,6 +492,9 @@
     <Content Include="Views\Version\EditSource.cshtml" />
     <Content Include="Views\Shared\_LinkForm.cshtml" />
     <Content Include="Views\Version\AddLink.cshtml" />
+    <Content Include="Views\Source\EditSource.cshtml" />
+    <Content Include="Views\Source\Edit.cshtml" />
+    <Content Include="Views\Source\_SourceForm.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201412022034506_InitialCreate.resx">

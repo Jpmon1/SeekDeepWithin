@@ -36,7 +36,40 @@ namespace SeekDeepWithin.Controllers
       /// <returns>List of sources view.</returns>
       public ActionResult Index ()
       {
-         return View ();
+         return View (this.m_Db.Sources.All().Select(s => new SourceViewModel { Id = s.Id, Name = s.Name, Url = s.Url }));
+      }
+
+      /// <summary>
+      /// Gets the source edit view.
+      /// </summary>
+      /// <param name="id">Id of source to edit.</param>
+      /// <returns>The source edit view.</returns>
+      [Authorize (Roles = "Editor")]
+      public ActionResult Edit (int id)
+      {
+         var source = this.m_Db.Sources.Get (id);
+         if (Request.UrlReferrer != null) TempData["RefUrl"] = Request.UrlReferrer.ToString ();
+         return View (new SourceViewModel { Id = source.Id, Name = source.Name, Url = source.Url });
+      }
+
+      /// <summary>
+      /// Posts the source edits.
+      /// </summary>
+      /// <param name="viewModel">Source view model with edits.</param>
+      /// <returns>The source index page.</returns>
+      [HttpPost]
+      [ValidateAntiForgeryToken]
+      [Authorize (Roles = "Editor")]
+      public ActionResult Edit (SourceViewModel viewModel)
+      {
+         if (ModelState.IsValid)
+         {
+            var source = this.m_Db.Sources.Get (viewModel.Id);
+            this.m_Db.SetValues (source, viewModel);
+            this.m_Db.Save ();
+            return RedirectToAction ("Index");
+         }
+         return View (viewModel);
       }
 
       /// <summary>
@@ -44,17 +77,31 @@ namespace SeekDeepWithin.Controllers
       /// </summary>
       /// <returns>Edit source view.</returns>
       [Authorize (Roles = "Editor")]
-      public ActionResult EditSource (int id, string type)
+      public ActionResult EditSource (int id, string type, int? parentId)
       {
          if (Request.UrlReferrer != null) TempData["RefUrl"] = Request.UrlReferrer.ToString ();
 
-         var version = this.m_Db.Versions.Get (id);
-         var source = version.VersionSources.FirstOrDefault ();
+         Source source = null;
+         if (type == "version")
+         {
+            var version = this.m_Db.Versions.Get (id);
+            var s = version.VersionSources.FirstOrDefault ();
+            if (s != null)
+               source = s.Source;
+         }
+         else if (type == "entry")
+         {
+            var version = this.m_Db.GlossaryEntries.Get (id);
+            var s = version.GlossaryEntrySources.FirstOrDefault ();
+            if (s != null)
+               source = s.Source;
+         }
 
          return View (new SourceViewModel
          {
-            Name = source == null ? string.Empty : source.Source.Name,
-            Url = source == null ? string.Empty : source.Source.Url,
+            Name = source == null ? string.Empty : source.Name,
+            Url = source == null ? string.Empty : source.Url,
+            ParentId = parentId ?? -1,
             Type = type,
             Id = id
          });
@@ -71,17 +118,35 @@ namespace SeekDeepWithin.Controllers
       {
          if (ModelState.IsValid)
          {
-            var version = this.m_Db.Versions.Get (viewModel.VersionId);
-            var source = this.GetSource (viewModel.SourceName, viewModel.SourceUrl);
-            if (version.VersionSources.Count == 1 && version.VersionSources.First ().Source.Id == source.Id)
-               this.m_Db.Save ();
-            else
+            var source = this.GetSource (viewModel.Name, viewModel.Url);
+            if (viewModel.Type == "version")
             {
-               version.VersionSources.Clear ();
-               version.VersionSources.Add (new VersionSource { Source = source, Version = version });
-               this.m_Db.Save ();
+               var version = this.m_Db.Versions.Get (viewModel.Id);
+               if (version.VersionSources.Count == 1 && version.VersionSources.First ().Source.Id == source.Id)
+                  this.m_Db.Save ();
+               else
+               {
+                  if (version.VersionSources.Count == 0)
+                     version.VersionSources.Add (new VersionSource { Version = version });
+                  version.VersionSources.First ().Source = source;
+                  this.m_Db.Save ();
+               }
+               return RedirectToAction ("About", "Version", new {id = viewModel.Id});
             }
-            return RedirectToAction ("About", "Version", new { id = viewModel.VersionId });
+            if (viewModel.Type == "entry")
+            {
+               var entry = this.m_Db.GlossaryEntries.Get (viewModel.Id);
+               if (entry.GlossaryEntrySources.Count == 1 && entry.GlossaryEntrySources.First ().Source.Id == source.Id)
+                  this.m_Db.Save ();
+               else
+               {
+                  if (entry.GlossaryEntrySources.Count == 0)
+                     entry.GlossaryEntrySources.Add (new GlossaryEntrySource { GlossaryEntry = entry });
+                  entry.GlossaryEntrySources.First ().Source = source;
+                  this.m_Db.Save ();
+               }
+               return RedirectToAction ("Term", "Glossary", new { id = viewModel.ParentId });
+            }
          }
          return View (viewModel);
       }
@@ -94,11 +159,16 @@ namespace SeekDeepWithin.Controllers
       /// <returns>The requested source.</returns>
       private Source GetSource (string name, string url)
       {
-         var source = this.m_Db.Sources.Get (s => s.Name == name && s.Url == url).FirstOrDefault ();
+         var source = this.m_Db.Sources.Get (s => s.Url == url).FirstOrDefault ();
          if (source == null)
          {
             source = new Source { Name = name, Url = url };
             this.m_Db.Sources.Insert (source);
+            this.m_Db.Save ();
+         }
+         else if (source.Name != name)
+         {
+            source.Name = name;
             this.m_Db.Save ();
          }
          return source;

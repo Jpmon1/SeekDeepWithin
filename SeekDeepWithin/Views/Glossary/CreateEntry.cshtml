@@ -22,25 +22,7 @@
           </div>
        </div>
 
-       <div class="row">
-          <div class="small-12 large-6 columns">
-             @Html.LabelFor(model => model.SourceName)
-             @Html.EditorFor(model => model.SourceName)
-             @Html.ValidationMessageFor(model => model.SourceName)
-          </div>
-       </div>
-
-       <div class="row">
-          <div class="small-12 large-6 columns">
-             @Html.LabelFor(model => model.SourceUrl)
-             @Html.EditorFor(model => model.SourceUrl)
-             @Html.ValidationMessageFor(model => model.SourceUrl)
-          </div>
-       </div>
-
-        <p>
-            <input type="submit" value="Create" class="button"/> <a href="@TempData["RefUrl"]" class="button secondary small">cancel</a>
-        </p>
+        <input type="submit" value="Create" class="button"/> <a href="@TempData["RefUrl"]" class="button secondary small">cancel</a>
     </fieldset>
 }
 

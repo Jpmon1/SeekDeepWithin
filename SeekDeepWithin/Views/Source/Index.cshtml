@@ -4,15 +4,14 @@
     ViewBag.Title = "Sources";
 }
 <h3>Sources</h3>
-@if (Request.IsAuthenticated && User.IsInRole ("Creator")) {
-   <small>
-      @Html.ActionLink("new source", "Create")
-   </small>
-}
 <dl>
 @foreach (var item in Model) {
    <dt>
-      @Html.ActionLink(item.Name, "Edit", new { id = item.Id })
+      @if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
+         @Html.ActionLink(item.Name, "Edit", new {id = item.Id})
+      } else {
+         @item.Name
+      }
    </dt>
    <dd>
       @Html.DisplayFor(modelItem => item.Url) <a href="@item.Url" target="_blank"><i class="icon-newtab"></i></a>

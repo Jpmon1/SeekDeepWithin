@@ -1,5 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using System.Linq;
+﻿using System.Linq;
 using System.Web.Mvc;
 using SeekDeepWithin.DataAccess;
 using SeekDeepWithin.Domain;
@@ -93,9 +92,7 @@ namespace SeekDeepWithin.Controllers
          if (ModelState.IsValid)
          {
             var term = this.m_Db.GlossaryTerms.Get (viewModel.TermId);
-            var source = GetSource (viewModel);
-            var entry = new GlossaryEntry {GlossaryTerm = term, Text = viewModel.Text, GlossaryEntrySources = new Collection <GlossaryEntrySource> ()};
-            entry.GlossaryEntrySources.Add (new GlossaryEntrySource { GlossaryEntry = entry, Source = source });
+            var entry = new GlossaryEntry {GlossaryTerm = term, Text = viewModel.Text };
             this.m_Db.GlossaryEntries.Insert (entry);
             this.m_Db.Save ();
             return RedirectToAction ("Term", new {id = viewModel.TermId});
@@ -139,19 +136,9 @@ namespace SeekDeepWithin.Controllers
       {
          if (ModelState.IsValid)
          {
-            var source = GetSource (viewModel);
             var entry = this.m_Db.GlossaryEntries.Get (viewModel.Id);
             this.m_Db.SetValues (entry, viewModel);
-
-            if (entry.GlossaryEntrySources.Count == 1 && entry.GlossaryEntrySources.First ().Source.Id == source.Id)
-               this.m_Db.Save ();
-            else
-            {
-               entry.GlossaryEntrySources.Clear ();
-               entry.GlossaryEntrySources.Add (new GlossaryEntrySource {Source = source, GlossaryEntry = entry});
-               this.m_Db.Save ();
-            }
-
+            this.m_Db.Save ();
             return RedirectToAction ("Term", new { id = viewModel.TermId });
          }
          return View (viewModel);
