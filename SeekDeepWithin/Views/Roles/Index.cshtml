@@ -1,0 +1,18 @@
+﻿@model string[]
+
+@{
+    ViewBag.Title = "Roles";
+}
+
+<h2>Roles</h2>
+@Html.ActionLink("add", "Create") | @Html.ActionLink("assign", "Assign")
+
+@if (Model.Length <= 0) {
+   <h3>No roles defined!</h3>
+} else {
+   <ul>
+   @foreach (var role in Model) {
+      <li>@role @Html.ActionLink("Delete", "Delete", new { roleName = role })</li>
+   }
+   </ul>
+}

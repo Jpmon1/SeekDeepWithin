@@ -1,0 +1,14 @@
+﻿@model SeekDeepWithin.Models.ErrorViewModel
+
+@{
+    ViewBag.Title = "Error";
+}
+
+<h2>An error occured!</h2>
+<h3>@Model.HttpStatusCode</h3>
+<p>
+   @Model.Exception.Message
+</p>
+<p>
+   @Model.Exception.StackTrace
+</p>

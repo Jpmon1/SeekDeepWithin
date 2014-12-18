@@ -1,0 +1,39 @@
+﻿@model SeekDeepWithin.Models.VersionSourceViewModel
+
+@{
+    ViewBag.Title = "Edit Source";
+}
+
+<h3>Edit Source</h3>
+
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>Source Details</legend>
+       
+       @Html.HiddenFor(model => model.VersionId)
+       <div class="row">
+          <div class="small-12 large-6 columns">
+             @Html.LabelFor(model => model.SourceName)
+             @Html.EditorFor(model => model.SourceName)
+             @Html.ValidationMessageFor(model => model.SourceName)
+          </div>
+       </div>
+
+       <div class="row">
+          <div class="small-12 large-8 columns">
+             @Html.LabelFor(model => model.SourceUrl)
+             @Html.EditorFor(model => model.SourceUrl)
+             @Html.ValidationMessageFor(model => model.SourceUrl)
+          </div>
+       </div>
+
+        <input type="submit" value="Save" class="button" /> <a href="@TempData["RefUrl"]" class="button secondary small">cancel</a>
+    </fieldset>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

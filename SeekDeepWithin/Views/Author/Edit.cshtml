@@ -1,0 +1,40 @@
+﻿@model SeekDeepWithin.Models.AuthorViewModel
+
+@{
+    ViewBag.Title = "Edit Writer";
+}
+
+<h3>Editing @Model.Name</h3>
+
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>Writer Details</legend>
+
+        @Html.HiddenFor(model => model.Id)
+       
+       <div class="row">
+          <div class="small-12 large-6 columns">
+             @Html.LabelFor(model => model.Name)
+             @Html.EditorFor(model => model.Name)
+             @Html.ValidationMessageFor(model => model.Name)
+          </div>
+       </div>
+       
+       <div class="row">
+          <div class="small-12 large-8 columns">
+             @Html.LabelFor(model => model.About)
+             @Html.TextAreaFor(model => model.About, 8, 80, null)
+             @Html.ValidationMessageFor(model => model.About)
+          </div>
+       </div>
+
+        <input type="submit" value="Save" class="button" /> <a href="@TempData["RefUrl"]" class="button secondary small">cancel</a>
+    </fieldset>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

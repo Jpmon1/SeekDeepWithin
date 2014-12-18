@@ -1,0 +1,16 @@
+﻿@{
+   ViewBag.Title = "Administration";
+}
+
+<h2>Administration</h2>
+
+<ul>
+   <li>
+      @Html.ActionLink("Roles", "Index", "Roles")
+      <ul>
+         <li>@Html.ActionLink("Add Role", "Create", "Roles")</li>
+         <li>@Html.ActionLink("Assign Role", "Assign", "Roles")</li>
+      </ul>
+   </li>
+   <li>@Html.ActionLink("Users", "Index", "Users")</li>
+</ul>

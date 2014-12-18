@@ -1,0 +1,51 @@
+﻿@model SeekDeepWithin.Models.VersionViewModel
+
+@{
+    ViewBag.Title = "Add Version";
+}
+
+<h2>New version for @ViewBag.Book.Title</h2>
+
+@using (Html.BeginForm ()) {
+   @Html.AntiForgeryToken()
+   @Html.ValidationSummary(true)
+
+   <fieldset>
+      <legend>New Version</legend>
+      @Html.HiddenFor(model => model.BookId)
+      <div class="row">
+         <div class="small-12 large-6 columns">
+            @Html.LabelFor(model => model.Name)
+            @Html.TextBoxFor(model => model.Name)
+            @Html.ValidationMessageFor(model => model.Name)
+         </div>
+      </div>
+      <div class="row">
+         <div class="small-12 large-6 columns">
+            @Html.LabelFor(model => model.TitleFormat)
+            @Html.TextBoxFor(model => model.TitleFormat)
+            @Html.ValidationMessageFor(model => model.TitleFormat)
+         </div>
+      </div>
+      <div class="row">
+         <div class="small-12 large-6 columns">
+            @Html.LabelFor(model => model.PublishDate)
+            @Html.TextBoxFor(model => model.PublishDate)
+            @Html.ValidationMessageFor(model => model.PublishDate)
+         </div>
+      </div>
+      <div class="row">
+         <div class="small-12 large-12 columns">
+            @Html.LabelFor(model => model.Summary)
+            @Html.TextAreaFor(model => model.Summary, 10, 80, null)
+            @Html.ValidationMessageFor(model => model.Summary)
+         </div>
+      </div>
+
+      <input type="submit" value="Add" class="button" /> <a href="@Url.Action("Index", "Book")" class="button secondary small">cancel</a>
+   </fieldset>
+}
+
+@section Scripts {
+   @Scripts.Render("~/bundles/jqueryval")
+}

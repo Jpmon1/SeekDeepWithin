@@ -1,0 +1,33 @@
+﻿@using SeekDeepWithin.Controllers
+@model SeekDeepWithin.Models.GlossaryTermViewModel
+
+@{
+    ViewBag.Title = Model.Name;
+}
+<h3>
+   @Model.Name
+   @if (Request.IsAuthenticated && User.IsInRole ("EditGlossary")) {
+      <span style="font-size: small">@Html.ActionLink("add entry", "CreateEntry", new { termId = Model.Id, termName = Model.Name })</span>
+   }
+</h3>
+
+<div class="row">
+   <div class="small-12 large-9 columns">
+      @foreach (var entry in Model.Entries) {
+         <div id="entry_@entry.Id">
+            <div class="panel" style="padding: 3px 10px;">
+               @if (Request.IsAuthenticated && User.IsInRole ("EditGlossary")) {
+                  <small>@Html.ActionLink("edit", "EditEntry", new { id = entry.Id, termId = Model.Id, termName = Model.Name })</small>
+               }
+               @if (!string.IsNullOrWhiteSpace (entry.SourceUrl)) {
+                  <a href="@entry.SourceUrl" class="right" target="_blank">@entry.SourceName</a>
+               }
+            </div>
+            @Html.Raw(HtmlSanitizer.Sanitize (entry.Text))
+         </div>
+      }
+   </div>
+   <div class="small-12 large-3 columns">
+      
+   </div>
+</div>

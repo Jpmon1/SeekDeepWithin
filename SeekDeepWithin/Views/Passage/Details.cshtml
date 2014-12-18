@@ -1,0 +1,45 @@
+﻿@using SeekDeepWithin.Models
+@model SeekDeepWithin.Models.PassageViewModel
+
+@{
+   PassageEntryViewModel passageEntry = ViewBag.PassageEntry;
+   var title = passageEntry.Chapter.SubBook.Version.Title;
+   if (passageEntry.Chapter.SubBook.Name != "default") {
+      title += " | " + passageEntry.Chapter.SubBook.Name;
+   }
+   if (passageEntry.Chapter.Name != "default"){
+      title += " | " + passageEntry.Chapter.Name;
+   }
+   title += " | " + passageEntry.Number;
+   ViewBag.Title = title;
+   var textSpan = 12;
+   if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
+      textSpan = 8;
+   }
+}
+
+<div class="row">
+   <div class="small-12 large-@textSpan columns">
+      <ul class="breadcrumbs" role="menubar" aria-label="breadcrumbs">
+         <li role="menuitem"><a href="@Url.Action("About", "Version", new { id = @passageEntry.Chapter.SubBook.Version.Id })">@passageEntry.Chapter.SubBook.Version.Title</a></li>
+         @if (passageEntry.Chapter.SubBook.Name != "default") {
+            <li role="menuitem"><a href="@Url.Action("About", "SubBook", new { id = @passageEntry.Chapter.SubBook.Id })">@passageEntry.Chapter.SubBook.Name</a></li>
+         }
+         <li role="menuitem"><a href="@Url.Action("Read", "Chapter", new { id = @passageEntry.Chapter.Id })">@passageEntry.Chapter.Name</a></li>
+         <li role="menuitem" class="current"><a href="#">@passageEntry.Number</a></li>
+      </ul>
+      <p>
+         @Html.Raw(passageEntry.Render ())
+      </p>
+   </div>
+   @if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
+      <div class="small-12 large-4 columns">
+         <ul class="pricing-table">
+            <li class="title">Edit Actions</li>
+            <li class="bullet-item">@Html.ActionLink("edit", "Edit", new { id = Model.Id })</li>
+            <li class="bullet-item">@Html.ActionLink("add style", "AddStyle", new { id = passageEntry.Id })</li>
+            <li class="bullet-item">@Html.ActionLink("add link", "AddLink", new { id = Model.Id })</li>
+         </ul>
+      </div>
+   }
+</div>
