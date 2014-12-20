@@ -44,8 +44,10 @@
             <li class="bullet-item">@Html.ActionLink("Edit Version", "Edit", new { Model.Id })</li>
             <li class="bullet-item">@Html.ActionLink("Add Author/Translator", "AssignWriter", new { id = Model.Id })</li>
             <li class="bullet-item">@Html.ActionLink("Edit Source", "EditSource", "Source", new { id = Model.Id, type = "version" }, null)</li>
-            <li class="bullet-item">@Html.ActionLink("Add Link", "AddLink", "Link", new { id = Model.Id, type = "version" }, null)</li>
-            @if (User.IsInRole ("Creator")) {
+            <li class="bullet-item">@Html.ActionLink("Add Link", "Create", "Link", new { id = Model.Id, type = "version" }, null)</li>
+            <li class="bullet-item">@Html.ActionLink("Add Style", "Create", "Style", new { id = Model.Id, type = "version" }, null)</li>
+            @if (User.IsInRole ("Creator"))
+            {
                <li class="bullet-item">
                   @Html.ActionLink("Add Sub Book", "Create", "SubBook", new {versionId = Model.Id}, null)
                </li>

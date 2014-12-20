@@ -16,7 +16,7 @@ namespace SeekDeepWithin.DataAccess
       /// Lists all of the items in the database.
       /// </summary>
       /// <returns>Returns all of the items in the table.</returns>
-      List <T> All ();
+      List<T> All (Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null);
 
       /// <summary>
       /// Gets the requested entity from the database.

@@ -27,6 +27,8 @@ namespace SeekDeepWithin.DataAccess
 
       public DbSet<Tag> Tags { get; set; }
 
+      public DbSet<Style> Styles { get; set; }
+
       public DbSet<Source> Sources { get; set; }
 
       public DbSet<GlossaryTerm> GlossaryItems { get; set; }

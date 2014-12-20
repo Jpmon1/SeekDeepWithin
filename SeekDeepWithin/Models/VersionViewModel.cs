@@ -81,6 +81,11 @@ namespace SeekDeepWithin.Models
       public virtual ICollection<LinkViewModel> VersionAboutLinks { get; set; }
 
       /// <summary>
+      /// Gets or Sets the links of this version.
+      /// </summary>
+      public virtual ICollection<StyleViewModel> VersionAboutStyles { get; set; }
+
+      /// <summary>
       /// Gets or Sets the list of authors.
       /// </summary>
       public ICollection<WriterLink> Writers { get; set; }
@@ -98,6 +103,7 @@ namespace SeekDeepWithin.Models
       {
          var renderer = new SdwRenderer { Text = this.About };
          renderer.Links.AddRange (this.VersionAboutLinks);
+         renderer.Styles.AddRange (this.VersionAboutStyles);
          return renderer.Render ();
       }
    }

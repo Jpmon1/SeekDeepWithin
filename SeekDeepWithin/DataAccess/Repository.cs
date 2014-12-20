@@ -31,9 +31,12 @@ namespace SeekDeepWithin.DataAccess
       /// Lists all of the items in the database.
       /// </summary>
       /// <returns>Returns all of the items in the table.</returns>
-      public List <T> All ()
+      public List<T> All (Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null)
       {
-         return this.m_Table.ToList ();
+         IQueryable<T> query = this.m_Table;
+         if (orderBy != null)
+            return orderBy (query).ToList ();
+         return query.ToList ();
       }
 
       /// <summary>

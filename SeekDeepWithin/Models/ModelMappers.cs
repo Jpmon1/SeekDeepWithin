@@ -67,7 +67,8 @@ namespace SeekDeepWithin.Models
             PublishDate = version.PublishDate,
             SubBooks = new Collection <SubBookViewModel> (),
             Writers = new Collection <WriterLink> (),
-            VersionAboutLinks = new Collection <LinkViewModel> (),
+            VersionAboutLinks = new Collection<LinkViewModel> (),
+            VersionAboutStyles = new Collection<StyleViewModel> (),
             Book = version.Book.ToViewModel (false),
             SourceName = source == null ? string.Empty : source.Source.Name,
             SourceUrl = source == null ? string.Empty : source.Source.Url
@@ -83,7 +84,18 @@ namespace SeekDeepWithin.Models
                   StartIndex = link.StartIndex,
                   EndIndex = link.EndIndex,
                   Url = link.Link.Url,
-                  OpenInNewWindow = link.OpenInNewWindow
+                  OpenInNewWindow = link.OpenInNewWindow,
+               });
+            }
+            foreach (var style in version.VersionAboutStyles)
+            {
+               viewModel.VersionAboutStyles.Add (new StyleViewModel
+               {
+                  StartIndex = style.StartIndex,
+                  EndIndex = style.EndIndex,
+                  Start = style.Style.Start,
+                  End = style.Style.End,
+                  Id = style.Id
                });
             }
             foreach (var writer in version.Writers)
@@ -190,6 +202,7 @@ namespace SeekDeepWithin.Models
                   Number = passageEntry.Number,
                   Order = passageEntry.Order,
                   Passage = viewModel,
+                  Styles = new Collection <StyleViewModel> (),
                   Chapter = passageEntry.Chapter.ToViewModel (false)
                });
             }
@@ -204,16 +217,29 @@ namespace SeekDeepWithin.Models
       /// <returns>A new view model based on the given model.</returns>
       public static PassageEntryViewModel ToViewModel (this PassageEntry passageEntry)
       {
-         return new PassageEntryViewModel
+         var viewModel = new PassageEntryViewModel
          {
             Chapter = passageEntry.Chapter.ToViewModel (false),
             ChapterId = passageEntry.ChapterId,
             Id = passageEntry.Id,
             Number = passageEntry.Number,
             Order = passageEntry.Order,
+            Styles = new Collection<StyleViewModel> (),
             Passage = passageEntry.Passage.ToViewModel (false),
             PassageId = passageEntry.PassageId
          };
+         foreach (var style in passageEntry.Styles)
+         {
+            viewModel.Styles.Add(new StyleViewModel
+            {
+               Id = style.Id,
+               Start = style.Style.Start,
+               End = style.Style.End,
+               StartIndex = style.StartIndex,
+               EndIndex = style.EndIndex
+            });
+         }
+         return viewModel;
       }
 
       /// <summary>

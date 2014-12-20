@@ -17,6 +17,7 @@ namespace SeekDeepWithin.DataAccess
       private Repository<Passage> m_PassageRepository;
       private Repository<Link> m_LinkRepository;
       private Repository<Tag> m_TagRepository;
+      private Repository<Style> m_StyleRepository;
       private Repository<Source> m_SourceRepository;
       private Repository<PassageEntry> m_PassageEntryRepository;
       private Repository<GlossaryTerm> m_GlossaryItemRepository;
@@ -101,6 +102,14 @@ namespace SeekDeepWithin.DataAccess
       public IRepository<Tag> Tags
       {
          get { return this.m_TagRepository ?? (this.m_TagRepository = new Repository<Tag> (m_Db)); }
+      }
+
+      /// <summary>
+      /// Gets the repository for styles.
+      /// </summary>
+      public IRepository<Style> Styles
+      {
+         get { return this.m_StyleRepository ?? (this.m_StyleRepository = new Repository<Style> (m_Db)); }
       }
 
       /// <summary>

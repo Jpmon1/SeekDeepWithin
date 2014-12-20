@@ -16,6 +16,7 @@ namespace SeekDeepWithin.Tests.Mocks
       private IRepository<Passage> m_Passages;
       private IRepository<Link> m_Links;
       private IRepository<Tag> m_Tags;
+      private IRepository<Style> m_Styles;
       private IRepository<Source> m_Sources;
       private IRepository<PassageEntry> m_PassageEntries;
       private IRepository<GlossaryTerm> m_GlossaryItems;
@@ -83,6 +84,14 @@ namespace SeekDeepWithin.Tests.Mocks
       public IRepository<Tag> Tags
       {
          get { return this.m_Tags ?? (this.m_Tags = new MockRepository<Tag> ()); }
+      }
+
+      /// <summary>
+      /// Gets the repository for styles.
+      /// </summary>
+      public IRepository<Style> Styles
+      {
+         get { return this.m_Styles ?? (this.m_Styles = new MockRepository<Style> ()); }
       }
 
       /// <summary>

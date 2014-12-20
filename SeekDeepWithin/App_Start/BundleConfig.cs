@@ -28,6 +28,10 @@ namespace SeekDeepWithin
             "~/Scripts/selection.js",
             "~/Scripts/sdw.addlink.js"));
 
+         bundles.Add (new ScriptBundle ("~/bundles/sdw.addstyle").Include ("~/Scripts/jquery.autocomplete.min.js",
+            "~/Scripts/selection.js",
+            "~/Scripts/sdw.addstyle.js"));
+
          bundles.Add (new ScriptBundle ("~/bundles/jstree").Include ("~/Scripts/jstree.min.js"));
 
          bundles.Add (new StyleBundle ("~/Content/css").Include ("~/Content/normalize.css",

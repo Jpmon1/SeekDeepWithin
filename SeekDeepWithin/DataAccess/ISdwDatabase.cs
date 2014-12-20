@@ -41,6 +41,11 @@ namespace SeekDeepWithin.DataAccess
       IRepository<Tag> Tags { get; }
 
       /// <summary>
+      /// Gets the repository for styles.
+      /// </summary>
+      IRepository<Style> Styles { get; }
+
+      /// <summary>
       /// Gets the repository for sources.
       /// </summary>
       IRepository<Source> Sources { get; }

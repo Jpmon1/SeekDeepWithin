@@ -12,6 +12,11 @@ namespace SeekDeepWithin.Models
       public int UserId { get; set; }
 
       public string UserName { get; set; }
+
+      /// <summary>
+      /// Gets or Sets if the user wants to show edit actions.
+      /// </summary>
+      public bool ShowEditActions { get; set; }
    }
 
    public class RegisterExternalLoginModel

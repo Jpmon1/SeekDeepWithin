@@ -33,11 +33,11 @@ namespace SeekDeepWithin.Controllers
       /// <summary>
       /// Gets the add link view.
       /// </summary>
-      /// <param name="id">Id of the passage to add the link to.</param>
+      /// <param name="id">Id of the item to add a link for.</param>
       /// <param name="type">The type of object we are adding links for.</param>
       /// <returns>The add link view.</returns>
       [Authorize (Roles = "Editor")]
-      public ActionResult AddLink (int id, string type)
+      public ActionResult Create (int id, string type)
       {
          if (Request.UrlReferrer != null) TempData["RefUrl"] = Request.UrlReferrer.ToString ();
          var text = string.Empty;
@@ -62,7 +62,7 @@ namespace SeekDeepWithin.Controllers
       [HttpPost]
       [ValidateAntiForgeryToken]
       [Authorize (Roles = "Editor")]
-      public ActionResult AddLink (EditLinkViewModel viewModel)
+      public ActionResult Create (EditLinkViewModel viewModel)
       {
          if (!ModelState.IsValid)
             return View (viewModel);

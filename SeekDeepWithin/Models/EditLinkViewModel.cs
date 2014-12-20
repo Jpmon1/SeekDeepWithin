@@ -1,9 +1,14 @@
-﻿namespace SeekDeepWithin.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SeekDeepWithin.Models
 {
+   /// <summary>
+   /// Editing view model for a link.
+   /// </summary>
    public class EditLinkViewModel
    {
       /// <summary>
-      /// Gets or Sets the passage id of the link.
+      /// Gets or Sets the imte id of the link.
       /// </summary>
       public int Id { get; set; }
 
@@ -55,11 +60,13 @@
       /// <summary>
       /// Gets or Sets the start index of the link.
       /// </summary>
+      [Required]
       public int StartIndex { get; set; }
 
       /// <summary>
       /// Gets or Sets the end index of the link.
       /// </summary>
+      [Required]
       public int EndIndex { get; set; }
 
       /// <summary>

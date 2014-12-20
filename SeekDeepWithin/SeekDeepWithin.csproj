@@ -219,6 +219,7 @@
     <Compile Include="Controllers\SdwRenderer.cs" />
     <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Controllers\SourceController.cs" />
+    <Compile Include="Controllers\StyleController.cs" />
     <Compile Include="Controllers\SubBookController.cs" />
     <Compile Include="Controllers\TagController.cs" />
     <Compile Include="Controllers\VersionController.cs" />
@@ -241,6 +242,7 @@
     <Compile Include="Models\AccountModels.cs" />
     <Compile Include="Models\AuthorViewModel.cs" />
     <Compile Include="Models\ChapterViewModel.cs" />
+    <Compile Include="Models\EditStyleViewModel.cs" />
     <Compile Include="Models\ErrorViewModel.cs" />
     <Compile Include="Models\GlossaryEntryViewModel.cs" />
     <Compile Include="Models\GlossaryTermViewModel.cs" />
@@ -249,6 +251,7 @@
     <Compile Include="Models\LinkViewModel.cs" />
     <Compile Include="Models\PassageViewModel.cs" />
     <Compile Include="Models\SourceViewModel.cs" />
+    <Compile Include="Models\StyleViewModel.cs" />
     <Compile Include="Models\SubBookViewModel.cs" />
     <Compile Include="DataAccess\UsersContext.cs" />
     <Compile Include="Models\TagViewModel.cs" />
@@ -409,6 +412,7 @@
     <Content Include="Scripts\knockout-2.2.0.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\sdw.addlink.js" />
+    <Content Include="Scripts\sdw.addstyle.js" />
     <Content Include="Scripts\selection.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -485,7 +489,7 @@
     <Content Include="Views\SubBook\Create.cshtml" />
     <Content Include="Views\Chapter\Create.cshtml" />
     <Content Include="Views\Passage\Create.cshtml" />
-    <Content Include="Views\Link\AddLink.cshtml" />
+    <Content Include="Views\Link\Create.cshtml" />
     <Content Include="Views\Glossary\CreateEntry.cshtml" />
     <Content Include="Views\Tag\Index.cshtml" />
     <Content Include="Views\Tag\Create.cshtml" />
@@ -496,6 +500,7 @@
     <Content Include="Views\Source\EditSource.cshtml" />
     <Content Include="Views\Source\Edit.cshtml" />
     <Content Include="Views\Source\_SourceForm.cshtml" />
+    <Content Include="Views\Style\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201412022034506_InitialCreate.resx">

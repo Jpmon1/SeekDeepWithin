@@ -11,13 +11,23 @@
       public int Id { get; set; }
 
       /// <summary>
+      /// Gets or Sets the start index of the style.
+      /// </summary>
+      public int StartIndex { get; set; }
+
+      /// <summary>
+      /// Gets or Sets the end index of the style.
+      /// </summary>
+      public int EndIndex { get; set; }
+
+      /// <summary>
       /// Gets the passage entry this style belongs to.
       /// </summary>
-      public PassageEntry PassageEntry { get; set; }
+      public virtual PassageEntry PassageEntry { get; set; }
 
       /// <summary>
       /// Gets the Style for this...style....
       /// </summary>
-      public Style Style { get; set; }
+      public virtual Style Style { get; set; }
    }
 }

@@ -9,6 +9,7 @@ namespace SeekDeepWithin.Controllers
    /// </summary>
    public class SdwRenderer
    {
+      private string m_Html;
       private readonly Dictionary<int, int> m_Insertions = new Dictionary<int, int> ();
 
       /// <summary>
@@ -16,7 +17,8 @@ namespace SeekDeepWithin.Controllers
       /// </summary>
       public SdwRenderer ()
       {
-         this.Links = new Collection <LinkViewModel> ();
+         this.Links = new Collection<LinkViewModel> ();
+         this.Styles = new Collection<StyleViewModel> ();
       }
 
       /// <summary>
@@ -30,29 +32,49 @@ namespace SeekDeepWithin.Controllers
       public ICollection<LinkViewModel> Links { get; private set; }
 
       /// <summary>
+      /// Gets the collection of styles.
+      /// </summary>
+      public ICollection<StyleViewModel> Styles { get; private set; }
+
+      /// <summary>
       /// Renders the passage entry.
       /// </summary>
       /// <returns>The rendered html of the passage entry.</returns>
       public string Render ()
       {
          this.m_Insertions.Clear ();
-         var html = this.Text;
+         this.m_Html = this.Text;
          foreach (var link in this.Links)
          {
-            var index = this.GetInsertionIndex (link.StartIndex);
-            var insertion = "<a href=\"" + link.Url + "\"";
+            var start = "<a href=\"" + link.Url + "\"";
             if (link.OpenInNewWindow)
-               insertion += " target=\"_blank\"";
-            insertion += ">";
-            html = html.Insert (index, insertion);
-            this.AddLength (link.StartIndex, insertion.Length);
-
-            insertion = "</a>";
-            index = this.GetInsertionIndex (link.EndIndex);
-            html = html.Insert (index, insertion);
-            this.AddLength (link.EndIndex, insertion.Length);
+               start += " target=\"_blank\"";
+            start += ">";
+            this.Insert (start, "</a>", link.StartIndex, link.EndIndex);
          }
-         return html;
+
+         foreach (var style in this.Styles)
+            this.Insert (style.Start, style.End, style.StartIndex, style.EndIndex);
+
+         return this.m_Html;
+      }
+
+      /// <summary>
+      /// Inserts the given tag information at the given indexes.
+      /// </summary>
+      /// <param name="start">Beginning tag information.</param>
+      /// <param name="end">Ending tag information.</param>
+      /// <param name="startIndex">Start insertion index.</param>
+      /// <param name="endIndex">End insertion index.</param>
+      private void Insert (string start, string end, int startIndex, int endIndex)
+      {
+         var index = this.GetInsertionIndex (startIndex);
+         this.m_Html = this.m_Html.Insert (index, start);
+         this.AddLength (startIndex, start.Length);
+
+         index = this.GetInsertionIndex (endIndex);
+         this.m_Html = this.m_Html.Insert (index, end);
+         this.AddLength (endIndex, end.Length);
       }
 
       /// <summary>

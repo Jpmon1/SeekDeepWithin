@@ -56,12 +56,7 @@ namespace SeekDeepWithin.Controllers
       [Authorize (Roles = "Creator")]
       public ActionResult Create ()
       {
-         if (Request.IsAuthenticated)
-         {
-            return View (new BookViewModel ());
-         }
-         TempData["ErrorMessage"] = "You must login to create a book!";
-         return RedirectToAction ("Index");
+         return View (new BookViewModel ());
       }
 
       /// <summary>

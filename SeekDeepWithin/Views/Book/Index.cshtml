@@ -21,10 +21,10 @@
       }
       @foreach (var book in Model) {
          if (index == 0) {
-            @Html.Raw("<div class=\"row\" data-equalizer>")
+            @Html.Raw("<div class=\"row\">")
          }
          <div class="large-6 small-12 columns">
-            <ul class="pricing-table" data-equalizer-watch>
+            <ul class="pricing-table">
                <li class="title">@if (book.Versions.Count == 1 && book.Versions.First ().Name == "default") {
                       @book.Versions.First().Title
                    } else {
@@ -64,7 +64,7 @@
          }
       }
       @if (index != 0) {
-         Html.Raw ("</div>");
+         @Html.Raw("</div>");
       }
    </div>
 </div>
