@@ -3,27 +3,18 @@
     ViewBag.Title = "Manage Account";
 }
 
-<hgroup class="title">
-    <h1>@ViewBag.Title.</h1>
-</hgroup>
+<h3>@ViewBag.Title.</h3>
 
 <p class="message-success">@ViewBag.StatusMessage</p>
 
 <p>Hello <strong>@User.Identity.Name</strong>, use this page to change information about your account.</p>
 
-@if (ViewBag.HasLocalPassword)
-{
-    @Html.Partial("_ChangePasswordPartial")
-}
-else
-{ 
-    @Html.Partial("_SetPasswordPartial")
-}
+@(ViewBag.HasLocalPassword ? Html.Partial ("_ChangePasswordPartial") : Html.Partial ("_SetPasswordPartial"))
 
 <section id="externalLogins">
     @Html.Action("RemoveExternalLogins")
 
-    <h3>Add an external login</h3>
+    <h4>Add an external login</h4>
     @Html.Action("ExternalLoginsList", new { ReturnUrl = ViewBag.ReturnUrl })
 </section>
 

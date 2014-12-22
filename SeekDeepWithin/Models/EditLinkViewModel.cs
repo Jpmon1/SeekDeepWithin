@@ -73,10 +73,5 @@ namespace SeekDeepWithin.Models
       /// Gets or Sets the text.
       /// </summary>
       public string Text { get; set; }
-      
-      /// <summary>
-      /// Gets or Sets the type this link is for.
-      /// </summary>
-      public string Type { get; set; }
    }
 }

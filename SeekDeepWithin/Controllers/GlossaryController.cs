@@ -33,7 +33,7 @@ namespace SeekDeepWithin.Controllers
       /// <returns>The glossary index view.</returns>
       public ActionResult Index ()
       {
-         return View (this.m_Db.GlossaryTerms.All ().Select (item => item.ToViewModel (false)));
+         return View (this.m_Db.GlossaryTerms.All ().Select (t => new GlossaryTermViewModel { Id = t.Id, Name = t.Name }));
       }
 
       /// <summary>
@@ -151,8 +151,22 @@ namespace SeekDeepWithin.Controllers
       /// <returns>The view that show the given glossary term.</returns>
       public ActionResult Term (int id)
       {
-         var item = this.m_Db.GlossaryTerms.Get (id);
-         return View (item.ToViewModel (true));
+         var term = this.m_Db.GlossaryTerms.Get (id);
+         var viewModel = new GlossaryTermViewModel { Id = term.Id, Name = term.Name };
+         foreach (var entry in term.Entries)
+         {
+            var source = entry.GlossaryEntrySources.FirstOrDefault ();
+            var entryViewModel = new GlossaryEntryViewModel
+            {
+               Id = entry.Id,
+               Text = entry.Text,
+               TermId = entry.GlossaryTerm.Id,
+               SourceName = source == null ? string.Empty : source.Source.Name,
+               SourceUrl = source == null ? string.Empty : source.Source.Url
+            };
+            viewModel.Entries.Add (entryViewModel);
+         }
+         return View (viewModel);
       }
 
       /// <summary>

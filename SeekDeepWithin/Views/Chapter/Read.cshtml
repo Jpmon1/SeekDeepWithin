@@ -20,12 +20,21 @@
             <li role="menuitem"><a href="@Url.Action("About", "SubBook", new { id = @Model.SubBook.Id })">@Model.SubBook.Name</a></li>
          }
          <li role="menuitem" class="current"><a href="#">@Model.Name</a></li>
+         @if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
+            <li>
+               <a href="#" data-dropdown="editHover" data-options="is_hover:true; hover_timeout:2000">edit actions</a>
+               <ul id="editHover" class="f-dropdown" data-dropdown-content>
+                  <li>@Html.ActionLink("Edit Chapter", "Edit", new { id = Model.Id })</li>
+                  @if (User.IsInRole ("Creator")) {
+                     <li>@Html.ActionLink("Add Passage", "Create", "Passage", new { chapterId = Model.Id }, null)</li>
+                  }
+               </ul>
+            </li>
+         }
       </ul>
-      @foreach (var passage in Model.Passages)
-      {
+      @foreach (var passage in Model.Passages) {
          <div class="row">
-            @if (passage.Number > 0)
-            {
+            @if (passage.Number > 0) {
                <div class="small-6 medium-2 large-1 columns">
                   <blockquote>
                      @Html.ActionLink(passage.Number.ToString (CultureInfo.InvariantCulture), "Details", "Passage", new { id = passage.PassageId, entryId = passage.Id }, null)
@@ -37,16 +46,6 @@
       }
    </div>
    <div class="small-12 large-4 columns">
-      @if (Request.IsAuthenticated && User.IsInRole ("Editor"))
-      {
-         <ul class="pricing-table">
-            <li class="title">Edit Actions</li>
-            <li class="bullet-item">@Html.ActionLink("Edit Chapter", "Edit", new { id = Model.Id })</li>
-            @if (User.IsInRole ("Creator")) {
-               <li class="bullet-item">@Html.ActionLink("Add Passage", "Create", "Passage", new {chapterId = Model.Id}, null)</li>
-            }
-         </ul>
-      }
       <h4>Contents</h4>
       <ul>
          @foreach (var subBook in Model.SubBook.Version.SubBooks) {

@@ -1,0 +1,23 @@
+﻿@model SeekDeepWithin.Models.EditLinkViewModel
+
+@{
+    ViewBag.Title = "Add Link to Passage";
+}
+
+<h3>Add Link</h3>
+
+@using (Html.BeginForm ()) {
+   @Html.AntiForgeryToken()
+   @Html.ValidationSummary()
+
+   @Html.HiddenFor(model => model.Id)
+
+   @Html.Partial("_LinkForm", Model)
+
+   <input type="submit" value="Save" class="button" /> <a href="@TempData["RefUrl"]" class="button secondary small">cancel</a>
+}
+
+@section scripts {
+   @Scripts.Render("~/bundles/jqueryval")
+   @Scripts.Render("~/bundles/sdw.addlink")
+}

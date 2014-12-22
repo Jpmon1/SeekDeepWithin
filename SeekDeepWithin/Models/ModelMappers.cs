@@ -10,21 +10,6 @@ namespace SeekDeepWithin.Models
    public static class ModelMappers
    {
       /// <summary>
-      /// Maps the view model to a model.
-      /// </summary>
-      /// <param name="viewModel">The view model to map.</param>
-      /// <returns>A new model based on the given view model.</returns>
-      public static Book ToModel (this BookViewModel viewModel)
-      {
-         return new Book
-         {
-            Id = viewModel.Id,
-            Title = viewModel.Title,
-            Summary = viewModel.Summary
-         };
-      }
-
-      /// <summary>
       /// Maps the model to a view model.
       /// </summary>
       /// <param name="book">The model to map.</param>
@@ -240,46 +225,6 @@ namespace SeekDeepWithin.Models
             });
          }
          return viewModel;
-      }
-
-      /// <summary>
-      /// Maps the model to a view model.
-      /// </summary>
-      /// <param name="glossaryTerm">The model to map.</param>
-      /// <param name="deepCopy">Copies all properties.</param>
-      /// <returns>A new view model based on the given model.</returns>
-      public static GlossaryTermViewModel ToViewModel (this GlossaryTerm glossaryTerm, bool deepCopy)
-      {
-         var viewModel = new GlossaryTermViewModel
-         {
-            Id = glossaryTerm.Id,
-            Name = glossaryTerm.Name,
-            Entries = new Collection <GlossaryEntryViewModel> ()
-         };
-         if (deepCopy)
-         {
-            foreach (var entry in glossaryTerm.Entries)
-               viewModel.Entries.Add (entry.ToViewModel ());
-         }
-         return viewModel;
-      }
-
-      /// <summary>
-      /// Maps the model to a view model.
-      /// </summary>
-      /// <param name="glossaryEntry">The model to map.</param>
-      /// <returns>A new view model based on the given model.</returns>
-      public static GlossaryEntryViewModel ToViewModel (this GlossaryEntry glossaryEntry)
-      {
-         var source = glossaryEntry.GlossaryEntrySources.FirstOrDefault ();
-         return new GlossaryEntryViewModel
-         {
-            Id = glossaryEntry.Id,
-            Text = glossaryEntry.Text,
-            TermId = glossaryEntry.GlossaryTerm.Id,
-            SourceName = source == null ? string.Empty : source.Source.Name,
-            SourceUrl = source == null ? string.Empty : source.Source.Url
-         };
       }
    }
 }

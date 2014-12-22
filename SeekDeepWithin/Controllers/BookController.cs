@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
 using SeekDeepWithin.DataAccess;
+using SeekDeepWithin.Domain;
 using SeekDeepWithin.Models;
 
 namespace SeekDeepWithin.Controllers
@@ -62,21 +63,20 @@ namespace SeekDeepWithin.Controllers
       /// <summary>
       /// Posts a new book in the database.
       /// </summary>
-      /// <param name="bookViewModel">The book information to create.n</param>
+      /// <param name="viewModel">The book information to create.n</param>
       /// <returns></returns>
       [HttpPost]
       [ValidateAntiForgeryToken]
       [Authorize (Roles = "Creator")]
-      public ActionResult Create (BookViewModel bookViewModel)
+      public ActionResult Create (BookViewModel viewModel)
       {
          if (ModelState.IsValid)
          {
-            var book = bookViewModel.ToModel ();
-            this.m_Db.Books.Insert (book);
+            this.m_Db.Books.Insert (new Book { Summary = viewModel.Summary, Title = viewModel.Title });
             this.m_Db.Save ();
             return RedirectToAction ("Index");
          }
-         return View (bookViewModel);
+         return View (viewModel);
       }
 
       /// <summary>

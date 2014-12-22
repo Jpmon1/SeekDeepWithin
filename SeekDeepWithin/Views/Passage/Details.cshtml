@@ -32,14 +32,4 @@
          @Html.Raw(passageEntry.Render ())
       </p>
    </div>
-   @if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
-      <div class="small-12 large-4 columns">
-         <ul class="pricing-table">
-            <li class="title">Edit Actions</li>
-            <li class="bullet-item">@Html.ActionLink("Edit Text", "Edit", new { id = Model.Id })</li>
-            <li class="bullet-item">@Html.ActionLink("Add Style", "Create", "Style", new { id = Model.Id, parentId = passageEntry.Id, type = "passage" }, null)</li>
-            <li class="bullet-item">@Html.ActionLink("Add Link", "Create", "Link", new { id = Model.Id, type = "passage" }, null)</li>
-         </ul>
-      </div>
-   }
 </div>

@@ -33,36 +33,39 @@ namespace SeekDeepWithin.Controllers
       /// <summary>
       /// Gets the add link view.
       /// </summary>
+      /// <param name="id">Id of the passage to add a link for.</param>
+      /// <returns>The add link view.</returns>
+      [Authorize (Roles = "Editor")]
+      public ActionResult CreateForPassage (int id)
+      {
+         if (Request.UrlReferrer != null) TempData["RefUrl"] = Request.UrlReferrer.ToString ();
+         var passage = this.m_Db.Passages.Get (id);
+         return View (new EditLinkViewModel { Id = id, Text = passage.Text });
+      }
+
+      /// <summary>
+      /// Gets the add link view.
+      /// </summary>
       /// <param name="id">Id of the item to add a link for.</param>
       /// <param name="type">The type of object we are adding links for.</param>
       /// <returns>The add link view.</returns>
       [Authorize (Roles = "Editor")]
-      public ActionResult Create (int id, string type)
+      public ActionResult CreateForVersion (int id, string type)
       {
          if (Request.UrlReferrer != null) TempData["RefUrl"] = Request.UrlReferrer.ToString ();
-         var text = string.Empty;
-         if (type == "passage")
-         {
-            var passage = this.m_Db.Passages.Get (id);
-            text = passage.Text;
-         }
-         else if (type == "version")
-         {
-            var version = this.m_Db.Versions.Get (id);
-            text = version.About;
-         }
-         return View (new EditLinkViewModel { Id = id, Text = text, Type = type });
+         var version = this.m_Db.Versions.Get (id);
+         return View (new EditLinkViewModel { Id = id, Text = version.About });
       }
 
       /// <summary>
-      /// Adds a new link to the given passage.
+      /// Posts a new link for the given passage.
       /// </summary>
       /// <param name="viewModel"></param>
       /// <returns></returns>
       [HttpPost]
       [ValidateAntiForgeryToken]
       [Authorize (Roles = "Editor")]
-      public ActionResult Create (EditLinkViewModel viewModel)
+      public ActionResult CreateForPassage (EditLinkViewModel viewModel)
       {
          if (!ModelState.IsValid)
             return View (viewModel);
@@ -74,44 +77,71 @@ namespace SeekDeepWithin.Controllers
          if (!string.IsNullOrWhiteSpace (viewModel.Anchor))
             linkUrl += "#" + viewModel.Anchor;
 
+         var link = GetLink (linkUrl);
+         var passage = this.m_Db.Passages.Get (viewModel.Id);
+
+         passage.PassageLinks.Add (new PassageLink
+         {
+            Passage = passage,
+            Link = link,
+            OpenInNewWindow = viewModel.OpenInNewWindow,
+            StartIndex = viewModel.StartIndex,
+            EndIndex = viewModel.EndIndex
+         });
+         this.m_Db.Save ();
+         return RedirectToAction ("Details", "Passage", new { id = viewModel.Id });
+      }
+
+      /// <summary>
+      /// Posts a new link for the given version.
+      /// </summary>
+      /// <param name="viewModel"></param>
+      /// <returns></returns>
+      [HttpPost]
+      [ValidateAntiForgeryToken]
+      [Authorize (Roles = "Editor")]
+      public ActionResult CreateForVersion (EditLinkViewModel viewModel)
+      {
+         if (!ModelState.IsValid)
+            return View (viewModel);
+
+         var linkUrl = this.GetLinkUrl (viewModel);
+         if (string.IsNullOrEmpty (linkUrl))
+            return View (viewModel);
+
+         if (!string.IsNullOrWhiteSpace (viewModel.Anchor))
+            linkUrl += "#" + viewModel.Anchor;
+
+         var link = GetLink (linkUrl);
+         var version = this.m_Db.Versions.Get (viewModel.Id);
+         version.VersionAboutLinks.Add (new VersionAboutLink
+         {
+            Vesion = version,
+            Link = link,
+            OpenInNewWindow = viewModel.OpenInNewWindow,
+            StartIndex = viewModel.StartIndex,
+            EndIndex = viewModel.EndIndex
+         });
+         this.m_Db.Save ();
+         return RedirectToAction ("About", "Version", new { id = viewModel.Id });
+      }
+
+      /// <summary>
+      /// Gets the link in the database with the given url.
+      /// </summary>
+      /// <param name="linkUrl">Url of link to get.</param>
+      /// <returns>The requested link, a new link if does not exist.</returns>
+      private Link GetLink (string linkUrl)
+      {
          var links = this.m_Db.Links.Get (l => l.Url == linkUrl);
          var link = links.FirstOrDefault ();
          if (link == null)
          {
-            link = new Link { Url = linkUrl };
+            link = new Link {Url = linkUrl};
             this.m_Db.Links.Insert (link);
             this.m_Db.Save ();
          }
-
-         if (viewModel.Type == "passage")
-         {
-            var passage = this.m_Db.Passages.Get (viewModel.Id);
-            passage.PassageLinks.Add (new PassageLink
-            {
-               Passage = passage,
-               Link = link,
-               OpenInNewWindow = viewModel.OpenInNewWindow,
-               StartIndex = viewModel.StartIndex,
-               EndIndex = viewModel.EndIndex
-            });
-            this.m_Db.Save ();
-            return RedirectToAction ("Details", "Passage", new { id = viewModel.Id });
-         }
-         if (viewModel.Type == "version")
-         {
-            var version = this.m_Db.Versions.Get (viewModel.Id);
-            version.VersionAboutLinks.Add (new VersionAboutLink
-            {
-               Vesion = version,
-               Link = link,
-               OpenInNewWindow = viewModel.OpenInNewWindow,
-               StartIndex = viewModel.StartIndex,
-               EndIndex = viewModel.EndIndex
-            });
-            this.m_Db.Save ();
-            return RedirectToAction ("About", "Version", new { id = viewModel.Id });
-         }
-         return View (viewModel);
+         return link;
       }
 
       private string GetLinkUrl (EditLinkViewModel viewModel)
