@@ -213,6 +213,7 @@
     <Compile Include="Controllers\GlossaryController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\HtmlSanitizer.cs" />
+    <Compile Include="Controllers\ConvertController.cs" />
     <Compile Include="Controllers\LinkController.cs" />
     <Compile Include="Controllers\PassageController.cs" />
     <Compile Include="Controllers\RolesController.cs" />
@@ -240,6 +241,7 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\UserConfiguration.cs" />
     <Compile Include="Models\AccountModels.cs" />
+    <Compile Include="Models\AddPassageViewModel.cs" />
     <Compile Include="Models\AuthorViewModel.cs" />
     <Compile Include="Models\ChapterViewModel.cs" />
     <Compile Include="Models\EditStyleViewModel.cs" />
@@ -247,7 +249,7 @@
     <Compile Include="Models\GlossaryEntryViewModel.cs" />
     <Compile Include="Models\GlossaryTermViewModel.cs" />
     <Compile Include="Models\EditLinkViewModel.cs" />
-    <Compile Include="Models\PassageEntryViewModel.cs" />
+    <Compile Include="Models\HeaderFooterViewModel.cs" />
     <Compile Include="Models\LinkViewModel.cs" />
     <Compile Include="Models\PassageViewModel.cs" />
     <Compile Include="Models\SourceViewModel.cs" />
@@ -412,7 +414,9 @@
     <Content Include="Scripts\knockout-2.2.0.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\sdw.addlink.js" />
+    <Content Include="Scripts\sdw.addpassages.js" />
     <Content Include="Scripts\sdw.addstyle.js" />
+    <Content Include="Scripts\sdw.editchapter.js" />
     <Content Include="Scripts\selection.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -475,7 +479,7 @@
     <Content Include="Views\Passage\Edit.cshtml" />
     <Content Include="Views\Search\Index.cshtml" />
     <Content Include="Views\Glossary\Index.cshtml" />
-    <Content Include="Views\Search\Query.cshtml" />
+    <Content Include="Views\Search\Results.cshtml" />
     <Content Include="Views\Author\Index.cshtml" />
     <Content Include="Views\Author\Create.cshtml" />
     <Content Include="Views\Version\AssignWriter.cshtml" />
@@ -488,7 +492,6 @@
     <Content Include="Views\Version\Create.cshtml" />
     <Content Include="Views\SubBook\Create.cshtml" />
     <Content Include="Views\Chapter\Create.cshtml" />
-    <Content Include="Views\Passage\Create.cshtml" />
     <Content Include="Views\Glossary\CreateEntry.cshtml" />
     <Content Include="Views\Tag\Index.cshtml" />
     <Content Include="Views\Tag\Create.cshtml" />
@@ -502,6 +505,8 @@
     <Content Include="Views\Style\Create.cshtml" />
     <Content Include="Views\Link\CreateForPassage.cshtml" />
     <Content Include="Views\Link\CreateForVersion.cshtml" />
+    <Content Include="Views\Chapter\_EditChapter.cshtml" />
+    <Content Include="Views\Chapter\Add.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201412022034506_InitialCreate.resx">

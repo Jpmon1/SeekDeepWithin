@@ -1,4 +1,5 @@
-﻿using System.Web.Mvc;
+﻿using System.Linq;
+using System.Web.Mvc;
 using SeekDeepWithin.DataAccess;
 using SeekDeepWithin.Domain;
 using SeekDeepWithin.Models;
@@ -42,7 +43,7 @@ namespace SeekDeepWithin.Controllers
       /// </summary>
       /// <param name="id">The id of the chapter to edit.</param>
       /// <returns>The edit page.</returns>
-      [Authorize (Roles = "EditBook")]
+      [Authorize (Roles = "Editor")]
       public ActionResult Edit (int id)
       {
          if (Request.UrlReferrer != null) TempData["RefUrl"] = Request.UrlReferrer.ToString ();
@@ -57,7 +58,7 @@ namespace SeekDeepWithin.Controllers
       /// <returns>The edit page.</returns>
       [HttpPost]
       [ValidateAntiForgeryToken]
-      [Authorize (Roles = "EditBook")]
+      [Authorize (Roles = "Editor")]
       public ActionResult Edit (ChapterViewModel viewModel)
       {
          if (ModelState.IsValid)
@@ -71,11 +72,35 @@ namespace SeekDeepWithin.Controllers
       }
 
       /// <summary>
+      /// Gets the add passage for chapter Page.
+      /// </summary>
+      /// <param name="id">The id of the chapter to add passages for.</param>
+      /// <returns>The add page.</returns>
+      [Authorize (Roles = "Creator")]
+      public ActionResult Add (int id)
+      {
+         if (Request.UrlReferrer != null) TempData["RefUrl"] = Request.UrlReferrer.ToString ();
+         var viewModel = new AddPassageViewModel {ChapterId = id};
+         var chapter = this.m_Db.Chapters.Get (id);
+         if (chapter.Passages.Count > 0)
+         {
+            viewModel.Order = chapter.Passages.Max (p => p.Order) + 1;
+            viewModel.Number = chapter.Passages.Max (p => p.Number) + 1;
+         }
+         else
+         {
+            viewModel.Order = 1;
+            viewModel.Number = 1;
+         }
+         return View (viewModel);
+      }
+
+      /// <summary>
       /// Gets the create new chapter view.
       /// </summary>
       /// <param name="versionId">Version id to create the chapter for.</param>
       /// <returns>The create chapter view.</returns>
-      [Authorize (Roles = "EditBook")]
+      [Authorize (Roles = "Creator")]
       public ActionResult Create (int versionId)
       {
          if (Request.UrlReferrer != null) TempData["RefUrl"] = Request.UrlReferrer.ToString ();
@@ -91,7 +116,7 @@ namespace SeekDeepWithin.Controllers
       /// <returns>The results.</returns>
       [HttpPost]
       [ValidateAntiForgeryToken]
-      [Authorize (Roles = "EditBook")]
+      [Authorize (Roles = "Creator")]
       public ActionResult Create (int subBookId, string name, int order, int versionId)
       {
          var subBook = this.m_Db.SubBooks.Get (subBookId);

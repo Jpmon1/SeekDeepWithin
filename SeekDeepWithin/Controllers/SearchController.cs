@@ -1,4 +1,4 @@
-﻿using System.Linq;
+﻿using System.Collections.ObjectModel;
 using System.Web.Mvc;
 using SeekDeepWithin.DataAccess;
 using SeekDeepWithin.Models;
@@ -40,10 +40,35 @@ namespace SeekDeepWithin.Controllers
       /// </summary>
       /// <param name="searchFor">The string to search for.</param>
       /// <returns>The search view.</returns>
-      public ActionResult Query (string searchFor)
+      public ActionResult Results (string searchFor)
       {
+         var passageList = new Collection <PassageViewModel> ();
          var passages = this.m_Db.Passages.Get (p => p.Text.Contains (searchFor));
-         return View (passages.Select (p => p.ToViewModel ()));
+         foreach (var passage in passages)
+         {
+            foreach (var entry in passage.PassageEntries)
+            {
+               var bookTitle = entry.Chapter.SubBook.Version.Book.Title;
+               var viewModel = new PassageViewModel
+               {
+                  Text = passage.Text,
+                  Id = passage.Id,
+                  EntryId = entry.Id,
+                  Number = entry.Number,
+                  ChapterId = entry.Chapter.Id,
+                  ChapterName = entry.Chapter.Name,
+                  SubBookId = entry.Chapter.SubBook.Id,
+                  SubBookName = entry.Chapter.SubBook.Name,
+                  VersionId = entry.Chapter.SubBook.Version.Id,
+                  VersionName = entry.Chapter.SubBook.Version.Name
+               };
+               viewModel.VersionName = string.IsNullOrEmpty (entry.Chapter.SubBook.Version.TitleFormat)
+                  ? bookTitle : entry.Chapter.SubBook.Version.TitleFormat.Replace ("{B}", bookTitle).Replace ("{V}", viewModel.VersionName);
+               passageList.Add (viewModel);
+            }
+         }
+
+         return View (passageList);
       }
    }
 }

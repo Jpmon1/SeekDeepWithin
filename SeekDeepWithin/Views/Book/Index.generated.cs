@@ -126,14 +126,14 @@ WriteLiteral("\r\n");
             #line hidden
             
             #line 24 "..\..\Views\Book\Index.cshtml"
-       Write(Html.Raw("<div class=\"row\">"));
+       Write(Html.Raw("<div class=\"row\" data-equalizer>"));
 
             
             #line default
             #line hidden
             
             #line 24 "..\..\Views\Book\Index.cshtml"
-                                            
+                                                           
          }
 
             
@@ -147,7 +147,7 @@ WriteLiteral(">\r\n            <ul");
 
 WriteLiteral(" class=\"pricing-table\"");
 
-WriteLiteral(">\r\n               <li");
+WriteLiteral(" data-equalizer-watch>\r\n               <li");
 
 WriteLiteral(" class=\"title\"");
 
@@ -243,14 +243,14 @@ WriteLiteral(" class=\"cta-button\"");
 
 WriteLiteral(">\r\n                     <a");
 
-WriteAttribute("href", Tuple.Create(" href=\"", 1328), Tuple.Create("\"", 1404)
+WriteAttribute("href", Tuple.Create(" href=\"", 1364), Tuple.Create("\"", 1440)
             
             #line 41 "..\..\Views\Book\Index.cshtml"
-, Tuple.Create(Tuple.Create("", 1335), Tuple.Create<System.Object, System.Int32>(Url.Action("About", "Version", new {id = book.Versions.First ().Id})
+, Tuple.Create(Tuple.Create("", 1371), Tuple.Create<System.Object, System.Int32>(Url.Action("About", "Version", new {id = book.Versions.First ().Id})
             
             #line default
             #line hidden
-, 1335), false)
+, 1371), false)
 );
 
 WriteLiteral(" class=\"button\"");

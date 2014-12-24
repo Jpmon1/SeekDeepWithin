@@ -13,7 +13,7 @@
 }
 
 <div class="row">
-   <div class="small-12 large-8 columns">
+   <div class="small-12 large-12 columns">
       <ul class="breadcrumbs" role="menubar" aria-label="breadcrumbs">
          <li role="menuitem"><a href="@Url.Action("About", "Version", new { id = @Model.SubBook.Version.Id })">@Model.SubBook.Version.Title</a></li>
          @if (Model.SubBook.Name != "default") {
@@ -21,23 +21,23 @@
          }
          <li role="menuitem" class="current"><a href="#">@Model.Name</a></li>
          @if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
-            <li>
-               <a href="#" data-dropdown="editHover" data-options="is_hover:true; hover_timeout:2000">edit actions</a>
-               <ul id="editHover" class="f-dropdown" data-dropdown-content>
-                  <li>@Html.ActionLink("Edit Chapter", "Edit", new { id = Model.Id })</li>
-                  @if (User.IsInRole ("Creator")) {
-                     <li>@Html.ActionLink("Add Passage", "Create", "Passage", new { chapterId = Model.Id }, null)</li>
-                  }
-               </ul>
-            </li>
+            <li role="menuitem">@Html.ActionLink("Edit", "Edit", new { id = Model.Id })</li>
+         }
+         @if (Request.IsAuthenticated && User.IsInRole ("Creator")) {
+            <li role="menuitem">@Html.ActionLink("Add", "Add", new { id = Model.Id })</li>
          }
       </ul>
+   </div>
+</div>
+<div class="row">
+   <div class="small-12 large-8 columns">
       @foreach (var passage in Model.Passages) {
-         <div class="row">
+         var id = passage.EntryId;
+         <div class="row" id="pass_@id">
             @if (passage.Number > 0) {
                <div class="small-6 medium-2 large-1 columns">
                   <blockquote>
-                     @Html.ActionLink(passage.Number.ToString (CultureInfo.InvariantCulture), "Details", "Passage", new { id = passage.PassageId, entryId = passage.Id }, null)
+                     @Html.ActionLink(passage.Number.ToString (CultureInfo.InvariantCulture), "Details", "Passage", new { entryId = passage.Id }, null)
                   </blockquote>
                </div>
             }

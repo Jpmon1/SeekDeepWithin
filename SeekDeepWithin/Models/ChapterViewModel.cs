@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using SeekDeepWithin.Domain;
 
 namespace SeekDeepWithin.Models
 {
@@ -42,6 +40,6 @@ namespace SeekDeepWithin.Models
       /// <summary>
       /// Gets or Sets the list of passages.
       /// </summary>
-      public ICollection<PassageEntryViewModel> Passages { get; set; }
+      public ICollection<PassageViewModel> Passages { get; set; }
    }
 }

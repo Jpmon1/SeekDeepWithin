@@ -68,6 +68,7 @@ function setSelection(event) {
       end--;
    selection = selection.replace(/^\s+|\s+$/g, '');//.trim (); - Trim not supported by IE
    $('#StartIndex').val(start);
+   $('#FooterIndex').val(start);
    $('#EndIndex').val(end);
    /*var link = selection.toLowerCase().replace(/\b[a-z]/g, function (letter) {
       return letter.toUpperCase();

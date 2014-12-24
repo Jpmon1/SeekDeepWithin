@@ -1,21 +1,14 @@
 ﻿@model SeekDeepWithin.Models.PassageViewModel
 
 @{
-   var passageEntry = Model.PassageEntries.FirstOrDefault ();
-   var title = "Edit Passage";
-   if (passageEntry != null)
-   {
-      title = passageEntry.Chapter.SubBook.Version.Title;
-      if (passageEntry.Chapter.SubBook.Name != "default")
-      {
-         title += " | " + passageEntry.Chapter.SubBook.Name;
-      }
-      if (passageEntry.Chapter.Name != "default")
-      {
-         title += " | " + passageEntry.Chapter.Name;
-      }
-      title += " | " + passageEntry.Number;
+   var title = Model.VersionName;
+   if (Model.SubBookName != "default") {
+      title += " | " + Model.SubBookName;
    }
+   if (Model.ChapterName != "default") {
+      title += " | " + Model.ChapterName;
+   }
+   title += " | " + Model.Number;
    ViewBag.Title = "Edit Passage";
 }
 

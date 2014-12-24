@@ -1,0 +1,33 @@
+﻿@model SeekDeepWithin.Models.ChapterViewModel
+
+@using (Ajax.BeginForm(new AjaxOptions {HttpMethod = "POST",Url = "/Chapter/Edit"})) {
+   @Html.AntiForgeryToken()
+   @Html.ValidationSummary(true)
+
+   @Html.HiddenFor(model => model.Id)
+   <div class="row">
+      <div class="small-12 large-4 columns">
+         <div class="row collapse prefix-radius">
+            <div class="small-3 columns">
+               <span class="prefix">Order</span>
+            </div>
+            <div class="small-9 columns">
+               @Html.EditorFor(model => model.Order)
+            </div>
+         </div>
+      </div>
+      <div class="small-12 large-6 columns">
+         <div class="row collapse prefix-radius">
+            <div class="small-3 columns">
+               <span class="prefix">Name</span>
+            </div>
+            <div class="small-9 columns">
+               @Html.EditorFor(model => model.Name)
+            </div>
+         </div>
+      </div>
+      <div class="small-12 large-2 columns">
+         <input type="submit" value="Save" class="button tiny" />
+      </div>
+   </div>
+}

@@ -1,36 +1,74 @@
 ﻿@model SeekDeepWithin.Models.ChapterViewModel
 
 @{
-   ViewBag.Title = "Edit Chapter " + Model.Name;
+   var title = Model.SubBook.Version.Title;
+   if (Model.SubBook.Name != "default"){
+      title += " | " + Model.SubBook.Name;
+   }
+   title += " | " + Model.Name;
+   ViewBag.Title = "Edit " + title;
 }
-<h3>Editing @Model.Name</h3>
-@using (Html.BeginForm()) {
-    @Html.AntiForgeryToken()
-    @Html.ValidationSummary(true)
-
-    <fieldset>
-        <legend>Chapter Details</legend>
-        @Html.HiddenFor(model => model.Id)
-       <div class="row">
-          <div class="small-12 large-6 columns">
-             @Html.LabelFor(model => model.Order)
-             @Html.EditorFor(model => model.Order)
-             @Html.ValidationMessageFor(model => model.Order)
-          </div>
-       </div>
-       
-       <div class="row">
-          <div class="small-12 large-6 columns">
-             @Html.LabelFor(model => model.Name)
-             @Html.EditorFor(model => model.Name)
-             @Html.ValidationMessageFor(model => model.Name)
-          </div>
-       </div>
-
-       <input type="submit" value="Save" class="button" /> <a href="@TempData["RefUrl"]" class="button secondary small">cancel</a>
-    </fieldset>
+<h3><small>editing</small> @title</h3>
+@using (Html.BeginForm (null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" })){
+   @Html.AntiForgeryToken()
 }
+<div class="row">
+   <div class="small-12 large-12 columns">
+      <table style="width: 100%">
+         <thead>
+            <tr><th>Chapter Details</th></tr>
+         </thead>
+         <tbody>
+            <tr><td>@Html.Partial("_EditChapter")</td></tr>
+         </tbody>
+      </table>
+   </div>
+</div>
+<div class="off-canvas-wrap" data-offcanvas>
+   <div class="inner-wrap">
+      <nav class="tab-bar">
+         <section class="left-small">
+            <a class="left-off-canvas-toggle menu-icon" href="#"><span></span></a>
+         </section>
+
+         <section class="middle tab-bar-section">
+            <h1 class="title">Passage <span id="editPassNum"></span> <small>(passage id: <span id="editPassId"></span> entry id: <span id="editEntryId"></span>)</small></h1>
+         </section>
+      </nav>
+
+      <aside class="left-off-canvas-menu">
+         <ul class="off-canvas-list">
+            <li><label>Passages</label></li>
+            @foreach (var passage in Model.Passages) {
+               <li>
+                  <a href="#" onclick="editEntry(@passage.EntryId)">@passage.Number - @passage.Text.Substring(0, 20)...</a>
+               </li>
+            }
+         </ul>
+      </aside>
+
+      <section class="main-section">
+
+         <div class="row">
+            <div class="small-12 large-12 columns">
+               <label for="passText">Passage Text</label>
+               <textarea cols="10" id="passText" name="passText" rows="4"></textarea>
+               <a href="#" class="button tiny" onclick="savePassage();">Save</a>
+               <span id="saveCheck"><i class="icon-ok-sign" style="color: green"></i> Success!</span>
+            </div>
+         </div>
+         
+         
+
+      </section>
+
+      <a class="exit-off-canvas"></a>
+
+   </div>
+</div>
 
 @section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
+   @Scripts.Render("~/bundles/jqueryval")
+   @Scripts.Render("~/bundles/jqueryui")
+   @Scripts.Render("~/bundles/sdw.editchapter")
 }

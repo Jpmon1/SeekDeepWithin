@@ -1,16 +1,14 @@
-﻿@using SeekDeepWithin.Models
-@model SeekDeepWithin.Models.PassageViewModel
+﻿@model SeekDeepWithin.Models.PassageViewModel
 
 @{
-   PassageEntryViewModel passageEntry = ViewBag.PassageEntry;
-   var title = passageEntry.Chapter.SubBook.Version.Title;
-   if (passageEntry.Chapter.SubBook.Name != "default") {
-      title += " | " + passageEntry.Chapter.SubBook.Name;
+   var title = Model.VersionName;
+   if (Model.SubBookName != "default") {
+      title += " | " + Model.SubBookName;
    }
-   if (passageEntry.Chapter.Name != "default"){
-      title += " | " + passageEntry.Chapter.Name;
+   if (Model.ChapterName != "default"){
+      title += " | " + Model.ChapterName;
    }
-   title += " | " + passageEntry.Number;
+   title += " | " + Model.Number;
    ViewBag.Title = title;
    var textSpan = 12;
    if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
@@ -21,15 +19,17 @@
 <div class="row">
    <div class="small-12 large-@textSpan columns">
       <ul class="breadcrumbs" role="menubar" aria-label="breadcrumbs">
-         <li role="menuitem"><a href="@Url.Action("About", "Version", new { id = @passageEntry.Chapter.SubBook.Version.Id })">@passageEntry.Chapter.SubBook.Version.Title</a></li>
-         @if (passageEntry.Chapter.SubBook.Name != "default") {
-            <li role="menuitem"><a href="@Url.Action("About", "SubBook", new { id = @passageEntry.Chapter.SubBook.Id })">@passageEntry.Chapter.SubBook.Name</a></li>
+         <li role="menuitem"><a href="@Url.Action("About", "Version", new { id = @Model.VersionId })">@Model.VersionName</a></li>
+         @if (Model.SubBookName != "default") {
+            <li role="menuitem"><a href="@Url.Action("About", "SubBook", new { id = @Model.SubBookId })">@Model.SubBookName</a></li>
          }
-         <li role="menuitem"><a href="@Url.Action("Read", "Chapter", new { id = @passageEntry.Chapter.Id })">@passageEntry.Chapter.Name</a></li>
-         <li role="menuitem" class="current"><a href="#">@passageEntry.Number</a></li>
+         @if (Model.ChapterName != "default") {
+            <li role="menuitem"><a href="@Url.Action("Read", "Chapter", new {id = @Model.ChapterId})">@Model.ChapterName</a></li>
+         }
+         <li role="menuitem" class="current"><a href="#">@Model.Number</a></li>
       </ul>
       <p>
-         @Html.Raw(passageEntry.Render ())
+         @Html.Raw(Model.Render ())
       </p>
    </div>
 </div>

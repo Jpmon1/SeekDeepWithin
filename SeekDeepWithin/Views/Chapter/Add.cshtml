@@ -1,0 +1,80 @@
+﻿@model SeekDeepWithin.Models.AddPassageViewModel
+@{
+    ViewBag.Title = "Add Passages";
+}
+
+<h3>Add Passages</h3>
+
+@using (Html.BeginForm (null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" })){
+   @Html.AntiForgeryToken()
+}
+
+@Html.HiddenFor(model =>model.ChapterId)
+<div class="row">
+   <div class="small-12 large-8 columns">
+      <small><strong>convert new lines to:</strong></small>
+      <ul class="button-group radius">
+         <li><a href="#" class="tiny button" onclick="convert('LinesToSpaces');">Spaces</a></li>
+         <li><a href="#" class="tiny button" onclick="convert('LinesToBreaks');">Breaks</a></li>
+         <li><a href="#" class="tiny button" onclick="convertToPassages();">Passages</a></li>
+      </ul>
+   </div>
+   <div class="small-12 large-4 columns">
+      <small><strong>remove from text:</strong></small>
+      <div class="row collapse">
+         <div class="small-9 columns">
+            <input type="text" placeholder="Regex to Remove" id="regex" value="(\d)+\.">
+         </div>
+         <div class="small-3 columns">
+            <a href="#" class="button postfix" onclick="regexRemove();">Remove</a>
+         </div>
+      </div>
+   </div>
+</div>
+<div class="row">
+   <div class="small-12 large-12 columns">
+      @Html.LabelFor(model => model.Text)
+      @Html.TextAreaFor(model => model.Text, 6, 10, null)
+      @Html.ValidationMessageFor(model=>model.Text)
+   </div>
+</div>
+
+<div class="row" id="singleAdd">
+   <div class="small-12 large-12 columns">
+      <div class="small-12 large-5 columns">
+         <div class="row collapse prefix-radius">
+            <div class="small-3 columns">
+               <span class="prefix">Order</span>
+            </div>
+            <div class="small-9 columns">
+               @Html.EditorFor(model => model.Order)
+               @Html.ValidationMessageFor(model=>model.Order)
+            </div>
+         </div>
+      </div>
+      <div class="small-12 large-5 columns">
+         <div class="row collapse prefix-radius">
+            <div class="small-3 columns">
+               <span class="prefix">Number</span>
+            </div>
+            <div class="small-9 columns">
+               @Html.EditorFor(model => model.Number)
+               @Html.ValidationMessageFor(model=>model.Number)
+            </div>
+         </div>
+      </div>
+      <div class="small-12 large-2 columns">
+         <a href="#" onclick="addSingle();" class="button tiny">Add</a>
+         <span id="singleAddCheck"><i class="icon-ok-sign" style="color: green"></i></span>
+      </div>
+   </div>
+</div>
+
+<div id="multiAdd">
+</div>
+
+@section Scripts {
+   @Scripts.Render("~/bundles/jqueryval")
+   @Scripts.Render("~/bundles/jqueryui")
+   @Scripts.Render("~/bundles/sdw.addpassages")
+}

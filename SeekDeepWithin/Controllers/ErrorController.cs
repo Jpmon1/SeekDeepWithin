@@ -4,6 +4,9 @@ using SeekDeepWithin.Models;
 
 namespace SeekDeepWithin.Controllers
 {
+   /// <summary>
+   /// Controller for error messages.
+   /// </summary>
    public class ErrorController : Controller
    {
       /// <summary>
@@ -13,6 +16,7 @@ namespace SeekDeepWithin.Controllers
       /// <param name="exception">Error exception.</param>
       /// <param name="isAjaxRequet">True if ajax error.</param>
       /// <returns>The error view.</returns>
+      [AllowAnonymous]
       public ActionResult Index (int statusCode, Exception exception, bool isAjaxRequet)
       {
          Response.StatusCode = statusCode;
@@ -25,8 +29,8 @@ namespace SeekDeepWithin.Controllers
          }
 
          // Otherwise, if it was an AJAX request, return an anon type with the message from the exception
-         var errorObjet = new { message = exception.Message };
-         return Json (errorObjet, JsonRequestBehavior.AllowGet);
+         // var errorObjet = new { message = exception.Message };
+         return Json (exception.Message, JsonRequestBehavior.AllowGet);
       }
 
    }

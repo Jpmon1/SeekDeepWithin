@@ -168,5 +168,31 @@ namespace SeekDeepWithin.Controllers
          else if (!string.IsNullOrWhiteSpace (viewModel.Book) && !string.IsNullOrWhiteSpace (viewModel.Version)) {}
          return linkUrl;
       }
+
+      /// <summary>
+      /// Gets the links for the given entry id.
+      /// </summary>
+      /// <param name="id">Id of entry to get links for.</param>
+      /// <returns>JSON object with links.</returns>
+      [AllowAnonymous]
+      public ActionResult GetLinksForEntry (int id)
+      {
+         var entry = this.m_Db.PassageEntries.Get (id);
+         var result = new
+         {
+            entryId = id,
+            passageText = entry.Passage.Text,
+            links = entry.Passage.PassageLinks.Select(l => new
+            {
+               id = l.Id,
+               url = l.Link.Url,
+               linkId = l.Link.Id,
+               endIndex = l.EndIndex,
+               startIndex = l.StartIndex,
+               openInNewWindow = l.OpenInNewWindow
+            })
+         };
+         return Json (result, JsonRequestBehavior.AllowGet);
+      }
    }
 }
