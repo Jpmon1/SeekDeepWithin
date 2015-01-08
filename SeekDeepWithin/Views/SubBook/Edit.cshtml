@@ -3,7 +3,12 @@
 @{
     ViewBag.Title = "Edit Sub Book: " + Model.Name;
 }
-<h3>Editing Sub Book - @Model.Name</h3>
+<h3><small>editing</small> @Model.Name</h3>
+<small>
+   @Html.ActionLink("add writer", "AssignWriter", new {id=Model.Id}) |
+   @Html.ActionLink("add chapter", "Create", "Chapter", new { versionId = Model.Version.Id, subBookId = Model.Id }, null)
+</small>
+
 @using (Html.BeginForm ()) {
    @Html.AntiForgeryToken()
    @Html.ValidationSummary(true)

@@ -33,7 +33,7 @@ namespace SeekDeepWithin.Controllers
       /// <returns>The glossary index view.</returns>
       public ActionResult Index ()
       {
-         return View (this.m_Db.GlossaryTerms.All ().Select (t => new GlossaryTermViewModel { Id = t.Id, Name = t.Name }));
+         return View (this.m_Db.GlossaryTerms.All (q => q.OrderBy (t => t.Name)).Select (t => new GlossaryTermViewModel { Id = t.Id, Name = t.Name }));
       }
 
       /// <summary>

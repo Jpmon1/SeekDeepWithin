@@ -8,9 +8,17 @@ namespace SeekDeepWithin.Models
    public class EditLinkViewModel
    {
       /// <summary>
-      /// Gets or Sets the imte id of the link.
+      /// Initializes a new edit link view model.
       /// </summary>
-      public int Id { get; set; }
+      public EditLinkViewModel ()
+      {
+         this.LinkItemId = -1;
+      }
+
+      /// <summary>
+      /// Gets or Sets the item id of the link.
+      /// </summary>
+      public int LinkItemId { get; set; }
 
       /// <summary>
       /// Gets or Sets if the link should open in a new window.
@@ -56,6 +64,11 @@ namespace SeekDeepWithin.Models
       /// Gets or Sets the external url of the link.
       /// </summary>
       public string Link { get; set; }
+
+      /// <summary>
+      /// Gets or Sets the type of link to add.
+      /// </summary>
+      public string Type { get; set; }
 
       /// <summary>
       /// Gets or Sets the start index of the link.

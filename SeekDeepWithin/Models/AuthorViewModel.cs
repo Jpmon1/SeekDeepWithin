@@ -1,11 +1,22 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
 
 namespace SeekDeepWithin.Models
 {
+   /// <summary>
+   /// View model for writers.
+   /// </summary>
    public class AuthorViewModel
    {
+      /// <summary>
+      /// Initializes a new author view model.
+      /// </summary>
+      public AuthorViewModel ()
+      {
+         this.Written = new Collection<SubBookViewModel> ();
+      }
+
       /// <summary>
       /// Gets or Sets the id of the author.
       /// </summary>
@@ -26,6 +37,6 @@ namespace SeekDeepWithin.Models
       /// <summary>
       /// Gets or Sets the list of version this author has written.
       /// </summary>
-      public ICollection<VersionViewModel> Written { get; set; }
+      public Collection<SubBookViewModel> Written { get; set; }
    }
 }

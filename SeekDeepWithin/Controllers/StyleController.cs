@@ -35,22 +35,11 @@ namespace SeekDeepWithin.Controllers
       /// <param name="parentId">The id of the parent object.</param>
       /// <returns>The add style view.</returns>
       [Authorize (Roles = "Editor")]
-      public ActionResult Create (int id, string type, int? parentId)
+      public ActionResult Create (int id, string type, int parentId)
       {
          if (Request.UrlReferrer != null) TempData["RefUrl"] = Request.UrlReferrer.ToString ();
-         var text = string.Empty;
-         if (type == "passage")
-         {
-            var passage = this.m_Db.Passages.Get (id);
-            text = passage.Text;
-         }
-         else if (type == "version")
-         {
-            var version = this.m_Db.Versions.Get (id);
-            text = version.About;
-         }
-         if (parentId == null) parentId = -1;
-         return View (new EditStyleViewModel { Id = id, Text = text, Type = type, ParentId = parentId.Value });
+         var passage = this.m_Db.Passages.Get (id);
+         return View (new EditStyleViewModel { Id = id, Text = passage.Text, ParentId = parentId });
       }
 
       /// <summary>
@@ -75,33 +64,16 @@ namespace SeekDeepWithin.Controllers
             this.m_Db.Save ();
          }
 
-         if (viewModel.Type == "passage")
+         var passage = this.m_Db.PassageEntries.Get (viewModel.ParentId);
+         passage.Styles.Add (new PassageStyle
          {
-            var passage = this.m_Db.PassageEntries.Get (viewModel.ParentId);
-            passage.Styles.Add (new PassageStyle
-            {
-               PassageEntry = passage,
-               Style = style,
-               StartIndex = viewModel.StartIndex,
-               EndIndex = viewModel.EndIndex
-            });
-            this.m_Db.Save ();
-            return RedirectToAction ("Details", "Passage", new { id = viewModel.Id });
-         }
-         if (viewModel.Type == "version")
-         {
-            var version = this.m_Db.Versions.Get (viewModel.Id);
-            version.VersionAboutStyles.Add (new VersionAboutStyle
-            {
-               Vesion = version,
-               Style= style,
-               StartIndex = viewModel.StartIndex,
-               EndIndex = viewModel.EndIndex
-            });
-            this.m_Db.Save ();
-            return RedirectToAction ("About", "Version", new { id = viewModel.Id });
-         }
-         return View (viewModel);
+            PassageEntry = passage,
+            Style = style,
+            StartIndex = viewModel.StartIndex,
+            EndIndex = viewModel.EndIndex
+         });
+         this.m_Db.Save ();
+         return RedirectToAction ("Details", "Passage", new { id = viewModel.Id });
       }
    }
 }

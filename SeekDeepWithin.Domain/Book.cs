@@ -13,6 +13,11 @@ namespace SeekDeepWithin.Domain
       public int Id { get; set; }
 
       /// <summary>
+      /// Gets or Sets if this book should be hidden or not.
+      /// </summary>
+      public bool Hide { get; set; }
+
+      /// <summary>
       /// Gets or Sets the title of the book.
       /// </summary>
       public string Title { get; set; }

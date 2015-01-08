@@ -8,31 +8,70 @@
    title += " | " + Model.Name;
    ViewBag.Title = "Edit " + title;
 }
-<h3><small>editing</small> @title</h3>
+<h3><small>editing</small> @title <small>@Html.ActionLink("read", "Read", new { id = Model.Id })</small></h3>
 @using (Html.BeginForm (null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" })){
    @Html.AntiForgeryToken()
 }
-<div class="row">
-   <div class="small-12 large-12 columns">
-      <table style="width: 100%">
-         <thead>
-            <tr><th>Chapter Details</th></tr>
-         </thead>
-         <tbody>
-            <tr><td>@Html.Partial("_EditChapter")</td></tr>
-         </tbody>
-      </table>
-   </div>
-</div>
+
+<div id="modal" class="reveal-modal" data-reveal></div>
+@Html.Hidden("chapterId", Model.Id)
+
 <div class="off-canvas-wrap" data-offcanvas>
    <div class="inner-wrap">
       <nav class="tab-bar">
-         <section class="left-small">
-            <a class="left-off-canvas-toggle menu-icon" href="#"><span></span></a>
+         <section class="middle tab-bar-section">
+            <h1 class="title">Chapter - @Model.Name</h1>
+         </section>
+
+         <section class="right-small text-center">
+            <a class="right-off-canvas-toggle" href="#" style="color: black;"><i class="icon-menu"></i></a>
+         </section>
+      </nav>
+
+      <aside class="right-off-canvas-menu">
+         <ul class="off-canvas-list" id="rightChapterMenu">
+            <li id="cHeadersLabel"><label>Headers</label></li>
+            <li id="cAddHeaderBtn"><a href="#" onclick="addChapterHeader();">Add New Header</a></li>
+            @foreach (var header in Model.Headers) {
+               <li><a href="#"><i class="icon-notificationbottom"></i> @header.Text</a></li>
+            }
+            <li id="cFootersLabel"><label>Footers</label></li>
+            @foreach (var footer in Model.Footers) {
+               <li><a href="#"><i class="icon-notificationtop"></i> @footer.Text</a></li>
+            }
+            <li id="cAddFooterBtn"><a href="#" onclick="addChapterFooter();">Add New Footer</a></li>
+            <li id="cEndLabel"><label>Seek Deep Within</label></li>
+         </ul>
+      </aside>
+
+      <section class="main-section">
+
+         <div class="row">
+            <div class="small-12 large-12 columns">
+               @Html.Partial("_EditChapter")
+            </div>
+         </div>
+
+      </section>
+
+      <a class="exit-off-canvas"></a>
+
+   </div>
+</div>
+
+<div class="off-canvas-wrap" data-offcanvas>
+   <div class="inner-wrap">
+      <nav class="tab-bar">
+         <section class="left-small text-center">
+            <a class="left-off-canvas-toggle" href="#" style="color: black;"><i class="icon-menu"></i></a>
          </section>
 
          <section class="middle tab-bar-section">
-            <h1 class="title">Passage <span id="editPassNum"></span> <small>(passage id: <span id="editPassId"></span> entry id: <span id="editEntryId"></span>)</small></h1>
+            <h1 class="title">Passages - <span id="editPassNum"></span> <small>(passage id: <span id="editPassId"></span> entry id: <span id="editEntryId"></span>)</small></h1>
+         </section>
+         
+         <section class="right-small text-center">
+            <a class="right-off-canvas-toggle" href="#" style="color: black;"><i class="icon-menu"></i></a>
          </section>
       </nav>
 
@@ -46,19 +85,32 @@
             }
          </ul>
       </aside>
+      
+      <aside class="right-off-canvas-menu">
+         <ul class="off-canvas-list" id="rightPassageMenu">
+            <li id="headersLabel"><label>Headers</label></li>
+            <li id="addHeaderBtn"><a href="#" onclick="addPassageHeader();">Add New Header</a></li>
+            <li id="footersLabel"><label>Footers</label></li>
+            <li id="addFooterBtn"><a href="#" onclick="addPassageFooter();">Add New Footer</a></li>
+            <li id="endLabel"><label>Seek Deep Within</label></li>
+         </ul>
+      </aside>
 
       <section class="main-section">
 
          <div class="row">
             <div class="small-12 large-12 columns">
-               <label for="passText">Passage Text</label>
-               <textarea cols="10" id="passText" name="passText" rows="4"></textarea>
+               <textarea cols="10" id="passText" name="passText" rows="6" style="margin-top: 10px;"></textarea>
                <a href="#" class="button tiny" onclick="savePassage();">Save</a>
                <span id="saveCheck"><i class="icon-ok-sign" style="color: green"></i> Success!</span>
             </div>
          </div>
          
-         
+         <div class="row">
+            <div class="small-12 large-12 columns">
+               @Html.Partial("_LinkForm", new SeekDeepWithin.Models.EditLinkViewModel { Type = "passage" })
+            </div>
+         </div>
 
       </section>
 
@@ -71,4 +123,10 @@
    @Scripts.Render("~/bundles/jqueryval")
    @Scripts.Render("~/bundles/jqueryui")
    @Scripts.Render("~/bundles/sdw.editchapter")
+   @Scripts.Render("~/bundles/sdw.addlink")
+   <script type="text/javascript">
+      $(document).ready(function () {
+         editEntry(@Model.Passages.First().EntryId);
+      });
+   </script>
 }

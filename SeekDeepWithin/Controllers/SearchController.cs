@@ -48,7 +48,6 @@ namespace SeekDeepWithin.Controllers
          {
             foreach (var entry in passage.PassageEntries)
             {
-               var bookTitle = entry.Chapter.SubBook.Version.Book.Title;
                var viewModel = new PassageViewModel
                {
                   Text = passage.Text,
@@ -60,10 +59,8 @@ namespace SeekDeepWithin.Controllers
                   SubBookId = entry.Chapter.SubBook.Id,
                   SubBookName = entry.Chapter.SubBook.Name,
                   VersionId = entry.Chapter.SubBook.Version.Id,
-                  VersionName = entry.Chapter.SubBook.Version.Name
+                  VersionName = entry.Chapter.SubBook.Version.Title
                };
-               viewModel.VersionName = string.IsNullOrEmpty (entry.Chapter.SubBook.Version.TitleFormat)
-                  ? bookTitle : entry.Chapter.SubBook.Version.TitleFormat.Replace ("{B}", bookTitle).Replace ("{V}", viewModel.VersionName);
                passageList.Add (viewModel);
             }
          }

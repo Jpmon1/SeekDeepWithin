@@ -49,11 +49,6 @@ namespace SeekDeepWithin.Models
       public string Text { get; set; }
 
       /// <summary>
-      /// Gets or Sets the type this style is for.
-      /// </summary>
-      public string Type { get; set; }
-
-      /// <summary>
       /// Gets or Sets the parent id, if needed.
       /// </summary>
       public int ParentId { get; set; }

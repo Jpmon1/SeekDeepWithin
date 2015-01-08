@@ -1,7 +1,8 @@
 ﻿@{
    ViewBag.Title = "Assign Writer";
 }
-<h3>Assign writer to @ViewBag.VersionTitle</h3>
+<h3>Assign writer to @ViewBag.Title</h3>
+
 @using (Html.BeginForm ())
 {
    @Html.AntiForgeryToken()
@@ -10,7 +11,7 @@
       <p style="font-size: small;">
          <a href="@Url.Action("Create", "Author")"><i class="icon-plus"></i> add new writer</a>
       </p>
-      <input type="hidden" id="versionId" name="versionId" value="@ViewBag.VersionId" />
+      <input type="hidden" id="subBookId" name="subBookId" value="@ViewBag.SubBookId" />
       <div class="row">
          <div class="small-12 large-6 columns">
             @Html.DropDownList("authorId", ViewBag.Authors as SelectList)

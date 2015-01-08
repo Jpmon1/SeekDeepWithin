@@ -1,10 +1,23 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace SeekDeepWithin.Models
 {
+   /// <summary>
+   /// A view model for a chapter.
+   /// </summary>
    public class ChapterViewModel
    {
+      /// <summary>
+      /// Initializes a new chapter view model.
+      /// </summary>
+      public ChapterViewModel ()
+      {
+         this.Passages = new Collection <PassageViewModel> ();
+         this.Headers = new Collection <HeaderFooterViewModel> ();
+         this.Footers = new Collection <HeaderFooterViewModel> ();
+      }
+
       /// <summary>
       /// Gets or Sets the id of this chapter.
       /// </summary>
@@ -38,8 +51,18 @@ namespace SeekDeepWithin.Models
       public SubBookViewModel SubBook { get; set; }
 
       /// <summary>
+      /// Get or Sets the headers for this chapter.
+      /// </summary>
+      public Collection<HeaderFooterViewModel> Headers { get; set; }
+
+      /// <summary>
+      /// Get or Sets the footers for this chapter.
+      /// </summary>
+      public Collection<HeaderFooterViewModel> Footers { get; set; }
+
+      /// <summary>
       /// Gets or Sets the list of passages.
       /// </summary>
-      public ICollection<PassageViewModel> Passages { get; set; }
+      public Collection<PassageViewModel> Passages { get; set; }
    }
 }

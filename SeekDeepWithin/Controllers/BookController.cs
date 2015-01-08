@@ -37,18 +37,7 @@ namespace SeekDeepWithin.Controllers
       {
          if (TempData.ContainsKey ("ErrorMessage"))
             ViewBag.ErrorMessage = TempData["ErrorMessage"];
-         return View (this.m_Db.Books.All ().Select (book => book.ToViewModel ()).ToList ());
-      }
-
-      /// <summary>
-      /// Gets the details about the requested book.
-      /// </summary>
-      /// <param name="id">Book id.</param>
-      /// <returns>The view for the book details.</returns>
-      public ActionResult Details (int id)
-      {
-         var book = this.m_Db.Books.Get (id);
-         return View (book.ToViewModel ());
+         return View (this.m_Db.Books.All (q => q.OrderBy (b => b.Title)).Select (book => GetViewModel (book, true)).ToList ());
       }
 
       /// <summary>
@@ -94,7 +83,7 @@ namespace SeekDeepWithin.Controllers
                return RedirectToAction ("Index");
 
             if (Request.UrlReferrer != null) TempData["RefUrl"] = Request.UrlReferrer.ToString ();
-            return View (book.ToViewModel ());
+            return View (GetViewModel (book));
          }
          TempData["ErrorMessage"] = "You must login to edit a book!";
          return RedirectToAction ("Index");
@@ -118,6 +107,28 @@ namespace SeekDeepWithin.Controllers
             return RedirectToAction ("Index");
          }
          return View (bookViewModel);
+      }
+
+      /// <summary>
+      /// Converts the given book to a view model.
+      /// </summary>
+      /// <param name="book">Book to convert to view model.</param>
+      /// <param name="copyVersions">True to copy version information, otherwise false.</param>
+      /// <returns>The view model representation of the book.</returns>
+      public static BookViewModel GetViewModel (Book book, bool copyVersions = false)
+      {
+         var viewModel = new BookViewModel
+         {
+            Id = book.Id,
+            Title = book.Title,
+            Summary = book.Summary
+         };
+         if (copyVersions)
+         {
+            foreach (var version in book.Versions)
+               viewModel.Versions.Add (VersionController.GetViewModel (version));
+         }
+         return viewModel;
       }
    }
 }

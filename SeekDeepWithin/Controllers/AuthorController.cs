@@ -1,5 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using System.Linq;
+﻿using System.Linq;
 using System.Web.Mvc;
 using SeekDeepWithin.DataAccess;
 using SeekDeepWithin.Domain;
@@ -48,11 +47,10 @@ namespace SeekDeepWithin.Controllers
          var viewModel = new AuthorViewModel {
             Id = author.Id,
             Name = author.Name,
-            About = author.About,
-            Written = new Collection <VersionViewModel> ()
+            About = author.About
          };
          foreach (var writer in author.Writers) {
-            viewModel.Written.Add (writer.Version.ToViewModel(false ));
+            viewModel.Written.Add (SubBookController.GetViewModel (writer.SubBook));
          }
          return View (viewModel);
       }

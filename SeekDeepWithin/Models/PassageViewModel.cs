@@ -13,6 +13,8 @@ namespace SeekDeepWithin.Models
       {
          this.Links = new Collection <LinkViewModel> ();
          this.Styles = new Collection <StyleViewModel> ();
+         this.Headers = new Collection <HeaderFooterViewModel> ();
+         this.Footers = new Collection <HeaderFooterViewModel> ();
       }
 
       /// <summary>
@@ -75,6 +77,20 @@ namespace SeekDeepWithin.Models
       /// </summary>
       public Collection<StyleViewModel> Styles { get; set; }
 
+      /// <summary>
+      /// Get or Sets the footers for this passage.
+      /// </summary>
+      public Collection<HeaderFooterViewModel> Footers { get; set; }
+
+      /// <summary>
+      /// Get or Sets the headers for this passage.
+      /// </summary>
+      public Collection<HeaderFooterViewModel> Headers { get; set; }
+
+      /// <summary>
+      /// Renders the passage.
+      /// </summary>
+      /// <returns>The html to display for the passage.</returns>
       public string Render ()
       {
          var renderer = new SdwRenderer { Text = this.Text };

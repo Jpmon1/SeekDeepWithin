@@ -4,7 +4,7 @@
     ViewBag.Title = "Edit " + Model.Title;
 }
 
-<h3>Edit @Model.Title</h3>
+<h3><small>editing</small> @Model.Title</h3>
 
 @using (Html.BeginForm()) {
     @Html.AntiForgeryToken()
@@ -14,7 +14,7 @@
        <legend>Book Details</legend>
        
        <div class="row">
-          <div class="small-12 large-6 columns">
+          <div class="small-12 large-8 columns">
              @Html.LabelFor(model => model.Title)
              @Html.EditorFor(model => model.Title)
              @Html.ValidationMessageFor(model => model.Title)
@@ -22,7 +22,7 @@
        </div>
        
        <div class="row">
-          <div class="small-12 large-8 columns">
+          <div class="small-12 large-12 columns">
              @Html.LabelFor(model => model.Summary)
              @Html.TextAreaFor(model => model.Summary, 8, 10, null)
              @Html.ValidationMessageFor(model => model.Summary)

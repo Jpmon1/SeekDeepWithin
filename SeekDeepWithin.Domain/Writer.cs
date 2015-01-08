@@ -21,8 +21,8 @@
       public virtual Author Author { get; set; }
 
       /// <summary>
-      /// Gets or Sets the version.
+      /// Gets or Sets the sub book.
       /// </summary>
-      public virtual Version Version { get; set; }
+      public virtual SubBook SubBook { get; set; }
    }
 }

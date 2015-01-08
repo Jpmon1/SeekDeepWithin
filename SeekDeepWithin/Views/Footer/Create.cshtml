@@ -1,0 +1,43 @@
+﻿@model SeekDeepWithin.Models.HeaderFooterViewModel
+
+<h3>Add New Footer</h3>
+@{
+   var url = "/Footer/CreateForPassage";
+   if (Model.Type == "chapter") {
+      url = "/Footer/CreateForChapter";
+   }
+}
+
+@using (Ajax.BeginForm (new AjaxOptions { HttpMethod = "POST", Url = url, OnFailure = "ajaxFail", OnSuccess = "successCreateFooter" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+   @Html.HiddenFor(model => model.ItemId)
+
+   <div class="row">
+      <div class="small-12 large-12 columns">
+         @Html.LabelFor(model => model.Text)
+         @Html.TextAreaFor(model => model.Text, 4, 10, null)
+      </div>
+   </div>
+
+   <div class="row">
+      <div class="small-12 large-12 columns">
+         @if (Model.Type == "passage") {
+            @Html.TextBoxFor(model => model.Index, new {@readonly = "readonly"})
+         }
+         Justify:
+         @Html.RadioButtonFor(model => model.Justify, 0) <i class="icon-align-left"></i>
+         @Html.RadioButtonFor(model => model.Justify, 1) <i class="icon-align-center"></i>
+         @Html.RadioButtonFor(model => model.Justify, 2) <i class="icon-align-right"></i>
+      </div>
+   </div>
+   
+   <div class="row text-center">
+      <div class="small-12 large-12 columns">
+         <input type="submit" value="Create" class="button"/>
+      </div>
+   </div>
+}
+<a class="close-reveal-modal">&#215;</a>

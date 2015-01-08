@@ -1,0 +1,11 @@
+﻿@using System.Globalization
+@model SeekDeepWithin.Models.PassageViewModel
+          
+@if (Model.Number > 0) {
+<div class="small-6 medium-2 large-1 columns">
+   <blockquote>
+      @Html.ActionLink(Model.Number.ToString (CultureInfo.InvariantCulture), "Details", "Passage", new { entryId = Model.Id }, null)
+   </blockquote>
+</div>
+               }
+<div class="medium-10 large-11 columns">@Html.Raw(Model.Render ())</div>

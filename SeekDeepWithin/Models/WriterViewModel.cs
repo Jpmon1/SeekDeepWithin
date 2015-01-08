@@ -3,22 +3,17 @@
    /// <summary>
    /// Represents an author link.
    /// </summary>
-   public class WriterLink
+   public class WriterViewModel
    {
       /// <summary>
-      /// Gets or Sets the id of the writer.
+      /// Gets or Sets the id of the author.
       /// </summary>
-      public int AuthorId { get; set; }
+      public int Id { get; set; }
 
       /// <summary>
-      /// Gets or Sets the author.
+      /// Gets or Sets the name of the author.
       /// </summary>
-      public AuthorViewModel Author { get; set; }
-
-      /// <summary>
-      /// Gets or Sets the version.
-      /// </summary>
-      public VersionViewModel Version { get; set; }
+      public string Name { get; set; }
 
       /// <summary>
       /// Gets or Sets if the author of the version is a translator.

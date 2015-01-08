@@ -18,6 +18,8 @@ namespace SeekDeepWithin.Tests.Mocks
       private IRepository<Tag> m_Tags;
       private IRepository<Style> m_Styles;
       private IRepository<Source> m_Sources;
+      private IRepository<Header> m_Headers;
+      private IRepository<Footer> m_Footers;
       private IRepository<PassageEntry> m_PassageEntries;
       private IRepository<GlossaryTerm> m_GlossaryItems;
       private IRepository<GlossaryEntry> m_GlossaryEntries;
@@ -100,6 +102,22 @@ namespace SeekDeepWithin.Tests.Mocks
       public IRepository<Source> Sources
       {
          get { return this.m_Sources ?? (this.m_Sources = new MockRepository<Source> ()); }
+      }
+
+      /// <summary>
+      /// Gets the repository for headers.
+      /// </summary>
+      public IRepository<Header> Headers
+      {
+         get { return this.m_Headers ?? (this.m_Headers = new MockRepository<Header> ()); }
+      }
+
+      /// <summary>
+      /// Gets the repository for footers.
+      /// </summary>
+      public IRepository<Footer> Footers
+      {
+         get { return this.m_Footers ?? (this.m_Footers = new MockRepository<Footer> ()); }
       }
 
       /// <summary>

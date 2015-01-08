@@ -1,4 +1,5 @@
-﻿using System.Web.Mvc;
+﻿using System.Linq;
+using System.Web.Mvc;
 using SeekDeepWithin.DataAccess;
 using SeekDeepWithin.Domain;
 using SeekDeepWithin.Models;
@@ -30,16 +31,6 @@ namespace SeekDeepWithin.Controllers
       }
 
       /// <summary>
-      /// Gets the about Page.
-      /// </summary>
-      /// <param name="id">The id of the version.</param>
-      /// <returns>The about page.</returns>
-      public ActionResult About (int id)
-      {
-         return View (this.m_Db.Versions.Get (id).ToViewModel ());
-      }
-
-      /// <summary>
       /// Gets the edit version Page.
       /// </summary>
       /// <param name="id">The id of the version to edit.</param>
@@ -48,7 +39,9 @@ namespace SeekDeepWithin.Controllers
       public ActionResult Edit (int id)
       {
          if (Request.UrlReferrer != null) TempData ["RefUrl"] = Request.UrlReferrer.ToString ();
-         return View (this.m_Db.Versions.Get (id).ToViewModel ());
+         if (TempData.ContainsKey("ErrorMessage"))
+            ViewBag.ErrorMessage = TempData ["ErrorMessage"];
+         return View (GetViewModel (this.m_Db.Versions.Get (id)));
       }
 
       /// <summary>
@@ -71,7 +64,7 @@ namespace SeekDeepWithin.Controllers
                TempData.Remove ("RefUrl");
                return Redirect (TempData ["RefUrl"].ToString());
             }
-            return RedirectToAction ("About", new { id = viewModel.Id });
+            return RedirectToAction ("Read", "Chapter", new { id = viewModel.DefaultReadChapter });
          }
          return View (viewModel);
       }
@@ -84,8 +77,7 @@ namespace SeekDeepWithin.Controllers
       [Authorize (Roles = "Creator")]
       public ActionResult Create (int bookId)
       {
-         ViewBag.BookId = bookId;
-         ViewBag.Book = this.m_Db.Books.Get (bookId).ToViewModel (false);
+         ViewBag.BookTitle = this.m_Db.Books.Get (bookId).Title;
          return View (new VersionViewModel { BookId = bookId });
       }
 
@@ -103,53 +95,61 @@ namespace SeekDeepWithin.Controllers
          var version = new Version
          {
             Book = book,
-            Name = viewModel.Name,
-            PublishDate = viewModel.PublishDate,
-            About = viewModel.About,
-            TitleFormat = viewModel.TitleFormat
+            Title = viewModel.Title,
+            PublishDate = viewModel.PublishDate
          };
          book.Versions.Add (version);
          this.m_Db.Versions.Insert (version);
          this.m_Db.Save ();
-         return RedirectToAction ("About", new { id = version.Id });
-      }
 
-      /// <summary>
-      /// Gets the assign writer view.
-      /// </summary>
-      /// <param name="id">Id of version to assign a writer to.</param>
-      /// <returns>The assign writer view.</returns>
-      [Authorize (Roles = "Editor")]
-      public ActionResult AssignWriter (int id)
-      {
-         ViewBag.VersionId = id;
-         if (Request.UrlReferrer != null) TempData["RefUrl"] = Request.UrlReferrer.ToString ();
-         var version = this.m_Db.Versions.Get (id);
-         ViewBag.VersionTitle = version.ToViewModel (false).Title;
-         ViewBag.Authors = new SelectList (this.m_Db.Authors.All (), "Id", "Name");
-         return View ();
-      }
-
-      /// <summary>
-      /// Assigns a writer to a version.
-      /// </summary>
-      /// <returns>The assignment result.</returns>
-      [HttpPost]
-      [ValidateAntiForgeryToken]
-      [Authorize (Roles = "Editor")]
-      public ActionResult AssignWriter (int versionId, int authorId, bool isTranslator)
-      {
-         var version = this.m_Db.Versions.Get (versionId);
-         var author = this.m_Db.Authors.Get (authorId);
-         var writer = new Writer
-         {
-            Version = version,
-            IsTranslator = isTranslator,
-            Author = author
-         };
-         version.Writers.Add (writer);
+         var subBook = new SubBook { Name = "default", Order = 0, Version = version };
+         version.SubBooks.Add (subBook);
+         this.m_Db.SubBooks.Insert (subBook);
          this.m_Db.Save ();
-         return RedirectToAction ("About", new { id = versionId });
+
+         var chapter = new Chapter { Name = "About", Order = 0, SubBook = subBook };
+         subBook.Chapters.Add (chapter);
+         this.m_Db.Chapters.Insert (chapter);
+         this.m_Db.Save ();
+
+         version.DefaultReadChapter = chapter.Id;
+         this.m_Db.Save ();
+
+         return RedirectToAction ("Read", "Chapter", new { id = chapter.Id });
+      }
+
+      /// <summary>
+      /// Converts the given version to a view model.
+      /// </summary>
+      /// <param name="version">Version to convert to view model.</param>
+      /// <param name="ignoreSubBook">-1 if not to copy sub book, otherwise an id to ignore.</param>
+      /// <returns>The view model representation of the version.</returns>
+      public static VersionViewModel GetViewModel (Version version, SubBookViewModel ignoreSubBook = null)
+      {
+         var source = version.VersionSources.FirstOrDefault ();
+         var viewModel = new VersionViewModel
+         {
+            Id = version.Id,
+            Title = version.Title,
+            BookId = version.Book.Id,
+            Abbreviation = version.Abbreviation,
+            PublishDate = version.PublishDate,
+            Book = BookController.GetViewModel (version.Book),
+            DefaultReadChapter = version.DefaultReadChapter,
+            SourceName = source == null ? string.Empty : source.Source.Name,
+            SourceUrl = source == null ? string.Empty : source.Source.Url
+         };
+
+         if (ignoreSubBook != null)
+         {
+            foreach (var subBook in version.SubBooks.OrderBy (pe => pe.Order))
+            {
+               viewModel.SubBooks.Add (subBook.Id == ignoreSubBook.Id ? ignoreSubBook
+                  : SubBookController.GetViewModel (subBook, null, viewModel));
+            }
+         }
+
+         return viewModel;
       }
    }
 }

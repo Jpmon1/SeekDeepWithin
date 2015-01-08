@@ -15,6 +15,11 @@ namespace SeekDeepWithin.Domain
       public int Order { get; set; }
 
       /// <summary>
+      /// Gets or Sets if this chapter should be hidden or not.
+      /// </summary>
+      public bool Hide { get; set; }
+
+      /// <summary>
       /// Gets or Sets the name of this chapter.
       /// </summary>
       public string Name { get; set; }

@@ -35,7 +35,7 @@ namespace SeekDeepWithin.Controllers
       public ActionResult Read (int id)
       {
          var chapter = this.m_Db.Chapters.Get (id);
-         return View (chapter.ToViewModel ());
+         return View (GetViewModel (chapter, true));
       }
 
       /// <summary>
@@ -48,7 +48,7 @@ namespace SeekDeepWithin.Controllers
       {
          if (Request.UrlReferrer != null) TempData["RefUrl"] = Request.UrlReferrer.ToString ();
          var chapter = this.m_Db.Chapters.Get (id);
-         return View (chapter.ToViewModel ());
+         return View (GetViewModel (chapter));
       }
 
       /// <summary>
@@ -99,14 +99,21 @@ namespace SeekDeepWithin.Controllers
       /// Gets the create new chapter view.
       /// </summary>
       /// <param name="versionId">Version id to create the chapter for.</param>
+      /// <param name="subBookId">The id of the of the sub book to select.</param>
       /// <returns>The create chapter view.</returns>
       [Authorize (Roles = "Creator")]
-      public ActionResult Create (int versionId)
+      public ActionResult Create (int versionId, int? subBookId)
       {
-         if (Request.UrlReferrer != null) TempData["RefUrl"] = Request.UrlReferrer.ToString ();
-         var subBooks = this.m_Db.SubBooks.Get (sb => sb.Version.Id == versionId);
+         var subBooks = this.m_Db.SubBooks.Get (sb => sb.Version.Id == versionId).ToList();
+         if (subBooks.Count == 0)
+         {
+            TempData ["ErrorMessage"] = "You must have at least one sub book to add a chapter.";
+            return RedirectToAction ("Edit", "Version", new {id = versionId});
+         }
          ViewBag.VersionId = versionId;
-         ViewBag.SubBooks = new SelectList (subBooks, "Id", "Name");
+         ViewBag.SubBooks = subBookId.HasValue ? new SelectList (subBooks, "Id", "Name", subBookId.Value)
+            : new SelectList (subBooks, "Id", "Name");
+         if (Request.UrlReferrer != null) TempData["RefUrl"] = Request.UrlReferrer.ToString ();
          return View ();
       }
 
@@ -129,7 +136,54 @@ namespace SeekDeepWithin.Controllers
          subBook.Chapters.Add (chapter);
          this.m_Db.Chapters.Insert (chapter);
          this.m_Db.Save ();
-         return RedirectToAction ("About", "Version", new {id = versionId});
+         return RedirectToAction ("Read", "Chapter", new {id = chapter.Id});
+      }
+
+      /// <summary>
+      /// Converts the given chapter to a view model.
+      /// </summary>
+      /// <param name="chapter">Chapter to convert to view model.</param>
+      /// <param name="deepCopy">True to perform a deep copy, other wise false.</param>
+      /// <param name="subBook">The sub book for the chapter.</param>
+      /// <returns>The view model representation of the chapter.</returns>
+      public static ChapterViewModel GetViewModel (Chapter chapter, bool deepCopy = false, SubBookViewModel subBook = null)
+      {
+         var viewModel = new ChapterViewModel
+         {
+            Id = chapter.Id,
+            Name = chapter.Name,
+            Order = chapter.Order,
+            SubBookId = chapter.SubBook.Id,
+            DefaultToParagraph = chapter.DefaultToParagraph,
+            SubBook = subBook
+         };
+         if (subBook == null)
+            viewModel.SubBook = SubBookController.GetViewModel (chapter.SubBook, deepCopy ? viewModel : null);
+         foreach (var header in chapter.Headers)
+         {
+            viewModel.Headers.Add(new HeaderFooterViewModel
+            {
+               IsBold = header.IsBold,
+               IsItalic = header.IsItalic,
+               Justify = header.Justify,
+               Text = header.Header.Text
+            });
+         }
+
+         foreach (var footer in chapter.Footers)
+         {
+            viewModel.Footers.Add (new HeaderFooterViewModel
+            {
+               IsBold = footer.IsBold,
+               IsItalic = footer.IsItalic,
+               Justify = footer.Justify,
+               Text = footer.Footer.Text
+            });
+         }
+
+         foreach (var entry in chapter.Passages.OrderBy (pe => pe.Order))
+            viewModel.Passages.Add (PassageController.GetViewModel (entry.Passage, entry));
+         return viewModel;
       }
    }
 }

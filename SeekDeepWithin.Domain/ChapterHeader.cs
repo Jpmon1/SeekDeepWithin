@@ -8,13 +8,28 @@
       public int Id { get; set; }
 
       /// <summary>
-      /// Gets or Sets the text of the header.
+      /// Gets or Sets if the content should be bolded.
       /// </summary>
-      public string Text { get; set; }
+      public bool IsBold { get; set; }
+
+      /// <summary>
+      /// Gets or Sets if the content should be italicized.
+      /// </summary>
+      public bool IsItalic { get; set; }
+
+      /// <summary>
+      /// Gets or Sets the justification of the header.
+      /// </summary>
+      public int Justify { get; set; }
+
+      /// <summary>
+      /// Gets or Sets the header.
+      /// </summary>
+      public virtual Header Header { get; set; }
 
       /// <summary>
       /// Gets or Sets the chapter the header belongs to.
       /// </summary>
-      public virtual Chapter Passage { get; set; }
+      public virtual Chapter Chapter { get; set; }
    }
 }

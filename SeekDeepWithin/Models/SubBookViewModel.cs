@@ -1,10 +1,21 @@
-﻿using System.Collections.Generic;
-using SeekDeepWithin.Domain;
+﻿using System.Collections.ObjectModel;
 
 namespace SeekDeepWithin.Models
 {
+   /// <summary>
+   /// View model for a sub book.
+   /// </summary>
    public class SubBookViewModel
    {
+      /// <summary>
+      /// Initializes a new sub book view model.
+      /// </summary>
+      public SubBookViewModel ()
+      {
+         this.Chapters = new Collection <ChapterViewModel> ();
+         this.Writers = new Collection <WriterViewModel> ();
+      }
+
       /// <summary>
       /// Gets or Sets the id of this sub book.
       /// </summary>
@@ -31,8 +42,13 @@ namespace SeekDeepWithin.Models
       public VersionViewModel Version { get; set; }
 
       /// <summary>
+      /// Gets or Sets the list of authors.
+      /// </summary>
+      public Collection<WriterViewModel> Writers { get; set; }
+
+      /// <summary>
       /// Gets or Sets the list of chapters.
       /// </summary>
-      public ICollection<ChapterViewModel> Chapters { get; set; }
+      public Collection<ChapterViewModel> Chapters { get; set; }
    }
 }

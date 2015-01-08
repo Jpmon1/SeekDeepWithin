@@ -1,0 +1,13 @@
+﻿@model SeekDeepWithin.Models.HeaderFooterViewModel
+          
+@{
+   var style = string.Empty;
+   if (Model.IsBold) { style += "font-weight:bold;"; }
+   if (Model.IsItalic) { style += "font-style:italic;"; }
+   var align = "text-center";
+   if (Model.Justify == 0) { align = "text-left"; }
+   if (Model.Justify == 2) { align = "text-right"; }
+}
+<div class="@align" style="@style">
+   @Model.Text
+</div>

@@ -210,7 +210,9 @@
     <Compile Include="Controllers\ChapterController.cs" />
     <Compile Include="Controllers\EditController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
+    <Compile Include="Controllers\FooterController.cs" />
     <Compile Include="Controllers\GlossaryController.cs" />
+    <Compile Include="Controllers\HeaderController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\HtmlSanitizer.cs" />
     <Compile Include="Controllers\ConvertController.cs" />
@@ -258,9 +260,8 @@
     <Compile Include="DataAccess\UsersContext.cs" />
     <Compile Include="Models\TagViewModel.cs" />
     <Compile Include="Models\VersionSourceViewModel.cs" />
-    <Compile Include="Models\WriterLink.cs" />
+    <Compile Include="Models\WriterViewModel.cs" />
     <Compile Include="Models\BookViewModel.cs" />
-    <Compile Include="Models\ModelMappers.cs" />
     <Compile Include="Models\VersionViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Views\Book\Index.generated.cs">
@@ -466,10 +467,8 @@
     </None>
     <Content Include="Views\Book\Create.cshtml" />
     <Content Include="Views\Book\Edit.cshtml" />
-    <Content Include="Views\Book\Details.cshtml" />
     <Content Include="Views\Version\Edit.cshtml" />
     <Content Include="Views\SubBook\Edit.cshtml" />
-    <Content Include="Views\SubBook\Details.cshtml" />
     <Content Include="Views\Chapter\Edit.cshtml" />
     <Content Include="Views\Passage\Details.cshtml" />
     <Content Include="Views\Roles\Index.cshtml" />
@@ -482,12 +481,11 @@
     <Content Include="Views\Search\Results.cshtml" />
     <Content Include="Views\Author\Index.cshtml" />
     <Content Include="Views\Author\Create.cshtml" />
-    <Content Include="Views\Version\AssignWriter.cshtml" />
+    <Content Include="Views\SubBook\AssignWriter.cshtml" />
     <Content Include="Views\Admin\Index.cshtml" />
     <Content Include="Views\Edit\Index.cshtml" />
     <Content Include="Views\Glossary\CreateTerm.cshtml" />
     <Content Include="Views\Chapter\Read.cshtml" />
-    <Content Include="Views\Version\About.cshtml" />
     <Content Include="Views\Glossary\Term.cshtml" />
     <Content Include="Views\Version\Create.cshtml" />
     <Content Include="Views\SubBook\Create.cshtml" />
@@ -498,15 +496,17 @@
     <Content Include="Views\Source\Index.cshtml" />
     <Content Include="Views\Glossary\EditEntry.cshtml" />
     <Content Include="Views\Version\EditSource.cshtml" />
-    <Content Include="Views\Link\_LinkForm.cshtml" />
+    <Content Include="Views\Shared\_LinkForm.cshtml" />
     <Content Include="Views\Source\EditSource.cshtml" />
     <Content Include="Views\Source\Edit.cshtml" />
     <Content Include="Views\Source\_SourceForm.cshtml" />
     <Content Include="Views\Style\Create.cshtml" />
-    <Content Include="Views\Link\CreateForPassage.cshtml" />
-    <Content Include="Views\Link\CreateForVersion.cshtml" />
     <Content Include="Views\Chapter\_EditChapter.cshtml" />
     <Content Include="Views\Chapter\Add.cshtml" />
+    <Content Include="Views\Header\Create.cshtml" />
+    <Content Include="Views\Footer\Create.cshtml" />
+    <Content Include="Views\Shared\_HeaderFooter.cshtml" />
+    <Content Include="Views\Shared\_Passage.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201412022034506_InitialCreate.resx">

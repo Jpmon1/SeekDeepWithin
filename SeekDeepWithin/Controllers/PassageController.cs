@@ -1,4 +1,5 @@
-﻿using System.Web.Mvc;
+﻿using System.Linq;
+using System.Web.Mvc;
 using SeekDeepWithin.DataAccess;
 using SeekDeepWithin.Domain;
 using SeekDeepWithin.Models;
@@ -68,11 +69,7 @@ namespace SeekDeepWithin.Controllers
             viewModel.SubBookId = entry.Chapter.SubBook.Id;
             viewModel.SubBookName = entry.Chapter.SubBook.Name;
             viewModel.VersionId = entry.Chapter.SubBook.Version.Id;
-            viewModel.VersionName = entry.Chapter.SubBook.Version.Name;
-            var bookTitle = entry.Chapter.SubBook.Version.Book.Title;
-            viewModel.VersionName = string.IsNullOrEmpty (entry.Chapter.SubBook.Version.TitleFormat)
-               ? bookTitle
-               : entry.Chapter.SubBook.Version.TitleFormat.Replace ("{B}", bookTitle).Replace ("{V}", viewModel.VersionName);
+            viewModel.VersionName = entry.Chapter.SubBook.Version.Title;
 
             foreach (var style in entry.Styles)
             {
@@ -82,6 +79,29 @@ namespace SeekDeepWithin.Controllers
                   EndIndex = style.EndIndex,
                   Start = style.Style.Start,
                   End = style.Style.End
+               });
+            }
+
+            foreach (var header in entry.Headers)
+            {
+               viewModel.Headers.Add (new HeaderFooterViewModel
+               {
+                  Text = header.Header.Text,
+                  IsBold = header.IsBold,
+                  IsItalic = header.IsItalic,
+                  Justify = header.Justify
+               });
+            }
+
+            foreach (var footer in entry
+               .Footers)
+            {
+               viewModel.Footers.Add (new HeaderFooterViewModel
+               {
+                  IsBold = footer.IsBold,
+                  IsItalic = footer.IsItalic,
+                  Justify = footer.Justify,
+                  Text = footer.Footer.Text
                });
             }
          }
@@ -141,7 +161,7 @@ namespace SeekDeepWithin.Controllers
                ChapterId = viewModel.ChapterId,
                Number = viewModel.Number,
                Order = viewModel.Order,
-               Passage = new Passage {Text = viewModel.Text}
+               Passage = this.GetPassage (viewModel.Text)
             };
             this.m_Db.Passages.Insert (passageEntry.Passage);
             chapter.Passages.Add (passageEntry);
@@ -150,6 +170,24 @@ namespace SeekDeepWithin.Controllers
          }
          Response.StatusCode = 500;
          return Json ("Data is not valid.");
+      }
+
+      /// <summary>
+      /// Gets the passage in the database with the given text.
+      /// </summary>
+      /// <param name="text">The text of the passage to get.</param>
+      /// <returns>The requested passage, a new passage if does not exist.</returns>
+      private Passage GetPassage (string text)
+      {
+         var passages = this.m_Db.Passages.Get (h => h.Text == text);
+         var passage = passages.FirstOrDefault ();
+         if (passage == null)
+         {
+            passage = new Passage { Text = text };
+            this.m_Db.Passages.Insert (passage);
+            this.m_Db.Save ();
+         }
+         return passage;
       }
 
       /// <summary>
@@ -164,19 +202,14 @@ namespace SeekDeepWithin.Controllers
          var result = new
          {
             entryId = id,
+            order = entry.Order,
             passageId = entry.PassageId,
             passageNumber = entry.Number,
-            passageText = entry.Passage.Text
+            passageText = entry.Passage.Text,
+            headers = entry.Headers.Select(h => new { text = h.Header.Text, id = h.Id }),
+            footers = entry.Footers.Select(f => new { text = f.Footer.Text, index = f.Index, id = f.Id })
          };
          return Json (result, JsonRequestBehavior.AllowGet);
-      }
-
-      [HttpPost]
-      [ValidateAntiForgeryToken]
-      [Authorize (Roles = "Editor")]
-      public ActionResult AddHeader (int entryId, string text, bool isBold, bool isItalic)
-      {
-         
       }
    }
 }

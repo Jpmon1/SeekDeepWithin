@@ -32,10 +32,8 @@
          </div>
          <div class="row">
             <div class="large-12 columns">
-               <div class="switch">
-                  @Html.CheckBoxFor(m => m.RememberMe)
-                  @Html.LabelFor(m => m.RememberMe)
-               </div>
+               @Html.CheckBoxFor(m => m.RememberMe)
+               @Html.LabelFor(m => m.RememberMe)
             </div>
          </div>
          <input type="submit" value="Log in" class="button" />

@@ -1,11 +1,11 @@
-﻿@using System.Globalization
-@model SeekDeepWithin.Models.ChapterViewModel
+﻿@model SeekDeepWithin.Models.ChapterViewModel
 
 @{
    var title = Model.SubBook.Version.Title;
    if (Model.SubBook.Name != "default") {
       title += " | " + Model.SubBook.Name;
    }
+   var subBookTitle = title;
    if (Model.Name != "default") {
       title += " | " + Model.Name;
    }
@@ -15,7 +15,7 @@
 <div class="row">
    <div class="small-12 large-12 columns">
       <ul class="breadcrumbs" role="menubar" aria-label="breadcrumbs">
-         <li role="menuitem"><a href="@Url.Action("About", "Version", new { id = @Model.SubBook.Version.Id })">@Model.SubBook.Version.Title</a></li>
+         <li role="menuitem"><a href="@Url.Action("Read", "Chapter", new { id = @Model.SubBook.Version.DefaultReadChapter })">@Model.SubBook.Version.Title</a></li>
          @if (Model.SubBook.Name != "default") {
             <li role="menuitem"><a href="@Url.Action("About", "SubBook", new { id = @Model.SubBook.Id })">@Model.SubBook.Name</a></li>
          }
@@ -29,19 +29,64 @@
       </ul>
    </div>
 </div>
+
 <div class="row">
    <div class="small-12 large-8 columns">
+      @if (Model.Order == 0) {
+         <h3>@subBookTitle</h3>
+         <p>
+            @{
+               var writers = Model.SubBook.Writers.Where (w => !w.IsTranslator).ToList ();
+               if (writers.Count > 0) {
+                  <em>written by:</em>
+                  foreach (var writer in writers) {
+                     <span>@Html.ActionLink(writer.Name, "Details", "Author", new { id = writer.Id }, null) </span>
+                  }
+               }
+               var translators = Model.SubBook.Writers.Where (w => w.IsTranslator).ToList ();
+               if (translators.Count > 0) {
+                  <br />
+                  <em>translated by:</em>
+                  foreach (var writer in translators) {
+                     <span>@Html.ActionLink(writer.Name, "Details", "Author", new { id = writer.Id }, null) </span>
+                  }
+               }
+            }
+         </p>
+      }
+
+      @foreach (var header in Model.Headers) {
+         <div class="row">
+            <div class="small-12 large-12 columns">
+               @Html.Partial("_HeaderFooter", header)
+            </div>
+         </div>
+      }
       @foreach (var passage in Model.Passages) {
          var id = passage.EntryId;
-         <div class="row" id="pass_@id">
-            @if (passage.Number > 0) {
-               <div class="small-6 medium-2 large-1 columns">
-                  <blockquote>
-                     @Html.ActionLink(passage.Number.ToString (CultureInfo.InvariantCulture), "Details", "Passage", new { entryId = passage.Id }, null)
-                  </blockquote>
+         foreach (var header in passage.Headers) {
+            <div class="row">
+               <div class="medium-10 large-11 medium-offset-2 large-offset-1 columns">
+                  @Html.Partial("_HeaderFooter", header)
                </div>
+            </div>
+         }
+         <div class="row" id="pass_@id">
+            @if (Model.DefaultToParagraph) {
+               <div class="small-12 medium-12 large-12 columns">
+                  <p>@Html.Raw(passage.Render())</p>
+               </div>
+            } else {
+               @Html.Partial("_Passage", passage)
             }
-            <div class="medium-10 large-11 columns">@Html.Raw(passage.Render ())</div>
+         </div>
+      }
+
+      @foreach (var footer in Model.Footers) {
+         <div class="row">
+            <div class="small-12 large-12 columns">
+               @Html.Partial("_HeaderFooter", footer)
+            </div>
          </div>
       }
    </div>
@@ -49,14 +94,39 @@
       <h4>Contents</h4>
       <ul>
          @foreach (var subBook in Model.SubBook.Version.SubBooks) {
-            if (subBook.Name != "default") {
-               <li>subBook.Name</li>
+            if (subBook.Name != "default" || (Request.IsAuthenticated && User.IsInRole ("Editor"))) {
+               <li>
+                  @subBook.Name
+                  @if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
+                     <small>@Html.ActionLink("[edit]", "Edit", "SubBook", new {id=subBook.Id}, null)</small>
+                  }
+               </li>
             }
             foreach (var chapter in subBook.Chapters) {
-               <li>@Html.ActionLink(chapter.Name, "Read", "Chapter", new { id = chapter.Id }, null)</li>
+               if (chapter.Id == Model.Id) {
+                  <li>@chapter.Name</li>
+               } else {
+                  <li>@Html.ActionLink(chapter.Name, "Read", "Chapter", new {id = chapter.Id}, null)</li>
+               }
             }
          }
       </ul>
    </div>
+</div>
 
+<div class="row">
+   <div class="small-12 large-12 columns">
+      <div class="panel" style="padding: 3px 10px;">
+         <small>
+            source: @if (!string.IsNullOrWhiteSpace (Model.SubBook.Version.SourceUrl)) {
+                       <a href="@Model.SubBook.Version.SourceUrl" target="_blank">@Model.SubBook.Version.SourceName</a>
+                    } else {
+                       @Html.Raw("unknown")
+                    }
+            @if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
+               @Html.ActionLink("[edit]", "EditSource", "Source", new { id = Model.SubBook.Version.Id, type = "version" }, null)
+            }
+         </small>
+      </div>
+   </div>
 </div>

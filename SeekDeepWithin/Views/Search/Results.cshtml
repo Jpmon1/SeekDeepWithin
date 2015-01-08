@@ -1,0 +1,52 @@
+﻿@model IEnumerable<SeekDeepWithin.Models.PassageViewModel>
+
+@{
+   ViewBag.Title = "Search Results";
+}
+
+<h3>Search Results</h3>
+
+<div class="row">
+   <div class="large-3 small-12 columns">
+      <h4>Filters....</h4>
+   </div>
+   <div class="large-9 columns">
+      @{
+         int index = 0;
+      }
+      @foreach (var result in Model) {
+         if (index == 0) {
+            @Html.Raw("<div class=\"row\" data-equalizer>")
+         }
+         <div class="large-4 small-12 medium-6 columns">
+            <ul class="pricing-table" data-equalizer-watch>
+               <li class="description">
+                  @{
+                     var title = result.VersionName;
+                     if (result.SubBookName != "default") {
+                        title += " | " + result.SubBookName;
+                     }
+                     if (result.ChapterName != "default") {
+                        title += " | " + result.ChapterName;
+                     }
+                     title += " | " + result.Number;
+                     var anchor = string.Format("#pass_{0}",result.EntryId);
+                  }
+                  <a href="@Url.Action("Read", "Chapter", new { id = result.ChapterId })@anchor">@title</a>
+               </li>
+               <li class="bullet-item" style="border-bottom: 0">
+                  @result.Text
+               </li>
+            </ul>
+         </div>
+         index++;
+         if (index == 3) {
+            @Html.Raw("</div>")
+            index = 0;
+         }
+      }
+      @if (index != 0) {
+         @Html.Raw("</div>");
+      }
+   </div>
+</div>

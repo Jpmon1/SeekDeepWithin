@@ -61,6 +61,16 @@ namespace SeekDeepWithin.DataAccess
       IRepository<Passage> Passages { get; }
 
       /// <summary>
+      /// Gets the repository for headers.
+      /// </summary>
+      IRepository<Header> Headers { get; }
+
+      /// <summary>
+      /// Gets the repository for footers.
+      /// </summary>
+      IRepository<Footer> Footers { get; }
+
+      /// <summary>
       /// Gets the repository for passages.
       /// </summary>
       IRepository <GlossaryTerm> GlossaryTerms { get; }

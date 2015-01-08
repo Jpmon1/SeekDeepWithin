@@ -10,9 +10,23 @@
    color: black;
    padding: 10px;
 }
-
 .pricing-table .bullet-item {
    padding: 5px;
+}
+
+.tab-bar {
+   background-color: #E7E7E7;
+   border: 1px #C7C7C7 solid;
+}
+.tab-bar h1, .tab-bar h2, .tab-bar h3, .tab-bar h4, .tab-bar h5, .tab-bar h6 {
+   color: black;
+   font-weight: normal;
+}
+.left-small {
+  border-right: solid 1px #C7C7C7;
+}
+.right-small {
+  border-left: solid 1px #C7C7C7;
 }
 
 .autocomplete-suggestions { border: 1px solid #999; background: #FFF; overflow: auto; }

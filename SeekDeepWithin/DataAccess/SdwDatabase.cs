@@ -19,6 +19,8 @@ namespace SeekDeepWithin.DataAccess
       private Repository<Tag> m_TagRepository;
       private Repository<Style> m_StyleRepository;
       private Repository<Source> m_SourceRepository;
+      private Repository<Header> m_HeaderRepository;
+      private Repository<Footer> m_FooterRepository;
       private Repository<PassageEntry> m_PassageEntryRepository;
       private Repository<GlossaryTerm> m_GlossaryItemRepository;
       private Repository<GlossaryEntry> m_GlossaryEntryRepository;
@@ -118,6 +120,22 @@ namespace SeekDeepWithin.DataAccess
       public IRepository<Source> Sources
       {
          get { return this.m_SourceRepository ?? (this.m_SourceRepository = new Repository<Source> (m_Db)); }
+      }
+
+      /// <summary>
+      /// Gets the repository for headers.
+      /// </summary>
+      public IRepository<Header> Headers
+      {
+         get { return this.m_HeaderRepository ?? (this.m_HeaderRepository = new Repository<Header> (m_Db)); }
+      }
+
+      /// <summary>
+      /// Gets the repository for footers.
+      /// </summary>
+      public IRepository<Footer> Footers
+      {
+         get { return this.m_FooterRepository ?? (this.m_FooterRepository = new Repository<Footer> (m_Db)); }
       }
 
       /// <summary>

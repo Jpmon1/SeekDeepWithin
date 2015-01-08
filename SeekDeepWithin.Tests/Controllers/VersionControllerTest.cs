@@ -33,7 +33,7 @@ namespace SeekDeepWithin.Tests.Controllers
          this.m_MockDb.Versions.Insert (new Version
          {
             Id = 0,
-            Name = "King James",
+            Title = "King James",
             Book = this.m_MockDb.Books.Get (0),
             PublishDate = "1611"
          });

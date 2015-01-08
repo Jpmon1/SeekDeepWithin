@@ -47,6 +47,7 @@ namespace SeekDeepWithin.Controllers
       /// <param name="regex">Regex to remove.</param>
       /// <returns>The upated text.</returns>
       [HttpPost]
+      [AllowAnonymous]
       public ActionResult RemoveRegex (string text, string regex)
       {
          return ReplaceRegex (text, regex, "");
@@ -60,6 +61,7 @@ namespace SeekDeepWithin.Controllers
       /// <param name="replace">The replacement.</param>
       /// <returns>The upated text.</returns>
       [HttpPost]
+      [AllowAnonymous]
       public ActionResult ReplaceRegex (string text, string regex, string replace)
       {
          var newText = string.Empty;
