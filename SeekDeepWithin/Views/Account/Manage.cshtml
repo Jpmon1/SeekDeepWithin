@@ -9,14 +9,16 @@
 
 <p>Hello <strong>@User.Identity.Name</strong>, use this page to change information about your account.</p>
 
-@(ViewBag.HasLocalPassword ? Html.Partial ("_ChangePasswordPartial") : Html.Partial ("_SetPasswordPartial"))
+<div class="row">
+   <div class="small-12 large-8 columns">
+      @(ViewBag.HasLocalPassword ? Html.Partial ("_ChangePasswordPartial") : Html.Partial ("_SetPasswordPartial"))
+   </div>
 
-<section id="externalLogins">
-    @Html.Action("RemoveExternalLogins")
-
-    <h4>Add an external login</h4>
-    @Html.Action("ExternalLoginsList", new { ReturnUrl = ViewBag.ReturnUrl })
-</section>
+   <div class="small-12 large-4 columns">
+      @Html.Action("RemoveExternalLogins")
+      @Html.Action("ExternalLoginsList", new { ReturnUrl = ViewBag.ReturnUrl })
+   </div>
+</div>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

@@ -45,10 +45,10 @@
     <Compile Include="Chapter.cs" />
     <Compile Include="ChapterFooter.cs" />
     <Compile Include="ChapterHeader.cs" />
-    <Compile Include="Footer.cs" />
     <Compile Include="GlossaryEntrySource.cs" />
     <Compile Include="GlossaryTermTag.cs" />
-    <Compile Include="Header.cs" />
+    <Compile Include="IFooter.cs" />
+    <Compile Include="IHeader.cs" />
     <Compile Include="Link.cs" />
     <Compile Include="PassageFooter.cs" />
     <Compile Include="GlossaryEntry.cs" />

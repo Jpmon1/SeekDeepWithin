@@ -10,29 +10,19 @@ namespace SeekDeepWithin.Domain
       public int Id { get; set; }
 
       /// <summary>
-      /// Gets or Sets the order of this chapter.
-      /// </summary>
-      public int Order { get; set; }
-
-      /// <summary>
-      /// Gets or Sets if this chapter should be hidden or not.
-      /// </summary>
-      public bool Hide { get; set; }
-
-      /// <summary>
       /// Gets or Sets the name of this chapter.
       /// </summary>
       public string Name { get; set; }
 
       /// <summary>
-      /// Gets or Sets the sub book this chapter belongs to.
-      /// </summary>
-      public virtual SubBook SubBook { get; set; }
-
-      /// <summary>
       /// Gets or Sets the default reading style.
       /// </summary>
       public bool DefaultToParagraph { get; set; }
+
+      /// <summary>
+      /// Gets or Sets the sub book this chapter belongs to.
+      /// </summary>
+      public virtual SubBook SubBook { get; set; }
 
       /// <summary>
       /// Gets or Sets the list of passages.

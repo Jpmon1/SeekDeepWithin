@@ -18,8 +18,10 @@ namespace SeekDeepWithin.Tests.Mocks
       private IRepository<Tag> m_Tags;
       private IRepository<Style> m_Styles;
       private IRepository<Source> m_Sources;
-      private IRepository<Header> m_Headers;
-      private IRepository<Footer> m_Footers;
+      private IRepository<ChapterHeader> m_ChapterHeaders;
+      private IRepository<ChapterFooter> m_ChapterFooters;
+      private IRepository<PassageHeader> m_PassageHeaders;
+      private IRepository<PassageFooter> m_PassageFooters;
       private IRepository<PassageEntry> m_PassageEntries;
       private IRepository<GlossaryTerm> m_GlossaryItems;
       private IRepository<GlossaryEntry> m_GlossaryEntries;
@@ -105,19 +107,35 @@ namespace SeekDeepWithin.Tests.Mocks
       }
 
       /// <summary>
-      /// Gets the repository for headers.
+      /// Gets the repository for Chapter headers.
       /// </summary>
-      public IRepository<Header> Headers
+      public IRepository<ChapterHeader> ChapterHeaders
       {
-         get { return this.m_Headers ?? (this.m_Headers = new MockRepository<Header> ()); }
+         get { return this.m_ChapterHeaders ?? (this.m_ChapterHeaders = new MockRepository<ChapterHeader> ()); }
       }
 
       /// <summary>
-      /// Gets the repository for footers.
+      /// Gets the repository for Chapter footers.
       /// </summary>
-      public IRepository<Footer> Footers
+      public IRepository<ChapterFooter> ChapterFooters
       {
-         get { return this.m_Footers ?? (this.m_Footers = new MockRepository<Footer> ()); }
+         get { return this.m_ChapterFooters ?? (this.m_ChapterFooters = new MockRepository<ChapterFooter> ()); }
+      }
+
+      /// <summary>
+      /// Gets the repository for Passage headers.
+      /// </summary>
+      public IRepository<PassageHeader> PassageHeaders
+      {
+         get { return this.m_PassageHeaders ?? (this.m_PassageHeaders = new MockRepository<PassageHeader> ()); }
+      }
+
+      /// <summary>
+      /// Gets the repository for Passage footers.
+      /// </summary>
+      public IRepository<PassageFooter> PassageFooters
+      {
+         get { return this.m_PassageFooters ?? (this.m_PassageFooters = new MockRepository<PassageFooter> ()); }
       }
 
       /// <summary>

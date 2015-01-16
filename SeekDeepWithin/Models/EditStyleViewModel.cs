@@ -44,11 +44,6 @@ namespace SeekDeepWithin.Models
       public int EndIndex { get; set; }
 
       /// <summary>
-      /// Gets or Sets the text.
-      /// </summary>
-      public string Text { get; set; }
-
-      /// <summary>
       /// Gets or Sets the parent id, if needed.
       /// </summary>
       public int ParentId { get; set; }

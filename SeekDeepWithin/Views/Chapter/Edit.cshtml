@@ -15,48 +15,16 @@
 
 <div id="modal" class="reveal-modal" data-reveal></div>
 @Html.Hidden("chapterId", Model.Id)
+<input type="hidden" id="FooterIndex" name="FooterIndex" value="-1" />
 
-<div class="off-canvas-wrap" data-offcanvas>
-   <div class="inner-wrap">
-      <nav class="tab-bar">
-         <section class="middle tab-bar-section">
-            <h1 class="title">Chapter - @Model.Name</h1>
-         </section>
-
-         <section class="right-small text-center">
-            <a class="right-off-canvas-toggle" href="#" style="color: black;"><i class="icon-menu"></i></a>
-         </section>
-      </nav>
-
-      <aside class="right-off-canvas-menu">
-         <ul class="off-canvas-list" id="rightChapterMenu">
-            <li id="cHeadersLabel"><label>Headers</label></li>
-            <li id="cAddHeaderBtn"><a href="#" onclick="addChapterHeader();">Add New Header</a></li>
-            @foreach (var header in Model.Headers) {
-               <li><a href="#"><i class="icon-notificationbottom"></i> @header.Text</a></li>
-            }
-            <li id="cFootersLabel"><label>Footers</label></li>
-            @foreach (var footer in Model.Footers) {
-               <li><a href="#"><i class="icon-notificationtop"></i> @footer.Text</a></li>
-            }
-            <li id="cAddFooterBtn"><a href="#" onclick="addChapterFooter();">Add New Footer</a></li>
-            <li id="cEndLabel"><label>Seek Deep Within</label></li>
-         </ul>
-      </aside>
-
-      <section class="main-section">
-
-         <div class="row">
-            <div class="small-12 large-12 columns">
-               @Html.Partial("_EditChapter")
-            </div>
-         </div>
-
-      </section>
-
-      <a class="exit-off-canvas"></a>
-
+<div class="row">
+   <div class="small-12 large-12 columns text-center">
+      <a href="#" onclick="header_CreateChapter();" class="button success tiny">Add Header for Chapter</a>
    </div>
+</div>
+
+<div id="chapterHeaders">
+   @Html.EditorFor(model => model.Headers)
 </div>
 
 <div class="off-canvas-wrap" data-offcanvas>
@@ -79,8 +47,9 @@
          <ul class="off-canvas-list">
             <li><label>Passages</label></li>
             @foreach (var passage in Model.Passages) {
+               var len = passage.Text.Length > 20 ? 20 : passage.Text.Length;
                <li>
-                  <a href="#" onclick="editEntry(@passage.EntryId)">@passage.Number - @passage.Text.Substring(0, 20)...</a>
+                  <a href="#" onclick="editEntry(@passage.EntryId)">@passage.Number - @passage.Text.Substring(0, len)...</a>
                </li>
             }
          </ul>
@@ -89,9 +58,9 @@
       <aside class="right-off-canvas-menu">
          <ul class="off-canvas-list" id="rightPassageMenu">
             <li id="headersLabel"><label>Headers</label></li>
-            <li id="addHeaderBtn"><a href="#" onclick="addPassageHeader();">Add New Header</a></li>
+            <li id="addHeaderBtn"><a href="#" onclick="header_CreatePassage();">Add New Header</a></li>
             <li id="footersLabel"><label>Footers</label></li>
-            <li id="addFooterBtn"><a href="#" onclick="addPassageFooter();">Add New Footer</a></li>
+            <li id="addFooterBtn"><a href="#" onclick="footer_CreatePassage();">Add New Footer</a></li>
             <li id="endLabel"><label>Seek Deep Within</label></li>
          </ul>
       </aside>
@@ -101,14 +70,44 @@
          <div class="row">
             <div class="small-12 large-12 columns">
                <textarea cols="10" id="passText" name="passText" rows="6" style="margin-top: 10px;"></textarea>
+            </div>
+         </div>
+
+         <div class="row">
+            <div class="small-12 large-2 columns">
                <a href="#" class="button tiny" onclick="savePassage();">Save</a>
                <span id="saveCheck"><i class="icon-ok-sign" style="color: green"></i> Success!</span>
+            </div>
+            <div class="small-12 large-5 columns">
+               <div class="row collapse prefix-radius">
+                  <div class="small-3 columns">
+                     <span class="prefix">Start</span>
+                  </div>
+                  <div class="small-9 columns">
+                     <input type="number" id="StartIndex" name="StartIndex" readonly />
+                  </div>
+               </div>
+            </div>
+            <div class="small-12 large-5 columns">
+               <div class="row collapse prefix-radius">
+                  <div class="small-3 columns">
+                     <span class="prefix">End</span>
+                  </div>
+                  <div class="small-9 columns">
+                     <input type="number" id="EndIndex" name="EndIndex" readonly />
+                  </div>
+               </div>
             </div>
          </div>
          
          <div class="row">
-            <div class="small-12 large-12 columns">
+            <div class="small-12 large-6 columns">
+               <h4>New Link</h4>
                @Html.Partial("_LinkForm", new SeekDeepWithin.Models.EditLinkViewModel { Type = "passage" })
+            </div>
+            <div class="small-12 large-6 columns">
+               <h4>New Style</h4>
+               @Html.Partial("_StyleView")
             </div>
          </div>
 
@@ -119,14 +118,26 @@
    </div>
 </div>
 
+
+<div class="row">
+   <div class="small-12 large-12 columns text-center">
+      <a href="#" onclick="footer_CreateChapter();" class="button success tiny">Add Footer for Chapter</a>
+   </div>
+</div>
+
+<div id="chapterFooters">
+   @Html.EditorFor(model => model.Footers)
+</div>
+
 @section Scripts {
    @Scripts.Render("~/bundles/jqueryval")
    @Scripts.Render("~/bundles/jqueryui")
    @Scripts.Render("~/bundles/sdw.editchapter")
-   @Scripts.Render("~/bundles/sdw.addlink")
-   <script type="text/javascript">
-      $(document).ready(function () {
-         editEntry(@Model.Passages.First().EntryId);
-      });
-   </script>
+   @if (Model.Passages.Count > 0) {
+      <script type="text/javascript">
+         $(document).ready(function() {
+            editEntry(@Model.Passages.First().EntryId);
+         });
+      </script>
+   }
 }

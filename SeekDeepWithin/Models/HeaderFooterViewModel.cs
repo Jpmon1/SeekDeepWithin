@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
+using SeekDeepWithin.Domain;
 
 namespace SeekDeepWithin.Models
 {
@@ -8,6 +9,48 @@ namespace SeekDeepWithin.Models
    /// </summary>
    public class HeaderFooterViewModel
    {
+      /// <summary>
+      /// Initializes a new header/footer view model.
+      /// </summary>
+      public HeaderFooterViewModel ()
+      {
+         this.Text = string.Empty;
+      }
+
+      /// <summary>
+      /// Initializes a new header/footer view model.
+      /// </summary>
+      /// <param name="header">Header data to copy.</param>
+      public HeaderFooterViewModel (IHeader header)
+      {
+         this.Type = "header";
+         this.Id = header.Id;
+         this.IsBold = header.IsBold;
+         this.IsItalic = header.IsItalic;
+         this.Justify = header.Justify;
+         this.Text = header.Text;
+      }
+
+      /// <summary>
+      /// Initializes a new header/footer view model.
+      /// </summary>
+      /// <param name="footer">Footer data to copy.</param>
+      public HeaderFooterViewModel (IFooter footer)
+      {
+         this.Type = "footer";
+         this.Id = footer.Id;
+         this.Index = footer.Index;
+         this.IsBold = footer.IsBold;
+         this.IsItalic = footer.IsItalic;
+         this.Justify = footer.Justify;
+         this.Text = footer.Text;
+      }
+
+      /// <summary>
+      /// The id of the header or footer.
+      /// </summary>
+      public int Id { get; set; }
+
       /// <summary>
       /// Gets or Sets the id of the item this is for.
       /// </summary>
@@ -41,8 +84,18 @@ namespace SeekDeepWithin.Models
       public int Justify { get; set; }
 
       /// <summary>
-      /// Gets or Sets the header type.
+      /// Gets or Sets the type either header/footer.
       /// </summary>
       public string Type { get; set; }
+
+      /// <summary>
+      /// Gets or Sets the number for footers.
+      /// </summary>
+      public int Number { get; set; }
+
+      /// <summary>
+      /// Gets what this header/footer is for.
+      /// </summary>
+      public string For { get; set; }
    }
 }

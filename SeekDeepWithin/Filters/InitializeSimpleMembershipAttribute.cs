@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
 using System.Threading;
 using System.Web.Mvc;
 using SeekDeepWithin.DataAccess;
+using SeekDeepWithin.Migrations;
 using WebMatrix.WebData;
 
 namespace SeekDeepWithin.Filters
@@ -11,21 +11,21 @@ namespace SeekDeepWithin.Filters
    [AttributeUsage (AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
    public sealed class InitializeSimpleMembershipAttribute : ActionFilterAttribute
    {
-      private static SimpleMembershipInitializer _initializer;
-      private static object _initializerLock = new object ();
-      private static bool _isInitialized;
+      private static SimpleMembershipInitializer s_Initializer;
+      private static object s_InitializerLock = new object ();
+      private static bool s_IsInitialized;
 
       public override void OnActionExecuting (ActionExecutingContext filterContext)
       {
          // Ensure ASP.NET Simple Membership is initialized only once per app start
-         LazyInitializer.EnsureInitialized (ref _initializer, ref _isInitialized, ref _initializerLock);
+         LazyInitializer.EnsureInitialized (ref s_Initializer, ref s_IsInitialized, ref s_InitializerLock);
       }
 
       private class SimpleMembershipInitializer
       {
          public SimpleMembershipInitializer ()
          {
-            Database.SetInitializer<UsersContext> (null);
+            Database.SetInitializer (new MigrateDatabaseToLatestVersion<UsersContext, UserConfiguration> ());
 
             try
             {
@@ -33,12 +33,12 @@ namespace SeekDeepWithin.Filters
                {
                   if (!context.Database.Exists ())
                   {
-                     // Create the SimpleMembership database without Entity Framework migration schema
-                     ((IObjectContextAdapter)context).ObjectContext.CreateDatabase ();
+                     context.Database.Create();
                   }
+                  context.UserProfiles.Find (1);
                }
 
-               WebSecurity.InitializeDatabaseConnection ("DefaultConnection", "UserProfile", "UserId", "UserName", autoCreateTables: true);
+               WebSecurity.InitializeDatabaseConnection ("UserConnection", "UserProfile", "UserId", "Email", autoCreateTables: true);
             }
             catch (Exception ex)
             {

@@ -1,6 +1,6 @@
 ﻿namespace SeekDeepWithin.Domain
 {
-   public class PassageHeader
+   public class PassageHeader : IDbTable, IHeader
    {
       /// <summary>
       /// Gets or Sets the id of the header.
@@ -25,7 +25,7 @@
       /// <summary>
       /// Gets or Sets the header.
       /// </summary>
-      public virtual Header Header { get; set; }
+      public string Text { get; set; }
 
       /// <summary>
       /// Gets or Sets the passage the header belongs to.

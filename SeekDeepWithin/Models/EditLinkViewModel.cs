@@ -81,10 +81,5 @@ namespace SeekDeepWithin.Models
       /// </summary>
       [Required]
       public int EndIndex { get; set; }
-
-      /// <summary>
-      /// Gets or Sets the text.
-      /// </summary>
-      public string Text { get; set; }
    }
 }

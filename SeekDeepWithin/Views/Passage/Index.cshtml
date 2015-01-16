@@ -10,14 +10,11 @@
    }
    title += " | " + Model.Number;
    ViewBag.Title = title;
-   var textSpan = 12;
-   if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
-      textSpan = 8;
-   }
+   Model.Renderer = new SeekDeepWithin.Controllers.SdwRenderer ();
 }
 
 <div class="row">
-   <div class="small-12 large-@textSpan columns">
+   <div class="small-12 large-12 columns">
       <ul class="breadcrumbs" role="menubar" aria-label="breadcrumbs">
          <li role="menuitem"><a href="@Url.Action("About", "Version", new { id = @Model.VersionId })">@Model.VersionName</a></li>
          @if (Model.SubBookName != "default") {
@@ -28,8 +25,7 @@
          }
          <li role="menuitem" class="current"><a href="#">@Model.Number</a></li>
       </ul>
-      <p>
-         @Html.Raw(Model.Render ())
-      </p>
    </div>
 </div>
+@Html.Partial("_Passage", Model)
+

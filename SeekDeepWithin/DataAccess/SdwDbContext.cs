@@ -31,9 +31,13 @@ namespace SeekDeepWithin.DataAccess
 
       public DbSet<Source> Sources { get; set; }
 
-      public DbSet<Header> Headers { get; set; }
+      public DbSet<ChapterHeader> ChapterHeaders { get; set; }
 
-      public DbSet<Footer> Footers { get; set; }
+      public DbSet<ChapterFooter> ChapterFooters { get; set; }
+
+      public DbSet<PassageHeader> PassageHeaders { get; set; }
+
+      public DbSet<PassageFooter> PassageFooters { get; set; }
 
       public DbSet<GlossaryTerm> GlossaryItems { get; set; }
 

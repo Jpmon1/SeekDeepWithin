@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using SeekDeepWithin.Models;
 
 namespace SeekDeepWithin.Controllers
@@ -10,51 +9,35 @@ namespace SeekDeepWithin.Controllers
    public class SdwRenderer
    {
       private string m_Html;
+      private int m_FooterNumber = 1;
       private readonly Dictionary<int, int> m_Insertions = new Dictionary<int, int> ();
-
-      /// <summary>
-      /// Initializes the renderer.
-      /// </summary>
-      public SdwRenderer ()
-      {
-         this.Links = new Collection<LinkViewModel> ();
-         this.Styles = new Collection<StyleViewModel> ();
-      }
-
-      /// <summary>
-      /// Gets or Sets the text ot render.
-      /// </summary>
-      public string Text { get; set; }
-
-      /// <summary>
-      /// Gets the collection of links.
-      /// </summary>
-      public ICollection<LinkViewModel> Links { get; private set; }
-
-      /// <summary>
-      /// Gets the collection of styles.
-      /// </summary>
-      public ICollection<StyleViewModel> Styles { get; private set; }
 
       /// <summary>
       /// Renders the passage entry.
       /// </summary>
       /// <returns>The rendered html of the passage entry.</returns>
-      public string Render ()
+      public string Render (IRenderable renderable)
       {
          this.m_Insertions.Clear ();
-         this.m_Html = this.Text;
-         foreach (var link in this.Links)
+         this.m_Html = renderable.Text;
+         foreach (var link in renderable.Links)
          {
             var start = "<a href=\"" + link.Url + "\"";
             if (link.OpenInNewWindow)
                start += " target=\"_blank\"";
             start += ">";
-            this.Insert (start, "</a>", link.StartIndex, link.EndIndex);
+            this.Insert (start, link.StartIndex, "</a>", link.EndIndex);
          }
 
-         foreach (var style in this.Styles)
-            this.Insert (style.Start, style.End, style.StartIndex, style.EndIndex);
+         foreach (var style in renderable.Styles)
+            this.Insert (style.Start, style.StartIndex, style.End, style.EndIndex);
+
+         foreach (var footer in renderable.Footers)
+         {
+            footer.Number = this.m_FooterNumber;
+            this.Insert (string.Format("<sup>({0})</sup>", this.m_FooterNumber), footer.Index);
+            this.m_FooterNumber++;
+         }
 
          return this.m_Html;
       }
@@ -66,15 +49,18 @@ namespace SeekDeepWithin.Controllers
       /// <param name="end">Ending tag information.</param>
       /// <param name="startIndex">Start insertion index.</param>
       /// <param name="endIndex">End insertion index.</param>
-      private void Insert (string start, string end, int startIndex, int endIndex)
+      private void Insert (string start, int startIndex, string end = "", int endIndex = -1)
       {
          var index = this.GetInsertionIndex (startIndex);
          this.m_Html = this.m_Html.Insert (index, start);
          this.AddLength (startIndex, start.Length);
 
-         index = this.GetInsertionIndex (endIndex);
-         this.m_Html = this.m_Html.Insert (index, end);
-         this.AddLength (endIndex, end.Length);
+         if (!string.IsNullOrWhiteSpace (end) && endIndex > 0)
+         {
+            index = this.GetInsertionIndex (endIndex);
+            this.m_Html = this.m_Html.Insert (index, end);
+            this.AddLength (endIndex, end.Length);
+         }
       }
 
       /// <summary>

@@ -1,24 +1,21 @@
-﻿@model IEnumerable<SeekDeepWithin.Models.PassageViewModel>
+﻿@model SeekDeepWithin.Models.SearchViewModel
 
 @{
    ViewBag.Title = "Search Results";
 }
 
-<h3>Search Results</h3>
+<h3>Search Results for '@Model.Query'</h3>
 
 <div class="row">
-   <div class="large-3 small-12 columns">
-      <h4>Filters....</h4>
-   </div>
-   <div class="large-9 columns">
+   <div class="large-12 columns">
       @{
          int index = 0;
       }
-      @foreach (var result in Model) {
+      @foreach (var result in Model.Passages) {
          if (index == 0) {
             @Html.Raw("<div class=\"row\" data-equalizer>")
          }
-         <div class="large-4 small-12 medium-6 columns">
+         <div class="small-12 medium-6 large-3 columns">
             <ul class="pricing-table" data-equalizer-watch>
                <li class="description">
                   @{
@@ -40,7 +37,7 @@
             </ul>
          </div>
          index++;
-         if (index == 3) {
+         if (index == 4) {
             @Html.Raw("</div>")
             index = 0;
          }

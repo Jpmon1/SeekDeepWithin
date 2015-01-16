@@ -22,8 +22,11 @@
    <div class="small-12 large-4 columns">
       <h3>Books Written:</h3>
       <ul>
-         @foreach (var version in Model.Written) {
-            <li>@Html.ActionLink(version.Title, "About", "Version", new { id = version.Id }, null)</li>
+         @foreach (var subBook in Model.Written) {
+            <li>
+               @Html.ActionLink(subBook.Name == "default" ? subBook.Version.Title : subBook.Name,
+                        "Read", "Chapter", new { id = subBook.Version.DefaultReadChapter }, null)
+            </li>
          }
       </ul>
    </div>

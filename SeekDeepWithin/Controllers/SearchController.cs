@@ -42,13 +42,13 @@ namespace SeekDeepWithin.Controllers
       /// <returns>The search view.</returns>
       public ActionResult Results (string searchFor)
       {
-         var passageList = new Collection <PassageViewModel> ();
+         var viewModel = new SearchViewModel {Query = searchFor};
          var passages = this.m_Db.Passages.Get (p => p.Text.Contains (searchFor));
          foreach (var passage in passages)
          {
             foreach (var entry in passage.PassageEntries)
             {
-               var viewModel = new PassageViewModel
+               viewModel.Passages.Add (new PassageViewModel
                {
                   Text = passage.Text,
                   Id = passage.Id,
@@ -60,12 +60,11 @@ namespace SeekDeepWithin.Controllers
                   SubBookName = entry.Chapter.SubBook.Name,
                   VersionId = entry.Chapter.SubBook.Version.Id,
                   VersionName = entry.Chapter.SubBook.Version.Title
-               };
-               passageList.Add (viewModel);
+               });
             }
          }
 
-         return View (passageList);
+         return View (viewModel);
       }
    }
 }

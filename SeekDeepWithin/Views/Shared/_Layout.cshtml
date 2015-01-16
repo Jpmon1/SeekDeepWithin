@@ -9,6 +9,7 @@
       <meta name="copyright" content="SeekDeepWithin Copyright (c) @DateTime.Now.Year" />
       <title>@ViewBag.Title - Seek Deep Within</title>
       <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+      @RenderSection("styles", false)
       @Styles.Render("~/Content/css")
       @Scripts.Render("~/bundles/modernizr")
    </head>
@@ -27,7 +28,7 @@
             <section class="top-bar-section">
                <!-- Right Nav Section -->
                <ul class="right">
-                  <li><a href="@Url.Action("Index", "Book")"><i class="icon-book"></i> Read</a></li>
+                  <li><a href="@Url.Action("Index", "Book")"><i class="icon-book"></i> Books</a></li>
                   <li><a href="@Url.Action("Index", "Glossary")"><i class="icon-list"></i> Glossary</a></li>
                   <li><a href="@Url.Action("Index", "Search")"><i class="icon-search"></i> Search</a></li>
                   <li class="has-dropdown">
@@ -44,8 +45,9 @@
                      <li><a href="@Url.Action("Manage", "Account")">Welcome @User.Identity.Name!</a></li>
                      <li><a href="javascript:document.getElementById('logoutForm').submit()"><i class="icon-exit"></i> Log out</a></li>
                   } else {
+                     var returnUrl = Request.Url != null ? Request.Url.ToString () : string.Empty;
                      <li><a href="@Url.Action("Register", "Account")"><i class="icon-ok-sign"></i> Register</a></li>
-                     <li><a href="@Url.Action("Login", "Account")"><i class="icon-enter"></i> Log in</a></li>
+                     <li><a href="@Url.Action("Login", "Account", new { returnUrl = returnUrl })"><i class="icon-enter"></i> Log in</a></li>
                   }
                </ul>
             </section>
@@ -66,7 +68,6 @@
          <div style="display: none;">
             @using (Html.BeginForm ("LogOff", "Account", FormMethod.Post, new {id = "logoutForm"})) {
                @Html.AntiForgeryToken()
-               <a href="javascript:document.getElementById('logoutForm').submit()">Log off</a>
             }
          </div>
       }

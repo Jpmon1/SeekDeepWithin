@@ -36,15 +36,22 @@
                </li>
                @if (book.Versions.Count == 0) {
                   <li class="bullet-item"><span class="label secondary">No information has been entered for this book!</span></li>
+               } else if (book.Versions.Count == 1 && book.Title == book.Versions[0].Title) {
+                  var version = book.Versions [0];
+                  <li class="bullet-item" style="border-bottom: 0;">
+                     @Html.ActionLink("Read", "Read", "Chapter", new{ id = version.DefaultReadChapter }, new { @class = "button small" })
+                     @if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
+                        <small>@Html.ActionLink("[edit]", "Edit", "Version", new { id = version.Id }, null)</small>
+                     }
+                  </li>
                } else {
-                  <li class="bullet-item"><strong>Versions:</strong></li>
-                     foreach (var version in book.Versions) {
-                        <li class="bullet-item">
-                           @Html.ActionLink(version.Title, "Read", "Chapter", new{ id = version.DefaultReadChapter }, null)
-                           @if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
-                              <small>@Html.ActionLink("[edit]", "Edit", "Version", new { id = version.Id }, null)</small>
-                           }
-                        </li>
+                  foreach (var version in book.Versions) {
+                     <li class="bullet-item">
+                        @Html.ActionLink(version.Title, "Read", "Chapter", new{ id = version.DefaultReadChapter }, null)
+                        @if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
+                           <small>@Html.ActionLink("[edit]", "Edit", "Version", new { id = version.Id }, null)</small>
+                        }
+                     </li>
                   }
                }
                @if (Request.IsAuthenticated && User.IsInRole ("Creator")) {

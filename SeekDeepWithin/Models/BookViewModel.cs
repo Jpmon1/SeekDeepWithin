@@ -1,6 +1,8 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
+using SeekDeepWithin.Controllers;
+using SeekDeepWithin.Domain;
 
 namespace SeekDeepWithin.Models
 {
@@ -15,6 +17,24 @@ namespace SeekDeepWithin.Models
       public BookViewModel ()
       {
          this.Versions = new Collection <VersionViewModel> ();
+      }
+
+      /// <summary>
+      /// Initializes a new book view model.
+      /// </summary>
+      /// <param name="book">The book to copy data from.</param>
+      /// <param name="copyVersions">True to copy version information.</param>
+      public BookViewModel (Book book, bool copyVersions = false)
+      {
+         this.Versions = new Collection<VersionViewModel> ();
+         this.Id = book.Id;
+         this.Title = book.Title;
+         this.Summary = book.Summary;
+         if (copyVersions)
+         {
+            foreach (var version in book.Versions)
+               this.Versions.Add (new VersionViewModel (version));
+         }
       }
 
       /// <summary>

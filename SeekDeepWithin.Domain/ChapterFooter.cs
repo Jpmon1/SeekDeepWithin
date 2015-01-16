@@ -1,6 +1,6 @@
 ﻿namespace SeekDeepWithin.Domain
 {
-   public class ChapterFooter
+   public class ChapterFooter : IDbTable, IFooter
    {
       /// <summary>
       /// Gets or Sets the id of the footer.
@@ -8,14 +8,14 @@
       public int Id { get; set; }
 
       /// <summary>
-      /// Gets or Sets the justification of the footer.
-      /// </summary>
-      public int Justify { get; set; }
-
-      /// <summary>
       /// Gets or Sets if the content should be bolded.
       /// </summary>
       public bool IsBold { get; set; }
+
+      /// <summary>
+      /// Gets or Sets the index of the footer.
+      /// </summary>
+      public int Index { get; set; }
 
       /// <summary>
       /// Gets or Sets if the content should be italicized.
@@ -23,9 +23,14 @@
       public bool IsItalic { get; set; }
 
       /// <summary>
+      /// Gets or Sets the justification of the footer.
+      /// </summary>
+      public int Justify { get; set; }
+
+      /// <summary>
       /// Gets or Sets the footer.
       /// </summary>
-      public virtual Footer Footer { get; set; }
+      public string Text { get; set; }
 
       /// <summary>
       /// Gets or Sets the chapter the footer belongs to.

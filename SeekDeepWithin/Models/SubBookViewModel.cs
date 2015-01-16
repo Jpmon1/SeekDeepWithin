@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using SeekDeepWithin.Domain;
 
 namespace SeekDeepWithin.Models
 {
@@ -17,6 +18,30 @@ namespace SeekDeepWithin.Models
       }
 
       /// <summary>
+      /// Initializes a new sub book view model.
+      /// </summary>
+      /// <param name="subBook">The sub book to copy data from.</param>
+      public SubBookViewModel (SubBook subBook)
+      {
+         this.Chapters = new Collection<ChapterViewModel> ();
+         this.Writers = new Collection<WriterViewModel> ();
+         this.Id = subBook.Id;
+         this.Name = subBook.Name;
+         this.VersionId = subBook.Version.Id;
+         this.Version = new VersionViewModel (subBook.Version);
+
+         foreach (var writer in subBook.Writers)
+         {
+            this.Writers.Add (new WriterViewModel
+            {
+               IsTranslator = writer.IsTranslator,
+               Id = writer.Author.Id,
+               Name = writer.Author.Name
+            });
+         }
+      }
+
+      /// <summary>
       /// Gets or Sets the id of this sub book.
       /// </summary>
       public int Id { get; set; }
@@ -25,11 +50,6 @@ namespace SeekDeepWithin.Models
       /// Gets or Sets the id of the version this sub book belongs to.
       /// </summary>
       public int VersionId { get; set; }
-
-      /// <summary>
-      /// Gets or Sets the order of this sub book.
-      /// </summary>
-      public int Order { get; set; }
 
       /// <summary>
       /// Gets or Sets the name of this sub book.

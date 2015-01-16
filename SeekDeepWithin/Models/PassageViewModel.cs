@@ -1,10 +1,10 @@
 ﻿using System.Collections.ObjectModel;
-using DotNetOpenAuth.Messaging;
 using SeekDeepWithin.Controllers;
+using SeekDeepWithin.Domain;
 
 namespace SeekDeepWithin.Models
 {
-   public class PassageViewModel
+   public class PassageViewModel : IRenderable
    {
       /// <summary>
       /// Initializes a new passage view model.
@@ -15,6 +15,55 @@ namespace SeekDeepWithin.Models
          this.Styles = new Collection <StyleViewModel> ();
          this.Headers = new Collection <HeaderFooterViewModel> ();
          this.Footers = new Collection <HeaderFooterViewModel> ();
+      }
+      /// <summary>
+      /// Initializes a new passage view model.
+      /// </summary>
+      /// <param name="entry">The passage entry to copy data from.</param>
+      public PassageViewModel (PassageEntry entry)
+      {
+         this.EntryId = entry.Id;
+         this.Id = entry.Passage.Id;
+         this.Number = entry.Number;
+         this.Text = entry.Passage.Text;
+         this.ChapterId = entry.Chapter.Id;
+         this.ChapterName = entry.Chapter.Name;
+         this.SubBookId = entry.Chapter.SubBook.Id;
+         this.SubBookName = entry.Chapter.SubBook.Name;
+         this.VersionId = entry.Chapter.SubBook.Version.Id;
+         this.VersionName = entry.Chapter.SubBook.Version.Title;
+
+         this.Links = new Collection<LinkViewModel> ();
+         this.Styles = new Collection<StyleViewModel> ();
+         this.Headers = new Collection<HeaderFooterViewModel> ();
+         this.Footers = new Collection<HeaderFooterViewModel> ();
+
+         foreach (var link in entry.Passage.PassageLinks)
+         {
+            this.Links.Add (new LinkViewModel
+            {
+               StartIndex = link.StartIndex,
+               EndIndex = link.EndIndex,
+               Url = link.Link.Url,
+               OpenInNewWindow = link.OpenInNewWindow
+            });
+         }
+
+         foreach (var style in entry.Styles)
+         {
+            this.Styles.Add (new StyleViewModel
+            {
+               StartIndex = style.StartIndex,
+               EndIndex = style.EndIndex,
+               Start = style.Style.Start,
+               End = style.Style.End
+            });
+         }
+
+         foreach (var header in entry.Headers)
+            this.Headers.Add (new HeaderFooterViewModel (header));
+         foreach (var footer in entry.Footers)
+            this.Footers.Add (new HeaderFooterViewModel (footer));
       }
 
       /// <summary>
@@ -88,15 +137,17 @@ namespace SeekDeepWithin.Models
       public Collection<HeaderFooterViewModel> Headers { get; set; }
 
       /// <summary>
+      /// Gets or Sets the renderer.
+      /// </summary>
+      public SdwRenderer Renderer { get; set; }
+
+      /// <summary>
       /// Renders the passage.
       /// </summary>
       /// <returns>The html to display for the passage.</returns>
       public string Render ()
       {
-         var renderer = new SdwRenderer { Text = this.Text };
-         renderer.Links.AddRange (this.Links);
-         renderer.Styles.AddRange (this.Styles);
-         return renderer.Render ();
+         return Renderer.Render (this);
       }
    }
 }

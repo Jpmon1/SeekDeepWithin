@@ -1,0 +1,42 @@
+﻿
+<div class="row">
+   <div class="small-12 columns">
+      <ul class="button-group radius">
+         <li>
+            <a href="javascript:void(0);" class="button tiny" onclick="style_Bold();" title="Bold">
+               <i class="icon-bold"></i>
+            </a>
+         </li>
+         <li>
+            <a href="javascript:void(0);" class="button tiny" onclick="style_Italic();" title="Italic">
+               <i class="icon-italic"></i>
+            </a>
+         </li>
+         <li>
+            <a href="javascript:void(0);" class="button tiny" onclick="style_BlockQuote();" title="Blockquote">
+               <i class="icon-quote"></i>
+            </a>
+         </li>
+      </ul>
+   </div>
+</div>
+
+<div class="row">
+   <div class="small-12 columns">
+      <label for="styleStart">Start Style</label>
+      <textarea id="styleStart" name="styleStart" rows="3"></textarea>
+   </div>
+</div>
+<div class="row">
+   <div class="small-12 columns">
+      <label for="styleEnd">End Style</label>
+      <textarea id="styleEnd" name="styleEnd" rows="3"></textarea>
+   </div>
+</div>
+
+<div class="row">
+   <div class="small-12 columns text-center">
+      <input type="submit" value="Create" class="button" onclick="style_Create();" />
+      <span id="saveStyleCheck" style="color: green;"><i class="icon-ok-circle"></i></span>
+   </div>
+</div>

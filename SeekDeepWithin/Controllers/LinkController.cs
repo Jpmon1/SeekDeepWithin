@@ -38,7 +38,7 @@ namespace SeekDeepWithin.Controllers
       [HttpPost]
       [ValidateAntiForgeryToken]
       [Authorize (Roles = "Editor")]
-      public ActionResult CreateForPassage (EditLinkViewModel viewModel)
+      public ActionResult CreatePassage (EditLinkViewModel viewModel)
       {
          if (!ModelState.IsValid)
             return Json ("Data is not Valid");

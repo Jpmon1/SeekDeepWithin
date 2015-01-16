@@ -7,19 +7,26 @@ using System.Web.Security;
 using DotNetOpenAuth.AspNet;
 using Microsoft.Web.WebPages.OAuth;
 using SeekDeepWithin.DataAccess;
-using WebMatrix.WebData;
 using SeekDeepWithin.Filters;
+using WebMatrix.WebData;
 using SeekDeepWithin.Models;
 
 namespace SeekDeepWithin.Controllers
 {
+   /// <summary>
+   /// Controller for account actions.
+   /// </summary>
    [Authorize]
    [InitializeSimpleMembership]
    public class AccountController : Controller
    {
-      //
-      // GET: /Account/Login
+      private readonly UsersContext m_Db = new UsersContext ();
 
+      /// <summary>
+      /// Gets the login view.
+      /// </summary>
+      /// <param name="returnUrl">The url to return to after login.</param>
+      /// <returns>The login view.</returns>
       [AllowAnonymous]
       public ActionResult Login (string returnUrl)
       {
@@ -27,38 +34,47 @@ namespace SeekDeepWithin.Controllers
          return View ();
       }
 
-      //
-      // POST: /Account/Login
-
+      /// <summary>
+      /// Logs a user in.
+      /// </summary>
+      /// <param name="viewModel">Login information.</param>
+      /// <param name="returnUrl">The url to return to after login.</param>
+      /// <returns>The return url view, index or error page.</returns>
       [HttpPost]
       [AllowAnonymous]
       [ValidateAntiForgeryToken]
-      public ActionResult Login (LoginModel model, string returnUrl)
+      public ActionResult Login (LoginViewModel viewModel, string returnUrl)
       {
-         if (ModelState.IsValid && WebSecurity.Login (model.UserName, model.Password, persistCookie: model.RememberMe))
+         if (ModelState.IsValid && WebSecurity.Login (viewModel.UserEmail, viewModel.Password, persistCookie: viewModel.RememberMe))
          {
-            return RedirectToLocal (returnUrl);
+            if (!string.IsNullOrWhiteSpace(returnUrl))
+               return Redirect (returnUrl);
+            return RedirectToAction ("Index", "Home");
          }
 
          // If we got this far, something failed, redisplay form
          ModelState.AddModelError ("", "The user name or password provided is incorrect.");
-         return View (model);
+         return View (viewModel);
       }
 
-      //
-      // POST: /Account/LogOff
-
+      /// <summary>
+      /// Logs the current user out of the system.
+      /// </summary>
+      /// <returns>The reffered url, or the index.</returns>
       [HttpPost]
       [ValidateAntiForgeryToken]
       public ActionResult LogOff ()
       {
          WebSecurity.Logout ();
+         if (Request.UrlReferrer != null)
+            return Redirect (Request.UrlReferrer.ToString ());
          return RedirectToAction ("Index", "Home");
       }
 
-      //
-      // GET: /Account/Register
-
+      /// <summary>
+      /// Gets the register view.
+      /// </summary>
+      /// <returns>The register view.</returns>
       [AllowAnonymous]
       public ActionResult Register ()
       {
@@ -71,15 +87,21 @@ namespace SeekDeepWithin.Controllers
       [HttpPost]
       [AllowAnonymous]
       [ValidateAntiForgeryToken]
-      public ActionResult Register (RegisterModel model)
+      public ActionResult Register (RegisterViewModel viewModel)
       {
          if (ModelState.IsValid)
          {
             // Attempt to register the user
             try
             {
-               WebSecurity.CreateUserAndAccount (model.UserName, model.Password);
-               WebSecurity.Login (model.UserName, model.Password);
+               WebSecurity.CreateUserAndAccount (viewModel.UserEmail, viewModel.Password);
+               WebSecurity.Login (viewModel.UserEmail, viewModel.Password);
+               var user = this.m_Db.UserProfiles.Find (WebSecurity.GetUserId (viewModel.UserEmail));
+               if (user != null)
+               {
+                  user.UserData = new UserData { ShowEditActions = false, UserProfileId = user.UserId };
+                  this.m_Db.SaveChanges ();
+               }
                return RedirectToAction ("Index", "Home");
             }
             catch (MembershipCreateUserException e)
@@ -89,7 +111,7 @@ namespace SeekDeepWithin.Controllers
          }
 
          // If we got this far, something failed, redisplay form
-         return View (model);
+         return View (viewModel);
       }
 
       //
@@ -230,7 +252,7 @@ namespace SeekDeepWithin.Controllers
             OAuthWebSecurity.CreateOrUpdateAccount (result.Provider, result.ProviderUserId, User.Identity.Name);
             return RedirectToLocal (returnUrl);
          }
-         
+
          // User is new, ask for their desired membership name
          string loginData = OAuthWebSecurity.SerializeProviderUserId (result.Provider, result.ProviderUserId);
          ViewBag.ProviderDisplayName = OAuthWebSecurity.GetOAuthClientData (result.Provider).DisplayName;
@@ -259,12 +281,12 @@ namespace SeekDeepWithin.Controllers
             // Insert a new user into the database
             using (var db = new UsersContext ())
             {
-               UserProfile user = db.UserProfiles.FirstOrDefault (u => u.UserName.ToLower () == model.UserName.ToLower ());
+               UserProfile user = db.UserProfiles.FirstOrDefault (u => String.Equals (u.Email, model.UserName, StringComparison.CurrentCultureIgnoreCase));
                // Check if user already exists
                if (user == null)
                {
                   // Insert name into the profile table
-                  db.UserProfiles.Add (new UserProfile { UserName = model.UserName });
+                  db.UserProfiles.Add (new UserProfile { Email = model.UserName });
                   db.SaveChanges ();
 
                   OAuthWebSecurity.CreateOrUpdateAccount (provider, providerUserId, model.UserName);

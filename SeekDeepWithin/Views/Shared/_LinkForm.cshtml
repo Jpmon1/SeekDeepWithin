@@ -1,102 +1,81 @@
 ﻿@model SeekDeepWithin.Models.EditLinkViewModel
 
-@{
-   var url = "/Link/CreateForPassage";
-   if (Model.Type == "entry") {
-      url = "/Lin/CreateForEntry";
-   }
-}
-
-@using (Ajax.BeginForm (new AjaxOptions { HttpMethod = "POST", Url = url, OnFailure = "ajaxFail", OnSuccess = "successCreateLink" }))
-{
-   @Html.AntiForgeryToken()
-   @Html.HiddenFor(model => model.LinkItemId)
-   
-   <dl class="tabs" data-tab>
-      <dd class="active"><a href="#tabGlossary">Glossary Link</a></dd>
-      <dd><a href="#tabRead">Read Link</a></dd>
-      <dd><a href="#tabSearch">Search Link</a></dd>
-      <dd><a href="#tabExternal">External Link</a></dd>
-   </dl>
-   <div class="tabs-content">
-      <div id="tabGlossary" class="content active">
-         <div class="row">
-            <div class="small-12 large-6 columns">
-               Glossary Term
-               @Html.EditorFor(model => model.GlossaryTerm)
-            </div>
-         </div>
-      </div>
-      <div id="tabRead" class="content">
-         <div class="row">
-            <div class="small-12 large-6 columns">
-               Book
-               @Html.EditorFor(model => model.Book)
-            </div>
-            <div class="small-12 large-6 columns">
-               Version
-               @Html.EditorFor(model => model.Version)
-            </div>
-         </div>
-         <div class="row">
-            <div class="small-12 large-6 columns">
-               Sub Book
-               @Html.EditorFor(model => model.SubBook)
-            </div>
-            <div class="small-12 large-6 columns">
-               Chapter
-               @Html.EditorFor(model => model.Chapter)
-            </div>
-         </div>
-      </div>
-      <div id="tabSearch" class="content">
-         <div class="row">
-            <div class="small-12 large-6 columns">
-               Search
-               @Html.EditorFor(model => model.Search)
-            </div>
-         </div>
-      </div>
-      <div id="tabExternal" class="content">
-         <div class="row">
-            <div class="small-12 large-6 columns">
-               Link
-               @Html.EditorFor(model => model.Link)
-            </div>
+<dl class="tabs" data-tab>
+   <dd class="active"><a href="#tabGlossary">Glossary</a></dd>
+   <dd><a href="#tabRead">Read</a></dd>
+   <dd><a href="#tabSearch">Search</a></dd>
+   <dd><a href="#tabExternal">External</a></dd>
+</dl>
+<div class="tabs-content">
+   <div id="tabGlossary" class="content active">
+      <div class="row">
+         <div class="small-12 columns">
+            <label for="linkGlossary">Glossary Term</label>
+            <input type="text" id="linkGlossary" name="linkGlossary" />
          </div>
       </div>
    </div>
-
-   <hr />
-
-   <input type="submit" value="Create" class="button" />
-
-   <hr />
-
-   <div class="row">
-      <div class="small-5 large-3 columns">
-         Start Index
-         @Html.EditorFor(model => model.StartIndex)
+   <div id="tabRead" class="content">
+      <div class="row">
+         <div class="small-12 large-6 columns">
+            <label for="linkBook">Book</label>
+            <input type="text" id="linkBook" name="linkBook" />
+         </div>
+         <div class="small-12 large-6 columns">
+            <label for="linkVersion">Version</label>
+            <input type="text" id="linkVersion" name="linkVersion" />
+         </div>
       </div>
-      <div class="small-5 large-3 columns">
-         End Index
-         @Html.EditorFor(model => model.EndIndex)
-      </div>
-      <div class="small-2 large-6 columns">
-      </div>
-   </div>
-
-   <hr />
-
-   <div class="row">
-      <div class="small-12 large-6 columns">
-         Anchor
-         @Html.EditorFor(model => model.Anchor)
+      <div class="row">
+         <div class="small-12 large-6 columns">
+            <label for="linkSubBook">Sub Book</label>
+            <input type="text" id="linkSubBook" name="linkSubBook" />
+         </div>
+         <div class="small-12 large-6 columns">
+            <label for="linkChapter">Chapter</label>
+            <input type="text" id="linkChapter" name="linkChapter" />
+         </div>
       </div>
    </div>
-   <div class="row">
-      <div class="small-12 large-6 columns">
-         @Html.EditorFor(model => model.OpenInNewWindow) Open in New Window
+   <div id="tabSearch" class="content">
+      <div class="row">
+         <div class="small-12 columns">
+            <label for="linkSearch">Search</label>
+            <input type="text" id="linkSearch" name="linkSearch" />
+         </div>
       </div>
    </div>
-}
+   <div id="tabExternal" class="content">
+      <div class="row">
+         <div class="small-12 columns">
+            <label for="linkExternal">Link</label>
+            <input type="text" id="linkExternal" name="linkExternal" />
+         </div>
+      </div>
+   </div>
+</div>
+
+<hr />
+
+<div class="row">
+   <div class="small-12 large-6 columns">
+      <label for="linkAnchor">Anchor</label>
+      <input type="text" id="linkAnchor" name="linkAnchor" />
+   </div>
+   <div class="small-12 large-6 columns">
+      <label for="linkNewWindow">Open in new window</label>
+      <div class="switch">
+         <input id="linkNewWindow" name="linkNewWindow" type="checkbox">
+         <label for="linkNewWindow">Open in new window</label>
+      </div> 
+   </div>
+</div>
+
+<hr />
+
+<div class="row">
+   <div class="small-12 columns text-center">
+      <input type="submit" value="Create" class="button" onclick="link_Create();" />
+      <span id="saveLinkCheck" style="color: green;"><i class="icon-ok-circle"></i></span>
+   </div>
+</div>

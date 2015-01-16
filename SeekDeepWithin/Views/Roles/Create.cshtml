@@ -10,12 +10,12 @@
    @Html.ValidationSummary(true)
 
    <fieldset>
-      <div class="details-label">
-         Role Name
+      <div class="row">
+         <div class="small-12 large-6 columns">
+            @Html.Label("roleName", "Role Name")
+            @Html.TextBox("roleName")
+         </div>
       </div>
-      <p>
-         @Html.TextBox("roleName")
-      </p>
       <input type="submit" value="Save" />
    </fieldset>
 }

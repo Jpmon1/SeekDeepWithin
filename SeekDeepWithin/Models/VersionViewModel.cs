@@ -1,5 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using SeekDeepWithin.Domain;
 
 namespace SeekDeepWithin.Models
 {
@@ -8,15 +10,43 @@ namespace SeekDeepWithin.Models
    /// </summary>
    public class VersionViewModel
    {
+      /// <summary>
+      /// Initializes a new version view model.
+      /// </summary>
       public VersionViewModel ()
       {
          this.SubBooks = new Collection <SubBookViewModel> ();
       }
 
       /// <summary>
+      /// Initializes a new version view model.
+      /// </summary>
+      /// <param name="version">The version to copy data from.</param>
+      public VersionViewModel (Version version)
+      {
+         var source = version.VersionSources.FirstOrDefault ();
+         this.SubBooks = new Collection<SubBookViewModel> ();
+         this.Id = version.Id;
+         this.Title = version.Title;
+         this.BookId = version.Book.Id;
+         this.Abbreviation = version.Abbreviation;
+         this.PublishDate = version.PublishDate;
+         this.Contents = version.Contents;
+         this.Book = new BookViewModel (version.Book);
+         this.DefaultReadChapter = version.DefaultReadChapter;
+         this.SourceName = source == null ? string.Empty : source.Source.Name;
+         this.SourceUrl = source == null ? string.Empty : source.Source.Url;
+      }
+
+      /// <summary>
       /// Gets the id of the table.
       /// </summary>
       public int Id { get; set; }
+
+      /// <summary>
+      /// Gets or Sets the contents of this version.
+      /// </summary>
+      public string Contents { get; set; }
 
       /// <summary>
       /// Gets or Sets an abbreviation to use for this version.

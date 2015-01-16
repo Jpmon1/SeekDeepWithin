@@ -1,0 +1,33 @@
+﻿@model SeekDeepWithin.Models.HeaderFooterViewModel
+
+<input type="hidden" id="hfId" name="hfId" value="@Model.Id" />
+<input type="hidden" id="hfItemId" name="hfItemId" value="@Model.ItemId" />
+<input type="hidden" id="hfFor" name="hfFor" value="@Model.For" />
+<div class="row">
+   <div class="small-12 large-12 columns">
+      <label for="hfText">Text</label>
+      <textarea id="hfText" name="hfText" rows="4">@Model.Text</textarea>
+   </div>
+</div>
+<div class="row">
+   <div class="small-12 large-4 columns">
+      <label for="hfJustify">Justify</label>
+      <select id="hfJustify" name="hfJustify">
+         <option id="justifyLeft" value="0" @if (Model.Justify == 0) { <text> selected </text>   }>Left</option>
+         <option id="justifyCenter" value="1" @if (Model.Justify == 1) { <text> selected </text>   }>Center</option>
+         <option id="justifyRight" value="2" @if (Model.Justify == 2) { <text> selected </text>   }>Right</option>
+      </select>
+   </div>
+   <div class="small-6 large-2 columns">
+      <label for="hfIsBold">Bold</label>
+      <input type="checkbox" id="hfIsBold" name="hfIsBold" @if (Model.IsBold) { <text> checked </text>  } />
+   </div>
+   <div class="small-6 large-2 columns">
+      <label for="hfIsItalic">Italic</label>
+      <input type="checkbox" id="hfIsItalic" name="hfIsItalic" @if (Model.IsItalic) { <text> checked </text>  } />
+   </div>
+   <div class="small-12 large-4 columns">
+      <label for="hfEditIndex">Index</label>
+      <input type="text" readonly="readonly" value="@Model.Index" id="hfEditIndex" name="hfEditIndex" />
+   </div>
+</div>

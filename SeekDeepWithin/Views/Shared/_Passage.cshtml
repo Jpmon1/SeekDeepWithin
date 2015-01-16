@@ -1,11 +1,42 @@
 ﻿@using System.Globalization
 @model SeekDeepWithin.Models.PassageViewModel
-          
-@if (Model.Number > 0) {
-<div class="small-6 medium-2 large-1 columns">
-   <blockquote>
-      @Html.ActionLink(Model.Number.ToString (CultureInfo.InvariantCulture), "Details", "Passage", new { entryId = Model.Id }, null)
-   </blockquote>
+
+@{
+   var smallSpan = "12";
+   var mediumSpan = "12";
+   var largeSpan = "12";
+   if (Model.Number > 0) {
+      smallSpan = "8";
+      mediumSpan = "10";
+      largeSpan = "11";
+   }
+   var id = Model.EntryId.ToString(CultureInfo.InvariantCulture);
+}
+@foreach (var header in Model.Headers) {
+   <div class="row">
+      @if (Model.Number > 0) { <div class="small-4 medium-2 large-1 columns">&nbsp;</div> }
+      <div class="small-@smallSpan medium-@mediumSpan large-@largeSpan columns">
+         @Html.Partial("_HeaderFooter", header)
+      </div>
+   </div>
+}
+<div class="row" id="pass_@id" @if(Model.Number == 0 && Model.Footers.Count == 0){ @Html.Raw("style=\"padding-bottom: 0.9375rem\"") }>
+   @if (Model.Number > 0) {
+      <div class="small-4 medium-2 large-1 columns">
+         <blockquote>
+            @Html.ActionLink(Model.Number.ToString (CultureInfo.InvariantCulture), "Index", "Passage", new { entryId = Model.Id }, null)
+         </blockquote>
+      </div>
+   }
+   <div class="small-@smallSpan medium-@mediumSpan large-@largeSpan columns">
+      @Html.Raw(Model.Render ())
+   </div>
 </div>
-               }
-<div class="medium-10 large-11 columns">@Html.Raw(Model.Render ())</div>
+@foreach (var footer in Model.Footers) {
+   <div class="row">
+      @if (Model.Number > 0) { <div class="small-4 medium-2 large-1 columns">&nbsp;</div> }
+      <div class="small-@smallSpan medium-@mediumSpan large-@largeSpan columns footer">
+         @Html.Partial("_HeaderFooter", footer)
+      </div>
+   </div>
+}

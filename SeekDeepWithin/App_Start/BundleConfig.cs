@@ -9,8 +9,10 @@ namespace SeekDeepWithin
       {
          //BundleTable.EnableOptimizations = true;
          bundles.Add (new ScriptBundle ("~/bundles/jquery").Include (
-            "~/Scripts/jquery-1.11.1.min.js",
-            "~/Scripts/foundation.min.js"));
+            "~/Scripts/jquery-1.11.2.js",
+            "~/Scripts/jquery.cookie.js",
+            "~/Scripts/foundation/foundation.js",
+            "~/Scripts/foundation/foundation.*"));
 
          bundles.Add (new ScriptBundle ("~/bundles/jqueryui").Include (
             "~/Scripts/jquery-ui-{version}.js"));
@@ -24,25 +26,26 @@ namespace SeekDeepWithin
          bundles.Add (new ScriptBundle ("~/bundles/modernizr").Include (
             "~/Scripts/modernizr-*"));
 
-         bundles.Add (new ScriptBundle ("~/bundles/sdw.editchapter").Include ("~/Scripts/jquery.autocomplete.min.js",
+         bundles.Add (new ScriptBundle ("~/bundles/sdw.editchapter").Include ("~/Scripts/jquery.autocomplete.js",
             "~/Scripts/selection.js",
-            "~/Scripts/sdw.editchapter.js"));
+            "~/Scripts/sdw.editchapter.js",
+            "~/Scripts/sdw.footer.js",
+            "~/Scripts/sdw.header.js",
+            "~/Scripts/sdw.style.js",
+            "~/Scripts/sdw.link.js",
+            "~/Scripts/sdw.passage.js"));
 
          bundles.Add (new ScriptBundle ("~/bundles/sdw.addpassages").Include ("~/Scripts/sdw.addpassages.js"));
 
-         bundles.Add (new ScriptBundle ("~/bundles/sdw.addlink").Include ("~/Scripts/jquery.autocomplete.min.js",
-            "~/Scripts/selection.js",
-            "~/Scripts/sdw.addlink.js"));
+         bundles.Add (new ScriptBundle ("~/bundles/sdw.contentsedit").Include ("~/Scripts/jstree.js",
+            "~/Scripts/sdw.contentsedit.js"));
 
-         bundles.Add (new ScriptBundle ("~/bundles/sdw.addstyle").Include ("~/Scripts/jquery.autocomplete.min.js",
-            "~/Scripts/selection.js",
-            "~/Scripts/sdw.addstyle.js"));
-
-         bundles.Add (new ScriptBundle ("~/bundles/jstree").Include ("~/Scripts/jstree.min.js"));
+         bundles.Add (new ScriptBundle ("~/bundles/sdw.read").Include ("~/Scripts/jstree.js",
+            "~/Scripts/sdw.read.js"));
 
          bundles.Add (new StyleBundle ("~/Content/css").Include ("~/Content/normalize.css",
             "~/Content/jquery-ui.css",
-            "~/Content/foundation.min.css",
+            "~/Content/foundation.css",
             "~/Content/whhg.css",
             "~/Content/sdw.default.css"));
 

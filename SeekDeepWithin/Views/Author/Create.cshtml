@@ -1,7 +1,8 @@
 ﻿@model SeekDeepWithin.Models.AuthorViewModel
 
 @{
-    ViewBag.Title = "New Writer";
+   ViewBag.Title = "New Writer";
+   var refUrl = TempData ["RefUrl"];
 }
 
 <h3>New Writer</h3>
@@ -28,8 +29,9 @@
              @Html.ValidationMessageFor(model => model.About)
           </div>
        </div>
-
-        <input type="submit" value="Create" class="button" /> <a href="@TempData["RefUrl"]" class="button secondary small">cancel</a>
+       
+       <input type="hidden" name="refUrl" id="refUrl" value="@refUrl"/>
+       <input type="submit" value="Create" class="button" /> <a href="@refUrl" class="button secondary small">cancel</a>
     </fieldset>
 }
 

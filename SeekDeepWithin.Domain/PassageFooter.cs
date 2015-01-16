@@ -1,6 +1,6 @@
 ﻿namespace SeekDeepWithin.Domain
 {
-   public class PassageFooter
+   public class PassageFooter : IDbTable, IFooter
    {
       /// <summary>
       /// Gets or Sets the id of the footer.
@@ -30,7 +30,7 @@
       /// <summary>
       /// Gets or Sets the footer.
       /// </summary>
-      public virtual Footer Footer { get; set; }
+      public string Text { get; set; }
 
       /// <summary>
       /// Gets or Sets the passage the footer belongs to.

@@ -37,7 +37,7 @@ namespace SeekDeepWithin.Controllers
       {
          if (TempData.ContainsKey ("ErrorMessage"))
             ViewBag.ErrorMessage = TempData["ErrorMessage"];
-         return View (this.m_Db.Books.All (q => q.OrderBy (b => b.Title)).Select (book => GetViewModel (book, true)).ToList ());
+         return View (this.m_Db.Books.All (q => q.OrderBy (b => b.Title)).Select (book => new BookViewModel (book, true)).ToList ());
       }
 
       /// <summary>
@@ -83,7 +83,7 @@ namespace SeekDeepWithin.Controllers
                return RedirectToAction ("Index");
 
             if (Request.UrlReferrer != null) TempData["RefUrl"] = Request.UrlReferrer.ToString ();
-            return View (GetViewModel (book));
+            return View (new BookViewModel (book));
          }
          TempData["ErrorMessage"] = "You must login to edit a book!";
          return RedirectToAction ("Index");
@@ -107,28 +107,6 @@ namespace SeekDeepWithin.Controllers
             return RedirectToAction ("Index");
          }
          return View (bookViewModel);
-      }
-
-      /// <summary>
-      /// Converts the given book to a view model.
-      /// </summary>
-      /// <param name="book">Book to convert to view model.</param>
-      /// <param name="copyVersions">True to copy version information, otherwise false.</param>
-      /// <returns>The view model representation of the book.</returns>
-      public static BookViewModel GetViewModel (Book book, bool copyVersions = false)
-      {
-         var viewModel = new BookViewModel
-         {
-            Id = book.Id,
-            Title = book.Title,
-            Summary = book.Summary
-         };
-         if (copyVersions)
-         {
-            foreach (var version in book.Versions)
-               viewModel.Versions.Add (VersionController.GetViewModel (version));
-         }
-         return viewModel;
       }
    }
 }

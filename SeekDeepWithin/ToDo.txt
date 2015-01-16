@@ -1,0 +1,31 @@
+Tags
+Comments
+Favorite Icon
+Make Glossary Entries like passages
+Redirects
+Pagination
+Advanced search
+Edit number and order of passage
+Add chapter/sub book range to contents
+Delete
+   Contents
+   Styles --> Edit also
+   Links --> Edit also
+   Headers
+   Footers
+
+Notes
+View Search as List/Tree
+Facebook/twitter/email share
+Adiminstration Page
+Bookmarks
+Favorites
+Author Page
+User preferences
+   View footers at end or after verse
+   if editor show edit item
+Glossary see also
+Book on amazon links
+Read multiple books
+Search while reading
+Definitions (Glossary entry ballons)

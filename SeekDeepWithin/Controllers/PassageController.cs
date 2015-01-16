@@ -35,90 +35,10 @@ namespace SeekDeepWithin.Controllers
       /// </summary>
       /// <param name="entryId">The id of the entry we are getting details for.</param>
       /// <returns>The details page.</returns>
-      public ActionResult Details (int entryId)
+      public ActionResult Index (int entryId)
       {
          var entry = this.m_Db.PassageEntries.Get (entryId);
-         return View (GetViewModel (entry.Passage, entry));
-      }
-
-      /// <summary>
-      /// Gets a passage view model for the given passage and entry.
-      /// </summary>
-      /// <param name="passage">Passage.</param>
-      /// <param name="entry">Entry passage belongs to.</param>
-      /// <returns>Passage view model.</returns>
-      public static PassageViewModel GetViewModel (Passage passage, PassageEntry entry = null)
-      {
-         var viewModel = new PassageViewModel { Text = passage.Text, Id = passage.Id };
-         foreach (var link in passage.PassageLinks)
-         {
-            viewModel.Links.Add (new LinkViewModel
-            {
-               StartIndex = link.StartIndex,
-               EndIndex = link.EndIndex,
-               Url = link.Link.Url,
-               OpenInNewWindow = link.OpenInNewWindow
-            });
-         }
-         if (entry != null)
-         {
-            viewModel.EntryId = entry.Id;
-            viewModel.Number = entry.Number;
-            viewModel.ChapterId = entry.Chapter.Id;
-            viewModel.ChapterName = entry.Chapter.Name;
-            viewModel.SubBookId = entry.Chapter.SubBook.Id;
-            viewModel.SubBookName = entry.Chapter.SubBook.Name;
-            viewModel.VersionId = entry.Chapter.SubBook.Version.Id;
-            viewModel.VersionName = entry.Chapter.SubBook.Version.Title;
-
-            foreach (var style in entry.Styles)
-            {
-               viewModel.Styles.Add (new StyleViewModel
-               {
-                  StartIndex = style.StartIndex,
-                  EndIndex = style.EndIndex,
-                  Start = style.Style.Start,
-                  End = style.Style.End
-               });
-            }
-
-            foreach (var header in entry.Headers)
-            {
-               viewModel.Headers.Add (new HeaderFooterViewModel
-               {
-                  Text = header.Header.Text,
-                  IsBold = header.IsBold,
-                  IsItalic = header.IsItalic,
-                  Justify = header.Justify
-               });
-            }
-
-            foreach (var footer in entry
-               .Footers)
-            {
-               viewModel.Footers.Add (new HeaderFooterViewModel
-               {
-                  IsBold = footer.IsBold,
-                  IsItalic = footer.IsItalic,
-                  Justify = footer.Justify,
-                  Text = footer.Footer.Text
-               });
-            }
-         }
-         return viewModel;
-      }
-
-      /// <summary>
-      /// Gets the edit Page.
-      /// </summary>
-      /// <param name="id">The id of the item to edit.</param>
-      /// <returns>The edit page.</returns>
-      [Authorize (Roles = "Editor")]
-      public ActionResult Edit (int id)
-      {
-         if (Request.UrlReferrer != null) TempData["RefUrl"] = Request.UrlReferrer.ToString();
-         var passage = this.m_Db.Passages.Get (id);
-         return View (GetViewModel (passage));
+         return View (new PassageViewModel (entry));
       }
 
       /// <summary>
@@ -206,8 +126,8 @@ namespace SeekDeepWithin.Controllers
             passageId = entry.PassageId,
             passageNumber = entry.Number,
             passageText = entry.Passage.Text,
-            headers = entry.Headers.Select(h => new { text = h.Header.Text, id = h.Id }),
-            footers = entry.Footers.Select(f => new { text = f.Footer.Text, index = f.Index, id = f.Id })
+            headers = entry.Headers.Select(h => new { text = h.Text, id = h.Id }),
+            footers = entry.Footers.Select(f => new { text = f.Text, index = f.Index, id = f.Id })
          };
          return Json (result, JsonRequestBehavior.AllowGet);
       }

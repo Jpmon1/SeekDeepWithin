@@ -1,0 +1,12 @@
+﻿@model SeekDeepWithin.Models.ChapterFooterViewModel
+
+<div class="row">
+   <div class="small-12 large-10 columns" id="chFooter_@Model.Id">
+      @Model.Text
+   </div>
+   <div class="small-12 large-2 columns text-center">
+      <a href="#" onclick="footer_ShowEdit(@Model.Id, 'chapter');" class="button tiny secondary">
+         <i class="icon-editalt"></i>
+      </a>
+   </div>
+</div>

@@ -1,12 +1,9 @@
-﻿@model SeekDeepWithin.Models.RegisterModel
+﻿@model SeekDeepWithin.Models.RegisterViewModel
 @{
    ViewBag.Title = "Register";
 }
 
-<hgroup class="title">
-   <h1>@ViewBag.Title.</h1>
-   <h2>Create a new account.</h2>
-</hgroup>
+<h3>Create a new account</h3>
 
 @using (Html.BeginForm ())
 {
@@ -17,8 +14,8 @@
       <legend>Registration Form</legend>
       <div class="row">
          <div class="small-12 large-6 columns">
-            @Html.LabelFor(m => m.UserName)
-            @Html.TextBoxFor(m => m.UserName)
+            @Html.LabelFor(m => m.UserEmail)
+            @Html.EditorFor(m => m.UserEmail)
          </div>
       </div>
       <div class="row">
@@ -38,5 +35,5 @@
 }
 
 @section Scripts {
-   @Scripts.Render ("~/bundles/jqueryval")
+   @Scripts.Render("~/bundles/jqueryval")
 }

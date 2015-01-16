@@ -28,21 +28,6 @@ namespace SeekDeepWithin.Controllers
       }
 
       /// <summary>
-      /// Gets the add style view.
-      /// </summary>
-      /// <param name="id">Id of the item to add a style for.</param>
-      /// <param name="type">The type of object we are adding style for.</param>
-      /// <param name="parentId">The id of the parent object.</param>
-      /// <returns>The add style view.</returns>
-      [Authorize (Roles = "Editor")]
-      public ActionResult Create (int id, string type, int parentId)
-      {
-         if (Request.UrlReferrer != null) TempData["RefUrl"] = Request.UrlReferrer.ToString ();
-         var passage = this.m_Db.Passages.Get (id);
-         return View (new EditStyleViewModel { Id = id, Text = passage.Text, ParentId = parentId });
-      }
-
-      /// <summary>
       /// Posts a new style to the given item.
       /// </summary>
       /// <param name="viewModel">Editing view model.</param>
@@ -53,7 +38,7 @@ namespace SeekDeepWithin.Controllers
       public ActionResult Create (EditStyleViewModel viewModel)
       {
          if (!ModelState.IsValid)
-            return View (viewModel);
+            return Json ("Invalid Data.");
 
          var styles = this.m_Db.Styles.Get (s => s.Start == viewModel.StartStyle && s.End == viewModel.EndStyle);
          var style = styles.FirstOrDefault ();
@@ -65,15 +50,16 @@ namespace SeekDeepWithin.Controllers
          }
 
          var passage = this.m_Db.PassageEntries.Get (viewModel.ParentId);
-         passage.Styles.Add (new PassageStyle
+         var pStyle = new PassageStyle
          {
             PassageEntry = passage,
             Style = style,
             StartIndex = viewModel.StartIndex,
             EndIndex = viewModel.EndIndex
-         });
+         };
+         passage.Styles.Add (pStyle);
          this.m_Db.Save ();
-         return RedirectToAction ("Details", "Passage", new { id = viewModel.Id });
+         return Json (new { id = pStyle.Id, startIndex = pStyle.StartIndex, endIndex = pStyle.EndIndex });
       }
    }
 }

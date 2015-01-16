@@ -9,21 +9,23 @@ namespace SeekDeepWithin.DataAccess
    public class SdwDatabase : ISdwDatabase
    {
       private bool m_Disposed;
-      private Repository<Book> m_BookRepository;
-      private Repository<Author> m_AuthorRepository;
-      private Repository<Domain.Version> m_VersionRepository;
-      private Repository<SubBook> m_SubBookRepository;
-      private Repository<Chapter> m_ChapterRepository;
-      private Repository<Passage> m_PassageRepository;
-      private Repository<Link> m_LinkRepository;
-      private Repository<Tag> m_TagRepository;
-      private Repository<Style> m_StyleRepository;
-      private Repository<Source> m_SourceRepository;
-      private Repository<Header> m_HeaderRepository;
-      private Repository<Footer> m_FooterRepository;
-      private Repository<PassageEntry> m_PassageEntryRepository;
-      private Repository<GlossaryTerm> m_GlossaryItemRepository;
-      private Repository<GlossaryEntry> m_GlossaryEntryRepository;
+      private IRepository<Book> m_Books;
+      private IRepository<Author> m_Authors;
+      private IRepository<Domain.Version> m_Versions;
+      private IRepository<SubBook> m_SubBooks;
+      private IRepository<Chapter> m_Chapters;
+      private IRepository<Passage> m_Passages;
+      private IRepository<Link> m_Links;
+      private IRepository<Tag> m_Tags;
+      private IRepository<Style> m_Styles;
+      private IRepository<Source> m_Sources;
+      private IRepository<ChapterHeader> m_ChapterHeaders;
+      private IRepository<ChapterFooter> m_ChapterFooters;
+      private IRepository<PassageHeader> m_PassageHeaders;
+      private IRepository<PassageFooter> m_PassageFooters;
+      private IRepository<PassageEntry> m_PassageEntries;
+      private IRepository<GlossaryTerm> m_GlossarrTerms;
+      private IRepository<GlossaryEntry> m_GlossaryEntries;
       private readonly SdwDbContext m_Db = new SdwDbContext ();
 
       /// <summary>
@@ -31,7 +33,7 @@ namespace SeekDeepWithin.DataAccess
       /// </summary>
       public IRepository <Book> Books
       {
-         get { return this.m_BookRepository ?? (this.m_BookRepository = new Repository <Book> (m_Db)); }
+         get { return this.m_Books ?? (this.m_Books = new Repository <Book> (m_Db)); }
       }
 
       /// <summary>
@@ -39,7 +41,7 @@ namespace SeekDeepWithin.DataAccess
       /// </summary>
       public IRepository <Author> Authors
       {
-         get { return this.m_AuthorRepository ?? (this.m_AuthorRepository = new Repository<Author> (m_Db)); }
+         get { return this.m_Authors ?? (this.m_Authors = new Repository<Author> (m_Db)); }
       }
 
       /// <summary>
@@ -47,7 +49,7 @@ namespace SeekDeepWithin.DataAccess
       /// </summary>
       public IRepository<Domain.Version> Versions
       {
-         get { return this.m_VersionRepository ?? (this.m_VersionRepository = new Repository<Domain.Version> (m_Db)); }
+         get { return this.m_Versions ?? (this.m_Versions = new Repository<Domain.Version> (m_Db)); }
       }
 
       /// <summary>
@@ -55,7 +57,7 @@ namespace SeekDeepWithin.DataAccess
       /// </summary>
       public IRepository<SubBook> SubBooks
       {
-         get { return this.m_SubBookRepository ?? (this.m_SubBookRepository = new Repository<SubBook> (m_Db)); }
+         get { return this.m_SubBooks ?? (this.m_SubBooks = new Repository<SubBook> (m_Db)); }
       }
 
       /// <summary>
@@ -63,7 +65,7 @@ namespace SeekDeepWithin.DataAccess
       /// </summary>
       public IRepository<Chapter> Chapters
       {
-         get { return this.m_ChapterRepository ?? (this.m_ChapterRepository = new Repository<Chapter> (m_Db)); }
+         get { return this.m_Chapters ?? (this.m_Chapters = new Repository<Chapter> (m_Db)); }
       }
 
       /// <summary>
@@ -71,7 +73,7 @@ namespace SeekDeepWithin.DataAccess
       /// </summary>
       public IRepository<GlossaryTerm> GlossaryTerms
       {
-         get { return this.m_GlossaryItemRepository ?? (this.m_GlossaryItemRepository = new Repository<GlossaryTerm> (m_Db)); }
+         get { return this.m_GlossarrTerms ?? (this.m_GlossarrTerms = new Repository<GlossaryTerm> (m_Db)); }
       }
 
       /// <summary>
@@ -79,7 +81,7 @@ namespace SeekDeepWithin.DataAccess
       /// </summary>
       public IRepository<GlossaryEntry> GlossaryEntries
       {
-         get { return this.m_GlossaryEntryRepository ?? (this.m_GlossaryEntryRepository = new Repository<GlossaryEntry> (m_Db)); }
+         get { return this.m_GlossaryEntries ?? (this.m_GlossaryEntries = new Repository<GlossaryEntry> (m_Db)); }
       }
 
       /// <summary>
@@ -87,7 +89,7 @@ namespace SeekDeepWithin.DataAccess
       /// </summary>
       public IRepository<Passage> Passages
       {
-         get { return this.m_PassageRepository ?? (this.m_PassageRepository = new Repository<Passage> (m_Db)); }
+         get { return this.m_Passages ?? (this.m_Passages = new Repository<Passage> (m_Db)); }
       }
 
       /// <summary>
@@ -95,7 +97,7 @@ namespace SeekDeepWithin.DataAccess
       /// </summary>
       public IRepository<Link> Links
       {
-         get { return this.m_LinkRepository ?? (this.m_LinkRepository = new Repository<Link> (m_Db)); }
+         get { return this.m_Links ?? (this.m_Links = new Repository<Link> (m_Db)); }
       }
 
       /// <summary>
@@ -103,7 +105,7 @@ namespace SeekDeepWithin.DataAccess
       /// </summary>
       public IRepository<Tag> Tags
       {
-         get { return this.m_TagRepository ?? (this.m_TagRepository = new Repository<Tag> (m_Db)); }
+         get { return this.m_Tags ?? (this.m_Tags = new Repository<Tag> (m_Db)); }
       }
 
       /// <summary>
@@ -111,7 +113,7 @@ namespace SeekDeepWithin.DataAccess
       /// </summary>
       public IRepository<Style> Styles
       {
-         get { return this.m_StyleRepository ?? (this.m_StyleRepository = new Repository<Style> (m_Db)); }
+         get { return this.m_Styles ?? (this.m_Styles = new Repository<Style> (m_Db)); }
       }
 
       /// <summary>
@@ -119,23 +121,39 @@ namespace SeekDeepWithin.DataAccess
       /// </summary>
       public IRepository<Source> Sources
       {
-         get { return this.m_SourceRepository ?? (this.m_SourceRepository = new Repository<Source> (m_Db)); }
+         get { return this.m_Sources ?? (this.m_Sources = new Repository<Source> (m_Db)); }
       }
 
       /// <summary>
-      /// Gets the repository for headers.
+      /// Gets the repository for Chapter headers.
       /// </summary>
-      public IRepository<Header> Headers
+      public IRepository<ChapterHeader> ChapterHeaders
       {
-         get { return this.m_HeaderRepository ?? (this.m_HeaderRepository = new Repository<Header> (m_Db)); }
+         get { return this.m_ChapterHeaders ?? (this.m_ChapterHeaders = new Repository<ChapterHeader> (m_Db)); }
       }
 
       /// <summary>
-      /// Gets the repository for footers.
+      /// Gets the repository for Chapter footers.
       /// </summary>
-      public IRepository<Footer> Footers
+      public IRepository<ChapterFooter> ChapterFooters
       {
-         get { return this.m_FooterRepository ?? (this.m_FooterRepository = new Repository<Footer> (m_Db)); }
+         get { return this.m_ChapterFooters ?? (this.m_ChapterFooters = new Repository<ChapterFooter> (m_Db)); }
+      }
+
+      /// <summary>
+      /// Gets the repository for Passage headers.
+      /// </summary>
+      public IRepository<PassageHeader> PassageHeaders
+      {
+         get { return this.m_PassageHeaders ?? (this.m_PassageHeaders = new Repository<PassageHeader> (m_Db)); }
+      }
+
+      /// <summary>
+      /// Gets the repository for Passage footers.
+      /// </summary>
+      public IRepository<PassageFooter> PassageFooters
+      {
+         get { return this.m_PassageFooters ?? (this.m_PassageFooters = new Repository<PassageFooter> (m_Db)); }
       }
 
       /// <summary>
@@ -143,7 +161,7 @@ namespace SeekDeepWithin.DataAccess
       /// </summary>
       public IRepository<PassageEntry> PassageEntries
       {
-         get { return this.m_PassageEntryRepository ?? (this.m_PassageEntryRepository = new Repository<PassageEntry> (m_Db)); }
+         get { return this.m_PassageEntries ?? (this.m_PassageEntries = new Repository<PassageEntry> (m_Db)); }
       }
 
       /// <summary>

@@ -1,5 +1,5 @@
 ﻿using System.Data.Entity;
-using SeekDeepWithin.Migrations;
+using System.Data.Entity.ModelConfiguration.Conventions;
 using SeekDeepWithin.Models;
 
 namespace SeekDeepWithin.DataAccess
@@ -13,7 +13,7 @@ namespace SeekDeepWithin.DataAccess
       /// Initializes a new user database context.
       /// </summary>
       public UsersContext ()
-         : base ("DefaultConnection")
+         : base ("UserConnection")
       {
       }
 
@@ -21,6 +21,11 @@ namespace SeekDeepWithin.DataAccess
       /// Gets or Sets the list of user profiles.
       /// </summary>
       public DbSet<UserProfile> UserProfiles { get; set; }
+
+      /// <summary>
+      /// Gets or Sets the list of user options.
+      /// </summary>
+      public DbSet<UserData> UserDatas { get; set; }
 
       /// <summary>
       /// This method is called when the model for a derived context has been initialized, but
@@ -39,7 +44,10 @@ namespace SeekDeepWithin.DataAccess
       /// <param name="modelBuilder">The builder that defines the model for the context being created.</param>
       protected override void OnModelCreating (DbModelBuilder modelBuilder)
       {
-         Database.SetInitializer (new MigrateDatabaseToLatestVersion<UsersContext, UserConfiguration> ());
+         modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
+         modelBuilder.Entity<UserProfile> ()
+            .HasOptional (p => p.UserData)
+            .WithRequired (d => d.UserProfile);
       }
    }
 }

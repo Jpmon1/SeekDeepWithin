@@ -50,7 +50,7 @@ namespace SeekDeepWithin.Controllers
             About = author.About
          };
          foreach (var writer in author.Writers) {
-            viewModel.Written.Add (SubBookController.GetViewModel (writer.SubBook));
+            viewModel.Written.Add (new SubBookViewModel (writer.SubBook));
          }
          return View (viewModel);
       }
@@ -111,11 +111,11 @@ namespace SeekDeepWithin.Controllers
       [HttpPost]
       [ValidateAntiForgeryToken]
       [Authorize (Roles = "Editor")]
-      public ActionResult Create (AuthorViewModel viewModel)
+      public ActionResult Create (AuthorViewModel viewModel, string refUrl)
       {
          this.m_Db.Authors.Insert (new Author { Name = viewModel.Name, About = viewModel.About });
          this.m_Db.Save ();
-         return RedirectToAction ("Index");
+         return Redirect (refUrl);
       }
    }
 }

@@ -70,11 +70,11 @@ function setSelection(event) {
    $('#StartIndex').val(start);
    $('#FooterIndex').val(start);
    $('#EndIndex').val(end);
-   /*var link = selection.toLowerCase().replace(/\b[a-z]/g, function (letter) {
+   var link = selection.toLowerCase().replace(/\b[a-z]/g, function (letter) {
       return letter.toUpperCase();
    });
    if (link === 'Me') {
       link = 'God';
-   }*/
-   //$('#inAddNewGlossaryLink').val(link);
+   }
+   //$('#linkGlossary').val(link);
 }

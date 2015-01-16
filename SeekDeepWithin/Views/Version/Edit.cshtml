@@ -8,8 +8,7 @@
 @if (User.IsInRole ("Creator"))
 {
    <small class="bullet-item">
-      @Html.ActionLink("add sub book", "Create", "SubBook", new {versionId = Model.Id}, null) |
-      @Html.ActionLink("add chapter", "Create", "Chapter", new {versionId = Model.Id}, null)
+      @Html.ActionLink("edit contents", "Contents", new {id = Model.Id})
    </small>
 }
 @if (ViewBag.ErrorMessage != null) {

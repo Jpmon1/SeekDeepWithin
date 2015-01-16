@@ -39,6 +39,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DataAnnotationsExtensions">
+      <HintPath>..\packages\DataAnnotationsExtensions.1.1.0.0\lib\NETFramework40\DataAnnotationsExtensions.dll</HintPath>
+    </Reference>
     <Reference Include="HtmlAgilityPack">
       <HintPath>..\packages\HtmlAgilityPack.1.4.9\lib\Net40\HtmlAgilityPack.dll</HintPath>
     </Reference>
@@ -236,15 +239,13 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201412022034506_InitialCreate.cs" />
-    <Compile Include="Migrations\201412022034506_InitialCreate.Designer.cs">
-      <DependentUpon>201412022034506_InitialCreate.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\UserConfiguration.cs" />
     <Compile Include="Models\AccountModels.cs" />
     <Compile Include="Models\AddPassageViewModel.cs" />
     <Compile Include="Models\AuthorViewModel.cs" />
+    <Compile Include="Models\ChapterFooterViewModel.cs" />
+    <Compile Include="Models\ChapterHeaderViewModel.cs" />
     <Compile Include="Models\ChapterViewModel.cs" />
     <Compile Include="Models\EditStyleViewModel.cs" />
     <Compile Include="Models\ErrorViewModel.cs" />
@@ -252,13 +253,21 @@
     <Compile Include="Models\GlossaryTermViewModel.cs" />
     <Compile Include="Models\EditLinkViewModel.cs" />
     <Compile Include="Models\HeaderFooterViewModel.cs" />
+    <Compile Include="Models\IRenderable.cs" />
     <Compile Include="Models\LinkViewModel.cs" />
+    <Compile Include="Models\LoginViewModel.cs" />
+    <Compile Include="Models\PassageFooterViewModel.cs" />
+    <Compile Include="Models\PassageHeaderViewModel.cs" />
     <Compile Include="Models\PassageViewModel.cs" />
+    <Compile Include="Models\RegisterViewModel.cs" />
+    <Compile Include="Models\SearchViewModel.cs" />
     <Compile Include="Models\SourceViewModel.cs" />
     <Compile Include="Models\StyleViewModel.cs" />
     <Compile Include="Models\SubBookViewModel.cs" />
     <Compile Include="DataAccess\UsersContext.cs" />
     <Compile Include="Models\TagViewModel.cs" />
+    <Compile Include="Models\UserData.cs" />
+    <Compile Include="Models\UserProfile.cs" />
     <Compile Include="Models\VersionSourceViewModel.cs" />
     <Compile Include="Models\WriterViewModel.cs" />
     <Compile Include="Models\BookViewModel.cs" />
@@ -396,12 +405,14 @@
     <Content Include="Scripts\foundation\foundation.tooltip.js" />
     <Content Include="Scripts\foundation\foundation.topbar.js" />
     <Content Include="Scripts\jquery-1.11.1.min.js" />
+    <Content Include="Scripts\jquery-1.11.2.js" />
+    <Content Include="Scripts\jquery-1.11.2.min.js" />
     <Content Include="Scripts\jquery-1.8.2.js" />
     <Content Include="Scripts\jquery-1.8.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery-ui-1.8.24.js" />
     <Content Include="Scripts\jquery-ui-1.8.24.min.js" />
-    <Content Include="Scripts\jquery.autocomplete.min.js" />
+    <Content Include="Scripts\jquery.autocomplete.js" />
     <Content Include="Scripts\jquery.cookie.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
@@ -417,8 +428,16 @@
     <Content Include="Scripts\sdw.addlink.js" />
     <Content Include="Scripts\sdw.addpassages.js" />
     <Content Include="Scripts\sdw.addstyle.js" />
+    <Content Include="Scripts\sdw.contentsedit.js" />
     <Content Include="Scripts\sdw.editchapter.js" />
+    <Content Include="Scripts\sdw.footer.js" />
+    <Content Include="Scripts\sdw.header.js" />
+    <Content Include="Scripts\sdw.link.js" />
+    <Content Include="Scripts\sdw.passage.js" />
+    <Content Include="Scripts\sdw.read.js" />
+    <Content Include="Scripts\sdw.style.js" />
     <Content Include="Scripts\selection.js" />
+    <Content Include="ToDo.txt" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -468,14 +487,12 @@
     <Content Include="Views\Book\Create.cshtml" />
     <Content Include="Views\Book\Edit.cshtml" />
     <Content Include="Views\Version\Edit.cshtml" />
-    <Content Include="Views\SubBook\Edit.cshtml" />
     <Content Include="Views\Chapter\Edit.cshtml" />
-    <Content Include="Views\Passage\Details.cshtml" />
+    <Content Include="Views\Passage\Index.cshtml" />
     <Content Include="Views\Roles\Index.cshtml" />
     <Content Include="Views\Roles\Create.cshtml" />
     <Content Include="Views\Roles\Assign.cshtml" />
     <Content Include="Views\Error\Index.cshtml" />
-    <Content Include="Views\Passage\Edit.cshtml" />
     <Content Include="Views\Search\Index.cshtml" />
     <Content Include="Views\Glossary\Index.cshtml" />
     <Content Include="Views\Search\Results.cshtml" />
@@ -500,18 +517,21 @@
     <Content Include="Views\Source\EditSource.cshtml" />
     <Content Include="Views\Source\Edit.cshtml" />
     <Content Include="Views\Source\_SourceForm.cshtml" />
-    <Content Include="Views\Style\Create.cshtml" />
     <Content Include="Views\Chapter\_EditChapter.cshtml" />
     <Content Include="Views\Chapter\Add.cshtml" />
     <Content Include="Views\Header\Create.cshtml" />
     <Content Include="Views\Footer\Create.cshtml" />
     <Content Include="Views\Shared\_HeaderFooter.cshtml" />
     <Content Include="Views\Shared\_Passage.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\201412022034506_InitialCreate.resx">
-      <DependentUpon>201412022034506_InitialCreate.cs</DependentUpon>
-    </EmbeddedResource>
+    <Content Include="Views\Version\Contents.cshtml" />
+    <Content Include="Views\Footer\Edit.cshtml" />
+    <Content Include="Views\Header\Edit.cshtml" />
+    <Content Include="Views\Shared\_HFView.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\ChapterHeaderViewModel.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\ChapterFooterViewModel.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\ChapterHeaderViewModel.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\ChapterFooterViewModel.cshtml" />
+    <Content Include="Views\Shared\_StyleView.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
@@ -525,9 +545,7 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Views\Shared\EditorTemplates\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
