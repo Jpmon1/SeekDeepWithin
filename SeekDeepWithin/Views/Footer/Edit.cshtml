@@ -1,0 +1,16 @@
+﻿@model SeekDeepWithin.Models.HeaderFooterViewModel
+
+<h3>Edit footer for @Model.For</h3>
+
+@Html.Partial("_HFView", Model)
+
+<div class="row">
+   <div class="small-6 large-6 columns text-center">
+      <a href="#" onclick="footer_Edit();" class="button small">Save Changes</a>
+   </div>
+   <div class="small-6 large-6 columns text-center">
+      <a href="#" onclick="footer_Delete();" class="button small alert">Delete</a>
+   </div>
+</div>
+
+<a class="close-reveal-modal">&#215;</a>
