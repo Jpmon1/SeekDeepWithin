@@ -8,6 +8,7 @@ using DotNetOpenAuth.AspNet;
 using Microsoft.Web.WebPages.OAuth;
 using SeekDeepWithin.DataAccess;
 using SeekDeepWithin.Filters;
+using SeekDeepWithin.Pocos;
 using WebMatrix.WebData;
 using SeekDeepWithin.Models;
 
@@ -81,9 +82,11 @@ namespace SeekDeepWithin.Controllers
          return View ();
       }
 
-      //
-      // POST: /Account/Register
-
+      /// <summary>
+      /// Registers a new user.
+      /// </summary>
+      /// <param name="viewModel">User information.</param>
+      /// <returns>Index or view with errors.</returns>
       [HttpPost]
       [AllowAnonymous]
       [ValidateAntiForgeryToken]
@@ -99,7 +102,12 @@ namespace SeekDeepWithin.Controllers
                var user = this.m_Db.UserProfiles.Find (WebSecurity.GetUserId (viewModel.UserEmail));
                if (user != null)
                {
-                  user.UserData = new UserData { ShowEditActions = false, UserProfileId = user.UserId };
+                  // Create new user data with default options...
+                  user.UserData = new UserData
+                  {
+                     ShowEditActions = false,
+                     UserProfileId = user.UserId
+                  };
                   this.m_Db.SaveChanges ();
                }
                return RedirectToAction ("Index", "Home");

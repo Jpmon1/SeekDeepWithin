@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using SeekDeepWithin.Controllers;
-using SeekDeepWithin.Domain;
+using SeekDeepWithin.Pocos;
 
 namespace SeekDeepWithin.Models
 {

@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
 using SeekDeepWithin.DataAccess;
-using SeekDeepWithin.Domain;
+using SeekDeepWithin.Pocos;
 using SeekDeepWithin.Models;
 
 namespace SeekDeepWithin.Controllers
@@ -70,15 +70,15 @@ namespace SeekDeepWithin.Controllers
       [HttpPost]
       [ValidateAntiForgeryToken]
       [Authorize (Roles = "Creator")]
-      public ActionResult Create (AddPassageViewModel viewModel)
+      public ActionResult Create (AddItemViewModel viewModel)
       {
          if (ModelState.IsValid)
          {
-            var chapter = this.m_Db.Chapters.Get (viewModel.ChapterId);
+            var chapter = this.m_Db.Chapters.Get (viewModel.ParentId);
             var passageEntry = new PassageEntry
             {
                Chapter = chapter,
-               ChapterId = viewModel.ChapterId,
+               ChapterId = viewModel.ParentId,
                Number = viewModel.Number,
                Order = viewModel.Order,
                Passage = this.GetPassage (viewModel.Text)

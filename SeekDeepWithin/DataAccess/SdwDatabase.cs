@@ -1,5 +1,5 @@
 ﻿using System;
-using SeekDeepWithin.Domain;
+using SeekDeepWithin.Pocos;
 
 namespace SeekDeepWithin.DataAccess
 {
@@ -11,7 +11,7 @@ namespace SeekDeepWithin.DataAccess
       private bool m_Disposed;
       private IRepository<Book> m_Books;
       private IRepository<Author> m_Authors;
-      private IRepository<Domain.Version> m_Versions;
+      private IRepository<Pocos.Version> m_Versions;
       private IRepository<SubBook> m_SubBooks;
       private IRepository<Chapter> m_Chapters;
       private IRepository<Passage> m_Passages;
@@ -24,7 +24,8 @@ namespace SeekDeepWithin.DataAccess
       private IRepository<PassageHeader> m_PassageHeaders;
       private IRepository<PassageFooter> m_PassageFooters;
       private IRepository<PassageEntry> m_PassageEntries;
-      private IRepository<GlossaryTerm> m_GlossarrTerms;
+      private IRepository<GlossaryTerm> m_GlossaryTerms;
+      private IRepository<GlossaryItem> m_GlossaryItems;
       private IRepository<GlossaryEntry> m_GlossaryEntries;
       private readonly SdwDbContext m_Db = new SdwDbContext ();
 
@@ -47,9 +48,9 @@ namespace SeekDeepWithin.DataAccess
       /// <summary>
       /// Gets the repository for versions.
       /// </summary>
-      public IRepository<Domain.Version> Versions
+      public IRepository<Pocos.Version> Versions
       {
-         get { return this.m_Versions ?? (this.m_Versions = new Repository<Domain.Version> (m_Db)); }
+         get { return this.m_Versions ?? (this.m_Versions = new Repository<Pocos.Version> (m_Db)); }
       }
 
       /// <summary>
@@ -69,11 +70,19 @@ namespace SeekDeepWithin.DataAccess
       }
 
       /// <summary>
-      /// Gets the repository for passages.
+      /// Gets the repository for glossary terms.
       /// </summary>
       public IRepository<GlossaryTerm> GlossaryTerms
       {
-         get { return this.m_GlossarrTerms ?? (this.m_GlossarrTerms = new Repository<GlossaryTerm> (m_Db)); }
+         get { return this.m_GlossaryTerms ?? (this.m_GlossaryTerms = new Repository<GlossaryTerm> (m_Db)); }
+      }
+
+      /// <summary>
+      /// Gets the repository for glossary items.
+      /// </summary>
+      public IRepository<GlossaryItem> GlossaryItems
+      {
+         get { return this.m_GlossaryItems ?? (this.m_GlossaryItems = new Repository<GlossaryItem> (m_Db)); }
       }
 
       /// <summary>
@@ -81,7 +90,7 @@ namespace SeekDeepWithin.DataAccess
       /// </summary>
       public IRepository<GlossaryEntry> GlossaryEntries
       {
-         get { return this.m_GlossaryEntries ?? (this.m_GlossaryEntries = new Repository<GlossaryEntry> (m_Db)); }
+         get { return this.m_GlossaryEntries ?? (this.m_GlossaryEntries = new Repository<GlossaryEntry> (this.m_Db)); }
       }
 
       /// <summary>

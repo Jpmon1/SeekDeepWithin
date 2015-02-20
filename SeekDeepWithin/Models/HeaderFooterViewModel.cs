@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
-using SeekDeepWithin.Domain;
+using SeekDeepWithin.Pocos;
 
 namespace SeekDeepWithin.Models
 {

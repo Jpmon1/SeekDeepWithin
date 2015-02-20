@@ -1,15 +1,15 @@
 ﻿
-function header_Create() {
+function footer_Create() {
    var type = $('#hfFor').val();
    $.ajax({
       type: 'POST',
-      url: '/Header/Create' + type + '/',
-      data: header_GetData()
+      url: '/Footer/Create' + type + '/',
+      data: footer_GetData()
    }).done(function (data) {
       if ($('#hfFor').val() == 'passage') {
          editEntry($('#editEntryId').text());
       } else if ($('#hfFor').val() == 'chapter') {
-         $('#chapterHeaders').append(data);
+         $('#chapterFooters').append(data);
       }
       $('#modal').foundation('reveal', 'close');
    }).fail(function (data) {
@@ -17,16 +17,16 @@ function header_Create() {
    });
 }
 
-function header_Edit(id) {
+function footer_Edit(id) {
    $.ajax({
       type: 'POST',
-      url: '/Header/Edit/',
+      url: '/Footer/Edit/',
       data: header_GetData(id)
    }).done(function (data) {
       if (data.type == 'passage') {
          editEntry($('#editEntryId').text());
       } else if (data.type == 'chapter') {
-         $('#chHeader_' + data.id).text(data.text);
+         $('#chFooter_' + data.id).text(data.text);
       }
       $('#modal').foundation('reveal', 'close');
    }).fail(function (data) {
@@ -34,12 +34,12 @@ function header_Edit(id) {
    });
 }
 
-function header_GetData(id) {
+function footer_GetData() {
    var form = $('#__AjaxAntiForgeryForm');
    var token = $('input[name="__RequestVerificationToken"]', form).val();
    return {
       __RequestVerificationToken: token,
-      id: id,
+      id: $('#hfId').val(),
       for: $('#hfFor').val(),
       text: $('#hfText').val(),
       itemId: $('#hfItemId').val(),
@@ -50,10 +50,10 @@ function header_GetData(id) {
    };
 }
 
-function header_ShowCreate(id, type) {
+function footer_ShowCreate(id, index, type) {
    $('#modal').foundation('reveal', 'open', {
-      url: '/Header/Create',
-      data: { itemId: id, type: type },
+      url: '/Footer/Create',
+      data: { itemId: id, index: index, type: type },
       success: function (data) {
          $('#modal').html(data);
       },
@@ -63,27 +63,46 @@ function header_ShowCreate(id, type) {
    });
 }
 
-function header_CreateChapter() {
+function footer_CreateChapter() {
    var chapterId = $('#chapterId').val();
    if (chapterId != '') {
-      header_ShowCreate(chapterId, 'chapter');
+      footer_ShowCreate(chapterId, -1, 'chapter');
    } else {
       alert('Unable to determine the chapter!?!?!');
    }
 }
 
-function header_CreatePassage() {
+function footer_CreatePassage() {
    var entryId = $('#editEntryId').text();
    if (entryId != '') {
-      header_ShowCreate(entryId, 'passage');
+      var index = $('#FooterIndex').val();
+      if (index != '' && index != -1) {
+         footer_ShowCreate(entryId, index, 'passage');
+      } else {
+         alert('Please specify an index for the footer.');
+      }
    } else {
-      alert('Please selected a passage to add a header to.');
+      alert('Please selected a passage to add a footer to.');
    }
 }
 
-function header_ShowEdit(id, type) {
+function footer_CreateEntry() {
+   var entryId = $('#editEntryId').text();
+   if (entryId != '') {
+      var index = $('#FooterIndex').val();
+      if (index != '' && index != -1) {
+         footer_ShowCreate(entryId, index, 'entry');
+      } else {
+         alert('Please specify an index for the footer.');
+      }
+   } else {
+      alert('Please selected an entry to add a footer to.');
+   }
+}
+
+function footer_ShowEdit(id, type) {
    $('#modal').foundation('reveal', 'open', {
-      url: '/Header/Edit',
+      url: '/Footer/Edit',
       data: { id: id, type: type },
       success: function (data) {
          $('#modal').html(data);

@@ -1,5 +1,5 @@
 ﻿using System.Data.Entity;
-using SeekDeepWithin.Domain;
+using SeekDeepWithin.Pocos;
 using SeekDeepWithin.Migrations;
 
 namespace SeekDeepWithin.DataAccess
@@ -41,7 +41,7 @@ namespace SeekDeepWithin.DataAccess
 
       public DbSet<GlossaryTerm> GlossaryItems { get; set; }
 
-      public DbSet<GlossaryEntry> GlossaryEntries { get; set; }
+      public DbSet<GlossaryItem> GlossaryEntries { get; set; }
 
       /// <summary>
       /// This method is called when the model for a derived context has been initialized, but

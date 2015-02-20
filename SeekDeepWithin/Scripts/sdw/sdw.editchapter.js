@@ -6,7 +6,7 @@ $(document).ready(function () {
 });
 
 function editEntry(id) {
-   $('#rightPassageMenu').children().not('#headersLabel, #addHeaderBtn, #footersLabel, #addFooterBtn, #endLabel').remove();
+   $('#rightMenu').children().not('#headersLabel, #addHeaderBtn, #footersLabel, #addFooterBtn, #endLabel').remove();
    $.ajax({
       type: 'GET',
       url: '/Passage/GetEntry/' + id

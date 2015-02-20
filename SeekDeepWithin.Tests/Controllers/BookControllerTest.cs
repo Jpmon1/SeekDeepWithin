@@ -2,7 +2,7 @@
 using System.Web.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SeekDeepWithin.Controllers;
-using SeekDeepWithin.Domain;
+using SeekDeepWithin.Pocos;
 using SeekDeepWithin.Models;
 using SeekDeepWithin.Tests.Mocks;
 

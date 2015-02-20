@@ -1,5 +1,5 @@
 ﻿using System;
-using SeekDeepWithin.Domain;
+using SeekDeepWithin.Pocos;
 
 namespace SeekDeepWithin.DataAccess
 {
@@ -18,7 +18,7 @@ namespace SeekDeepWithin.DataAccess
       /// <summary>
       /// Gets the repository for versions.
       /// </summary>
-      IRepository<Domain.Version> Versions { get; }
+      IRepository<Pocos.Version> Versions { get; }
 
       /// <summary>
       /// Gets the repository for subbooks.
@@ -81,14 +81,19 @@ namespace SeekDeepWithin.DataAccess
       IRepository<PassageFooter> PassageFooters { get; }
 
       /// <summary>
-      /// Gets the repository for passages.
+      /// Gets the repository for glossary terms.
       /// </summary>
       IRepository <GlossaryTerm> GlossaryTerms { get; }
 
       /// <summary>
+      /// Gets the repository for glossary items.
+      /// </summary>
+      IRepository<GlossaryItem> GlossaryItems { get; }
+
+      /// <summary>
       /// Gets the repository for glossary entries.
       /// </summary>
-      IRepository <GlossaryEntry> GlossaryEntries { get; }
+      IRepository<GlossaryEntry> GlossaryEntries { get; }
 
       /// <summary>
       /// Saves all changes.

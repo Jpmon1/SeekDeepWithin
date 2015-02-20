@@ -82,7 +82,7 @@ namespace SeekDeepWithin.Controllers
       /// <returns>Converted text.</returns>
       [HttpPost]
       [AllowAnonymous]
-      public ActionResult LinesToPassages (string text, int startOrder, int startNumber)
+      public ActionResult LinesToPassages (string text, int? startOrder, int? startNumber)
       {
          if (string.IsNullOrWhiteSpace (text))
          {
@@ -100,8 +100,10 @@ namespace SeekDeepWithin.Controllers
                number = startNumber,
                order = startOrder
             });
-            startNumber++;
-            startOrder++;
+            if (startNumber != null)
+               startNumber++;
+            if (startOrder != null)
+               startOrder++;
          }
 
          return Json (new { passages = passageList });

@@ -1,19 +1,20 @@
-Tags
-Comments
-Favorite Icon
-Make Glossary Entries like passages
 Redirects
 Pagination
 Advanced search
-Edit number and order of passage
+Passage parser
 Add chapter/sub book range to contents
+Rename sdw.addpassages, break up
+
+
+Tags
+Comments
+Edit number and order of passage
 Delete
    Contents
    Styles --> Edit also
    Links --> Edit also
    Headers
    Footers
-
 Notes
 View Search as List/Tree
 Facebook/twitter/email share
@@ -25,6 +26,7 @@ User preferences
    View footers at end or after verse
    if editor show edit item
 Glossary see also
+Glossary Entry voting
 Book on amazon links
 Read multiple books
 Search while reading

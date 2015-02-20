@@ -1,6 +1,6 @@
 ﻿using System.Web.Mvc;
 using SeekDeepWithin.DataAccess;
-using SeekDeepWithin.Domain;
+using SeekDeepWithin.Pocos;
 using SeekDeepWithin.Models;
 
 namespace SeekDeepWithin.Controllers

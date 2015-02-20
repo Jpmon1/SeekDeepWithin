@@ -1,4 +1,4 @@
-﻿using SeekDeepWithin.Domain;
+﻿using SeekDeepWithin.Pocos;
 
 namespace SeekDeepWithin.Models
 {

@@ -6,7 +6,7 @@
    var mediumSpan = "12";
    var largeSpan = "12";
    if (Model.Number > 0) {
-      smallSpan = "8";
+      smallSpan = "10";
       mediumSpan = "10";
       largeSpan = "11";
    }
@@ -20,11 +20,12 @@
       </div>
    </div>
 }
+
 <div class="row" id="pass_@id" @if(Model.Number == 0 && Model.Footers.Count == 0){ @Html.Raw("style=\"padding-bottom: 0.9375rem\"") }>
    @if (Model.Number > 0) {
-      <div class="small-4 medium-2 large-1 columns">
+      <div class="small-2 medium-2 large-1 columns">
          <blockquote>
-            @Html.ActionLink(Model.Number.ToString (CultureInfo.InvariantCulture), "Index", "Passage", new { entryId = Model.Id }, null)
+            @Html.ActionLink(Model.Number.ToString(CultureInfo.InvariantCulture), "Index", "Passage", new { entryId = Model.Id }, null)
          </blockquote>
       </div>
    }
@@ -32,6 +33,7 @@
       @Html.Raw(Model.Render ())
    </div>
 </div>
+
 @foreach (var footer in Model.Footers) {
    <div class="row">
       @if (Model.Number > 0) { <div class="small-4 medium-2 large-1 columns">&nbsp;</div> }

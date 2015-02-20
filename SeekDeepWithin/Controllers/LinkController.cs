@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
 using SeekDeepWithin.DataAccess;
-using SeekDeepWithin.Domain;
+using SeekDeepWithin.Pocos;
 using SeekDeepWithin.Models;
 
 namespace SeekDeepWithin.Controllers
@@ -56,6 +56,41 @@ namespace SeekDeepWithin.Controllers
          passage.PassageLinks.Add (new PassageLink
          {
             Passage = passage,
+            Link = link,
+            OpenInNewWindow = viewModel.OpenInNewWindow,
+            StartIndex = viewModel.StartIndex,
+            EndIndex = viewModel.EndIndex
+         });
+         this.m_Db.Save ();
+         return Json ("Success!");
+      }
+
+      /// <summary>
+      /// Posts a new link for the given passage.
+      /// </summary>
+      /// <param name="viewModel"></param>
+      /// <returns></returns>
+      [HttpPost]
+      [ValidateAntiForgeryToken]
+      [Authorize (Roles = "Editor")]
+      public ActionResult CreateEntry (EditLinkViewModel viewModel)
+      {
+         if (!ModelState.IsValid)
+            return Json ("Data is not Valid");
+
+         var linkUrl = this.GetLinkUrl (viewModel);
+         if (string.IsNullOrEmpty (linkUrl))
+            return Json ("Unable to determine the links url.");
+
+         if (!string.IsNullOrWhiteSpace (viewModel.Anchor))
+            linkUrl += "#" + viewModel.Anchor;
+
+         var link = GetLink (linkUrl);
+         var glossaryEntry = this.m_Db.GlossaryEntries.Get (viewModel.LinkItemId);
+
+         glossaryEntry.Links.Add (new GlossaryEntryLink
+         {
+            Entry = glossaryEntry,
             Link = link,
             OpenInNewWindow = viewModel.OpenInNewWindow,
             StartIndex = viewModel.StartIndex,

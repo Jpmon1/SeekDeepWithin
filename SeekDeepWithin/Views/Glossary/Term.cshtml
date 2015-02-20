@@ -1,5 +1,4 @@
-﻿@using SeekDeepWithin.Controllers
-@model SeekDeepWithin.Models.GlossaryTermViewModel
+﻿@model SeekDeepWithin.Models.GlossaryTermViewModel
 
 @{
     ViewBag.Title = Model.Name;
@@ -7,27 +6,32 @@
 <h3>
    @Model.Name
    @if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
-      <span style="font-size: small">@Html.ActionLink("add entry", "CreateEntry", new { termId = Model.Id, termName = Model.Name })</span>
+      <span style="font-size: small">@Html.ActionLink("add item", "CreateItem", new { termId = Model.Id })</span>
    }
 </h3>
 
 <div class="row">
    <div class="small-12 large-9 columns">
-      @if (Model.Entries.Count == 0) {
-         <div class="alert-box info"><em>No entries have been added for this term! Sorry!</em></div>
+      @if (Model.Items.Count == 0) {
+         <div class="alert-box info"><em>No information has been added for this term! Sorry!</em></div>
       }
-      @foreach (var entry in Model.Entries) {
-         <div id="entry_@entry.Id">
+      @foreach (var item in Model.Items) {
+         <div id="item_@item.Id">
             <div class="panel" style="padding: 3px 10px;">
+               @if (Request.IsAuthenticated && User.IsInRole ("Creator")) {
+                  <small>@Html.ActionLink("add", "Add", new { id = item.Id, termId = Model.Id }) | </small>
+               }
                @if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
-                  <small>@Html.ActionLink("edit", "EditEntry", new { id = entry.Id, termId = Model.Id, termName = Model.Name })</small>
+                  <small>@Html.ActionLink("edit", "Edit", new { id = item.Id, termId = Model.Id }) | </small>
                }
-               @if (!string.IsNullOrWhiteSpace (entry.SourceUrl)) {
-                  <a href="@entry.SourceUrl" class="right" target="_blank">@entry.SourceName</a>
+               @if (!string.IsNullOrWhiteSpace (item.SourceUrl)) {
+                  <a href="@item.SourceUrl" class="right" target="_blank">@item.SourceName</a>
                }
-               <small>@Html.ActionLink("edit source", "EditSource", "Source", new { id = entry.Id, type = "entry", parentId = Model.Id }, null)</small>
+               <small>@Html.ActionLink("edit source", "EditSource", "Source", new { id = item.Id, type = "entry", parentId = Model.Id }, null)</small>
             </div>
-            @Html.Raw(HtmlSanitizer.Sanitize (entry.Text))
+            @foreach (var entry in item.Entries) {
+               @Html.Partial("_GlossaryEntry", entry)
+            }
          </div>
       }
    </div>

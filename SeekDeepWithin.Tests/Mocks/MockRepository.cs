@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using SeekDeepWithin.DataAccess;
-using SeekDeepWithin.Domain;
+using SeekDeepWithin.Pocos;
 
 namespace SeekDeepWithin.Tests.Mocks
 {

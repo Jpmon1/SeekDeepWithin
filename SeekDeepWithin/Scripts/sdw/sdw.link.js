@@ -11,16 +11,23 @@ function link_Create() {
    var startIndex = $('#StartIndex').val();
    var endIndex = $('#EndIndex').val();
    if (startIndex != '' && endIndex != '') {
+      var type = $('#itemType').val();
       var form = $('#__AjaxAntiForgeryForm');
       var token = $('input[name="__RequestVerificationToken"]', form).val();
+      var itemId = -1;
+      if (type == 'Entry') {
+         itemId = $('#editEntryId').text();
+      } else {
+         itemId = $('#editPassId').text();
+      }
       $.ajax({
          type: 'POST',
-         url: '/Link/CreatePassage/',
+         url: '/Link/Create' + type + '/',
          data: {
             __RequestVerificationToken: token,
             startIndex: startIndex,
             endIndex: endIndex,
-            linkItemId: $('#editPassId').text(),
+            linkItemId: itemId,
             glossaryTerm: $('#linkGlossary').val(),
             anchor: $('#linkAnchor').val(),
             book: $('#linkBook').val(),

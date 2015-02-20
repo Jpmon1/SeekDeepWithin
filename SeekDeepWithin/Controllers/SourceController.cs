@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
 using SeekDeepWithin.DataAccess;
-using SeekDeepWithin.Domain;
+using SeekDeepWithin.Pocos;
 using SeekDeepWithin.Models;
 
 namespace SeekDeepWithin.Controllers
@@ -91,8 +91,8 @@ namespace SeekDeepWithin.Controllers
          }
          else if (type == "entry")
          {
-            var version = this.m_Db.GlossaryEntries.Get (id);
-            var s = version.GlossaryEntrySources.FirstOrDefault ();
+            var version = this.m_Db.GlossaryItems.Get (id);
+            var s = version.Sources.FirstOrDefault ();
             if (s != null)
                source = s.Source;
          }
@@ -118,7 +118,7 @@ namespace SeekDeepWithin.Controllers
       {
          if (ModelState.IsValid)
          {
-            var source = this.GetSource (viewModel.Name, viewModel.Url);
+            var source = GetSource (viewModel.Name, viewModel.Url, this.m_Db);
             if (viewModel.Type == "version")
             {
                var version = this.m_Db.Versions.Get (viewModel.Id);
@@ -135,14 +135,14 @@ namespace SeekDeepWithin.Controllers
             }
             if (viewModel.Type == "entry")
             {
-               var entry = this.m_Db.GlossaryEntries.Get (viewModel.Id);
-               if (entry.GlossaryEntrySources.Count == 1 && entry.GlossaryEntrySources.First ().Source.Id == source.Id)
+               var entry = this.m_Db.GlossaryItems.Get (viewModel.Id);
+               if (entry.Sources.Count == 1 && entry.Sources.First ().Source.Id == source.Id)
                   this.m_Db.Save ();
                else
                {
-                  if (entry.GlossaryEntrySources.Count == 0)
-                     entry.GlossaryEntrySources.Add (new GlossaryEntrySource { GlossaryEntry = entry });
-                  entry.GlossaryEntrySources.First ().Source = source;
+                  if (entry.Sources.Count == 0)
+                     entry.Sources.Add (new GlossaryItemSource { GlossaryItem = entry });
+                  entry.Sources.First ().Source = source;
                   this.m_Db.Save ();
                }
                return RedirectToAction ("Term", "Glossary", new { id = viewModel.ParentId });
@@ -156,20 +156,21 @@ namespace SeekDeepWithin.Controllers
       /// </summary>
       /// <param name="name">The name of the source.</param>
       /// <param name="url">The url of the source.</param>
+      /// <param name="db">The database to use for getting the source.</param>
       /// <returns>The requested source.</returns>
-      private Source GetSource (string name, string url)
+      public static Source GetSource (string name, string url, ISdwDatabase db)
       {
-         var source = this.m_Db.Sources.Get (s => s.Url == url).FirstOrDefault ();
+         var source = db.Sources.Get (s => s.Url == url).FirstOrDefault ();
          if (source == null)
          {
             source = new Source { Name = name, Url = url };
-            this.m_Db.Sources.Insert (source);
-            this.m_Db.Save ();
+            db.Sources.Insert (source);
+            db.Save ();
          }
          else if (source.Name != name)
          {
             source.Name = name;
-            this.m_Db.Save ();
+            db.Save ();
          }
          return source;
       }

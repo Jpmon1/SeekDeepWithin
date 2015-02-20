@@ -134,10 +134,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SeekDeepWithin.Domain\SeekDeepWithin.Domain.csproj">
-      <Project>{7438E211-E601-4EF2-9F2F-048B7FD37F4F}</Project>
-      <Name>SeekDeepWithin.Domain</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SeekDeepWithin\SeekDeepWithin.csproj">
       <Project>{39DC568B-9736-469B-9D32-56B6E723F1BA}</Project>
       <Name>SeekDeepWithin</Name>

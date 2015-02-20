@@ -1,5 +1,5 @@
 ﻿using SeekDeepWithin.DataAccess;
-using SeekDeepWithin.Domain;
+using SeekDeepWithin.Pocos;
 
 namespace SeekDeepWithin.Tests.Mocks
 {
@@ -23,7 +23,8 @@ namespace SeekDeepWithin.Tests.Mocks
       private IRepository<PassageHeader> m_PassageHeaders;
       private IRepository<PassageFooter> m_PassageFooters;
       private IRepository<PassageEntry> m_PassageEntries;
-      private IRepository<GlossaryTerm> m_GlossaryItems;
+      private IRepository<GlossaryTerm> m_GlossaryTerms;
+      private IRepository<GlossaryItem> m_GlossaryItems;
       private IRepository<GlossaryEntry> m_GlossaryEntries;
 
       /// <summary>
@@ -147,15 +148,23 @@ namespace SeekDeepWithin.Tests.Mocks
       }
 
       /// <summary>
-      /// Gets the repository for passages.
+      /// Gets the repository for glossary terms.
       /// </summary>
       public IRepository<GlossaryTerm> GlossaryTerms
       {
-         get { return this.m_GlossaryItems ?? (this.m_GlossaryItems = new MockRepository<GlossaryTerm> ()); }
+         get { return this.m_GlossaryTerms ?? (this.m_GlossaryTerms = new MockRepository<GlossaryTerm> ()); }
       }
 
       /// <summary>
-      /// Gets the repository for passages.
+      /// Gets the repository for glossary items.
+      /// </summary>
+      public IRepository<GlossaryItem> GlossaryItems
+      {
+         get { return this.m_GlossaryItems ?? (this.m_GlossaryItems = new MockRepository<GlossaryItem> ()); }
+      }
+
+      /// <summary>
+      /// Gets the repository for glossary entries.
       /// </summary>
       public IRepository<GlossaryEntry> GlossaryEntries
       {

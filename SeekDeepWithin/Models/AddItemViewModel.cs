@@ -5,8 +5,13 @@ namespace SeekDeepWithin.Models
    /// <summary>
    /// View model for adding passages.
    /// </summary>
-   public class AddPassageViewModel
+   public class AddItemViewModel
    {
+      /// <summary>
+      /// Gets or Sets the item type.
+      /// </summary>
+      public ItemType ItemType { get; set; }
+
       /// <summary>
       /// Gets or Sets the text of the passage.
       /// </summary>
@@ -30,6 +35,6 @@ namespace SeekDeepWithin.Models
       /// Gets or Sets the ID of the chapter this passage belongs to.
       /// </summary>
       [Required]
-      public int ChapterId { get; set; }
+      public int ParentId { get; set; }
    }
 }

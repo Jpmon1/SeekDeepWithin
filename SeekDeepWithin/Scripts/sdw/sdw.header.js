@@ -1,15 +1,15 @@
 ﻿
-function footer_Create() {
+function header_Create() {
    var type = $('#hfFor').val();
    $.ajax({
       type: 'POST',
-      url: '/Footer/Create' + type + '/',
-      data: footer_GetData()
+      url: '/Header/Create' + type + '/',
+      data: header_GetData()
    }).done(function (data) {
-      if ($('#hfFor').val() == 'passage') {
+      if ($('#hfFor').val() == 'passage' || $('#hfFor').val() == 'entry') {
          editEntry($('#editEntryId').text());
       } else if ($('#hfFor').val() == 'chapter') {
-         $('#chapterFooters').append(data);
+         $('#chapterHeaders').append(data);
       }
       $('#modal').foundation('reveal', 'close');
    }).fail(function (data) {
@@ -17,16 +17,16 @@ function footer_Create() {
    });
 }
 
-function footer_Edit(id) {
+function header_Edit(id) {
    $.ajax({
       type: 'POST',
-      url: '/Footer/Edit/',
+      url: '/Header/Edit/',
       data: header_GetData(id)
    }).done(function (data) {
       if (data.type == 'passage') {
          editEntry($('#editEntryId').text());
       } else if (data.type == 'chapter') {
-         $('#chFooter_' + data.id).text(data.text);
+         $('#chHeader_' + data.id).text(data.text);
       }
       $('#modal').foundation('reveal', 'close');
    }).fail(function (data) {
@@ -34,12 +34,12 @@ function footer_Edit(id) {
    });
 }
 
-function footer_GetData() {
+function header_GetData(id) {
    var form = $('#__AjaxAntiForgeryForm');
    var token = $('input[name="__RequestVerificationToken"]', form).val();
    return {
       __RequestVerificationToken: token,
-      id: $('#hfId').val(),
+      id: id,
       for: $('#hfFor').val(),
       text: $('#hfText').val(),
       itemId: $('#hfItemId').val(),
@@ -50,10 +50,10 @@ function footer_GetData() {
    };
 }
 
-function footer_ShowCreate(id, index, type) {
+function header_ShowCreate(id, type) {
    $('#modal').foundation('reveal', 'open', {
-      url: '/Footer/Create',
-      data: { itemId: id, index: index, type: type },
+      url: '/Header/Create',
+      data: { itemId: id, type: type },
       success: function (data) {
          $('#modal').html(data);
       },
@@ -63,32 +63,36 @@ function footer_ShowCreate(id, index, type) {
    });
 }
 
-function footer_CreateChapter() {
+function header_CreateChapter() {
    var chapterId = $('#chapterId').val();
    if (chapterId != '') {
-      footer_ShowCreate(chapterId, -1, 'chapter');
+      header_ShowCreate(chapterId, 'chapter');
    } else {
       alert('Unable to determine the chapter!?!?!');
    }
 }
 
-function footer_CreatePassage() {
+function header_CreatePassage() {
    var entryId = $('#editEntryId').text();
    if (entryId != '') {
-      var index = $('#FooterIndex').val();
-      if (index != '' && index != -1) {
-         footer_ShowCreate(entryId, index, 'passage');
-      } else {
-         alert('Please specify an index for the footer.');
-      }
+      header_ShowCreate(entryId, 'passage');
    } else {
-      alert('Please selected a passage to add a footer to.');
+      alert('Please selected a passage to add a header to.');
    }
 }
 
-function footer_ShowEdit(id, type) {
+function header_CreateEntry() {
+   var entryId = $('#editEntryId').text();
+   if (entryId != '') {
+      header_ShowCreate(entryId, 'entry');
+   } else {
+      alert('Please selected an entry to add a header to.');
+   }
+}
+
+function header_ShowEdit(id, type) {
    $('#modal').foundation('reveal', 'open', {
-      url: '/Footer/Edit',
+      url: '/Header/Edit',
       data: { id: id, type: type },
       success: function (data) {
          $('#modal').html(data);

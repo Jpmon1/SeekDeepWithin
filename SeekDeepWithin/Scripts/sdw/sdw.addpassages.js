@@ -35,28 +35,68 @@ function convert(path) {
 }
 
 function addSingle() {
-   postNewPassage($('#Text').val(), $('#Order').val(), $('#Number').val(), function() {
-      $('#singleAddCheck').show(200, function() {
-         setTimeout(function() { $('#singleAddCheck').hide(100); }, 2000);
+   var itemType = $('#ItemType');
+   if (itemType === 'Passage') {
+      postNewPassage($('#Text').val(), $('#Order').val(), $('#Number').val(), function() {
+         $('#singleAddCheck').show(200, function() {
+            setTimeout(function() { $('#singleAddCheck').hide(100); }, 2000);
+         });
+         $('#Text').val('');
+         $('#Order').val(parseInt($('#Order').val()) + 1);
+         $('#Number').val(parseInt($('#Number').val()) + 1);
       });
-      $('#Text').val('');
-      $('#Order').val(parseInt($('#Order').val()) + 1);
-      $('#Number').val(parseInt($('#Number').val()) + 1);
-   });
+   } else {
+      postNewEntry($('#Text').val(), $('#Order').val(), function () {
+         $('#singleAddCheck').show(200, function () {
+            setTimeout(function () { $('#singleAddCheck').hide(100); }, 2000);
+         });
+         $('#Text').val('');
+         $('#Order').val(parseInt($('#Order').val()) + 1);
+      });
+   }
 }
 
 function addMultiple(i) {
+   var itemType = $('#ItemType');
    var itemOrder = $('#addOrder' + i);
    if (itemOrder.length > 0) {
       var itemText = $('#addText' + i);
-      var itemNumber = $('#addNumber' + i);
-      postNewPassage(itemText.val(), itemOrder.val(), itemNumber.val(), function() {
-         $('#multiAddCheck' + i + '').show();
-         addMultiple(parseInt(i) + 1);
-      });
+      if (itemType === 'Passage') {
+         var itemNumber = $('#addNumber' + i);
+         postNewPassage(itemText.val(), itemOrder.val(), itemNumber.val(), function() {
+            $('#multiAddCheck' + i + '').show();
+            addMultiple(parseInt(i) + 1);
+         });
+      } else {
+         postNewEntry(itemText.val(), itemOrder.val(), function () {
+            $('#multiAddCheck' + i + '').show();
+            addMultiple(parseInt(i) + 1);
+         });
+      }
    } else {
-      window.location = '/Chapter/Read/' + $('#ChapterId').val();
+      if (itemType === 'Passage') {
+         window.location = '/Chapter/Read/' + $('#ChapterId').val();
+      } else {
+         window.location = '/Glossary/Term/' + $('#TermId').val();
+      }
    }
+}
+
+function postNewEntry(text, order, complete) {
+   var form = $('#__AjaxAntiForgeryForm');
+   var token = $('input[name="__RequestVerificationToken"]', form).val();
+   $.ajax({
+      type: 'POST',
+      url: '/Glossary/Add/',
+      data: {
+         __RequestVerificationToken: token,
+         text: text,
+         parentId: $('#ParentId').val(),
+         Order: order
+      }
+   }).done(complete).fail(function (data) {
+      alert(data.responseText);
+   });
 }
 
 function postNewPassage(text, order, number, complete) {

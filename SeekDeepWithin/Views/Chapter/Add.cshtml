@@ -1,15 +1,16 @@
-﻿@model SeekDeepWithin.Models.AddPassageViewModel
+﻿@model SeekDeepWithin.Models.AddItemViewModel
 @{
     ViewBag.Title = "Add Passages";
 }
 
-<h3>Add Passages <small>@Html.ActionLink("read", "Read", new { id = Model.ChapterId })</small></h3>
+<h3>Add Passages <small>@Html.ActionLink("read", "Read", new { id = Model.ParentId })</small></h3>
 
 @using (Html.BeginForm (null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" })){
    @Html.AntiForgeryToken()
 }
 
-@Html.HiddenFor(model =>model.ChapterId)
+@Html.HiddenFor(model =>model.ParentId)
+@Html.HiddenFor(model =>model.ItemType)
 <div class="row">
    <div class="small-12 large-8 columns">
       <small><strong>convert new lines to:</strong></small>

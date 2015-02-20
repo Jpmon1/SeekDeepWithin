@@ -27,21 +27,29 @@ namespace SeekDeepWithin
             "~/Scripts/modernizr-*"));
 
          bundles.Add (new ScriptBundle ("~/bundles/sdw.editchapter").Include ("~/Scripts/jquery.autocomplete.js",
-            "~/Scripts/selection.js",
-            "~/Scripts/sdw.editchapter.js",
-            "~/Scripts/sdw.footer.js",
-            "~/Scripts/sdw.header.js",
-            "~/Scripts/sdw.style.js",
-            "~/Scripts/sdw.link.js",
-            "~/Scripts/sdw.passage.js"));
+            "~/Scripts/sdw/selection.js",
+            "~/Scripts/sdw/sdw.editchapter.js",
+            "~/Scripts/sdw/sdw.footer.js",
+            "~/Scripts/sdw/sdw.header.js",
+            "~/Scripts/sdw/sdw.style.js",
+            "~/Scripts/sdw/sdw.link.js",
+            "~/Scripts/sdw/sdw.passage.js"));
 
-         bundles.Add (new ScriptBundle ("~/bundles/sdw.addpassages").Include ("~/Scripts/sdw.addpassages.js"));
+         bundles.Add (new ScriptBundle ("~/bundles/sdw.editglossaryitem").Include ("~/Scripts/jquery.autocomplete.js",
+            "~/Scripts/sdw/selection.js",
+            "~/Scripts/sdw/sdw.glossaryitem.js",
+            "~/Scripts/sdw/sdw.footer.js",
+            "~/Scripts/sdw/sdw.header.js",
+            "~/Scripts/sdw/sdw.style.js",
+            "~/Scripts/sdw/sdw.link.js"));
+
+         bundles.Add (new ScriptBundle ("~/bundles/sdw.addpassages").Include ("~/Scripts/sdw/sdw.addpassages.js"));
 
          bundles.Add (new ScriptBundle ("~/bundles/sdw.contentsedit").Include ("~/Scripts/jstree.js",
-            "~/Scripts/sdw.contentsedit.js"));
+            "~/Scripts/sdw/sdw.contentsedit.js"));
 
          bundles.Add (new ScriptBundle ("~/bundles/sdw.read").Include ("~/Scripts/jstree.js",
-            "~/Scripts/sdw.read.js"));
+            "~/Scripts/sdw/sdw.read.js"));
 
          bundles.Add (new StyleBundle ("~/Content/css").Include ("~/Content/normalize.css",
             "~/Content/jquery-ui.css",

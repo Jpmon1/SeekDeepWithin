@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
 using SeekDeepWithin.DataAccess;
-using SeekDeepWithin.Domain;
+using SeekDeepWithin.Pocos;
 using SeekDeepWithin.Models;
 
 namespace SeekDeepWithin.Controllers
@@ -94,6 +94,35 @@ namespace SeekDeepWithin.Controllers
             chapter.Headers.Add (chHeader);
             this.m_Db.Save ();
             return PartialView ("EditorTemplates/ChapterHeaderViewModel", new ChapterHeaderViewModel (chHeader) { ItemId = viewModel.ItemId });
+         }
+         Response.StatusCode = 500;
+         return Json ("Data is not valid.");
+      }
+
+      /// <summary>
+      /// Creates a header for a glossary entry.
+      /// </summary>
+      /// <param name="viewModel">View model with header information.</param>
+      /// <returns>Result</returns>
+      [HttpPost]
+      [ValidateAntiForgeryToken]
+      [Authorize (Roles = "Editor")]
+      public ActionResult CreateEntry (HeaderFooterViewModel viewModel)
+      {
+         if (ModelState.IsValid)
+         {
+            var glossaryEntry = this.m_Db.GlossaryEntries.Get (viewModel.ItemId);
+            var entryHeader = new GlossaryEntryHeader
+            {
+               Entry = glossaryEntry,
+               Text = viewModel.Text,
+               Justify = viewModel.Justify,
+               IsBold = viewModel.IsBold,
+               IsItalic = viewModel.IsItalic
+            };
+            glossaryEntry.Headers.Add (entryHeader);
+            this.m_Db.Save ();
+            return Json (new { message = "success", type = "entry", id = entryHeader.Id, text = viewModel.Text });
          }
          Response.StatusCode = 500;
          return Json ("Data is not valid.");

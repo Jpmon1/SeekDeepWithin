@@ -7,11 +7,12 @@ function style_Create() {
    var startIndex = $('#StartIndex').val();
    var endIndex = $('#EndIndex').val();
    if (startIndex != '' && endIndex != '') {
+      var type = $('#itemType').val();
       var form = $('#__AjaxAntiForgeryForm');
       var token = $('input[name="__RequestVerificationToken"]', form).val();
       $.ajax({
          type: 'POST',
-         url: '/Style/Create/',
+         url: '/Style/Create' + type + '/',
          data: {
             __RequestVerificationToken: token,
             startIndex: startIndex,

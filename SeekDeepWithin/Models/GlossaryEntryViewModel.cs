@@ -1,40 +1,87 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Web.Mvc;
+﻿using System.Collections.ObjectModel;
+using SeekDeepWithin.Controllers;
+using SeekDeepWithin.Pocos;
 
 namespace SeekDeepWithin.Models
 {
-   public class GlossaryEntryViewModel
+   public class GlossaryEntryViewModel : IRenderable
    {
+      public GlossaryEntryViewModel (GlossaryEntry entry, SdwRenderer renderer)
+      {
+         this.Id = entry.Id;
+         this.Text = entry.Text;
+         this.Renderer = renderer;
+         this.Headers = new Collection<HeaderFooterViewModel> ();
+         this.Footers = new Collection <HeaderFooterViewModel> ();
+         this.Links = new Collection <LinkViewModel> ();
+         this.Styles = new Collection <StyleViewModel> ();
+
+         foreach (var link in entry.Links)
+            this.Links.Add (new LinkViewModel
+            {
+               StartIndex = link.StartIndex,
+               EndIndex = link.EndIndex,
+               Url = link.Link.Url,
+               OpenInNewWindow = link.OpenInNewWindow
+            });
+
+         foreach (var style in entry.Styles)
+            this.Styles.Add (new StyleViewModel
+            {
+               StartIndex = style.StartIndex,
+               EndIndex = style.EndIndex,
+               Start = style.Style.Start,
+               End = style.Style.End
+            });
+
+         foreach (var header in entry.Headers)
+            this.Headers.Add (new HeaderFooterViewModel (header));
+         foreach (var footer in entry.Footers)
+            this.Footers.Add (new HeaderFooterViewModel (footer));
+      }
+
       /// <summary>
-      /// Gets or Sets the id of this item.
+      /// Gets or Sets the id of the entry.
       /// </summary>
       public int Id { get; set; }
 
       /// <summary>
-      /// Gets or Sets the text of this entry.
+      /// Gets or Sets the text of the glossary entry.
       /// </summary>
-      [Required]
-      [AllowHtml]
       public string Text { get; set; }
 
       /// <summary>
-      /// Gets or Sets the id of the term this entry belongs to.
+      /// Gets the list of headers for this entry.
       /// </summary>
-      public int TermId { get; set; }
+      public Collection<HeaderFooterViewModel> Headers { get; set; }
 
       /// <summary>
-      /// Gets or Sets the name of the term.
+      /// Gets the list of footers for this entry.
       /// </summary>
-      public string TermName { get; set; }
+      public Collection<HeaderFooterViewModel> Footers { get; set; }
 
       /// <summary>
-      /// Gets or Sets the source name.
+      /// Gets the list of links for this entry.
       /// </summary>
-      public string SourceName { get; set; }
+      public Collection<LinkViewModel> Links { get; set; }
 
       /// <summary>
-      /// Gets or Sets the source url.
+      /// Gets the list of styles for this entry.
       /// </summary>
-      public string SourceUrl { get; set; }
+      public Collection<StyleViewModel> Styles { get; set; }
+
+      /// <summary>
+      /// Gets or Sets the renderer.
+      /// </summary>
+      public SdwRenderer Renderer { get; set; }
+
+      /// <summary>
+      /// Renders the passage.
+      /// </summary>
+      /// <returns>The html to display for the passage.</returns>
+      public string Render ()
+      {
+         return Renderer.Render (this);
+      }
    }
 }

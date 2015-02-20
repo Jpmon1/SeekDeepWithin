@@ -1,6 +1,6 @@
 ﻿using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
-using SeekDeepWithin.Models;
+using SeekDeepWithin.Pocos;
 
 namespace SeekDeepWithin.DataAccess
 {

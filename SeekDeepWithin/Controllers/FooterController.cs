@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
 using SeekDeepWithin.DataAccess;
-using SeekDeepWithin.Domain;
+using SeekDeepWithin.Pocos;
 using SeekDeepWithin.Models;
 
 namespace SeekDeepWithin.Controllers
@@ -67,6 +67,36 @@ namespace SeekDeepWithin.Controllers
             entry.Footers.Add (pFooter);
             this.m_Db.Save ();
             return Json (new { message = "success", type = "passage", id = pFooter.Id, text = viewModel.Text });
+         }
+         Response.StatusCode = 500;
+         return Json ("Data is not valid.");
+      }
+
+      /// <summary>
+      /// Creates a footer for a glossary entry.
+      /// </summary>
+      /// <param name="viewModel">View model with footer information.</param>
+      /// <returns>Result</returns>
+      [HttpPost]
+      [ValidateAntiForgeryToken]
+      [Authorize (Roles = "Editor")]
+      public ActionResult CreateEntry (HeaderFooterViewModel viewModel)
+      {
+         if (ModelState.IsValid)
+         {
+            var entry = this.m_Db.GlossaryEntries.Get (viewModel.ItemId);
+            var entryFooter = new GlossaryEntryFooter
+            {
+               Entry = entry,
+               Text = viewModel.Text,
+               Index = viewModel.Index,
+               Justify = viewModel.Justify,
+               IsBold = viewModel.IsBold,
+               IsItalic = viewModel.IsItalic
+            };
+            entry.Footers.Add (entryFooter);
+            this.m_Db.Save ();
+            return Json (new { message = "success", type = "passage", id = entryFooter.Id, text = viewModel.Text });
          }
          Response.StatusCode = 500;
          return Json ("Data is not valid.");

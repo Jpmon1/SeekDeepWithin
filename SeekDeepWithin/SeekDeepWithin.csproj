@@ -242,7 +242,7 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\UserConfiguration.cs" />
     <Compile Include="Models\AccountModels.cs" />
-    <Compile Include="Models\AddPassageViewModel.cs" />
+    <Compile Include="Models\AddItemViewModel.cs" />
     <Compile Include="Models\AuthorViewModel.cs" />
     <Compile Include="Models\ChapterFooterViewModel.cs" />
     <Compile Include="Models\ChapterHeaderViewModel.cs" />
@@ -250,10 +250,12 @@
     <Compile Include="Models\EditStyleViewModel.cs" />
     <Compile Include="Models\ErrorViewModel.cs" />
     <Compile Include="Models\GlossaryEntryViewModel.cs" />
+    <Compile Include="Models\GlossaryItemViewModel.cs" />
     <Compile Include="Models\GlossaryTermViewModel.cs" />
     <Compile Include="Models\EditLinkViewModel.cs" />
     <Compile Include="Models\HeaderFooterViewModel.cs" />
     <Compile Include="Models\IRenderable.cs" />
+    <Compile Include="Models\ItemType.cs" />
     <Compile Include="Models\LinkViewModel.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
     <Compile Include="Models\PassageFooterViewModel.cs" />
@@ -266,12 +268,46 @@
     <Compile Include="Models\SubBookViewModel.cs" />
     <Compile Include="DataAccess\UsersContext.cs" />
     <Compile Include="Models\TagViewModel.cs" />
-    <Compile Include="Models\UserData.cs" />
-    <Compile Include="Models\UserProfile.cs" />
+    <Compile Include="Pocos\Comment.cs" />
+    <Compile Include="Pocos\GlossaryEntry.cs" />
+    <Compile Include="Pocos\GlossaryEntryFooter.cs" />
+    <Compile Include="Pocos\GlossaryEntryHeader.cs" />
+    <Compile Include="Pocos\GlossaryEntryLink.cs" />
+    <Compile Include="Pocos\GlossaryEntryStyle.cs" />
+    <Compile Include="Pocos\UserData.cs" />
+    <Compile Include="Pocos\UserProfile.cs" />
     <Compile Include="Models\VersionSourceViewModel.cs" />
     <Compile Include="Models\WriterViewModel.cs" />
     <Compile Include="Models\BookViewModel.cs" />
     <Compile Include="Models\VersionViewModel.cs" />
+    <Compile Include="Pocos\Author.cs" />
+    <Compile Include="Pocos\Book.cs" />
+    <Compile Include="Pocos\BookTag.cs" />
+    <Compile Include="Pocos\Chapter.cs" />
+    <Compile Include="Pocos\ChapterFooter.cs" />
+    <Compile Include="Pocos\ChapterHeader.cs" />
+    <Compile Include="Pocos\GlossaryItem.cs" />
+    <Compile Include="Pocos\GlossaryItemSource.cs" />
+    <Compile Include="Pocos\GlossaryTerm.cs" />
+    <Compile Include="Pocos\GlossaryTermTag.cs" />
+    <Compile Include="Pocos\IDbTable.cs" />
+    <Compile Include="Pocos\IFooter.cs" />
+    <Compile Include="Pocos\IHeader.cs" />
+    <Compile Include="Pocos\Link.cs" />
+    <Compile Include="Pocos\Passage.cs" />
+    <Compile Include="Pocos\PassageEntry.cs" />
+    <Compile Include="Pocos\PassageFooter.cs" />
+    <Compile Include="Pocos\PassageHeader.cs" />
+    <Compile Include="Pocos\PassageLink.cs" />
+    <Compile Include="Pocos\PassageStyle.cs" />
+    <Compile Include="Pocos\ReadStyle.cs" />
+    <Compile Include="Pocos\Source.cs" />
+    <Compile Include="Pocos\Style.cs" />
+    <Compile Include="Pocos\SubBook.cs" />
+    <Compile Include="Pocos\Tag.cs" />
+    <Compile Include="Pocos\Version.cs" />
+    <Compile Include="Pocos\VersionSource.cs" />
+    <Compile Include="Pocos\Writer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Views\Book\Index.generated.cs">
       <AutoGen>True</AutoGen>
@@ -385,6 +421,14 @@
     </Content>
     <None Include="Properties\PublishProfiles\SeekDeepWithin.pubxml" />
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
+    <Content Include="Images\sdw_128.png" />
+    <Content Include="Images\sdw_16.png" />
+    <Content Include="Images\sdw_24.png" />
+    <Content Include="Images\sdw_256.png" />
+    <Content Include="Images\sdw_32.png" />
+    <Content Include="Images\sdw_48.png" />
+    <Content Include="Images\sdw_64.png" />
+    <Content Include="Images\Untitled.ico" />
     <Content Include="Scripts\fastclick.js" />
     <Content Include="Scripts\foundation.min.js" />
     <Content Include="Scripts\foundation\foundation.abide.js" />
@@ -425,18 +469,18 @@
     <Content Include="Scripts\knockout-2.2.0.debug.js" />
     <Content Include="Scripts\knockout-2.2.0.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
-    <Content Include="Scripts\sdw.addlink.js" />
-    <Content Include="Scripts\sdw.addpassages.js" />
-    <Content Include="Scripts\sdw.addstyle.js" />
-    <Content Include="Scripts\sdw.contentsedit.js" />
-    <Content Include="Scripts\sdw.editchapter.js" />
-    <Content Include="Scripts\sdw.footer.js" />
-    <Content Include="Scripts\sdw.header.js" />
-    <Content Include="Scripts\sdw.link.js" />
-    <Content Include="Scripts\sdw.passage.js" />
-    <Content Include="Scripts\sdw.read.js" />
-    <Content Include="Scripts\sdw.style.js" />
-    <Content Include="Scripts\selection.js" />
+    <Content Include="Scripts\sdw\sdw.addlink.js" />
+    <Content Include="Scripts\sdw\sdw.addpassages.js" />
+    <Content Include="Scripts\sdw\sdw.addstyle.js" />
+    <Content Include="Scripts\sdw\sdw.contentsedit.js" />
+    <Content Include="Scripts\sdw\sdw.editchapter.js" />
+    <Content Include="Scripts\sdw\sdw.footer.js" />
+    <Content Include="Scripts\sdw\sdw.header.js" />
+    <Content Include="Scripts\sdw\sdw.link.js" />
+    <Content Include="Scripts\sdw\sdw.passage.js" />
+    <Content Include="Scripts\sdw\sdw.read.js" />
+    <Content Include="Scripts\sdw\sdw.style.js" />
+    <Content Include="Scripts\sdw\selection.js" />
     <Content Include="ToDo.txt" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -480,6 +524,7 @@
     <Content Include="Views\Web.config" />
     <Content Include="Views\Author\Details.cshtml" />
     <Content Include="Views\Author\Edit.cshtml" />
+    <Content Include="Scripts\sdw\sdw.glossaryitem.js" />
     <None Include="Views\Book\Index.cshtml">
       <Generator>RazorGenerator</Generator>
       <LastGenOutput>Index.generated.cs</LastGenOutput>
@@ -507,17 +552,16 @@
     <Content Include="Views\Version\Create.cshtml" />
     <Content Include="Views\SubBook\Create.cshtml" />
     <Content Include="Views\Chapter\Create.cshtml" />
-    <Content Include="Views\Glossary\CreateEntry.cshtml" />
+    <Content Include="Views\Glossary\CreateItem.cshtml" />
     <Content Include="Views\Tag\Index.cshtml" />
     <Content Include="Views\Tag\Create.cshtml" />
     <Content Include="Views\Source\Index.cshtml" />
-    <Content Include="Views\Glossary\EditEntry.cshtml" />
+    <Content Include="Views\Glossary\Edit.cshtml" />
     <Content Include="Views\Version\EditSource.cshtml" />
     <Content Include="Views\Shared\_LinkForm.cshtml" />
     <Content Include="Views\Source\EditSource.cshtml" />
     <Content Include="Views\Source\Edit.cshtml" />
-    <Content Include="Views\Source\_SourceForm.cshtml" />
-    <Content Include="Views\Chapter\_EditChapter.cshtml" />
+    <Content Include="Views\Shared\_SourceForm.cshtml" />
     <Content Include="Views\Chapter\Add.cshtml" />
     <Content Include="Views\Header\Create.cshtml" />
     <Content Include="Views\Footer\Create.cshtml" />
@@ -532,15 +576,11 @@
     <Content Include="Views\Shared\DisplayTemplates\ChapterHeaderViewModel.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\ChapterFooterViewModel.cshtml" />
     <Content Include="Views\Shared\_StyleView.cshtml" />
+    <Content Include="Views\Shared\_GlossaryEntry.cshtml" />
+    <Content Include="Views\Glossary\Add.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SeekDeepWithin.Domain\SeekDeepWithin.Domain.csproj">
-      <Project>{7438E211-E601-4EF2-9F2F-048B7FD37F4F}</Project>
-      <Name>SeekDeepWithin.Domain</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

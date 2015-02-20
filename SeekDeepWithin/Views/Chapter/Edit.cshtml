@@ -16,6 +16,7 @@
 <div id="modal" class="reveal-modal" data-reveal></div>
 @Html.Hidden("chapterId", Model.Id)
 <input type="hidden" id="FooterIndex" name="FooterIndex" value="-1" />
+<input type="hidden" id="itemType" name="itemType" value="Passage" />
 
 <div class="row">
    <div class="small-12 large-12 columns text-center">
@@ -56,7 +57,7 @@
       </aside>
       
       <aside class="right-off-canvas-menu">
-         <ul class="off-canvas-list" id="rightPassageMenu">
+         <ul class="off-canvas-list" id="rightMenu">
             <li id="headersLabel"><label>Headers</label></li>
             <li id="addHeaderBtn"><a href="#" onclick="header_CreatePassage();">Add New Header</a></li>
             <li id="footersLabel"><label>Footers</label></li>

@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
 using SeekDeepWithin.DataAccess;
-using SeekDeepWithin.Domain;
+using SeekDeepWithin.Pocos;
 using SeekDeepWithin.Models;
 
 namespace SeekDeepWithin.Controllers
@@ -72,15 +72,15 @@ namespace SeekDeepWithin.Controllers
       }
 
       /// <summary>
-      /// Gets the add passage for chapter Page.
+      /// Gets the add passage view for a chapter.
       /// </summary>
       /// <param name="id">The id of the chapter to add passages for.</param>
-      /// <returns>The add page.</returns>
+      /// <returns>The add passge view.</returns>
       [Authorize (Roles = "Creator")]
       public ActionResult Add (int id)
       {
          if (Request.UrlReferrer != null) TempData["RefUrl"] = Request.UrlReferrer.ToString ();
-         var viewModel = new AddPassageViewModel {ChapterId = id};
+         var viewModel = new AddItemViewModel { ParentId = id, ItemType = ItemType.Passage };
          var chapter = this.m_Db.Chapters.Get (id);
          if (chapter.Passages.Count > 0)
          {
