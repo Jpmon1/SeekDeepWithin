@@ -6,7 +6,8 @@
 <h3>
    @Model.Name
    @if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
-      <span style="font-size: small">@Html.ActionLink("add item", "CreateItem", new { termId = Model.Id })</span>
+      <span style="font-size: small">@Html.ActionLink("add item", "CreateItem", new { termId = Model.Id }) |</span>
+      <span style="font-size: small">@Html.ActionLink("edit term", "EditTerm", new { id = Model.Id })</span>
    }
 </h3>
 
@@ -23,11 +24,11 @@
                }
                @if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
                   <small>@Html.ActionLink("edit", "Edit", new { id = item.Id, termId = Model.Id }) | </small>
+                  <small>@Html.ActionLink("edit source", "EditSource", "Source", new { id = item.Id, type = "entry", parentId = Model.Id }, null)</small>
                }
                @if (!string.IsNullOrWhiteSpace (item.SourceUrl)) {
                   <a href="@item.SourceUrl" class="right" target="_blank">@item.SourceName</a>
                }
-               <small>@Html.ActionLink("edit source", "EditSource", "Source", new { id = item.Id, type = "entry", parentId = Model.Id }, null)</small>
             </div>
             @foreach (var entry in item.Entries) {
                @Html.Partial("_GlossaryEntry", entry)
@@ -36,6 +37,33 @@
       }
    </div>
    <div class="small-12 large-3 columns">
-      
+      @if (Model.Tags.Count > 0) {
+         <div class="row">
+            <div class="small-12 large-12 columns">
+               <ul class="pricing-table">
+                  <li class="title">Tags</li>
+                  @foreach(var tag in Model.Tags) {
+                     <li class="bullet-item">
+                        @Html.ActionLink(tag.Name, "Details", "Tag", new { id = tag.Id }, null)
+                     </li>
+                  }
+               </ul>
+            </div>
+         </div>
+      }
+      @if (Model.SeeAlsos.Count > 0) {
+         <div class="row">
+            <div class="small-12 large-12 columns">
+               <ul class="pricing-table">
+                  <li class="title">See Also</li>
+                  @foreach(var seeAlso in Model.SeeAlsos) {
+                     <li class="bullet-item">
+                        <a href="@seeAlso.Url">@seeAlso.Name</a>
+                     </li>
+                  }
+               </ul>
+            </div>
+         </div>
+      }
    </div>
 </div>

@@ -82,7 +82,7 @@ namespace SeekDeepWithin.Controllers
       {
          if (ModelState.IsValid)
          {
-            var chapter = this.m_Db.Chapters.Get (viewModel.ItemId);
+            var chapter = this.m_Db.SubBookChapters.Get (viewModel.ItemId);
             var chHeader = new ChapterHeader
             {
                Chapter = chapter,
@@ -183,7 +183,7 @@ namespace SeekDeepWithin.Controllers
       {
          if (type == "chapter")
          {
-            var chapter = this.m_Db.Chapters.Get (itemId);
+            var chapter = this.m_Db.SubBookChapters.Get (itemId);
             var header = chapter.Headers.FirstOrDefault (f => f.Id == id);
             chapter.Headers.Remove (header);
             this.m_Db.ChapterHeaders.Delete (id);

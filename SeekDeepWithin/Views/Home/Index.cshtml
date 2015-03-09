@@ -8,7 +8,7 @@
       </hgroup>
       <p>
          This site is currently under construction, please bear with us until it is fully functional.<br />
-         If you like what we are doing, send us a comment from the about page.
+         If you like what we are doing, send us a comment from the @Html.ActionLink("about", "About") page.
       </p>
    </div>
 }
@@ -21,7 +21,7 @@
 }
 
 <div class="row text-center">
-   <div class="large-@panelSize columns">
+   <div class="medium-6 large-@panelSize columns">
       <a href="@Url.Action("Index", "Book")">
          <i class="icon-book" style="font-size: xx-large"> </i>
          <h4>Read</h4>
@@ -31,7 +31,7 @@
          Take a look in the library to check out the books we currently have.
       </p>
    </div>
-   <div class="large-@panelSize columns">
+   <div class="medium-6 large-@panelSize columns">
       <a href="@Url.Action("Index", "Glossary")">
          <i class="icon-list" style="font-size: xx-large"> </i>
          <h4>Study</h4>
@@ -41,7 +41,7 @@
          Visit the glossary to see if we can provide you with a definition.
       </p>
    </div>
-   <div class="large-@panelSize columns">
+   <div class="medium-6 large-@panelSize columns">
       <a href="@Url.Action("Index", "Search")">
          <i class="icon-search" style="font-size: xx-large"> </i>
          <h4>Search</h4>
@@ -52,7 +52,7 @@
       </p>
    </div>
    @if (!Request.IsAuthenticated) {
-      <div class="large-3 columns">
+      <div class="medium-6 large-3 columns">
          <a href="@Url.Action("Register", "Account")">
             <i class="icon-ok-sign" style="font-size: xx-large"> </i>
             <h4>Register</h4>

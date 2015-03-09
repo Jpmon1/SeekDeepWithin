@@ -1,9 +1,33 @@
 ﻿
 $(document).ready(function () {
    $('#saveCheck').hide();
+   $('#saveReadStyleCheck').hide();
    $('#passText').keyup(setSelection);
    $('#passText').mouseup(setSelection);
+   $('#verseRadio').change(verseParaChanged);
+   $('#paraRadio').change(verseParaChanged);
 });
+
+function verseParaChanged() {
+   var para = $('#paraRadio').prop("checked");
+   var form = $('#__AjaxAntiForgeryForm');
+   var token = $('input[name="__RequestVerificationToken"]', form).val();
+   $.ajax({
+      type: 'POST',
+      url: '/Chapter/ReadStyle/',
+      data: {
+         __RequestVerificationToken: token,
+         paragraph: para,
+         id: $('#chapterId').val()
+      }
+   }).done(function () {
+      $('#saveReadStyleCheck').show(200, function () {
+         setTimeout(function () { $('#saveReadStyleCheck').hide(100); }, 2000);
+      });
+   }).fail(function (data) {
+      alert(data.responseText);
+   });
+}
 
 function editEntry(id) {
    $('#rightMenu').children().not('#headersLabel, #addHeaderBtn, #footersLabel, #addFooterBtn, #endLabel').remove();

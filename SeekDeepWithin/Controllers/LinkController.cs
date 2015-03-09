@@ -40,12 +40,12 @@ namespace SeekDeepWithin.Controllers
       [Authorize (Roles = "Editor")]
       public ActionResult CreatePassage (EditLinkViewModel viewModel)
       {
-         if (!ModelState.IsValid)
-            return Json ("Data is not Valid");
-
          var linkUrl = this.GetLinkUrl (viewModel);
          if (string.IsNullOrEmpty (linkUrl))
+         {
+            Response.StatusCode = 500;
             return Json ("Unable to determine the links url.");
+         }
 
          if (!string.IsNullOrWhiteSpace (viewModel.Anchor))
             linkUrl += "#" + viewModel.Anchor;
@@ -76,11 +76,17 @@ namespace SeekDeepWithin.Controllers
       public ActionResult CreateEntry (EditLinkViewModel viewModel)
       {
          if (!ModelState.IsValid)
+         {
+            Response.StatusCode = 500;
             return Json ("Data is not Valid");
+         }
 
          var linkUrl = this.GetLinkUrl (viewModel);
          if (string.IsNullOrEmpty (linkUrl))
+         {
+            Response.StatusCode = 500;
             return Json ("Unable to determine the links url.");
+         }
 
          if (!string.IsNullOrWhiteSpace (viewModel.Anchor))
             linkUrl += "#" + viewModel.Anchor;
@@ -95,6 +101,45 @@ namespace SeekDeepWithin.Controllers
             OpenInNewWindow = viewModel.OpenInNewWindow,
             StartIndex = viewModel.StartIndex,
             EndIndex = viewModel.EndIndex
+         });
+         this.m_Db.Save ();
+         return Json ("Success!");
+      }
+
+      /// <summary>
+      /// Posts a new link for the given passage.
+      /// </summary>
+      /// <param name="viewModel"></param>
+      /// <returns></returns>
+      [HttpPost]
+      [ValidateAntiForgeryToken]
+      [Authorize (Roles = "Editor")]
+      public ActionResult CreateSeeAlso (EditLinkViewModel viewModel)
+      {
+         if (!ModelState.IsValid)
+         {
+            Response.StatusCode = 500;
+            return Json ("Data is not Valid");
+         }
+
+         var linkUrl = this.GetLinkUrl (viewModel);
+         if (string.IsNullOrEmpty (linkUrl))
+         {
+            Response.StatusCode = 500;
+            return Json ("Unable to determine the links url.");
+         }
+
+         if (!string.IsNullOrWhiteSpace (viewModel.Anchor))
+            linkUrl += "#" + viewModel.Anchor;
+
+         var link = GetLink (linkUrl);
+         var glossaryTerm = this.m_Db.GlossaryTerms.Get (viewModel.LinkItemId);
+
+         glossaryTerm.SeeAlsos.Add (new GlossarySeeAlso
+         {
+            Term = glossaryTerm,
+            Link = link,
+            Name = this.GetLinkName(viewModel)
          });
          this.m_Db.Save ();
          return Json ("Success!");
@@ -118,6 +163,26 @@ namespace SeekDeepWithin.Controllers
          return link;
       }
 
+      private string GetLinkName (EditLinkViewModel viewModel)
+      {
+         var linkName = string.Empty;
+         if (!string.IsNullOrWhiteSpace (viewModel.Search))
+            linkName = viewModel.Link;
+         else if (!string.IsNullOrWhiteSpace (viewModel.Link))
+            linkName = viewModel.Link;
+         else if (!string.IsNullOrWhiteSpace (viewModel.GlossaryTerm))
+            linkName = viewModel.GlossaryTerm;
+         else if (!string.IsNullOrWhiteSpace (viewModel.Book) && !string.IsNullOrWhiteSpace (viewModel.Version))
+         {
+            linkName = viewModel.Version;
+            if (!string.IsNullOrEmpty (viewModel.SubBook) && viewModel.SubBook != "default" && viewModel.SubBook != viewModel.Version)
+               linkName += " " + viewModel.SubBook;
+            if (!string.IsNullOrEmpty (viewModel.Chapter) && viewModel.Chapter != "default" && viewModel.Chapter != viewModel.SubBook)
+               linkName += " " + viewModel.Chapter;
+         }
+         return linkName;
+      }
+
       private string GetLinkUrl (EditLinkViewModel viewModel)
       {
          var linkUrl = string.Empty;
@@ -139,7 +204,10 @@ namespace SeekDeepWithin.Controllers
             }
             linkUrl = "/Glossary/Term/" + term.Id;
          }
-         else if (!string.IsNullOrWhiteSpace (viewModel.Book) && !string.IsNullOrWhiteSpace (viewModel.Version)) {}
+         else if (viewModel.ChapterId != 0)
+         {
+            linkUrl = "/Chapter/Read/" + viewModel.ChapterId;
+         }
          return linkUrl;
       }
 

@@ -8,7 +8,7 @@ namespace SeekDeepWithin.Pocos
    public class Version : IDbTable
    {
       /// <summary>
-      /// Gets the id of the table.
+      /// Gets the id of the item.
       /// </summary>
       public int Id { get; set; }
 
@@ -16,6 +16,11 @@ namespace SeekDeepWithin.Pocos
       /// Gets or Sets if this version should be hidden or not.
       /// </summary>
       public bool Hide { get; set; }
+
+      /// <summary>
+      /// Gets or Sets if this version is the default version of the book.
+      /// </summary>
+      public bool IsDefault { get; set; }
 
       /// <summary>
       /// Gets or Sets the contents of this version.
@@ -50,7 +55,12 @@ namespace SeekDeepWithin.Pocos
       /// <summary>
       /// Gets or Sets the list of subbooks.
       /// </summary>
-      public virtual ICollection<SubBook> SubBooks { get; set; }
+      public virtual ICollection<VersionSubBook> SubBooks { get; set; }
+
+      /// <summary>
+      /// Gets or Sets the list of writers for this version.
+      /// </summary>
+      public virtual ICollection<VersionWriter> Translators { get; set; }
 
       /// <summary>
       /// Gets or Sets the source of this version.

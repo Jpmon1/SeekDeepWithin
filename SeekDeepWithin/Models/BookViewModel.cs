@@ -10,11 +10,14 @@ namespace SeekDeepWithin.Models
    /// </summary>
    public class BookViewModel
    {
+      private readonly Collection<TagViewModel> m_Tags;
+
       /// <summary>
       /// Initializes a new book view model.
       /// </summary>
       public BookViewModel ()
       {
+         this.m_Tags = new Collection<TagViewModel> ();
          this.Versions = new Collection <VersionViewModel> ();
       }
 
@@ -26,9 +29,12 @@ namespace SeekDeepWithin.Models
       public BookViewModel (Book book, bool copyVersions = false)
       {
          this.Versions = new Collection<VersionViewModel> ();
+         this.m_Tags = new Collection<TagViewModel> ();
          this.Id = book.Id;
          this.Title = book.Title;
          this.Summary = book.Summary;
+         foreach (var bookTag in book.Tags)
+            this.Tags.Add(new TagViewModel { ItemId = bookTag.Id, Name = bookTag.Tag.Name, Id = bookTag.Tag.Id });
          if (copyVersions)
          {
             foreach (var version in book.Versions)
@@ -50,8 +56,14 @@ namespace SeekDeepWithin.Models
       /// <summary>
       /// Gets or Sets a brief summary of the book.
       /// </summary>
+      [Required]
       [AllowHtml]
       public string Summary { get; set; }
+
+      /// <summary>
+      /// Gets the list of tags for this books.
+      /// </summary>
+      public Collection<TagViewModel> Tags { get { return this.m_Tags; } }
 
       /// <summary>
       /// Gets or Sets the list of versions.

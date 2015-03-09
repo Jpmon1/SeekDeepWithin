@@ -3337,7 +3337,7 @@ ul.pagination {
       color: #999999; }
     ul.pagination li.unavailable:hover a, ul.pagination li.unavailable a:focus, ul.pagination li.unavailable:hover button, ul.pagination li.unavailable button:focus {
       background: transparent; }
-    ul.pagination li.current a, ul.pagination li.current button {
+    ul.pagination li.current a, ul.pagination li.current button, ul.pagination li.active {
       background: #008CBA;
       color: #FFFFFF;
       font-weight: bold;

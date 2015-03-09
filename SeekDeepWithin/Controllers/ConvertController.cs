@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
+using System.Web;
 using System.Web.Mvc;
 
 namespace SeekDeepWithin.Controllers
@@ -99,6 +100,51 @@ namespace SeekDeepWithin.Controllers
                text = passage.Replace ("\"", "&quot;").Trim (),
                number = startNumber,
                order = startOrder
+            });
+            if (startNumber != null)
+               startNumber++;
+            if (startOrder != null)
+               startOrder++;
+         }
+
+         return Json (new { passages = passageList });
+      }
+
+      /// <summary>
+      /// Converts the the given text to new passages, based on the given regex.
+      /// </summary>
+      /// <param name="text">Text to convert.</param>
+      /// <param name="regex">The regex to use.</param>
+      /// <param name="startOrder">The starting order index.</param>
+      /// <param name="startNumber">The starting passage number.</param>
+      /// <returns>Converted text.</returns>
+      [HttpPost]
+      [AllowAnonymous]
+      public ActionResult RegexToPassages (string text, string regex, int? startOrder, int? startNumber)
+      {
+         if (string.IsNullOrWhiteSpace (text))
+         {
+            Response.StatusCode = 500;
+            return Json ("The text cannot be empty.", JsonRequestBehavior.AllowGet);
+         }
+
+         regex = HttpUtility.UrlDecode (regex);
+         if (string.IsNullOrWhiteSpace (regex))
+         {
+            Response.StatusCode = 500;
+            return Json ("The regex cannot be empty.", JsonRequestBehavior.AllowGet);
+         }
+         var matches = Regex.Matches (text, regex, RegexOptions.IgnoreCase);
+         var passageList = new Collection <object> ();
+         foreach (Match match in matches)
+         {
+            var order = match.Groups ["order"];
+            var number = match.Groups ["number"];
+            passageList.Add (new
+            {
+               text = match.Groups["text"].Value.Replace ("\"", "&quot;").Trim (),
+               number = number.Success ? Convert.ToInt32(number.Value) : startNumber,
+               order = order.Success ? Convert.ToInt32 (order.Value) : startOrder
             });
             if (startNumber != null)
                startNumber++;

@@ -1,0 +1,36 @@
+﻿@model SeekDeepWithin.Models.TagViewModel
+
+@{
+    ViewBag.Title = Model.Name;
+}
+
+<h3><small>tag</small> @Model.Name</h3>
+
+<div class="row">
+   <div class="small-12 large-6 columns">
+      <ul class="pricing-table">
+         <li class="title">Books with this tag:</li>
+         @if (Model.Books.Count > 0) {
+            foreach (var book in Model.Books) {
+               <li class="bullet-item">@Html.ActionLink(book.Value, "Details", "Book", new {id=book.Key}, null)</li>
+            }
+         }
+         else {
+            <li class="description">No books are assigned to this tag.</li>
+         }
+      </ul>
+   </div>
+   <div class="small-12 large-6 columns">
+      <ul class="pricing-table">
+         <li class="title">Terms with this tag:</li>
+         @if (Model.Terms.Count > 0) {
+            foreach (var term in Model.Terms) {
+               <li class="bullet-item">@Html.ActionLink(term.Value, "Term", "Glossary", new {id=term.Key}, null)</li>
+            }
+         }
+         else {
+            <li class="description">No terms are assigned to this tag.</li>
+         }
+      </ul>
+   </div>
+</div>

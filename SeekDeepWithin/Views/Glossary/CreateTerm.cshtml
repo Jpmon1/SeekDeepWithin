@@ -10,7 +10,17 @@
 
     <fieldset>
         <legend>New Glossary Term</legend>
-
+       
+         @if (ViewBag.ErrorMessage != null) {
+            <div class="row">
+               <div class="small-12 large-12 columns">
+                  <div class="alert-box alert">
+                     @ViewBag.ErrorMessage <a href="@Url.Action("Term", new { id = ViewBag.FoundTermId })" style="color: white">here</a>
+                  </div>
+               </div>
+            </div>
+         }
+         
         <div class="row">
            <div class="small-12 large-6 columns">
               @Html.LabelFor(model => model.Name)

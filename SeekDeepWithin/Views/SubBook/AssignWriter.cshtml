@@ -9,12 +9,12 @@
    <fieldset>
       <legend>Writer</legend>
       <p style="font-size: small;">
-         <a href="@Url.Action("Create", "Author")"><i class="icon-plus"></i> add new writer</a>
+         <a href="@Url.Action("Create", "Writer")"><i class="icon-plus"></i> add new writer</a>
       </p>
       <input type="hidden" id="subBookId" name="subBookId" value="@ViewBag.SubBookId" />
       <div class="row">
          <div class="small-12 large-6 columns">
-            @Html.DropDownList("authorId", ViewBag.Authors as SelectList)
+            @Html.DropDownList("authorId", ViewBag.Writers as SelectList)
          </div>
       </div>
       <div class="row">

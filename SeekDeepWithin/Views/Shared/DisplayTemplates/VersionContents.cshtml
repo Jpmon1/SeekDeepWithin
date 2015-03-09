@@ -1,0 +1,23 @@
+﻿@using SeekDeepWithin.Models
+@model VersionContents
+
+<div id="contentTree">
+   @if (Model.SubBooks.Count > 0) {
+      <ul class="off-canvas-list">
+         @if (Request.IsAuthenticated && User.IsInRole ("Creator")) {
+            <li>@Html.ActionLink("Edit Contents", "Contents", "Version", new { id = Model.VersionId }, null)</li>
+         }
+         @if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
+            <li>@Html.ActionLink("Edit Chapter", "Edit", "Chapter", new { id = Model.CurrentChapter }, null)</li>
+         }
+         @foreach (var subBook in Model.SubBooks) {
+            if (!subBook.Hide) {
+               <li><label>@subBook.Name</label></li>
+            }
+            foreach (var chapter in subBook.Chapters.Where(c => !c.Hide)) {
+               <li>@Html.ActionLink(chapter.Name, "Read", "Chapter", new { id = chapter.Id }, null)</li>
+            }
+         }
+      </ul>
+   }
+</div>

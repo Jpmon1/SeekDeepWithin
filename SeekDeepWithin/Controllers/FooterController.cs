@@ -114,7 +114,7 @@ namespace SeekDeepWithin.Controllers
       {
          if (ModelState.IsValid)
          {
-            var chapter = this.m_Db.Chapters.Get (viewModel.ItemId);
+            var chapter = this.m_Db.SubBookChapters.Get (viewModel.ItemId);
             var chFooter = new ChapterFooter
             {
                Chapter = chapter,
@@ -186,7 +186,7 @@ namespace SeekDeepWithin.Controllers
       {
          if (type == "chapter")
          {
-            var chapter = this.m_Db.Chapters.Get (itemId);
+            var chapter = this.m_Db.SubBookChapters.Get (itemId);
             var footer = chapter.Footers.FirstOrDefault (f => f.Id == id);
             chapter.Footers.Remove (footer);
             this.m_Db.ChapterFooters.Delete (id);

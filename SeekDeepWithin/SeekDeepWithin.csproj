@@ -208,10 +208,10 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
-    <Compile Include="Controllers\AuthorController.cs" />
+    <Compile Include="Controllers\WriterController.cs" />
     <Compile Include="Controllers\BookController.cs" />
+    <Compile Include="Controllers\DbHelper.cs" />
     <Compile Include="Controllers\ChapterController.cs" />
-    <Compile Include="Controllers\EditController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\FooterController.cs" />
     <Compile Include="Controllers\GlossaryController.cs" />
@@ -241,6 +241,7 @@
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\UserConfiguration.cs" />
+    <Compile Include="Models\AbbreviationViewModel.cs" />
     <Compile Include="Models\AccountModels.cs" />
     <Compile Include="Models\AddItemViewModel.cs" />
     <Compile Include="Models\AuthorViewModel.cs" />
@@ -268,19 +269,27 @@
     <Compile Include="Models\SubBookViewModel.cs" />
     <Compile Include="DataAccess\UsersContext.cs" />
     <Compile Include="Models\TagViewModel.cs" />
+    <Compile Include="Models\VersionContents.cs" />
+    <Compile Include="Pocos\Abbreviation.cs" />
+    <Compile Include="Pocos\AmazonItem.cs" />
     <Compile Include="Pocos\Comment.cs" />
+    <Compile Include="Pocos\GlossaryAmazonItem.cs" />
     <Compile Include="Pocos\GlossaryEntry.cs" />
     <Compile Include="Pocos\GlossaryEntryFooter.cs" />
     <Compile Include="Pocos\GlossaryEntryHeader.cs" />
     <Compile Include="Pocos\GlossaryEntryLink.cs" />
     <Compile Include="Pocos\GlossaryEntryStyle.cs" />
+    <Compile Include="Pocos\GlossarySeeAlso.cs" />
+    <Compile Include="Pocos\PassageLocation.cs" />
+    <Compile Include="Pocos\SubBookChapter.cs" />
     <Compile Include="Pocos\UserData.cs" />
     <Compile Include="Pocos\UserProfile.cs" />
     <Compile Include="Models\VersionSourceViewModel.cs" />
     <Compile Include="Models\WriterViewModel.cs" />
     <Compile Include="Models\BookViewModel.cs" />
     <Compile Include="Models\VersionViewModel.cs" />
-    <Compile Include="Pocos\Author.cs" />
+    <Compile Include="Pocos\VersionWriter.cs" />
+    <Compile Include="Pocos\Writer.cs" />
     <Compile Include="Pocos\Book.cs" />
     <Compile Include="Pocos\BookTag.cs" />
     <Compile Include="Pocos\Chapter.cs" />
@@ -307,7 +316,8 @@
     <Compile Include="Pocos\Tag.cs" />
     <Compile Include="Pocos\Version.cs" />
     <Compile Include="Pocos\VersionSource.cs" />
-    <Compile Include="Pocos\Writer.cs" />
+    <Compile Include="Pocos\VersionSubBook.cs" />
+    <Compile Include="Pocos\SubBookWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Views\Book\Index.generated.cs">
       <AutoGen>True</AutoGen>
@@ -469,10 +479,11 @@
     <Content Include="Scripts\knockout-2.2.0.debug.js" />
     <Content Include="Scripts\knockout-2.2.0.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
-    <Content Include="Scripts\sdw\sdw.addlink.js" />
+    <Content Include="Scripts\sdw\sdw.addentries.js" />
     <Content Include="Scripts\sdw\sdw.addpassages.js" />
     <Content Include="Scripts\sdw\sdw.addstyle.js" />
     <Content Include="Scripts\sdw\sdw.contentsedit.js" />
+    <Content Include="Scripts\sdw\sdw.convert.js" />
     <Content Include="Scripts\sdw\sdw.editchapter.js" />
     <Content Include="Scripts\sdw\sdw.footer.js" />
     <Content Include="Scripts\sdw\sdw.header.js" />
@@ -480,6 +491,8 @@
     <Content Include="Scripts\sdw\sdw.passage.js" />
     <Content Include="Scripts\sdw\sdw.read.js" />
     <Content Include="Scripts\sdw\sdw.style.js" />
+    <Content Include="Scripts\sdw\sdw.tag.js" />
+    <Content Include="Scripts\sdw\sdw.version.js" />
     <Content Include="Scripts\sdw\selection.js" />
     <Content Include="ToDo.txt" />
     <Content Include="Web.config">
@@ -522,9 +535,11 @@
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Web.config" />
-    <Content Include="Views\Author\Details.cshtml" />
-    <Content Include="Views\Author\Edit.cshtml" />
+    <Content Include="Views\Writer\Details.cshtml" />
+    <Content Include="Views\Writer\Edit.cshtml" />
     <Content Include="Scripts\sdw\sdw.glossaryitem.js" />
+    <Content Include="Views\Book\Details.cshtml" />
+    <Content Include="Scripts\sdw\sdw.subbook.js" />
     <None Include="Views\Book\Index.cshtml">
       <Generator>RazorGenerator</Generator>
       <LastGenOutput>Index.generated.cs</LastGenOutput>
@@ -541,17 +556,14 @@
     <Content Include="Views\Search\Index.cshtml" />
     <Content Include="Views\Glossary\Index.cshtml" />
     <Content Include="Views\Search\Results.cshtml" />
-    <Content Include="Views\Author\Index.cshtml" />
-    <Content Include="Views\Author\Create.cshtml" />
+    <Content Include="Views\Writer\Index.cshtml" />
+    <Content Include="Views\Writer\Create.cshtml" />
     <Content Include="Views\SubBook\AssignWriter.cshtml" />
     <Content Include="Views\Admin\Index.cshtml" />
-    <Content Include="Views\Edit\Index.cshtml" />
     <Content Include="Views\Glossary\CreateTerm.cshtml" />
     <Content Include="Views\Chapter\Read.cshtml" />
     <Content Include="Views\Glossary\Term.cshtml" />
     <Content Include="Views\Version\Create.cshtml" />
-    <Content Include="Views\SubBook\Create.cshtml" />
-    <Content Include="Views\Chapter\Create.cshtml" />
     <Content Include="Views\Glossary\CreateItem.cshtml" />
     <Content Include="Views\Tag\Index.cshtml" />
     <Content Include="Views\Tag\Create.cshtml" />
@@ -578,6 +590,12 @@
     <Content Include="Views\Shared\_StyleView.cshtml" />
     <Content Include="Views\Shared\_GlossaryEntry.cshtml" />
     <Content Include="Views\Glossary\Add.cshtml" />
+    <Content Include="Views\Tag\Details.cshtml" />
+    <Content Include="Views\Glossary\EditTerm.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\VersionContents.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\VersionContents.cshtml" />
+    <Content Include="Views\SubBook\Edit.cshtml" />
+    <Content Include="Views\SubBook\About.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

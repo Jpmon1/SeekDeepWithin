@@ -35,6 +35,6 @@
       /// <summary>
       /// Gets or Sets the chapter the footer belongs to.
       /// </summary>
-      public virtual Chapter Chapter { get; set; }
+      public virtual SubBookChapter Chapter { get; set; }
    }
 }

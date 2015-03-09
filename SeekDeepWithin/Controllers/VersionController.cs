@@ -1,4 +1,6 @@
-﻿using System.Web.Mvc;
+﻿using System.Collections.ObjectModel;
+using System.Linq;
+using System.Web.Mvc;
 using SeekDeepWithin.DataAccess;
 using SeekDeepWithin.Pocos;
 using SeekDeepWithin.Models;
@@ -55,7 +57,7 @@ namespace SeekDeepWithin.Controllers
       {
          var version = this.m_Db.Versions.Get (id);
          version.Contents = contents;
-         this.m_Db.Save();
+         this.m_Db.Save ();
          return Json ("Success");
       }
 
@@ -67,8 +69,8 @@ namespace SeekDeepWithin.Controllers
       [Authorize (Roles = "Editor")]
       public ActionResult Edit (int id)
       {
-         if (Request.UrlReferrer != null) TempData ["RefUrl"] = Request.UrlReferrer.ToString ();
-         if (TempData.ContainsKey("ErrorMessage"))
+         if (Request.UrlReferrer != null) TempData["RefUrl"] = Request.UrlReferrer.ToString ();
+         if (TempData.ContainsKey ("ErrorMessage"))
             ViewBag.ErrorMessage = TempData["ErrorMessage"];
          var viewModel = new VersionViewModel (this.m_Db.Versions.Get (id));
          return View (viewModel);
@@ -92,7 +94,7 @@ namespace SeekDeepWithin.Controllers
             if (TempData.ContainsKey ("RefUrl"))
             {
                TempData.Remove ("RefUrl");
-               return Redirect (TempData ["RefUrl"].ToString());
+               return Redirect (TempData["RefUrl"].ToString ());
             }
             return RedirectToAction ("Read", "Chapter", new { id = viewModel.DefaultReadChapter });
          }
@@ -112,6 +114,28 @@ namespace SeekDeepWithin.Controllers
       }
 
       /// <summary>
+      /// Sets the default read chapter for the given version..
+      /// </summary>
+      /// <param name="id">The version id.</param>
+      /// <param name="chapterId">The chapter id.</param>
+      /// <returns>Create version view.</returns>
+      [HttpPost]
+      [ValidateAntiForgeryToken]
+      [Authorize (Roles = "Creator")]
+      public ActionResult DefaultReadChapter (int id, int chapterId)
+      {
+         var version = this.m_Db.Versions.Get (id);
+         if (version == null)
+         {
+            Response.StatusCode = 500;
+            return Json ("Unknown version");
+         }
+         version.DefaultReadChapter = chapterId;
+         this.m_Db.Save ();
+         return Json("success");
+      }
+
+      /// <summary>
       /// Gets the create new version view.
       /// </summary>
       /// <param name="viewModel">The version view model.</param>
@@ -126,32 +150,48 @@ namespace SeekDeepWithin.Controllers
          {
             Book = book,
             Title = viewModel.Title,
-            PublishDate = viewModel.PublishDate
+            PublishDate = viewModel.PublishDate,
+            Abbreviation = viewModel.Abbreviation,
+            SubBooks = new Collection <VersionSubBook> ()
          };
          book.Versions.Add (version);
          this.m_Db.Versions.Insert (version);
          this.m_Db.Save ();
+         return RedirectToAction ("Contents", new { id = version.Id });
+      }
 
-         var subBook = new SubBook { Name = "default", Version = version };
-         this.m_Db.SubBooks.Insert (subBook);
-         this.m_Db.Save ();
+      /// <summary>
+      /// Sets the default version for a book.
+      /// </summary>
+      /// <param name="bookId"></param>
+      /// <param name="versionId"></param>
+      /// <returns></returns>
+      [HttpPost]
+      [ValidateAntiForgeryToken]
+      [Authorize (Roles = "Editor")]
+      public ActionResult SetDefaultVersion (int bookId, int versionId)
+      {
+         var book = this.m_Db.Books.Get (bookId);
+         foreach (var version in book.Versions)
+            version.IsDefault = version.Id == versionId;
+         this.m_Db.Save();
+         return Json ("success");
+      }
 
-         var chapter = new Chapter { Name = "About", SubBook = subBook, DefaultToParagraph = true};
-         this.m_Db.Chapters.Insert (chapter);
-         this.m_Db.Save ();
-
-         version.DefaultReadChapter = chapter.Id;
-         version.Contents = "[{\"name\":\"default\"," +
-                              "\"id\":" + subBook.Id + "," +
-                              "\"hide\":true," +
-                              "\"chapters\":[" +
-                                    "{\"name\":\"About\"," +
-                                     "\"id\":" + chapter.Id + "," +
-                                     "\"show\":\"para\"}" +
-                            "]}]";
-         this.m_Db.Save ();
-
-         return RedirectToAction ("Read", "Chapter", new { id = chapter.Id });
+      /// <summary>
+      /// Gets auto complete items.
+      /// </summary>
+      /// <param name="title">Title to get auto complete items for.</param>
+      /// <param name="bookId">The id of the book to look up versions for.</param>
+      /// <returns>The list of possible items.</returns>
+      public ActionResult AutoComplete (string title, int bookId)
+      {
+         var result = new
+         {
+            suggestions = this.m_Db.Versions.Get (v => v.Book.Id == bookId && v.Title.Contains (title))
+                                                 .Select (v => new { value = v.Title, data = v.Id })
+         };
+         return Json (result, JsonRequestBehavior.AllowGet);
       }
    }
 }

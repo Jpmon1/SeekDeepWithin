@@ -1,4 +1,4 @@
-﻿@model SeekDeepWithin.Models.GlossaryItemViewModel
+﻿﻿@model SeekDeepWithin.Models.GlossaryItemViewModel
 
 @{
    ViewBag.Title = "Edit Item - " + Model.Term.Name;
@@ -10,7 +10,7 @@
 }
 
 <div id="modal" class="reveal-modal" data-reveal></div>
-@Html.Hidden("itemId", Model.Id)
+<input type="hidden" id="itemId" name="itemId" value="@Model.Id" />
 <input type="hidden" id="FooterIndex" name="FooterIndex" value="-1" />
 <input type="hidden" id="itemType" name="itemType" value="Entry" />
 
@@ -90,7 +90,7 @@
          <div class="row">
             <div class="small-12 large-6 columns">
                <h4>New Link</h4>
-               @Html.Partial("_LinkForm", new SeekDeepWithin.Models.EditLinkViewModel { Type = "entry" })
+               @Html.Partial("_LinkForm", new SeekDeepWithin.Models.EditLinkViewModel { Type = "Entry" })
             </div>
             <div class="small-12 large-6 columns">
                <h4>New Style</h4>

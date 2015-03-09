@@ -1,4 +1,4 @@
-﻿@using Newtonsoft.Json.Linq
+﻿@using SeekDeepWithin.Models
 @model SeekDeepWithin.Models.VersionViewModel
 
 @{
@@ -8,12 +8,16 @@
    <link href="~/Content/themes/default/style.css" rel="stylesheet" />
 }
 
-<h3>Contents for @Model.Title <small><a href="@TempData["RefUrl"]">return</a></small></h3>
+<h3>
+   Contents for @Model.Title <small><a href="@TempData["RefUrl"]">return</a> | </small>
+   <small>@Html.ActionLink("read", "Read", "Chapter", new {id=Model.DefaultReadChapter}, null)</small>
+</h3>
 
 @using (Html.BeginForm (null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" })){
    @Html.AntiForgeryToken()
 }
 
+<input type="hidden" id="bookId" name="bookId" value="@Model.BookId" />
 <input type="hidden" id="versionId" name="versionId" value="@Model.Id" />
 <input type="hidden" id="editNodeId" name="editNodeId" value="" />
 
@@ -25,43 +29,96 @@
    </div>
    <div class="row">
       <div class="small-6 column text-center">
-         <a href="#" class="button alert">Yes</a>
+         <a href="javascript:void(0)" class="button alert" onclick="okToDelete()">Yes</a>
       </div>
       <div class="small-6 column text-center">
-         <a href="#" class="button secondary" onclick="$('#deleteModal').foundation('reveal', 'close');">No</a>
+         <a href="javascript:void(0)" class="button secondary" onclick="$('#deleteModal').foundation('reveal', 'close');">No</a>
       </div>
    </div>
    <a class="close-reveal-modal">&#215;</a>
 </div>
 
-<div id="modal" class="reveal-modal" data-reveal>
+<div id="renameModal" class="reveal-modal small" data-reveal>
    <div class="row">
-      <div class="small-6 large-4 columns" id="showColumn">
-         <label for="editNodeShow">Default Reading Style</label>
-         <select id="editNodeShow" name="editNodeShow">
-            <option selected="selected" id="showverse">verse</option>
-            <option id="showpara">paragraph</option>
-         </select>
-      </div>
-      <div class="small-5 large-4 columns">
-         <label for="editNodeHide">Show/Hide</label>
-         <select id="editNodeHide" name="editNodeHide">
-            <option selected="selected" id="hideshow">Show</option>
-            <option id="hidehide">Hide</option>
-         </select>
-      </div>
-      <div class="small-1 large-4 columns">
+      <div class="small-12 column">
+         <p class="text-center">Are you certain you want to rename the <span id="renameItemType"></span>? This will rename all occurances in this book.</p>
       </div>
    </div>
    <div class="row">
-      <div class="small-12 large-12 columns">
-         <label for="editNodeName">Name</label>
-         <input type="text" id="editNodeName" name="editNodeName"/>
+      <div class="small-6 column text-center">
+         <a href="javascript:void(0)" class="button alert" onclick="okToRename()">Yes</a>
+      </div>
+      <div class="small-6 column text-center">
+         <a href="javascript:void(0)" class="button secondary" onclick="$('#renameModal').foundation('reveal', 'close');">No</a>
       </div>
    </div>
-   <div class="row text-center">
-      <div class="small-12 large-12 columns">
-         <a href="#" class="button tiny" onclick="nodeEditDone();">Update</a>
+   <a class="close-reveal-modal">&#215;</a>
+</div>
+
+<div id="addListModal" class="reveal-modal" data-reveal>
+   <ul class="tabs" data-tab role="tablist">
+      <li class="tab-title active"><a href="#addListPanel">Add List</a></li>
+      <li class="tab-title"><a href="#addRangePanel">Add Range</a></li>
+   </ul>
+   <div class="tabs-content">
+      <div class="content active" id="addListPanel">
+         <div class="row">
+            <div class="small-12 columns">
+               <p class="text-center">
+                  This feature will add a list of items to the selected item. Each new item should be placed on it's own line.
+                  If the <span class="label secondary">Version</span> is selected, the new items will be
+                  <span class="label secondary">Sub Books</span>. If a <span class="label secondary">Sub Book</span> is selected,
+                  the new items will be <span class="label secondary">Chapters</span>.
+               </p>
+            </div>
+         </div>
+         <div class="row">
+            <div class="small-12 columns">
+               <textarea rows="10" id="addListText" name="addListText"></textarea>
+            </div>
+         </div>
+         <div class="row">
+            <div class="small-12 columns text-center">
+               <a href="javascript:void(0);" class="button small" onclick="createList()">Add</a>
+            </div>
+         </div>
+      </div>
+      <div class="content" id="addRangePanel">
+         <div class="row">
+            <div class="small-12 columns">
+               <p class="text-center">
+                  This feature will add a range of items to the selected item.
+                  If the <span class="label secondary">Version</span> is selected, the new items will be
+                  <span class="label secondary">Sub Books</span>. If a <span class="label secondary">Sub Book</span> is selected,
+                  the new items will be <span class="label secondary">Chapters</span>.
+               </p>
+            </div>
+         </div>
+         <div class="row">
+            <div class="small-6 large-6 columns">
+               <label for="addRangeStart">Start Range</label>
+               <input type="number" id="addRangeStart" name="addRangeStart" />
+            </div>
+            <div class="small-6 large-6 columns">
+               <label for="addRangeEnd">End Range</label>
+               <input type="number" id="addRangeEnd" name="addRangeEnd" />
+            </div>
+         </div>
+         <div class="row">
+            <div class="small-6 large-6 columns">
+               <label for="addRangeStart">Prefix range with</label>
+               <input type="text" id="addRangePrefix" name="addRangeStart" />
+            </div>
+            <div class="small-6 large-6 columns">
+               <label for="addRangeStart">Append range with</label>
+               <input type="text" id="addRangeAppend" name="addRangeEnd" />
+            </div>
+         </div>
+         <div class="row">
+            <div class="small-12 columns text-center">
+               <a href="javascript:void(0);" class="button small" onclick="createListRange()">Add</a>
+            </div>
+         </div>
       </div>
    </div>
    <a class="close-reveal-modal">&#215;</a>
@@ -72,42 +129,36 @@
       <ul class="button-group radius">
          <li><a href="#" class="button success tiny" onclick="createSubBook();"><i class="icon-createfile"></i> Sub Book</a></li>
          <li><a href="#" class="button success tiny" onclick="createChapter();"><i class="icon-createfile"></i> Chapter</a></li>
-         <li><a href="#" class="button secondary tiny" onclick="editItem();"><i class="icon-editalt"></i> Edit</a></li>
+         <li><a href="#" class="button success tiny" onclick="showAddList();"><i class="icon-createfile"></i> Add List</a></li>
          <li><a href="#" class="button alert tiny" onclick="deleteItem();"><i class="icon-remove-circle"></i> Delete</a></li>
+         <li><a href="#" class="button secondary tiny" onclick="editItem();"><i class="icon-editalt"></i> Edit</a></li>
+         <li><a href="#" class="button secondary tiny" onclick="renameItem();"><i class="icon-edit"></i> Rename</a></li>
+         <li><a href="#" class="button secondary tiny" onclick="setDefaultChapter();"><i class="icon-bookmark"></i> Default Chapter</a></li>
       </ul>
    </div>
 </div>
 
-@{ dynamic contents = JArray.Parse (Model.Contents); }
+<div class="row" style="margin-bottom: 10px;">
+   <div class="small-6 large-6 columns">
+      <div class="switch tiny">
+         <i class="icon-eye-close"></i>
+         <input id="hideSwitch" type="checkbox">
+         <label for="hideSwitch"></label>
+         <i class="icon-eye-open"></i>
+         <span id="hideSaved"><i class="icon-ok-sign" style="color: green"></i></span>
+      </div>
+   </div>
+   <div class="small-6 large-6 columns text-right">
+      <span id="contentsSaved" class="label success">Contents Saved!</span>
+   </div>
+</div>
+
 <div class="row">
    <div class="small-12 large-12 columns">
-      <div id="contentTree">
-         <ul>
-            <li data-jstree='{"opened":true, "type":"version"}' id="root">
-               @Model.Title
-               @if (contents.Count > 0) {
-                  <ul>
-                     @foreach (var subBook in contents) {
-                        var name = subBook.name;
-                        var hideSb = subBook.hide ?? new JValue (false);
-                        <li data-jstree='{"opened":true, "type":"subbook"}' data-hide="@hideSb.Value" data-id="@subBook.id">
-                           @name
-                           @if (subBook.chapters.Count > 0) {
-                              <ul>
-                                 @foreach (var chapter in subBook.chapters) {
-                                    var hideCh = chapter.hide ?? new JValue (false);
-                                    var showCh = chapter.show ?? new JValue ("verse");
-                                    <li data-jstree='{"type":"chapter"}' data-hide="@hideCh.Value" data-show="@showCh" data-id="@chapter.id">@chapter.name</li>
-                                 }
-                              </ul>
-                           }
-                        </li>
-                     }
-                  </ul>
-               }
-            </li>
-         </ul>
-      </div>
+      @{
+          var contents = new VersionContents (Model.Title, Model.Contents, Model.Id);
+          @Html.EditorFor(c => contents)
+      }
    </div>
 </div>
 

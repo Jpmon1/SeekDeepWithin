@@ -1,4 +1,6 @@
-﻿@model IEnumerable<SeekDeepWithin.Models.BookViewModel>
+﻿@model PagedList.IPagedList<SeekDeepWithin.Models.BookViewModel>
+@using PagedList.Mvc;
+@using SeekDeepWithin.Controllers
 
 @{
    ViewBag.Title = "Read";
@@ -12,10 +14,16 @@
    }
 </h3>
 <div class="row">
-   <div class="large-3 small-12 columns">
-      <h4>Filters....</h4>
-   </div>
-   <div class="large-9 columns">
+   @*<div class="large-3 small-12 columns">
+      @foreach (var tag in ViewBag.Tags) {
+         <div class="row">
+            <div class="small-12 columns">
+               @tag.Name
+            </div>
+         </div>
+      }
+   </div>*@
+   <div class="large-12 columns">
       @{
          int index = 0;
       }
@@ -23,23 +31,31 @@
          if (index == 0) {
             @Html.Raw("<div class=\"row\" data-equalizer>")
          }
-         <div class="large-6 small-12 columns">
+         <div class="large-4 small-12 medium-6 columns">
             <ul class="pricing-table" data-equalizer-watch>
                <li class="title">
                   @book.Title
-                  @if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
+                  @if (Request.IsAuthenticated && User.IsInRole("Editor")) {
                      <small>@Html.ActionLink("[edit]", "Edit", "Book", new { id = book.Id }, null)</small>
                   }
                </li>
                <li class="description">
-                  @book.Summary
+                  @Html.Raw(HtmlSanitizer.Sanitize (book.Summary))
                </li>
                @if (book.Versions.Count == 0) {
-                  <li class="bullet-item"><span class="label secondary">No information has been entered for this book!</span></li>
+                  <li class="bullet-item">
+                     <span class="label secondary">No information has been entered for this book!</span>
+                  </li>
                } else if (book.Versions.Count == 1 && book.Title == book.Versions[0].Title) {
                   var version = book.Versions [0];
                   <li class="bullet-item" style="border-bottom: 0;">
-                     @Html.ActionLink("Read", "Read", "Chapter", new{ id = version.DefaultReadChapter }, new { @class = "button small" })
+                     @if (version.DefaultReadChapter == 0) {
+                        <li class="bullet-item">
+                           <span class="label secondary">No information has been entered for this book!</span>
+                        </li>
+                     } else {
+                        @Html.ActionLink("Read", "Read", "Chapter", new{ id = version.DefaultReadChapter }, new { @class = "button small" })
+                     }
                      @if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
                         <small>@Html.ActionLink("[edit]", "Edit", "Version", new { id = version.Id }, null)</small>
                      }
@@ -64,13 +80,28 @@
             </ul>
          </div>
          index++;
-         if (index == 2) {
+         if (index == 3) {
             @Html.Raw("</div>")
             index = 0;
          }
       }
+      @if (index == 1) {
+         <div class="large-4 medium-6 small-12 columns">&nbsp;</div>
+         <div class="large-4 medium-6 small-12 columns">&nbsp;</div>
+      }
+      @if (index == 2) {
+         <div class="large-4 medium-6 small-12 columns">&nbsp;</div>
+      }
       @if (index != 0) {
-         @Html.Raw("</div>");
+         @Html.Raw("</div>")
+      }
+      @if (@Model.PageCount > 1) {
+         <div class="row">
+            <div class="small-12 large-12 columns">
+               Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+               @Html.PagedListPager(Model, page => Url.Action ("Index", new {page}))
+            </div>
+         </div>
       }
    </div>
 </div>

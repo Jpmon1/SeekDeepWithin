@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
+using PagedList;
 using SeekDeepWithin.DataAccess;
 using SeekDeepWithin.Pocos;
 using SeekDeepWithin.Models;
@@ -33,11 +34,15 @@ namespace SeekDeepWithin.Controllers
       /// <summary>
       /// Gets the index page for the books
       /// </summary>
-      public ActionResult Index ()
+      public ActionResult Index (int? page)
       {
+         int pageNumber = page ?? 1;
          if (TempData.ContainsKey ("ErrorMessage"))
             ViewBag.ErrorMessage = TempData["ErrorMessage"];
-         return View (this.m_Db.Books.All (q => q.OrderBy (b => b.Title)).Select (book => new BookViewModel (book, true)).ToList ());
+         ViewBag.Tags = this.m_Db.Tags.All (q => q.OrderBy (t => t.Name));
+         return View (this.m_Db.Books.All (q => q.OrderBy (b => b.Title.StartsWith("The")?b.Title.Substring(3).Trim():b.Title))
+            .Select (book => new BookViewModel (book, true))
+            .ToPagedList (pageNumber, 10));
       }
 
       /// <summary>
@@ -61,6 +66,12 @@ namespace SeekDeepWithin.Controllers
       {
          if (ModelState.IsValid)
          {
+            var foundBook = this.m_Db.Books.Get (b => b.Title == viewModel.Title).FirstOrDefault();
+            if (foundBook != null)
+            {
+               ViewBag.ErrorMessage = "A book with that title already exists, maybe you need to add a version?";
+               return View (viewModel);
+            }
             this.m_Db.Books.Insert (new Book { Summary = viewModel.Summary, Title = viewModel.Title });
             this.m_Db.Save ();
             return RedirectToAction ("Index");
@@ -83,6 +94,7 @@ namespace SeekDeepWithin.Controllers
                return RedirectToAction ("Index");
 
             if (Request.UrlReferrer != null) TempData["RefUrl"] = Request.UrlReferrer.ToString ();
+            ViewBag.Tags = new SelectList (this.m_Db.Tags.All (q => q.OrderBy (t => t.Name)), "Id", "Name");
             return View (new BookViewModel (book));
          }
          TempData["ErrorMessage"] = "You must login to edit a book!";
@@ -107,6 +119,84 @@ namespace SeekDeepWithin.Controllers
             return RedirectToAction ("Index");
          }
          return View (bookViewModel);
+      }
+
+      /// <summary>
+      /// Adds the given tag to the given book.
+      /// </summary>
+      /// <param name="tagId">Id of tag to add.</param>
+      /// <param name="id">Id of book to add tag to.</param>
+      /// <returns></returns>
+      [HttpPost]
+      [ValidateAntiForgeryToken]
+      [Authorize (Roles = "Editor")]
+      public ActionResult AddTag (int tagId, int id)
+      {
+         var book = this.m_Db.Books.Get (id);
+         var foundTag = book.Tags.FirstOrDefault (bt => bt.Tag.Id == tagId);
+         if (foundTag != null)
+         {
+            Response.StatusCode = 500;
+            return Json ("That tag is already assigned to the book.");
+         }
+         var tag = this.m_Db.Tags.Get (tagId);
+         book.Tags.Add (new BookTag { Book = book, Tag = tag});
+         this.m_Db.Save ();
+         return Json ("success");
+      }
+
+      /// <summary>
+      /// Removes the tag with the given id from the given book.
+      /// </summary>
+      /// <param name="tagId">Id of tag to remove.</param>
+      /// <param name="id">Id of book to remove tag from.</param>
+      /// <returns></returns>
+      [HttpPost]
+      [ValidateAntiForgeryToken]
+      [Authorize (Roles = "Editor")]
+      public ActionResult RemoveTag (int tagId, int id)
+      {
+         var book = this.m_Db.Books.Get (id);
+         if (book == null)
+         {
+            Response.StatusCode = 500;
+            return Json ("Unable to get book - " + id);
+         }
+         var bookTag = book.Tags.FirstOrDefault (bt => bt.Id == tagId);
+         if (bookTag == null)
+         {
+            Response.StatusCode = 500;
+            return Json ("Unable to find the given tag.");
+         }
+         book.Tags.Remove (bookTag);
+         this.m_Db.Save ();
+         return Json ("success");
+      }
+
+      /// <summary>
+      /// Gets the detail for a book with the given id.
+      /// </summary>
+      /// <param name="id"></param>
+      /// <returns></returns>
+      public ActionResult Details (int id)
+      {
+         var book = this.m_Db.Books.Get (id);
+         return View(new BookViewModel(book, true));
+      }
+
+      /// <summary>
+      /// Gets auto complete items.
+      /// </summary>
+      /// <param name="title">Title to get auto complete items for.</param>
+      /// <returns>The list of possible terms for the given item.</returns>
+      public ActionResult AutoComplete (string title)
+      {
+         var result = new
+         {
+            suggestions = this.m_Db.Books.Get (t => t.Title.Contains (title))
+                                                 .Select (t => new { value = t.Title, data = t.Id })
+         };
+         return Json (result, JsonRequestBehavior.AllowGet);
       }
    }
 }

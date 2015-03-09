@@ -1,14 +1,9 @@
-Redirects
-Pagination
-Advanced search
-Passage parser
-Add chapter/sub book range to contents
-Rename sdw.addpassages, break up
-
-
-Tags
 Comments
-Edit number and order of passage
+Advanced search
+Next/previous chapter
+Filter books/terms by tags, etc.
+Edit number and order of passage and chapter
+Sub book tags (i.e. New/Old Testament)
 Delete
    Contents
    Styles --> Edit also
@@ -17,17 +12,22 @@ Delete
    Footers
 Notes
 View Search as List/Tree
+View books a list
 Facebook/twitter/email share
 Adiminstration Page
 Bookmarks
 Favorites
-Author Page
 User preferences
    View footers at end or after verse
    if editor show edit item
-Glossary see also
 Glossary Entry voting
 Book on amazon links
 Read multiple books
 Search while reading
 Definitions (Glossary entry ballons)
+Google/Facebook login
+Regex adding/converter
+Random Verse
+Help
+Api
+News/Updates

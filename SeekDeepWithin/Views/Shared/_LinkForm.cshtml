@@ -1,5 +1,6 @@
 ﻿@model SeekDeepWithin.Models.EditLinkViewModel
 
+<input type="hidden" id="LinkType" name="LinkType" value="@Model.Type" />
 <dl class="tabs" data-tab>
    <dd class="active"><a href="#tabGlossary">Glossary</a></dd>
    <dd><a href="#tabRead">Read</a></dd>
@@ -20,20 +21,24 @@
          <div class="small-12 large-6 columns">
             <label for="linkBook">Book</label>
             <input type="text" id="linkBook" name="linkBook" />
+            <input type="hidden" id="selBookId" name="selBookId" />
          </div>
          <div class="small-12 large-6 columns">
             <label for="linkVersion">Version</label>
             <input type="text" id="linkVersion" name="linkVersion" />
+            <input type="hidden" id="selVersionId" name="selVersionId" />
          </div>
       </div>
       <div class="row">
          <div class="small-12 large-6 columns">
             <label for="linkSubBook">Sub Book</label>
             <input type="text" id="linkSubBook" name="linkSubBook" />
+            <input type="hidden" id="selSubBookId" name="selSubBookId" />
          </div>
          <div class="small-12 large-6 columns">
             <label for="linkChapter">Chapter</label>
             <input type="text" id="linkChapter" name="linkChapter" />
+            <input type="hidden" id="selChapterId" name="selChapterId" />
          </div>
       </div>
    </div>

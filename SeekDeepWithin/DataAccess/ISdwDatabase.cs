@@ -11,9 +11,9 @@ namespace SeekDeepWithin.DataAccess
       IRepository <Book> Books { get; }
 
       /// <summary>
-      /// Gets the repository for authors.
+      /// Gets the repository for writers.
       /// </summary>
-      IRepository<Author> Authors { get; }
+      IRepository<Writer> Writers { get; }
 
       /// <summary>
       /// Gets the repository for versions.
@@ -21,9 +21,19 @@ namespace SeekDeepWithin.DataAccess
       IRepository<Pocos.Version> Versions { get; }
 
       /// <summary>
+      /// Gets the repository for versions subbook table.
+      /// </summary>
+      IRepository<VersionSubBook> VersionSubBooks { get; }
+
+      /// <summary>
       /// Gets the repository for subbooks.
       /// </summary>
       IRepository<SubBook> SubBooks { get; }
+
+      /// <summary>
+      /// Gets the repository for subbook chapter table.
+      /// </summary>
+      IRepository<SubBookChapter> SubBookChapters { get; }
 
       /// <summary>
       /// Gets the repository for chapters.
@@ -94,6 +104,26 @@ namespace SeekDeepWithin.DataAccess
       /// Gets the repository for glossary entries.
       /// </summary>
       IRepository<GlossaryEntry> GlossaryEntries { get; }
+
+      /// <summary>
+      /// Gets the repository for amazon items.
+      /// </summary>
+      IRepository<AmazonItem> AmazonItems { get; }
+
+      /// <summary>
+      /// Gets the repository for abbreviations.
+      /// </summary>
+      IRepository<Abbreviation> Abbreviations { get; }
+
+      /// <summary>
+      /// Gets the repository for sub book writers.
+      /// </summary>
+      IRepository <SubBookWriter> SubBookWriters { get; }
+
+      /// <summary>
+      /// Gets the repository for version writers.
+      /// </summary>
+      IRepository <VersionWriter> VersionWriters { get; }
 
       /// <summary>
       /// Saves all changes.

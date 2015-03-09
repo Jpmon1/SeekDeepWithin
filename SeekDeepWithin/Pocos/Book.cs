@@ -28,6 +28,11 @@ namespace SeekDeepWithin.Pocos
       public string Summary { get; set; }
 
       /// <summary>
+      /// Gets or Sets the list of sub books that belong to this book.
+      /// </summary>
+      public virtual ICollection<SubBook> SubBooks { get; set; }
+
+      /// <summary>
       /// Gets or Sets the list of verions.
       /// </summary>
        public virtual ICollection<Version> Versions { get; set; }
@@ -35,6 +40,6 @@ namespace SeekDeepWithin.Pocos
       /// <summary>
       /// Gets or Sets the list of tags for this book.
       /// </summary>
-       public virtual ICollection<BookTag> BookTags { get; set; }
+       public virtual ICollection<BookTag> Tags { get; set; }
    }
 }

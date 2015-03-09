@@ -43,7 +43,15 @@ namespace SeekDeepWithin
             "~/Scripts/sdw/sdw.style.js",
             "~/Scripts/sdw/sdw.link.js"));
 
-         bundles.Add (new ScriptBundle ("~/bundles/sdw.addpassages").Include ("~/Scripts/sdw/sdw.addpassages.js"));
+         bundles.Add (new ScriptBundle ("~/bundles/sdw.editTerm").Include ("~/Scripts/jquery.autocomplete.js",
+            "~/Scripts/sdw/sdw.link.js",
+            "~/Scripts/sdw/sdw.tag.js"));
+
+         bundles.Add (new ScriptBundle ("~/bundles/sdw.addpassages").Include ("~/Scripts/sdw/sdw.addpassages.js",
+            "~/Scripts/sdw/sdw.convert.js"));
+
+         bundles.Add (new ScriptBundle ("~/bundles/sdw.addentries").Include ("~/Scripts/sdw/sdw.addentries.js",
+            "~/Scripts/sdw/sdw.convert.js"));
 
          bundles.Add (new ScriptBundle ("~/bundles/sdw.contentsedit").Include ("~/Scripts/jstree.js",
             "~/Scripts/sdw/sdw.contentsedit.js"));

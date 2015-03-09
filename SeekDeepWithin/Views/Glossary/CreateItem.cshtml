@@ -6,34 +6,74 @@
 
 <h2>Create new item for @Model.Term.Name</h2>
 
-@using (Html.BeginForm()) {
-    @Html.AntiForgeryToken()
-    @Html.ValidationSummary(true)
+<div class="row">
+   <div class="small-12 large-12 columns">
+      <ul class="tabs" data-tab>
+         <li class="tab-title active"><a href="#panelSource">Source</a></li>
+         <li class="tab-title"><a href="#panelRedirect">Redirect</a></li>
+      </ul>
+      <div class="tabs-content">
+         <div class="content active" id="panelSource">
+            @using (Html.BeginForm()) {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true)
 
-    <fieldset>
-        <legend>New Item</legend>
+                <fieldset>
+                    <legend>New Item</legend>
        
-       @Html.HiddenFor(model => model.Term.Id)
-       @Html.HiddenFor(model => model.Term.Name)
-       <div class="row">
-          <div class="small-12 large-12 columns">
-             @Html.LabelFor(model => model.SourceName)
-             @Html.EditorFor(model => model.SourceName)
-             @Html.ValidationMessageFor(model => model.SourceName)
-          </div>
-       </div>
+                   @Html.HiddenFor(model => model.Term.Id)
+                   @Html.HiddenFor(model => model.Term.Name)
+                   <div class="row">
+                      <div class="small-12 large-12 columns">
+                         @Html.LabelFor(model => model.SourceName)
+                         @Html.EditorFor(model => model.SourceName)
+                         @Html.ValidationMessageFor(model => model.SourceName)
+                      </div>
+                   </div>
 
-       <div class="row">
-          <div class="small-12 large-12 columns">
-             @Html.LabelFor(model => model.SourceUrl)
-             @Html.EditorFor(model => model.SourceUrl)
-             @Html.ValidationMessageFor(model => model.SourceUrl)
-          </div>
-       </div>
+                   <div class="row">
+                      <div class="small-12 large-12 columns">
+                         @Html.LabelFor(model => model.SourceUrl)
+                         @Html.EditorFor(model => model.SourceUrl)
+                         @Html.ValidationMessageFor(model => model.SourceUrl)
+                      </div>
+                   </div>
 
-        <input type="submit" value="Create" class="button"/> <a href="@TempData["RefUrl"]" class="button secondary small">cancel</a>
-    </fieldset>
-}
+                    <input type="submit" value="Create" class="button"/> <a href="@TempData["RefUrl"]" class="button secondary small">cancel</a>
+                </fieldset>
+            }
+         </div>
+         <div class="content" id="panelRedirect">
+            @using (Html.BeginForm()) {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true)
+
+                <fieldset>
+                    <legend>Redirect</legend>
+       
+                   @Html.HiddenFor(model => model.Term.Id)
+                   @Html.HiddenFor(model => model.Term.Name)
+                   <div class="row">
+                      <div class="small-12 large-12 columns">
+                         <input type="hidden" id="SourceName" name="SourceName" value="|REDIRECT|" readonly/>
+                      </div>
+                   </div>
+
+                   <div class="row">
+                      <div class="small-12 large-12 columns">
+                         @Html.LabelFor(model => model.SourceUrl)
+                         @Html.EditorFor(model => model.SourceUrl)
+                         @Html.ValidationMessageFor(model => model.SourceUrl)
+                      </div>
+                   </div>
+
+                    <input type="submit" value="Create" class="button"/> <a href="@TempData["RefUrl"]" class="button secondary small">cancel</a>
+                </fieldset>
+            }
+         </div>
+      </div>
+   </div>
+</div>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

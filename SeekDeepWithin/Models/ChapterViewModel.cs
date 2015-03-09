@@ -24,10 +24,11 @@ namespace SeekDeepWithin.Models
       /// Initializes a new chapter view model.
       /// </summary>
       /// <param name="chapter">The chapter to copy data from.</param>
-      public ChapterViewModel (Chapter chapter)
+      public ChapterViewModel (SubBookChapter chapter)
       {
          this.Id = chapter.Id;
-         this.Name = chapter.Name;
+         this.Hide = chapter.Hide;
+         this.Name = chapter.Chapter.Name;
          this.SubBookId = chapter.SubBook.Id;
          this.DefaultToParagraph = chapter.DefaultToParagraph;
          this.SubBook = new SubBookViewModel (chapter.SubBook);
@@ -59,6 +60,11 @@ namespace SeekDeepWithin.Models
       /// </summary>
       [Required]
       public string Name { get; set; }
+
+      /// <summary>
+      /// Gets or Sets if this is hidden.
+      /// </summary>
+      public bool Hide { get; set; }
 
       /// <summary>
       /// Gets or Sets the id of the parent sub book.

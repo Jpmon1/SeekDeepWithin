@@ -26,5 +26,7 @@ namespace SeekDeepWithin.Models
       /// Gets the collection of passages.
       /// </summary>
       public Collection<PassageViewModel> Passages { get { return this.m_Passages; } }
+
+      public string ParserLog { get; set; }
    }
 }
