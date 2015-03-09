@@ -22,6 +22,7 @@ namespace SeekDeepWithin.Models
       /// <param name="entry">The passage entry to copy data from.</param>
       public PassageViewModel (PassageEntry entry)
       {
+         if (entry == null) return;
          this.EntryId = entry.Id;
          this.Id = entry.Passage.Id;
          this.Number = entry.Number;
@@ -32,6 +33,14 @@ namespace SeekDeepWithin.Models
          this.SubBookName = entry.Chapter.SubBook.SubBook.Name;
          this.VersionId = entry.Chapter.SubBook.Version.Id;
          this.VersionName = entry.Chapter.SubBook.Version.Title;
+
+         var title = this.VersionName + " | ";
+         if (!entry.Chapter.SubBook.Hide)
+            title += this.SubBookName + " | ";
+         if (!entry.Chapter.Hide)
+            title += this.ChapterName + ":";
+         title += this.Number;
+         this.Title = title;
 
          this.Links = new Collection<LinkViewModel> ();
          this.Styles = new Collection<StyleViewModel> ();
@@ -65,6 +74,11 @@ namespace SeekDeepWithin.Models
          foreach (var footer in entry.Footers)
             this.Footers.Add (new HeaderFooterViewModel (footer));
       }
+
+      /// <summary>
+      /// Gets or Sets the title of the page.
+      /// </summary>
+      public string Title { get; set; }
 
       /// <summary>
       /// Gets or Sets the id of the passage.
@@ -147,6 +161,8 @@ namespace SeekDeepWithin.Models
       /// <returns>The html to display for the passage.</returns>
       public string Render ()
       {
+         if (this.Renderer == null)
+            this.Renderer = new SdwRenderer ();
          return Renderer.Render (this);
       }
    }

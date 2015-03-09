@@ -16,10 +16,14 @@ namespace SeekDeepWithin.Models
       /// <param name="name">The name of the version.</param>
       /// <param name="contents">The contents to parse.</param>
       /// <param name="versionId">The id of the version.</param>
-      public VersionContents (string name, string contents, int versionId)
+      /// <param name="currSubBook">The current sub book.</param>
+      /// <param name="currChapter">The current chapter.</param>
+      public VersionContents (string name, string contents, int versionId, int currSubBook, int currChapter)
       {
          this.Name = name;
          this.VersionId = versionId;
+         this.CurrentSubBook = currSubBook;
+         this.CurrentChapter = currChapter;
          this.SetContents (contents);
       }
 
@@ -39,9 +43,19 @@ namespace SeekDeepWithin.Models
       public int CurrentSubBook { get; set; }
 
       /// <summary>
-      /// Gets or Sets the current chapter
+      /// Gets or Sets the current chapter.
       /// </summary>
       public int CurrentChapter { get; set; }
+
+      /// <summary>
+      /// Gets the next chapter id.
+      /// </summary>
+      public int NextChapter { get; private set; }
+
+      /// <summary>
+      /// Gets the previous chapter id.
+      /// </summary>
+      public int PreviousChapter { get; private set; }
 
       /// <summary>
       /// Gets the list of sub books.
@@ -55,6 +69,9 @@ namespace SeekDeepWithin.Models
       public void SetContents (string contents)
       {
          this.SubBooks.Clear();
+         int lastChapter = -1;
+         this.NextChapter = -1;
+         this.PreviousChapter = -1;
          if (!string.IsNullOrWhiteSpace (contents))
          {
             dynamic dContents = JArray.Parse (contents);
@@ -75,6 +92,11 @@ namespace SeekDeepWithin.Models
                            Name = chapter.name,
                            Hide = hideCh.Value
                         });
+                        if (chapter.id == this.CurrentChapter)
+                           this.PreviousChapter = lastChapter;
+                        else if (lastChapter == this.CurrentChapter)
+                           this.NextChapter = chapter.id;
+                        lastChapter = chapter.id;
                      }
                   }
                   this.SubBooks.Add(subBookContent);

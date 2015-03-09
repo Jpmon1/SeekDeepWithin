@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Web.Mvc;
 using SeekDeepWithin.DataAccess;
 using SeekDeepWithin.Pocos;
@@ -108,6 +109,15 @@ namespace SeekDeepWithin.Controllers
             this.m_Db.Save ();
          }
          return passage;
+      }
+
+      /// <summary>
+      /// Gets a random passage.
+      /// </summary>
+      /// <returns></returns>
+      public PassageViewModel GetRandomPassage ()
+      {
+         return new PassageViewModel(this.m_Db.PassageEntries.All (q => q.OrderBy (r => Guid.NewGuid ())).Take (1).FirstOrDefault());
       }
 
       /// <summary>

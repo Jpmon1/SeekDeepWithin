@@ -1,12 +1,13 @@
-﻿@model SeekDeepWithin.Models.SearchViewModel
+﻿@using SeekDeepWithin.Controllers
+@model SeekDeepWithin.Models.SearchViewModel
 
 @{
    ViewBag.Title = "Search Results";
 }
 
-<h3>Search Results for '@Model.Query'</h3>
+<h3>Search Results for '@Model.Query' <small>found @Model.Passages.Count matches</small></h3>
 
-@if (Request.IsAuthenticated && User.IsInRole ("Administrator")) {
+@if (Request.IsAuthenticated && User.IsInRole ("Administrator") && Model.ShowLog) {
    <div class="row">
       <div class="small-12 columns">
          <h4>Parser Log:</h4>
@@ -33,20 +34,12 @@
                <ul class="pricing-table" data-equalizer-watch>
                   <li class="description">
                      @{
-                        var title = result.VersionName;
-                        if (result.SubBookName != "default") {
-                           title += " | " + result.SubBookName;
-                        }
-                        if (result.ChapterName != "default") {
-                           title += " | " + result.ChapterName;
-                        }
-                        title += " | " + result.Number;
                         var anchor = string.Format("#pass_{0}",result.EntryId);
                      }
-                     <a href="@Url.Action("Read", "Chapter", new { id = result.ChapterId })@anchor">@title</a>
+                     <a href="@Url.Action("Read", "Chapter", new { id = result.ChapterId }, Request.Url.Scheme)@anchor">@result.Title</a>
                   </li>
                   <li class="bullet-item" style="border-bottom: 0">
-                     @result.Text
+                     @Html.Raw(result.Text.Highlight(Model.Query))
                   </li>
                </ul>
             </div>

@@ -156,7 +156,7 @@
 <div class="row">
    <div class="small-12 large-12 columns">
       @{
-          var contents = new VersionContents (Model.Title, Model.Contents, Model.Id);
+          var contents = new VersionContents (Model.Title, Model.Contents, Model.Id, -1, -1);
           @Html.EditorFor(c => contents)
       }
    </div>

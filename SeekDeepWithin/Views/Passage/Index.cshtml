@@ -1,27 +1,19 @@
 ﻿@model SeekDeepWithin.Models.PassageViewModel
 
 @{
-   var title = Model.VersionName;
-   if (Model.SubBookName != "default") {
-      title += " | " + Model.SubBookName;
-   }
-   if (Model.ChapterName != "default"){
-      title += " | " + Model.ChapterName;
-   }
-   title += " | " + Model.Number;
-   ViewBag.Title = title;
+   ViewBag.Title = Model.Title;
    Model.Renderer = new SeekDeepWithin.Controllers.SdwRenderer ();
 }
 
 <div class="row">
    <div class="small-12 large-12 columns">
       <ul class="breadcrumbs" role="menubar" aria-label="breadcrumbs">
-         <li role="menuitem"><a href="@Url.Action("About", "Version", new { id = @Model.VersionId })">@Model.VersionName</a></li>
+         <li role="menuitem"><a href="@Url.Action("About", "Version", new { id = @Model.VersionId }, Request.Url.Scheme)">@Model.VersionName</a></li>
          @if (Model.SubBookName != "default") {
-            <li role="menuitem"><a href="@Url.Action("About", "SubBook", new { id = @Model.SubBookId })">@Model.SubBookName</a></li>
+            <li role="menuitem"><a href="@Url.Action("About", "SubBook", new { id = @Model.SubBookId }, Request.Url.Scheme)">@Model.SubBookName</a></li>
          }
          @if (Model.ChapterName != "default") {
-            <li role="menuitem"><a href="@Url.Action("Read", "Chapter", new {id = @Model.ChapterId})">@Model.ChapterName</a></li>
+            <li role="menuitem"><a href="@Url.Action("Read", "Chapter", new {id = @Model.ChapterId}, Request.Url.Scheme)">@Model.ChapterName</a></li>
          }
          <li role="menuitem" class="current"><a href="#">@Model.Number</a></li>
       </ul>

@@ -1,6 +1,5 @@
 Comments
 Advanced search
-Next/previous chapter
 Filter books/terms by tags, etc.
 Edit number and order of passage and chapter
 Sub book tags (i.e. New/Old Testament)
@@ -26,8 +25,10 @@ Read multiple books
 Search while reading
 Definitions (Glossary entry ballons)
 Google/Facebook login
-Regex adding/converter
-Random Verse
+Random Verse - Change to Daily
+Daily devotionals
+Android/iOS app
 Help
 Api
 News/Updates
+Convert all action links to url.action with absolute uri

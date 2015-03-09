@@ -208,6 +208,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\ExtensionMethods.cs" />
     <Compile Include="Controllers\WriterController.cs" />
     <Compile Include="Controllers\BookController.cs" />
     <Compile Include="Controllers\DbHelper.cs" />

@@ -27,6 +27,14 @@ namespace SeekDeepWithin.Models
       /// </summary>
       public Collection<PassageViewModel> Passages { get { return this.m_Passages; } }
 
+      /// <summary>
+      /// Gets or Sets the parser log.
+      /// </summary>
       public string ParserLog { get; set; }
+
+      /// <summary>
+      /// Gets or Sets if the parsing log should be shown.
+      /// </summary>
+      public bool ShowLog { get; set; }
    }
 }
