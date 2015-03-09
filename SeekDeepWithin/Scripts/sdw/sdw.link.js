@@ -5,18 +5,108 @@ $(document).ready(function () {
       serviceUrl: '/Glossary/AutoComplete',
       paramName: 'term'
    });
+   $('#linkBook').autocomplete({
+      serviceUrl: '/Book/AutoComplete',
+      paramName: 'title',
+      onSelect: function (suggestion) {
+         $('#selBookId').val(suggestion.data);
+         $('#linkVersion').prop('disabled', false);
+      }
+   });
+   $('#linkVersion').autocomplete({
+      lookup: function (query, done) {
+         $.ajax({
+            type: 'POST',
+            url: '/Version/AutoComplete/',
+            data: {
+               title: query,
+               bookId: $('#selBookId').val()
+            }
+         }).done(function (data) {
+            done(data);
+         }).fail(function (data) {
+            alert(data.responseText);
+         });
+      },
+      onSelect: function (suggestion) {
+         $('#selVersionId').val(suggestion.data);
+         $('#linkSubBook').prop('disabled', false);
+      }
+   });
+   $('#linkSubBook').autocomplete({
+      lookup: function (query, done) {
+         $.ajax({
+            type: 'POST',
+            url: '/SubBook/AutoComplete/',
+            data: {
+               name: query,
+               versionId: $('#selVersionId').val()
+            }
+         }).done(function (data) {
+            done(data);
+         }).fail(function (data) {
+            alert(data.responseText);
+         });
+      },
+      onSelect: function (suggestion) {
+         $('#selSubBookId').val(suggestion.data);
+         $('#linkChapter').prop('disabled', false);
+      }
+   });
+   $('#linkChapter').autocomplete({
+      lookup: function (query, done) {
+         $.ajax({
+            type: 'POST',
+            url: '/Chapter/AutoComplete/',
+            data: {
+               name: query,
+               subBookId: $('#selSubBookId').val()
+            }
+         }).done(function (data) {
+            done(data);
+         }).fail(function (data) {
+            alert(data.responseText);
+         });
+      },
+      onSelect: function (suggestion) {
+         $('#selChapterId').val(suggestion.data);
+      }
+   });
+   $('#text').keyup(setSelection);
+   $('#text').mouseup(setSelection);
+   $('#linkVersion').prop('disabled', true);
+   $('#linkSubBook').prop('disabled', true);
+   $('#linkChapter').prop('disabled', true);
+
+   $('#linkBook').change(function () {
+      if ($('#linkBook').val().replace(/^\s+|\s+$/g, '') === '') {
+         $('#linkVersion').prop('disabled', true);
+      }
+   });
+   $('#linkVersion').change(function () {
+      if ($('#linkVersion').val().replace(/^\s+|\s+$/g, '') === '') {
+         $('#linkSubBook').prop('disabled', true);
+      }
+   });
+   $('#linkSubBook').change(function () {
+      if ($('#linkSubBook').val().replace(/^\s+|\s+$/g, '') === '') {
+         $('#linkChapter').prop('disabled', true);
+      }
+   });
 });
 
 function link_Create() {
    var startIndex = $('#StartIndex').val();
    var endIndex = $('#EndIndex').val();
    if (startIndex != '' && endIndex != '') {
-      var type = $('#itemType').val();
+      var type = $('#LinkType').val();
       var form = $('#__AjaxAntiForgeryForm');
       var token = $('input[name="__RequestVerificationToken"]', form).val();
-      var itemId = -1;
+      var itemId;
       if (type == 'Entry') {
          itemId = $('#editEntryId').text();
+      } else if (type == 'SeeAlso') {
+         itemId = $('#TermId').val();
       } else {
          itemId = $('#editPassId').text();
       }
@@ -36,6 +126,7 @@ function link_Create() {
             chapter: $('#linkChapter').val(),
             search: $('#linkSearch').val(),
             link: $('#linkExternal').val(),
+            chapterId: $('#selChapterId').val(),
             openInNewWindow: $('#linkNewWindow').prop('checked')
          }
       }).done(function () {

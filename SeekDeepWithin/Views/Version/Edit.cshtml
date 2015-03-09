@@ -4,15 +4,19 @@
    ViewBag.Title = "Edit " + Model.Title;
 }
 
-<h3><small>editing</small> @Model.Title</h3>
-@if (User.IsInRole ("Creator"))
-{
-   <small class="bullet-item">
-      @Html.ActionLink("edit contents", "Contents", new {id = Model.Id})
-   </small>
-}
+<h3><small>editing</small> @Model.Title
+   @if (User.IsInRole ("Creator")) {
+      <small class="bullet-item">
+         @Html.ActionLink("edit contents", "Contents", new {id = Model.Id})
+      </small>
+   }
+</h3>
 @if (ViewBag.ErrorMessage != null) {
    <div class ="alert-box alert">@ViewBag.ErrorMessage</div>
+}
+
+@using (Html.BeginForm (null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" })){
+   @Html.AntiForgeryToken()
 }
 
 @using (Html.BeginForm ())
@@ -27,7 +31,7 @@
       @Html.HiddenFor(model => model.BookId)
 
       <div class="row">
-         <div class="small-12 large-6 columns">
+         <div class="small-12 columns">
             @Html.LabelFor(model => model.Abbreviation)
             @Html.EditorFor(model => model.Abbreviation)
             @Html.ValidationMessageFor(model => model.Abbreviation)
@@ -35,7 +39,7 @@
       </div>
       
       <div class="row">
-         <div class="small-12 large-6 columns">
+         <div class="small-12 columns">
             @Html.LabelFor(model => model.Title)
             @Html.EditorFor(model => model.Title)
             @Html.ValidationMessageFor(model => model.Title)
@@ -43,19 +47,29 @@
       </div>
       
       <div class="row">
-         <div class="small-12 large-6 columns">
+         <div class="small-12 columns">
             @Html.LabelFor(model => model.PublishDate)
             @Html.EditorFor(model => model.PublishDate)
             @Html.ValidationMessageFor(model => model.PublishDate)
          </div>
       </div>
-
-      <input type="submit" value="Save" class="button" /> <a href="@TempData["RefUrl"]" class="button secondary small">cancel</a>
+      
+      
+      <div class="row">
+         <div class="small-12 large-6 columns">
+            <input type="submit" value="Save" class="button expand" />
+         </div>
+         <div class="small-12 large-6 columns">
+            <a href="javascript:void(0)" onclick="setAsDefaultVersion()" class="button expand">
+               Set as Default <span id="defaultCheck"><i class="icon-ok-sign"></i></span>
+            </a>
+         </div>
+      </div>
    </fieldset>
 }
 
 
 @section Scripts {
    @Scripts.Render("~/bundles/jqueryval")
-   @Scripts.Render("~/bundles/versionedit")
+   <script src="~/Scripts/sdw/sdw.version.js"></script>
 }

@@ -1,28 +1,25 @@
-﻿namespace SeekDeepWithin.Pocos
+﻿using System.Collections.Generic;
+
+namespace SeekDeepWithin.Pocos
 {
    /// <summary>
-   /// Represents a writer of a version.
+   /// Represents an author or translator.
    /// </summary>
-   public class Writer
+   public class Writer : IDbTable
    {
       /// <summary>
-      /// Gets or Sets the id of the writer.
+      /// Gets or Sets the id of the author.
       /// </summary>
       public int Id { get; set; }
 
       /// <summary>
-      /// Gets or Sets if this writer is a translator.
+      /// Gets or Sets the name of the author.
       /// </summary>
-      public bool IsTranslator { get; set; }
+      public string Name { get; set; }
 
       /// <summary>
-      /// Gets or Sets the author.
+      /// Gets or Sets information about this author.
       /// </summary>
-      public virtual Author Author { get; set; }
-
-      /// <summary>
-      /// Gets or Sets the sub book.
-      /// </summary>
-      public virtual SubBook SubBook { get; set; }
+      public string About { get; set; }
    }
 }

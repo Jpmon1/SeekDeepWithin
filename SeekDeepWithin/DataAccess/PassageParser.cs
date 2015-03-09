@@ -1,103 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Globalization;
+using System.Linq;
+using System.Text;
+using SeekDeepWithin.Pocos;
 
 namespace SeekDeepWithin.DataAccess
 {
    public class PassageParser
    {
-      private readonly Collection <string> m_PassageList = new Collection <string> ();
       private string m_LastBook = "";
+      private readonly ISdwDatabase m_Db;
+      private readonly StringBuilder m_Log = new StringBuilder();
+      private readonly List<PassageEntry> m_PassageList = new List<PassageEntry> ();
 
       /// <summary>
-      ///    Gets or Sets the list of parsed passages.
+      /// Initializes a new passage parser.
       /// </summary>
-      public List <string> PassageList { get; set; }
-
-      /// <summary>
-      ///    Gets or Sets the default bible.
-      /// </summary>
-      public string DefaultBible { get; set; }
-
-      /**
-       * Parses and renders the given passage into HTML.
-       * @param string passageToParse Passage To Parse.
-       * @param boolean inTable True if data is in render in a table.
-       * @param boolean isMobile If true, links will point to mobile site.
-       * @return string The outputted HTML from the parse operation.
-       */
-      /*public void Render (string passageToParse = "", bool inTable = true,
-              bool isMobile = false)
+      public PassageParser (ISdwDatabase db)
       {
-         host = (isMobile) ? "http://m.seekdeepwithin.com/" : "http://seekdeepwithin.com/";
-         if (passageToParse != "") {
-            this->m_PassageList = array ();
-            this->parsePassages (passageToParse);
-         }
-         passageList = this->getPassageList ();
-         db = new SdwDatabase();
-         foreach (passageList as bookTitle => versionArray) {
-            bookId = db->getBookId (bookTitle);
-            encodeBook = urlencode (bookTitle);
-            foreach (versionArray as versionName => subBookArray) {
-               versionId = db->getVersionId (versionName);
-               bookVersionId = db->getBookVersionId (bookId, versionId);
-               encodeVersion = urlencode (versionName);
-               bookData = db->getBookData (bookVersionId, true);
-               html = "<div class=\"panel panel-default\" style=\"margin-left:20px;margin-right:20px;\"><div class=\"panel-heading\"><h3 class=\"panel-title\"><strong>";
-               html .= isset (bookData ['version_title']) ? bookData ['version_title'] : bookData ['title'];
-               html .= "</strong></h3></div>";
-               foreach (subBookArray as subbookTitle => chapterArray) {
-                  subbookId = db->getSubbookId (subbookTitle);
-                  versionSubbookId = db->getVersionSubbookId (bookVersionId,
-                          subbookId);
-                  encodeSubbook = urlencode (subbookTitle);
-                  foreach (chapterArray as chapter => passageArray) {
-                     title = "";
-                     subbookChapterId = db->getSubbookChapterIdFromOrder (versionSubbookId,
-                             chapter, chapterName);
-                     link = host . "?area=read&b=encodeBook";
-                     if (versionName != "default") {
-                        link .= "&v=encodeVersion";
-                     }
-                     if (subbookTitle != "default") {
-                        link .= "&s=encodeSubbook";
-                        title = "subbookTitle ";
-                     }
-                     if (chapterName != "default") {
-                        link .= "&c=chapterName";
-                     }
-                     title .= chapterName;
-                     passages = db->getPassage (subbookChapterId, passageArray);
-                     html .= "<table class=\"table\">";
-                     html .= "<tr><td colspan=\"2\"><a class=\"list-group-item\" href=\"link\" title=\"Open title\">";
-                     html .= "<span class=\"badge\"><span class=\"glyphicon glyphicon-share-alt\"></span></span>";
-                     html .= "<strong>title</strong></a></td></tr>";
-                     foreach (passages as passage) {
-                        pLink = link . "&p=" . passage['passage_number'];
-                        html .= "<tr><td><a href=\"pLink\" class=\"btn btn-default\">";
-                        html .= passage['passage_number'];
-                        html .= "</a></td><td width=\"100%\">";
-                        html .= passage['passage'];
-                        html .= "</td></tr>";
-                     }
-                     html .= "</table>";
-                  }
-               }
-               html .= "</div>";
-            }
-         }
-         return html;
-      }*/
+         this.m_Db = db;
+      }
+      
+      /// <summary>
+      /// Gets or Sets the list of parsed passages.
+      /// </summary>
+      public List<PassageEntry> PassageList { get { return this.m_PassageList; } }
 
-      /**
-       * Parses the given passages.
-       * @param string par The passages to parse.
-       */
+      public string Log { get; private set; }
 
+      /// <summary>
+      /// Parses the given passages.
+      /// </summary>
+      /// <param name="par">Passeges to parse.</param>
       public void Parse (string par)
       {
+         this.m_Log.Clear ();
          string book = "";
          string chapter = "";
          string verse = "";
@@ -105,8 +42,8 @@ namespace SeekDeepWithin.DataAccess
          bool bVerse = false;
          bool bChapter = false;
          bool handled = false;
+         par = par.Replace (" ", "");
          int length = par.Length;
-         par = par.Replace (" ", ""); // preg_replace ("/\s/u", "", par);
 
          int charIndex = 0;
          while (Char.IsDigit (par [charIndex]))
@@ -198,6 +135,7 @@ namespace SeekDeepWithin.DataAccess
                book += currentChar;
          }
          AddPassages (book, chapter, verse);
+         this.Log = this.m_Log.ToString ();
       }
 
       /**
@@ -206,9 +144,9 @@ namespace SeekDeepWithin.DataAccess
        * @param string chapter The chapter, or chapters.
        * @param string passage The verse, or verses.
        */
-
       private void AddPassages (string book, string chapter, string passage)
       {
+         this.m_Log.AppendFormat ("<li>Adding {0}|{1}|{2}</li>", book, chapter, passage);
          if (book == "" && chapter == "")
             return;
          if (book == "")
@@ -218,86 +156,94 @@ namespace SeekDeepWithin.DataAccess
             book = m_LastBook;
          }
 
-         Dictionary <string, string> bookData = GetBook (book);
-         if (bookData ["subbook"] == "")
-            return;
-
-         if (bookData ["haschapters"] == "false" && passage == "")
-         {
-            passage = chapter;
-            chapter = "";
-         }
-
-         if (passage.IndexOf ("-", StringComparison.Ordinal) != -1)
-         {
-            string[] passageSplit = passage.Split ('-');
-            int start = Convert.ToInt32 (passageSplit [0]);
-            int end = Convert.ToInt32 (passageSplit [1]);
-            for (int a = start; a <= end; a++)
-            {
-               AddPassage (bookData ["book"], bookData ["version"],
-                  bookData ["subbook"], chapter, a.ToString (CultureInfo.InvariantCulture));
-            }
-         }
-         else if (chapter.IndexOf ("-", StringComparison.Ordinal) != -1)
+         this.m_LastBook = book;
+         var passages = new List <int> ();
+         var chapters = new List<int> ();
+         if (chapter.Contains ("-"))
          {
             string[] chapterSplit = chapter.Split ('-');
-            int start = Convert.ToInt32 (chapterSplit [0]);
-            int end = Convert.ToInt32 (chapterSplit [1]);
+            int start = Convert.ToInt32 (chapterSplit[0]);
+            int end = Convert.ToInt32 (chapterSplit[1]);
             for (int a = start; a <= end; a++)
             {
-               if (passage != "" && a == end)
+               chapters.Add (a);
+               if (!string.IsNullOrWhiteSpace (passage) && a == end)
                {
                   for (int c = 1; c <= Convert.ToInt32 (passage); c++)
-                  {
-                     AddPassage (bookData ["book"], bookData ["version"],
-                        bookData ["subbook"], a.ToString (CultureInfo.InvariantCulture),
-                        c.ToString (CultureInfo.InvariantCulture));
-                  }
-               }
-               else
-               {
-                  AddPassage (bookData ["book"], bookData ["version"],
-                     bookData ["subbook"], a.ToString (CultureInfo.InvariantCulture), "all");
+                     passages.Add (c);
                }
             }
          }
          else
          {
-            AddPassage (bookData ["book"], bookData ["version"],
-               bookData ["subbook"], chapter, passage != "" ? passage : "all");
+            if (!string.IsNullOrWhiteSpace(chapter))
+               chapters.Add (Convert.ToInt32 (chapter));
+
+            if (passage.Contains ("-"))
+            {
+               string[] passageSplit = passage.Split ('-');
+               int start = Convert.ToInt32 (passageSplit[0]);
+               int end = Convert.ToInt32 (passageSplit[1]);
+               for (int a = start; a <= end; a++)
+                  passages.Add (a);
+            }
+            else if (!string.IsNullOrEmpty (passage))
+               passages.Add (Convert.ToInt32 (passage));
          }
-      }
 
-      /**
-       * Adds the given passage ot the passage list.
-       * @param type book The book to add.
-       * @param type subBook The sub book to add.
-       * @param type chapter The chapter to add.
-       * @param type passage The passage to add.
-       */
-
-      private void AddPassage (string book, string version, string subBook, string chapter, string passage)
-      {
-         if (book != "" && subBook != "" && chapter != "")
+         var abbreviations = this.m_Db.Abbreviations.Get (a => a.Text == book).ToList();
+         this.m_Log.AppendFormat ("<li>Found {0} abbreviation(s)</li>", abbreviations.Count);
+         foreach (var abbreviation in abbreviations)
          {
-            m_LastBook = subBook == "default" ? book : subBook;
-            //this.m_PassageList [book] [version] [subBook] [chapter] [] = passage;
+            var version = abbreviation.SubBook.Versions.FirstOrDefault (v => v.Version.IsDefault);
+            if (version != null)
+            {
+               var chaps = new List <SubBookChapter> ();
+               if (chapters.Count == 0)
+                  chaps.Add (version.Chapters.FirstOrDefault ());
+               else if (chapters.Count == 1)
+                  chaps.Add (version.Chapters.FirstOrDefault (c => c.Order == chapters [0]));
+               else
+               {
+                  chaps.AddRange ((from subBookChapter in version.Chapters
+                     where chapters.Contains (subBookChapter.Order)
+                     select subBookChapter));
+               }
+
+               for (int a = 0; a < chaps.Count; a++)
+               {
+                  if (passages.Count == 0)
+                     this.PassageList.AddRange (chaps[a].Passages);
+                  else
+                  {
+                     if (a + 1 == chaps.Count)
+                     {
+                        this.PassageList.AddRange ((from passageEntry in chaps[a].Passages
+                                                    where passages.Contains (passageEntry.Number)
+                                                    select passageEntry));
+                     }
+                     else
+                        this.PassageList.AddRange (chaps[a].Passages);
+                  }
+               }
+            }
          }
       }
 
       /// <summary>
-      ///    Gets the fully qualified name of the given book.
+      /// Gets the fully qualified name of the given book.
       /// </summary>
       /// <param name="book">The abbreviation of the book.</param>
       /// <returns>Data about the book.</returns>
-      public Dictionary <string, string> GetBook (string book)
+      private Dictionary <string, string> GetBook (string book)
       {
          bool hasChapters = true;
-         string b = book.Replace (" ", "").ToLower (); //strtolower (str_replace (" ", '', book));
+         string b = book.Replace (" ", "").ToLower ();
          string subBook = book;
          string rtnBook = "Bible";
-         string version = DefaultBible;
+         string version = string.Empty;
+
+         //var abbreviations = this.m_Db.Abbreviations.Get (a => a.Text == book);
 
          if (b == "")
             subBook = b;
@@ -537,219 +483,60 @@ namespace SeekDeepWithin.DataAccess
          {
             subBook = "2 Corinthians";
          }
-         else if (b ==
-                  "galatians" ||
-                  b ==
-                  "gal" ||
-                  b ==
-                  "ga")
+         else if (b == "galatians" || b == "gal" || b == "ga")
          {
-            subBook =
-               "Galatians";
+            subBook = "Galatians";
          }
-         else if (b ==
-                  "ephesians" ||
-                  b ==
-                  "ephes" ||
-                  b ==
-                  "eph")
+         else if (b == "ephesians" || b == "ephes" || b == "eph")
          {
-            subBook
-               =
-               "Ephesians";
+            subBook = "Ephesians";
          }
-         else if (
-            b ==
-            "philippians" ||
-            b ==
-            "phil" ||
-            b ==
-            "php" ||
-            b ==
-            "phili" ||
-            b ==
-            "philip")
+         else if (b == "philippians" || b == "phil" || b == "php" || b == "phili" || b == "philip")
             subBook = "Philippians";
          else if (b == "colossians" || b == "col")
             subBook = "Colossians";
-         else if (b == "1thessalonians" ||
-                  b ==
-                  "1thess" ||
-                  b ==
-                  "1th" ||
-                  b ==
-                  "ith" ||
-                  b ==
-                  "ithes" ||
-                  b ==
-                  "1thes" ||
-                  b ==
-                  "ithess" ||
-                  b ==
-                  "ithessalonians" ||
-                  b ==
-                  "1stthessalonians" ||
-                  b ==
-                  "firstthessalonians")
+         else if (b == "1thessalonians" || b == "1thess" || b == "1th" || b == "ith" || b == "ithes" ||
+                  b == "1thes" || b == "ithess" || b == "ithessalonians" || b == "1stthessalonians" || b == "firstthessalonians")
          {
-            subBook
-               =
-               "1 Thessalonians";
+            subBook = "1 Thessalonians";
          }
-         else if
-            (
-            b ==
-            "2thessalonians" ||
-            b ==
-            "2thess" ||
-            b ==
-            "2th" ||
-            b ==
-            "iith" ||
-            b ==
-            "iithes" ||
-            b ==
-            "2thes" ||
-            b ==
-            "iithess" ||
-            b ==
-            "iithessalonians" ||
-            b ==
-            "2ndthessalonians" ||
-            b ==
-            "secondthessalonians")
+         else if (b == "2thessalonians" || b == "2thess" || b == "2th" || b == "iith" || b == "iithes" ||
+            b == "2thes" || b == "iithess" || b == "iithessalonians" || b == "2ndthessalonians" || b == "secondthessalonians")
          {
-            subBook
-               =
-               "2 Thessalonians";
+            subBook = "2 Thessalonians";
          }
-         else if
-            (
-            b ==
-            "1timothy" ||
-            b ==
-            "1tim" ||
-            b ==
-            "1ti" ||
-            b ==
-            "iti" ||
-            b ==
-            "itim" ||
-            b ==
-            "itimothy" ||
-            b ==
-            "1sttimothy" ||
-            b ==
-            "firsttimothy")
+         else if (b == "1timothy" || b == "1tim" || b == "1ti" || b == "iti" || b == "itim" || b == "itimothy" ||
+            b == "1sttimothy" || b == "firsttimothy")
          {
-            subBook
-               =
-               "1 Timothy";
+            subBook = "1 Timothy";
          }
-         else if
-            (
-            b ==
-            "2timothy" ||
-            b ==
-            "2tim" ||
-            b ==
-            "2ti" ||
-            b ==
-            "iiti" ||
-            b ==
-            "iitim" ||
-            b ==
-            "iitimothy" ||
-            b ==
-            "2ndtimothy" ||
-            b ==
-            "secondtimothy")
+         else if (b == "2timothy" || b == "2tim" || b == "2ti" || b == "iiti" || b == "iitim" ||
+            b == "iitimothy" || b == "2ndtimothy" || b == "secondtimothy")
          {
-            subBook
-               =
-               "2 Timothy";
+            subBook = "2 Timothy";
          }
-         else if
-            (
-            b ==
-            "titus" ||
-            b ==
-            "tit")
+         else if (b == "titus" || b == "tit")
          {
-            subBook
-               =
-               "Titus";
+            subBook = "Titus";
          }
-         else if
-            (
-            b ==
-            "philemon" ||
-            b ==
-            "philem" ||
-            b ==
-            "phm")
+         else if (b == "philemon" || b == "philem" || b == "phm")
          {
-            subBook
-               =
-               "Philemon";
+            subBook = "Philemon";
          }
-         else if
-            (
-            b ==
-            "hebrews" ||
-            b ==
-            "heb")
+         else if (b == "hebrews" || b == "heb")
          {
-            subBook
-               =
-               "Hebrews";
+            subBook = "Hebrews";
          }
-         else if
-            (
-            b ==
-            "james" ||
-            b ==
-            "jas" ||
-            b ==
-            "jm" ||
-            b ==
-            "jam")
+         else if (b == "james" || b == "jas" || b == "jm" || b == "jam")
          {
-            subBook
-               =
-               "James";
+            subBook = "James";
          }
-         else if
-            (
-            b ==
-            "1peter" ||
-            b ==
-            "1pet" ||
-            b ==
-            "1pe" ||
-            b ==
-            "ipe" ||
-            b ==
-            "ipet" ||
-            b ==
-            "ipt" ||
-            b ==
-            "1pt" ||
-            b ==
-            "ipeter" ||
-            b ==
-            "1stpeter" ||
-            b ==
-            "firstpeter")
+         else if (b == "1peter" || b == "1pet" || b == "1pe" || b == "ipe" || b == "ipet" || b == "ipt" ||
+            b == "1pt" || b == "ipeter" || b == "1stpeter" || b == "firstpeter")
          {
-            subBook
-               =
-               "1 Peter";
+            subBook = "1 Peter";
          }
-         else if
-            (
-            b ==
-            "2peter" ||
+         else if (b == "2peter" ||
             b ==
             "2pet" ||
             b ==
@@ -769,9 +556,7 @@ namespace SeekDeepWithin.DataAccess
             b ==
             "secondpeter")
          {
-            subBook
-               =
-               "2 Peter";
+            subBook = "2 Peter";
          }
          else if
             (
@@ -928,105 +713,36 @@ namespace SeekDeepWithin.DataAccess
                =
                "Gospel of Buddha, The";
          }
-         else if
-            (
-            b ==
-            "bhagavadgita" ||
-            b ==
-            "bg")
+         else if (b == "bhagavadgita" || b == "bg")
          {
-            subBook
-               =
-               "default";
-            version
-               =
-               "default";
-            rtnBook
-               =
-               "Bhagavad Gita";
+            subBook = "default";
+            version = "default";
+            rtnBook = "Bhagavad Gita";
          }
-         else if
-            (
-            b ==
-            "tao" ||
-            b ==
-            "taoteching")
+         else if (b == "tao" || b == "taoteching")
          {
-            subBook
-               =
-               "default";
-            version
-               =
-               "default";
-            rtnBook
-               =
-               "Tao Te Ching";
+            subBook = "default";
+            version = "default";
+            rtnBook = "Tao Te Ching";
          }
-         else if
-            (
-            b ==
-            "thelifeofsaintissa" ||
-            b ==
-            "lifeofsaintissa" ||
-            b ==
-            "lsi" ||
-            b ==
-            "lsibsm")
+         else if (b == "thelifeofsaintissa" || b == "lifeofsaintissa" || b == "lsi" || b == "lsibsm")
          {
-            subBook
-               =
-               "default";
-            version
-               =
-               "default";
-            rtnBook
-               =
-               "The Life of Saint Issa";
+            subBook = "default";
+            version = "default";
+            rtnBook = "The Life of Saint Issa";
          }
-         else if
-            (
-            b ==
-            "thegospelofpeter" ||
-            b ==
-            "gospelofpeter" ||
-            b ==
-            "gop")
+         else if (b == "thegospelofpeter" || b == "gospelofpeter" || b == "gop")
          {
-            hasChapters
-               =
-               false;
-            subBook
-               =
-               "default";
-            version
-               =
-               "default";
-            rtnBook
-               =
-               "Gospel of Peter";
+            hasChapters = false;
+            subBook = "default";
+            version = "default";
+            rtnBook = "Gospel of Peter";
          }
-         else if
-            (
-            b ==
-            "q" ||
-            b ==
-            "qur" ||
-            b ==
-            "quran" ||
-            b ==
-            "koran" ||
-            b ==
-            "qur'an")
+         else if (b == "q" || b == "qur" || b == "quran" || b == "koran" || b == "qur'an")
          {
-            subBook
-               =
-               "default";
-            version
-               =
-               "default";
-            rtnBook
-               =
-               "Quran";
+            subBook = "default";
+            version = "default";
+            rtnBook = "Quran";
          }
 
          return new Dictionary <string, string>

@@ -34,7 +34,12 @@
                   <li class="has-dropdown">
                      <a href="#"><i class="icon-addtolist"></i> More...</a>
                      <ul class="dropdown">
+                        <li><a href="@Url.Action("Index", "Writer")"><i class="icon-user"></i> Writers</a></li>
+                        <li><a href="@Url.Action("Index", "Tag")"><i class="icon-tags"></i> Tags</a></li>
                         <li><a href="@Url.Action("About", "Home")"><i class="icon-question-sign"></i> About</a></li>
+                        @if (Request.IsAuthenticated) {
+                           <li><a href="javascript:document.getElementById('logoutForm').submit()"><i class="icon-exit"></i> Log out</a></li>
+                        }
                      </ul>
                   </li>
                </ul>
@@ -43,7 +48,6 @@
                <ul class="left">
                   @if (Request.IsAuthenticated) {
                      <li><a href="@Url.Action("Manage", "Account")">Welcome @User.Identity.Name!</a></li>
-                     <li><a href="javascript:document.getElementById('logoutForm').submit()"><i class="icon-exit"></i> Log out</a></li>
                   } else {
                      var returnUrl = Request.Url != null ? Request.Url.ToString () : string.Empty;
                      <li><a href="@Url.Action("Register", "Account")"><i class="icon-ok-sign"></i> Register</a></li>

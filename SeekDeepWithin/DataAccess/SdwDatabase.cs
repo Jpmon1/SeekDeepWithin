@@ -10,7 +10,7 @@ namespace SeekDeepWithin.DataAccess
    {
       private bool m_Disposed;
       private IRepository<Book> m_Books;
-      private IRepository<Author> m_Authors;
+      private IRepository<Writer> m_Authors;
       private IRepository<Pocos.Version> m_Versions;
       private IRepository<SubBook> m_SubBooks;
       private IRepository<Chapter> m_Chapters;
@@ -19,6 +19,7 @@ namespace SeekDeepWithin.DataAccess
       private IRepository<Tag> m_Tags;
       private IRepository<Style> m_Styles;
       private IRepository<Source> m_Sources;
+      private IRepository<AmazonItem> m_AmazonItems;
       private IRepository<ChapterHeader> m_ChapterHeaders;
       private IRepository<ChapterFooter> m_ChapterFooters;
       private IRepository<PassageHeader> m_PassageHeaders;
@@ -27,6 +28,11 @@ namespace SeekDeepWithin.DataAccess
       private IRepository<GlossaryTerm> m_GlossaryTerms;
       private IRepository<GlossaryItem> m_GlossaryItems;
       private IRepository<GlossaryEntry> m_GlossaryEntries;
+      private IRepository <Abbreviation> m_Abbreviations;
+      private IRepository <VersionSubBook> m_VersionSubBooks;
+      private IRepository<SubBookWriter> m_SubBookWriters;
+      private IRepository<VersionWriter> m_VersionWriters;
+      private IRepository<SubBookChapter> m_SubBookChapters;
       private readonly SdwDbContext m_Db = new SdwDbContext ();
 
       /// <summary>
@@ -38,11 +44,27 @@ namespace SeekDeepWithin.DataAccess
       }
 
       /// <summary>
-      /// Gets the repository for authors.
+      /// Gets the repository for writers.
       /// </summary>
-      public IRepository <Author> Authors
+      public IRepository <Writer> Writers
       {
-         get { return this.m_Authors ?? (this.m_Authors = new Repository<Author> (m_Db)); }
+         get { return this.m_Authors ?? (this.m_Authors = new Repository<Writer> (m_Db)); }
+      }
+
+      /// <summary>
+      /// Gets the repository for sub book writers.
+      /// </summary>
+      public IRepository<SubBookWriter> SubBookWriters
+      {
+         get { return this.m_SubBookWriters ?? (this.m_SubBookWriters = new Repository<SubBookWriter> (m_Db)); }
+      }
+
+      /// <summary>
+      /// Gets the repository for version writers.
+      /// </summary>
+      public IRepository<VersionWriter> VersionWriters
+      {
+         get { return this.m_VersionWriters ?? (this.m_VersionWriters = new Repository<VersionWriter> (m_Db)); }
       }
 
       /// <summary>
@@ -54,11 +76,27 @@ namespace SeekDeepWithin.DataAccess
       }
 
       /// <summary>
+      /// Gets the repository for versions subbook table.
+      /// </summary>
+      public IRepository <VersionSubBook> VersionSubBooks
+      {
+         get { return m_VersionSubBooks ?? (this.m_VersionSubBooks = new Repository <VersionSubBook> (m_Db)); }
+      }
+
+      /// <summary>
       /// Gets the repository for subbooks.
       /// </summary>
       public IRepository<SubBook> SubBooks
       {
          get { return this.m_SubBooks ?? (this.m_SubBooks = new Repository<SubBook> (m_Db)); }
+      }
+
+      /// <summary>
+      /// Gets the repository for subbook chapter table.
+      /// </summary>
+      public IRepository <SubBookChapter> SubBookChapters
+      {
+         get { return m_SubBookChapters ?? (this.m_SubBookChapters = new Repository <SubBookChapter> (m_Db)); }
       }
 
       /// <summary>
@@ -171,6 +209,22 @@ namespace SeekDeepWithin.DataAccess
       public IRepository<PassageEntry> PassageEntries
       {
          get { return this.m_PassageEntries ?? (this.m_PassageEntries = new Repository<PassageEntry> (m_Db)); }
+      }
+
+      /// <summary>
+      /// Gets the repository for amazon items.
+      /// </summary>
+      public IRepository<AmazonItem> AmazonItems
+      {
+         get { return this.m_AmazonItems ?? (this.m_AmazonItems = new Repository<AmazonItem> (m_Db)); }
+      }
+
+      /// <summary>
+      /// Gets the repository for abbreviations.
+      /// </summary>
+      public IRepository<Abbreviation> Abbreviations
+      {
+         get { return this.m_Abbreviations ?? (this.m_Abbreviations = new Repository<Abbreviation> (m_Db)); }
       }
 
       /// <summary>

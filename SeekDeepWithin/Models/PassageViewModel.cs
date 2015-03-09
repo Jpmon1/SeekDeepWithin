@@ -27,9 +27,9 @@ namespace SeekDeepWithin.Models
          this.Number = entry.Number;
          this.Text = entry.Passage.Text;
          this.ChapterId = entry.Chapter.Id;
-         this.ChapterName = entry.Chapter.Name;
+         this.ChapterName = entry.Chapter.Chapter.Name;
          this.SubBookId = entry.Chapter.SubBook.Id;
-         this.SubBookName = entry.Chapter.SubBook.Name;
+         this.SubBookName = entry.Chapter.SubBook.SubBook.Name;
          this.VersionId = entry.Chapter.SubBook.Version.Id;
          this.VersionName = entry.Chapter.SubBook.Version.Title;
 

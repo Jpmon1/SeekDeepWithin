@@ -12,7 +12,14 @@
 
    <fieldset>
       <legend>Add Book</legend>
-      
+      @if (ViewBag.ErrorMessage != null) {
+         <div class="row">
+            <div class="small-12 large-12 columns">
+               <div class="alert-box alert">@ViewBag.ErrorMessage</div>
+            </div>
+         </div>
+      }
+
       <div class="row">
          <div class="small-12 large-6 columns">
             @Html.LabelFor(model => model.Title)

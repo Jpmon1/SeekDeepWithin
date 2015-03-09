@@ -24,5 +24,10 @@
       /// Gets or Sets if this link should open in a new window or not.
       /// </summary>
       public bool OpenInNewWindow { get; set; }
+
+      /// <summary>
+      /// Gets or Sets a name for the link if needed.
+      /// </summary>
+      public string Name { get; set; }
    }
 }

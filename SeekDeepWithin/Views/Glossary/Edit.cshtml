@@ -1,0 +1,119 @@
+﻿﻿@model SeekDeepWithin.Models.GlossaryItemViewModel
+
+@{
+   ViewBag.Title = "Edit Item - " + Model.Term.Name;
+}
+<h3><small>editing item for</small> @Model.Term.Name <small>@Html.ActionLink("view term", "Term", new { id = Model.Term.Id })</small></h3>
+
+@using (Html.BeginForm (null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" })){
+   @Html.AntiForgeryToken()
+}
+
+<div id="modal" class="reveal-modal" data-reveal></div>
+<input type="hidden" id="itemId" name="itemId" value="@Model.Id" />
+<input type="hidden" id="FooterIndex" name="FooterIndex" value="-1" />
+<input type="hidden" id="itemType" name="itemType" value="Entry" />
+
+<div class="off-canvas-wrap" data-offcanvas>
+   <div class="inner-wrap">
+      <nav class="tab-bar">
+         <section class="left-small text-center">
+            <a class="left-off-canvas-toggle" href="#" style="color: black;"><i class="icon-menu"></i></a>
+         </section>
+
+         <section class="middle tab-bar-section">
+            <h1 class="title">Entries <small>(editing entry id: <span id="editEntryId"></span>)</small></h1>
+         </section>
+         
+         <section class="right-small text-center">
+            <a class="right-off-canvas-toggle" href="#" style="color: black;"><i class="icon-menu"></i></a>
+         </section>
+      </nav>
+
+      <aside class="left-off-canvas-menu">
+         <ul class="off-canvas-list">
+            <li><label>Entries</label></li>
+            @foreach (var entry in Model.Entries) {
+               var len = entry.Text.Length > 25 ? 25 : entry.Text.Length;
+               <li>
+                  <a href="#" onclick="editEntry(@entry.Id)">@entry.Text.Substring(0, len)...</a>
+               </li>
+            }
+         </ul>
+      </aside>
+      
+      <aside class="right-off-canvas-menu">
+         <ul class="off-canvas-list" id="rightMenu">
+            <li id="headersLabel"><label>Headers</label></li>
+            <li id="addHeaderBtn"><a href="#" onclick="header_CreateEntry();">Add New Header</a></li>
+            <li id="footersLabel"><label>Footers</label></li>
+            <li id="addFooterBtn"><a href="#" onclick="footer_CreateEntry();">Add New Footer</a></li>
+            <li id="endLabel"><label>Seek Deep Within</label></li>
+         </ul>
+      </aside>
+
+      <section class="main-section">
+
+         <div class="row">
+            <div class="small-12 large-12 columns">
+               <textarea cols="10" id="entryText" name="entryText" rows="6" style="margin-top: 10px;"></textarea>
+            </div>
+         </div>
+
+         <div class="row">
+            <div class="small-12 large-2 columns">
+               <a href="#" class="button tiny" onclick="saveEntry();">Save</a>
+               <span id="saveCheck"><i class="icon-ok-sign" style="color: green"></i> Success!</span>
+            </div>
+            <div class="small-12 large-5 columns">
+               <div class="row collapse prefix-radius">
+                  <div class="small-3 columns">
+                     <span class="prefix">Start</span>
+                  </div>
+                  <div class="small-9 columns">
+                     <input type="number" id="StartIndex" name="StartIndex" readonly />
+                  </div>
+               </div>
+            </div>
+            <div class="small-12 large-5 columns">
+               <div class="row collapse prefix-radius">
+                  <div class="small-3 columns">
+                     <span class="prefix">End</span>
+                  </div>
+                  <div class="small-9 columns">
+                     <input type="number" id="EndIndex" name="EndIndex" readonly />
+                  </div>
+               </div>
+            </div>
+         </div>
+         
+         <div class="row">
+            <div class="small-12 large-6 columns">
+               <h4>New Link</h4>
+               @Html.Partial("_LinkForm", new SeekDeepWithin.Models.EditLinkViewModel { Type = "Entry" })
+            </div>
+            <div class="small-12 large-6 columns">
+               <h4>New Style</h4>
+               @Html.Partial("_StyleView")
+            </div>
+         </div>
+
+      </section>
+
+      <a class="exit-off-canvas"></a>
+
+   </div>
+</div>
+
+@section Scripts {
+   @Scripts.Render("~/bundles/jqueryval")
+   @Scripts.Render("~/bundles/jqueryui")
+   @Scripts.Render("~/bundles/sdw.editglossaryitem")
+   @if (Model.Entries.Count > 0) {
+      <script type="text/javascript">
+         $(document).ready(function() {
+            editEntry(@Model.Entries.First().Id);
+         });
+      </script>
+   }
+}

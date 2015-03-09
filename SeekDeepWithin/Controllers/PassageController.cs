@@ -74,7 +74,7 @@ namespace SeekDeepWithin.Controllers
       {
          if (ModelState.IsValid)
          {
-            var chapter = this.m_Db.Chapters.Get (viewModel.ParentId);
+            var chapter = this.m_Db.SubBookChapters.Get (viewModel.ParentId);
             var passageEntry = new PassageEntry
             {
                Chapter = chapter,

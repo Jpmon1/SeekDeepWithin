@@ -23,9 +23,9 @@ namespace SeekDeepWithin.Tests.Controllers
       public void TestInitialize ()
       {
          this.m_MockDb = new MockDatabase ();
-         this.m_MockDb.Authors.Insert (new Author { Id = 0, Name = "Auth0" });
-         this.m_MockDb.Authors.Insert (new Author { Id = 1, Name = "Auth1" });
-         this.m_MockDb.Authors.Insert (new Author { Id = 2, Name = "Auth2" });
+         this.m_MockDb.Writers.Insert (new Writer { Id = 0, Name = "Auth0" });
+         this.m_MockDb.Writers.Insert (new Writer { Id = 1, Name = "Auth1" });
+         this.m_MockDb.Writers.Insert (new Writer { Id = 2, Name = "Auth2" });
          this.m_MockDb.Books.Insert (new Book
          {
             Id = 0,
@@ -42,7 +42,7 @@ namespace SeekDeepWithin.Tests.Controllers
       {
          var controller = new BookController (this.m_MockDb);
 
-         var result = controller.Index () as ViewResult;
+         var result = controller.Index (null) as ViewResult;
          Assert.IsNotNull (result);
 
          var books = result.Model as List <BookViewModel>;

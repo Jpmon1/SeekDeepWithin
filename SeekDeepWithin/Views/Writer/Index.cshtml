@@ -1,0 +1,49 @@
+﻿@using PagedList.Mvc
+@model PagedList.IPagedList<SeekDeepWithin.Models.AuthorViewModel>
+
+@{
+   ViewBag.Title = "Authors";
+   const int perColumn = 25;
+   var totalItems = Model.Count;
+   var start = 0;
+   var startChar = ' ';
+}
+<h3>Authors
+   @if (Request.IsAuthenticated && User.IsInRole ("Creator")) {
+      <span style="font-size: small">
+         @Html.ActionLink("new author", "Create")
+      </span>
+   }
+</h3>
+
+<div class="row">
+   @for (var a = 0; a < 3; a++) {
+      var max = Math.Min (start + perColumn, totalItems);
+      <div class="small-12 large-4 columns">
+         @if (start < max) {
+            <ul class="pricing-table">
+               @{
+                  for (int b = start; b < max; b++) {
+                     var item = Model [b];
+                     if (item.Name [0] != startChar || b == start) {
+                        startChar = item.Name [0];
+                        <li class="title">@Char.ToUpper(startChar)</li>
+                     }
+                     <li class="bullet-item">@Html.ActionLink(item.Name, "Details", new {id = item.Id})</li>
+                  }
+                  Html.Raw ("</ul>");
+                  start += perColumn;
+               }
+            </ul>
+         }
+      </div>
+   }
+   @if (@Model.PageCount > 1) {
+      <div class="row">
+         <div class="small-12 large-12 columns">
+            Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+            @Html.PagedListPager(Model, page => Url.Action ("Index", new {page}))
+         </div>
+      </div>
+   }
+</div>

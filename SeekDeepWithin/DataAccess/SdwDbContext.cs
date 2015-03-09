@@ -21,7 +21,7 @@ namespace SeekDeepWithin.DataAccess
 
       public DbSet<Passage> Passages { get; set; }
 
-      public DbSet<Author> Authors { get; set; }
+      public DbSet<Writer> Authors { get; set; }
 
       public DbSet<Link> Links { get; set; }
 
@@ -42,6 +42,16 @@ namespace SeekDeepWithin.DataAccess
       public DbSet<GlossaryTerm> GlossaryItems { get; set; }
 
       public DbSet<GlossaryItem> GlossaryEntries { get; set; }
+
+      public DbSet<AmazonItem> AmazonItems { get; set; }
+
+      public DbSet<VersionSubBook> VersionSubBooks { get; set; }
+
+      public DbSet<SubBookChapter> SubBookChapters { get; set; }
+
+      public DbSet<SubBookWriter> SubBookWriters { get; set; }
+
+      public DbSet<VersionWriter> VersionWriters { get; set; }
 
       /// <summary>
       /// This method is called when the model for a derived context has been initialized, but

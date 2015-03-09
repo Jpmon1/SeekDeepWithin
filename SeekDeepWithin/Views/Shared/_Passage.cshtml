@@ -7,7 +7,7 @@
    var largeSpan = "12";
    if (Model.Number > 0) {
       smallSpan = "10";
-      mediumSpan = "10";
+      mediumSpan = "11";
       largeSpan = "11";
    }
    var id = Model.EntryId.ToString(CultureInfo.InvariantCulture);
@@ -23,7 +23,7 @@
 
 <div class="row" id="pass_@id" @if(Model.Number == 0 && Model.Footers.Count == 0){ @Html.Raw("style=\"padding-bottom: 0.9375rem\"") }>
    @if (Model.Number > 0) {
-      <div class="small-2 medium-2 large-1 columns">
+      <div class="small-2 medium-1 large-1 columns">
          <blockquote>
             @Html.ActionLink(Model.Number.ToString(CultureInfo.InvariantCulture), "Index", "Passage", new { entryId = Model.Id }, null)
          </blockquote>

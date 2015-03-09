@@ -1,129 +1,117 @@
-﻿@using Newtonsoft.Json.Linq
+﻿@using SeekDeepWithin.Models
 @model SeekDeepWithin.Models.ChapterViewModel
 
 @{
+   var contents = new VersionContents (Model.SubBook.Version.Title, Model.SubBook.Version.Contents, Model.SubBook.VersionId) { CurrentSubBook = Model.SubBook.Id, CurrentChapter = Model.Id };
    var title = Model.SubBook.Version.Title;
-   if (Model.SubBook.Name != "default") {
+   if (!Model.SubBook.Hide) {
       title += " | " + Model.SubBook.Name;
    }
-   var subBookTitle = title;
-   if (Model.Name != "default") {
+   if (!Model.Hide) {
       title += " | " + Model.Name;
    }
    ViewBag.Title = title;
 }
 
-<div class="row">
-   <div class="small-12 large-12 columns">
-      <ul class="breadcrumbs" role="menubar" aria-label="breadcrumbs">
-         <li role="menuitem"><a href="@Url.Action("Read", "Chapter", new { id = @Model.SubBook.Version.DefaultReadChapter })">@Model.SubBook.Version.Title</a></li>
-         @if (Model.SubBook.Name != "default") {
-            <li role="menuitem"><a href="@Url.Action("About", "SubBook", new { id = @Model.SubBook.Id })">@Model.SubBook.Name</a></li>
+<div class="row show-for-small-only">
+   <div class="small-12 large-12 columns alert-box secondary text-center" style="padding: 3px 10px;">
+      <h4>
+         <a href="@Url.Action("Read", "Chapter", new { id = @Model.SubBook.Version.DefaultReadChapter })">@Model.SubBook.Version.Title</a>
+         @if (!Model.SubBook.Hide) {
+            <text> | </text><a href="@Url.Action("About", "SubBook", new { id = @Model.SubBook.Id })">@Model.SubBook.Name</a>
          }
-         <li role="menuitem" class="current"><a href="#">@Model.Name</a></li>
-         @if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
-            <li role="menuitem">@Html.ActionLink("Edit", "Edit", new { id = Model.Id })</li>
-         }
-         @if (Request.IsAuthenticated && User.IsInRole ("Creator")) {
-            <li role="menuitem">@Html.ActionLink("Add", "Add", new { id = Model.Id })</li>
-         }
-      </ul>
+      </h4>
    </div>
 </div>
 
-<div class="row">
-   <div class="small-12 large-8 columns">
-      @if (Model.Id == Model.SubBook.Version.DefaultReadChapter) {
-         <h3>@subBookTitle</h3>
-         <p>
+<div id="readingRow">
+   <div class="row">
+      <div class="small-12 large-12 columns" id="readRow">
+         <div class="off-canvas-wrap" data-offcanvas style="min-height: 200px;" id="readOffCanvas">
+            <div class="inner-wrap">
+               <nav class="tab-bar" id="readNavBar">
+                  <section class="left-small text-center">
+                     <a class="left-off-canvas-toggle" href="#" style="color: black;"><i class="icon-menu"></i></a>
+                  </section>
+
+                  <section class="middle tab-bar-section">
+                     <h1 class="title">
+                        <span class="show-for-medium-up">
+                           <a href="@Url.Action("Read", "Chapter", new { id = @Model.SubBook.Version.DefaultReadChapter })">@Model.SubBook.Version.Title</a>
+                           @if (!Model.SubBook.Hide) {
+                              <text> | </text><a href="@Url.Action("About", "SubBook", new { id = @Model.SubBook.Id })">@Model.SubBook.Name</a>
+                           }
+                           @if (!Model.Hide) {
+                              <text> | </text>@Model.Name
+                           }
+                        </span>
+                        <span class="show-for-small-only">
+                           @if (!Model.Hide) {
+                              <text>@Model.Name</text>
+                           } else if (!Model.SubBook.Hide) {
+                              <text>@Model.SubBook.Name</text>}
+                           else {
+                              <text>@Model.SubBook.Version.Title</text>
+                           }
+                        </span>
+                     </h1>
+                  </section>
+               </nav>
+
+               <aside class="left-off-canvas-menu" style="min-height: 200px;" id="readMenu">
+                  @Html.DisplayFor(c => contents)
+               </aside>
+
+               <section class="main-section" style="margin-top:10px;" id="readArea">
+                  @Html.DisplayFor(model => model.Headers)
+                  @foreach (var passage in Model.Passages) {
+                     @Html.Partial("_Passage", passage)
+                  }
+                  @Html.DisplayFor(model => model.Footers)
+               </section>
+
+               <a class="exit-off-canvas"></a>
+            </div>
+         </div>
+      </div>
+   </div>
+
+   <div class="panel" style="padding: 3px 10px;" id="readBottomPanel">
+      <div class="row">
+         <div class="small-6 large-6 columns text-left">
+            <small>
+               source:
+               @if (!string.IsNullOrWhiteSpace (Model.SubBook.Version.SourceUrl)) {
+                  <a href="@Model.SubBook.Version.SourceUrl" target="_blank">@Model.SubBook.Version.SourceName</a>
+               } else {
+                  @Html.Raw("unknown")
+               }
+               @if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
+                  @Html.ActionLink("[edit]", "EditSource", "Source", new { id = Model.SubBook.Version.Id, type = "version" }, null)
+               }
+            </small>
+         </div>
+         <div class="small-6 large-6 columns text-right">
             @{
                var writers = Model.SubBook.Writers.Where (w => !w.IsTranslator).ToList ();
                if (writers.Count > 0) {
                   <em>written by:</em>
                   foreach (var writer in writers) {
-                     <span>@Html.ActionLink(writer.Name, "Details", "Author", new { id = writer.Id }, null) </span>
+                     <span>@Html.ActionLink(writer.Name, "Details", "Writer", new { id = writer.Id }, null) </span>
                   }
                }
                var translators = Model.SubBook.Writers.Where (w => w.IsTranslator).ToList ();
                if (translators.Count > 0) {
-                  <br />
                   <em>translated by:</em>
                   foreach (var writer in translators) {
-                     <span>@Html.ActionLink(writer.Name, "Details", "Author", new { id = writer.Id }, null) </span>
+                     <span>@Html.ActionLink(writer.Name, "Details", "Writer", new { id = writer.Id }, null) </span>
                   }
-               }
-               if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
-                  <small>@Html.ActionLink("[add writer]", "AssignWriter", "SubBook", new {id=Model.SubBookId}, null)</small>
                }
             }
-         </p>
-      }
-      
-      @Html.DisplayFor(model => model.Headers)
-      @foreach (var passage in Model.Passages) {
-         @Html.Partial("_Passage", passage)
-      }
-      @Html.DisplayFor(model => model.Footers)
-   </div>
-   <div class="small-12 large-4 columns">
-      <h4>
-         Contents
-         @if (Request.IsAuthenticated && User.IsInRole ("Creator")) {
-            <small>@Html.ActionLink("[edit]", "Contents", "Version", new { id = Model.SubBook.VersionId }, null)</small>
-         }
-      </h4>
-      <div id="contentTree">
-         @{ dynamic contents = JArray.Parse (Model.SubBook.Version.Contents); }
-         @if (contents.Count > 0) {
-            <ul>
-               @foreach (var subBook in contents)
-               {
-                  var name = subBook.name;
-                  var hideSb = subBook.hide ?? new JValue (false);
-                  if (hideSb.Value) {
-                     foreach (var chapter in subBook.chapters) {
-                        var hideCh = chapter.hide ?? new JValue (false);
-                        string chName = chapter.name.Value;
-                        if (!hideCh.Value) {
-                           <li data-jstree='{"type":"chapter"}'>@Html.ActionLink(chName, "Read", new {id = chapter.id.Value })</li>
-                        }
-                     }
-                  } else {
-                     <li data-jstree='{"opened":true, "type":"subbook"}'>
-                        @name
-                        @if (subBook.chapters.Count > 0) {
-                           <ul>
-                              @foreach (var chapter in subBook.chapters) {
-                                 string chName = chapter.name.Value;
-                                 var hideCh = chapter.hide ?? new JValue (false);
-                                 if (!hideCh.Value) {
-                                    <li data-jstree='{"type":"chapter"}'>@Html.ActionLink(chName, "Read", new { id = chapter.id.Value })</li>
-                                 }
-                              }
-                           </ul>
-                        }
-                     </li>
-                  }
-               }
-            </ul>
-         }
+         </div>
       </div>
    </div>
 </div>
-<div class="row">
-   <div class="small-12 large-12 columns">
-      <div class="panel" style="padding: 3px 10px;">
-         <small>
-            source:
-             @if (!string.IsNullOrWhiteSpace (Model.SubBook.Version.SourceUrl)) {
-               <a href="@Model.SubBook.Version.SourceUrl" target="_blank">@Model.SubBook.Version.SourceName</a>
-            } else {
-               @Html.Raw("unknown")
-            }
-            @if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
-               @Html.ActionLink("[edit]", "EditSource", "Source", new { id = Model.SubBook.Version.Id, type = "version" }, null)
-            }
-         </small>
-      </div>
-   </div>
-</div>
+@section scripts {
+   <script src="~/Scripts/sdw/sdw.read.js"></script>
+}

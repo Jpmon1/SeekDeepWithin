@@ -8,35 +8,38 @@ namespace SeekDeepWithin.Models
    /// </summary>
    public class SubBookViewModel
    {
+      private readonly Collection<AbbreviationViewModel> m_Abbreviations = new Collection <AbbreviationViewModel> ();
+      private readonly Collection<ChapterViewModel> m_Chapters = new Collection <ChapterViewModel> ();
+      private readonly Collection<WriterViewModel> m_Writers = new Collection<WriterViewModel> ();
+
       /// <summary>
       /// Initializes a new sub book view model.
       /// </summary>
-      public SubBookViewModel ()
-      {
-         this.Chapters = new Collection <ChapterViewModel> ();
-         this.Writers = new Collection <WriterViewModel> ();
-      }
+      public SubBookViewModel () {}
 
       /// <summary>
       /// Initializes a new sub book view model.
       /// </summary>
       /// <param name="subBook">The sub book to copy data from.</param>
-      public SubBookViewModel (SubBook subBook)
+      public SubBookViewModel (VersionSubBook subBook)
       {
-         this.Chapters = new Collection<ChapterViewModel> ();
-         this.Writers = new Collection<WriterViewModel> ();
          this.Id = subBook.Id;
-         this.Name = subBook.Name;
+         this.Hide = subBook.Hide;
+         this.Name = subBook.SubBook.Name;
+         this.SubBookId = subBook.SubBook.Id;
          this.VersionId = subBook.Version.Id;
+         this.BookId = subBook.SubBook.Book.Id;
          this.Version = new VersionViewModel (subBook.Version);
+         foreach (var abbreviation in subBook.SubBook.Abbreviations)
+            this.m_Abbreviations.Add(new AbbreviationViewModel {Id = abbreviation.Id, Text = abbreviation.Text});
 
-         foreach (var writer in subBook.Writers)
+         foreach (var writer in subBook.SubBook.Writers)
          {
             this.Writers.Add (new WriterViewModel
             {
                IsTranslator = writer.IsTranslator,
-               Id = writer.Author.Id,
-               Name = writer.Author.Name
+               Id = writer.Writer.Id,
+               Name = writer.Writer.Name
             });
          }
       }
@@ -45,6 +48,16 @@ namespace SeekDeepWithin.Models
       /// Gets or Sets the id of this sub book.
       /// </summary>
       public int Id { get; set; }
+
+      /// <summary>
+      /// Gets or Sets the id of the book this sub book belongs to.
+      /// </summary>
+      public int SubBookId { get; set; }
+
+      /// <summary>
+      /// Gets or Sets the id of the book this sub book belongs to.
+      /// </summary>
+      public int BookId { get; set; }
 
       /// <summary>
       /// Gets or Sets the id of the version this sub book belongs to.
@@ -57,6 +70,16 @@ namespace SeekDeepWithin.Models
       public string Name { get; set; }
 
       /// <summary>
+      /// Gets or Sets if this is hidden.
+      /// </summary>
+      public bool Hide { get; set; }
+
+      /// <summary>
+      /// Gets the about information.
+      /// </summary>
+      public string About { get; set; }
+
+      /// <summary>
       /// Gets or Sets the version of this sub book.
       /// </summary>
       public VersionViewModel Version { get; set; }
@@ -64,11 +87,16 @@ namespace SeekDeepWithin.Models
       /// <summary>
       /// Gets or Sets the list of authors.
       /// </summary>
-      public Collection<WriterViewModel> Writers { get; set; }
+      public Collection<AbbreviationViewModel> Abbreviations { get { return this.m_Abbreviations; } }
+
+      /// <summary>
+      /// Gets or Sets the list of authors.
+      /// </summary>
+      public Collection<WriterViewModel> Writers { get { return this.m_Writers; } }
 
       /// <summary>
       /// Gets or Sets the list of chapters.
       /// </summary>
-      public Collection<ChapterViewModel> Chapters { get; set; }
+      public Collection<ChapterViewModel> Chapters { get { return this.m_Chapters; } }
    }
 }

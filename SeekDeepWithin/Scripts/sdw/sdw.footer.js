@@ -21,7 +21,7 @@ function footer_Edit(id) {
    $.ajax({
       type: 'POST',
       url: '/Footer/Edit/',
-      data: header_GetData(id)
+      data: footer_GetData(id)
    }).done(function (data) {
       if (data.type == 'passage') {
          editEntry($('#editEntryId').text());

@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
 using System.Web.Mvc;
+using PagedList;
 using SeekDeepWithin.DataAccess;
 using SeekDeepWithin.Pocos;
 using SeekDeepWithin.Models;
@@ -32,9 +33,13 @@ namespace SeekDeepWithin.Controllers
       /// Gets the glossary index page.
       /// </summary>
       /// <returns>The glossary index view.</returns>
-      public ActionResult Index ()
+      public ActionResult Index (int? page)
       {
-         return View (this.m_Db.GlossaryTerms.All (q => q.OrderBy (t => t.Name)).Select (t => new GlossaryTermViewModel { Id = t.Id, Name = t.Name }));
+         int pageNumber = page ?? 1;
+         return View (this.m_Db.GlossaryTerms
+            .All (q => q.OrderBy (t => t.Name))
+            .Select (t => new GlossaryTermViewModel { Id = t.Id, Name = t.Name })
+            .ToPagedList (pageNumber, 75));
       }
 
       /// <summary>
@@ -59,6 +64,13 @@ namespace SeekDeepWithin.Controllers
       {
          if (ModelState.IsValid)
          {
+            var foundTerm = this.m_Db.GlossaryTerms.Get (t => t.Name == viewModel.Name).FirstOrDefault();
+            if (foundTerm != null)
+            {
+               ViewBag.ErrorMessage = "A term with that name already exists:";
+               ViewBag.FoundTermId = foundTerm.Id;
+               return View (viewModel);
+            }
             var item = new GlossaryTerm { Name = viewModel.Name };
             this.m_Db.GlossaryTerms.Insert (item);
             this.m_Db.Save ();
@@ -199,7 +211,11 @@ namespace SeekDeepWithin.Controllers
          {
             var source = term.Items.First ().Sources.FirstOrDefault ();
             if (source != null && source.Source.Name == "|REDIRECT|")
+            {
+               TempData["RedirectTerm"] = term.Name;
+               TempData["RedirectTermId"] = id;
                return Redirect (source.Source.Url);
+            }
          }
          var viewModel = new GlossaryTermViewModel (term);
          return View (viewModel);
@@ -228,7 +244,7 @@ namespace SeekDeepWithin.Controllers
       /// <summary>
       /// Gets auto complete items for the given term.
       /// </summary>
-      /// <param name="term">Term to get auto complet items for.</param>
+      /// <param name="term">Term to get auto complete items for.</param>
       /// <returns>The list of possible terms for the given item.</returns>
       public ActionResult AutoComplete (string term)
       {
@@ -238,6 +254,92 @@ namespace SeekDeepWithin.Controllers
                                                  .Select (t => new { value = t.Name, data = t.Id })
          };
          return Json (result, JsonRequestBehavior.AllowGet);
+      }
+
+      /// <summary>
+      /// Edits a glossary term.
+      /// </summary>
+      /// <param name="id">The id of the term to edit.</param>
+      /// <returns></returns>
+      [Authorize (Roles = "Editor")]
+      public ActionResult EditTerm (int id)
+      {
+         var term = this.m_Db.GlossaryTerms.Get (id);
+         if (Request.UrlReferrer != null) TempData["RefUrl"] = Request.UrlReferrer.ToString ();
+         ViewBag.Tags = new SelectList (this.m_Db.Tags.All (q => q.OrderBy (t => t.Name)), "Id", "Name");
+         return View (new GlossaryTermViewModel (term));
+      }
+
+      /// <summary>
+      /// Edits a glossary term.
+      /// </summary>
+      /// <param name="viewModel">The view model with data.</param>
+      /// <returns></returns>
+      [HttpPost]
+      [ValidateAntiForgeryToken]
+      [Authorize (Roles = "Editor")]
+      public ActionResult EditTerm (GlossaryTermViewModel viewModel)
+      {
+         if (ModelState.IsValid)
+         {
+            var term = this.m_Db.GlossaryTerms.Get (viewModel.Id);
+            this.m_Db.SetValues (term, viewModel);
+            this.m_Db.Save();
+            return RedirectToAction ("Term", new {id = viewModel.Id});
+         }
+         return View (viewModel);
+      }
+
+      /// <summary>
+      /// Adds the given tag to the given term.
+      /// </summary>
+      /// <param name="tagId">Id of tag to add.</param>
+      /// <param name="id">Id of term to add tag to.</param>
+      /// <returns></returns>
+      [HttpPost]
+      [ValidateAntiForgeryToken]
+      [Authorize (Roles = "Editor")]
+      public ActionResult AddTag (int tagId, int id)
+      {
+         var term = this.m_Db.GlossaryTerms.Get (id);
+         var foundTag = term.Tags.FirstOrDefault (bt => bt.Tag.Id == tagId);
+         if (foundTag != null)
+         {
+            Response.StatusCode = 500;
+            return Json ("That tag is already assigned to the term.");
+         }
+         var tag = this.m_Db.Tags.Get (tagId);
+         term.Tags.Add (new GlossaryTermTag { Term = term, Tag = tag });
+         this.m_Db.Save ();
+         return Json ("success");
+      }
+
+      /// <summary>
+      /// Removes the tag with the given id from the given term.
+      /// </summary>
+      /// <param name="tagId">Id of tag to remove.</param>
+      /// <param name="id">Id of term to remove tag from.</param>
+      /// <returns></returns>
+      [HttpPost]
+      [ValidateAntiForgeryToken]
+      [Authorize (Roles = "Editor")]
+      public ActionResult RemoveTag (int tagId, int id)
+      {
+         var term = this.m_Db.GlossaryTerms.Get (id);
+         if (term == null)
+         {
+            Response.StatusCode = 500;
+            return Json ("Unable to get term - " + id);
+         }
+         var termTag = term.Tags.FirstOrDefault (bt => bt.Id == tagId);
+         if (termTag == null)
+         {
+            Response.StatusCode = 500;
+            return Json ("Unable to find the given tag.");
+         }
+         term.Tags.Remove (termTag);
+         this.m_Db.Save ();
+         return Json ("success");
       }
    }
 }

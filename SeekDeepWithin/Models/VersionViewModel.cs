@@ -31,7 +31,7 @@ namespace SeekDeepWithin.Models
          this.BookId = version.Book.Id;
          this.Abbreviation = version.Abbreviation;
          this.PublishDate = version.PublishDate;
-         this.Contents = version.Contents;
+         this.Contents = version.Contents ?? string.Empty;
          this.Book = new BookViewModel (version.Book);
          this.DefaultReadChapter = version.DefaultReadChapter;
          this.SourceName = source == null ? string.Empty : source.Source.Name;

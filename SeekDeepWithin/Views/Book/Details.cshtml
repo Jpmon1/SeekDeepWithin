@@ -1,0 +1,47 @@
+﻿@using SeekDeepWithin.Controllers
+@model SeekDeepWithin.Models.BookViewModel
+
+@{
+    ViewBag.Title = Model.Title;
+}
+
+<h3>@Model.Title</h3>
+
+<div class="row">
+   <div class="small-12 large-12 columns">
+      <p>@Html.Raw(HtmlSanitizer.Sanitize (Model.Summary))</p>
+   </div>
+</div>
+<div class="row">
+   <div class="small-12 large-6 columns">
+      <ul class="pricing-table">
+         <li class="title">Versions</li>
+         @if (Model.Versions.Count > 0) {
+            foreach (var version in Model.Versions) {
+               <li class="bullet-item">
+                  @Html.ActionLink(version.Title, "Read", "Chapter", new { id = version.DefaultReadChapter }, null)
+                  @if (!string.IsNullOrEmpty (version.Abbreviation)) {
+                     <small>(@version.Abbreviation)</small>
+                  }
+               </li>
+            }
+         }
+         else {
+            <li class="description">No version have been added to this book.</li>
+         }
+      </ul>
+   </div>
+   <div class="small-12 large-6 columns">
+      <ul class="pricing-table">
+         <li class="title">Tags</li>
+         @if (Model.Tags.Count > 0) {
+            foreach (var tag in Model.Tags) {
+               <li class="bullet-item">@Html.ActionLink(tag.Name, "Details", "Tag", new {id=tag.Id}, null)</li>
+            }
+         }
+         else {
+            <li class="description">No tags have been assigned to this book.</li>
+         }
+      </ul>
+   </div>
+</div>

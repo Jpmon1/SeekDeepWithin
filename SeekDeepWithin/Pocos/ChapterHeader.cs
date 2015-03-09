@@ -30,6 +30,6 @@
       /// <summary>
       /// Gets or Sets the chapter the header belongs to.
       /// </summary>
-      public virtual Chapter Chapter { get; set; }
+      public virtual SubBookChapter Chapter { get; set; }
    }
 }

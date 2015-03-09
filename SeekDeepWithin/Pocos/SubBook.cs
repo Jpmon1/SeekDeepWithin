@@ -15,18 +15,23 @@ namespace SeekDeepWithin.Pocos
       public string Name { get; set; }
 
       /// <summary>
-      /// Gets or Sets the version of this sub book.
+      /// Gets or Sets the book this sub book belongs to.
       /// </summary>
-      public virtual Version Version { get; set; }
+      public virtual Book Book { get; set; }
 
       /// <summary>
       /// Gets or Sets the list of writers.
       /// </summary>
-      public virtual ICollection<Writer> Writers { get; set; }
+      public virtual ICollection<SubBookWriter> Writers { get; set; }
 
       /// <summary>
-      /// Gets or Sets the list of chapters.
+      /// Gets or Sets the list of versions.
       /// </summary>
-      public virtual ICollection<Chapter> Chapters { get; set; }
+      public virtual ICollection<VersionSubBook> Versions { get; set; }
+
+      /// <summary>
+      /// Gets or Sets the list of know abbreviations.
+      /// </summary>
+      public virtual ICollection<Abbreviation> Abbreviations { get; set; }
    }
 }

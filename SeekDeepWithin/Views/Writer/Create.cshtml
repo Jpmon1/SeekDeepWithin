@@ -1,0 +1,47 @@
+﻿@model SeekDeepWithin.Models.AuthorViewModel
+
+@{
+   ViewBag.Title = "New Writer";
+   var refUrl = TempData ["RefUrl"];
+}
+
+<h3>New Writer</h3>
+
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>Writer Details</legend>
+      @if (ViewBag.ErrorMessage != null) {
+         <div class="row">
+            <div class="small-12 large-12 columns">
+               <div class="alert-box alert">@ViewBag.ErrorMessage</div>
+            </div>
+         </div>
+      }
+       
+       <div class="row">
+          <div class="small-12 large-6 columns">
+             @Html.LabelFor(model => model.Name)
+             @Html.EditorFor(model => model.Name)
+             @Html.ValidationMessageFor(model => model.Name)
+          </div>
+       </div>
+       
+       <div class="row">
+          <div class="small-12 large-6 columns">
+             @Html.LabelFor(model => model.About)
+             @Html.TextAreaFor(model => model.About)
+             @Html.ValidationMessageFor(model => model.About)
+          </div>
+       </div>
+       
+       <input type="hidden" name="refUrl" id="refUrl" value="@refUrl"/>
+       <input type="submit" value="Create" class="button" /> <a href="@refUrl" class="button secondary small">cancel</a>
+    </fieldset>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

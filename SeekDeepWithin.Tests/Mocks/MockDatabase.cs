@@ -9,7 +9,7 @@ namespace SeekDeepWithin.Tests.Mocks
    public class MockDatabase : ISdwDatabase
    {
       private IRepository <Book> m_Books;
-      private IRepository<Author> m_Authors;
+      private IRepository<Writer> m_Writers;
       private IRepository<Version> m_Versions;
       private IRepository<SubBook> m_SubBooks;
       private IRepository<Chapter> m_Chapters;
@@ -18,6 +18,7 @@ namespace SeekDeepWithin.Tests.Mocks
       private IRepository<Tag> m_Tags;
       private IRepository<Style> m_Styles;
       private IRepository<Source> m_Sources;
+      private IRepository<AmazonItem> m_AmazonItems;
       private IRepository<ChapterHeader> m_ChapterHeaders;
       private IRepository<ChapterFooter> m_ChapterFooters;
       private IRepository<PassageHeader> m_PassageHeaders;
@@ -26,6 +27,11 @@ namespace SeekDeepWithin.Tests.Mocks
       private IRepository<GlossaryTerm> m_GlossaryTerms;
       private IRepository<GlossaryItem> m_GlossaryItems;
       private IRepository<GlossaryEntry> m_GlossaryEntries;
+      private IRepository<Abbreviation> m_Abbreviations;
+      private IRepository<SubBookWriter> m_SubBookWriters;
+      private IRepository<VersionWriter> m_VersionWriters;
+      private IRepository <VersionSubBook> m_VersionSubBooks;
+      private IRepository <SubBookChapter> m_SubBookChapters;
 
       /// <summary>
       /// Gets the repository for books.
@@ -36,11 +42,43 @@ namespace SeekDeepWithin.Tests.Mocks
       }
 
       /// <summary>
+      /// Gets the repository for abbreviations.
+      /// </summary>
+      public IRepository<Abbreviation> Abbreviations
+      {
+         get { return this.m_Abbreviations ?? (this.m_Abbreviations = new MockRepository<Abbreviation> ()); }
+      }
+
+      /// <summary>
+      /// Gets the repository for sub book writers.
+      /// </summary>
+      public IRepository<SubBookWriter> SubBookWriters
+      {
+         get { return this.m_SubBookWriters ?? (this.m_SubBookWriters = new MockRepository<SubBookWriter> ()); }
+      }
+
+      /// <summary>
+      /// Gets the repository for version writers.
+      /// </summary>
+      public IRepository<VersionWriter> VersionWriters
+      {
+         get { return this.m_VersionWriters ?? (this.m_VersionWriters = new MockRepository<VersionWriter> ()); }
+      }
+
+      /// <summary>
+      /// Gets the repository for passage entries.
+      /// </summary>
+      public IRepository<AmazonItem> AmazonItems
+      {
+         get { return this.m_AmazonItems ?? (this.m_AmazonItems = new MockRepository<AmazonItem> ()); }
+      }
+
+      /// <summary>
       /// Gets the repository for authors.
       /// </summary>
-      public IRepository <Author> Authors
+      public IRepository <Writer> Writers
       {
-         get { return m_Authors ?? (this.m_Authors = new MockRepository <Author> ()); }
+         get { return m_Writers ?? (this.m_Writers = new MockRepository <Writer> ()); }
       }
 
       /// <summary>
@@ -52,11 +90,27 @@ namespace SeekDeepWithin.Tests.Mocks
       }
 
       /// <summary>
+      /// Gets the repository for versions subbook table.
+      /// </summary>
+      public IRepository <VersionSubBook> VersionSubBooks
+      {
+         get { return m_VersionSubBooks ?? (m_VersionSubBooks = new MockRepository <VersionSubBook> ()); }
+      }
+
+      /// <summary>
       /// Gets the repository for sub books.
       /// </summary>
       public IRepository<SubBook> SubBooks
       {
          get { return this.m_SubBooks ?? (this.m_SubBooks = new MockRepository<SubBook> ()); }
+      }
+
+      /// <summary>
+      /// Gets the repository for subbook chapter table.
+      /// </summary>
+      public IRepository <SubBookChapter> SubBookChapters
+      {
+         get { return m_SubBookChapters ?? (this.m_SubBookChapters = new MockRepository <SubBookChapter> ()); }
       }
 
       /// <summary>

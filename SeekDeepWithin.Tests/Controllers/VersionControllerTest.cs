@@ -23,7 +23,7 @@ namespace SeekDeepWithin.Tests.Controllers
       public void TestInitialize ()
       {
          this.m_MockDb = new MockDatabase ();
-         this.m_MockDb.Authors.Insert (new Author { Id = 0, Name = "Auth0" });
+         this.m_MockDb.Writers.Insert (new Writer { Id = 0, Name = "Auth0" });
          this.m_MockDb.Books.Insert (new Book
          {
             Id = 0,

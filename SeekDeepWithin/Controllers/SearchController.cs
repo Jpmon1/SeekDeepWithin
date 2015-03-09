@@ -1,5 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using SeekDeepWithin.DataAccess;
 using SeekDeepWithin.Models;
 
@@ -43,6 +42,25 @@ namespace SeekDeepWithin.Controllers
       public ActionResult Results (string searchFor)
       {
          var viewModel = new SearchViewModel {Query = searchFor};
+         var parser = new PassageParser (this.m_Db);
+         parser.Parse(searchFor);
+         viewModel.ParserLog = parser.Log;
+         foreach (var entry in parser.PassageList)
+         {
+            viewModel.Passages.Add (new PassageViewModel
+            {
+               Text = entry.Passage.Text,
+               Id = entry.Passage.Id,
+               EntryId = entry.Id,
+               Number = entry.Number,
+               ChapterId = entry.Chapter.Id,
+               ChapterName = entry.Chapter.Chapter.Name,
+               SubBookId = entry.Chapter.SubBook.Id,
+               SubBookName = entry.Chapter.SubBook.SubBook.Name,
+               VersionId = entry.Chapter.SubBook.Version.Id,
+               VersionName = entry.Chapter.SubBook.Version.Title
+            });
+         }
          var passages = this.m_Db.Passages.Get (p => p.Text.Contains (searchFor));
          foreach (var passage in passages)
          {
@@ -55,15 +73,14 @@ namespace SeekDeepWithin.Controllers
                   EntryId = entry.Id,
                   Number = entry.Number,
                   ChapterId = entry.Chapter.Id,
-                  ChapterName = entry.Chapter.Name,
+                  ChapterName = entry.Chapter.Chapter.Name,
                   SubBookId = entry.Chapter.SubBook.Id,
-                  SubBookName = entry.Chapter.SubBook.Name,
+                  SubBookName = entry.Chapter.SubBook.SubBook.Name,
                   VersionId = entry.Chapter.SubBook.Version.Id,
                   VersionName = entry.Chapter.SubBook.Version.Title
                });
             }
          }
-
          return View (viewModel);
       }
    }

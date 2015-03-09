@@ -15,6 +15,6 @@
       /// <summary>
       /// Gets or Sets the glossary term.
       /// </summary>
-      public virtual GlossaryTerm GlossaryTerm { get; set; }
+      public virtual GlossaryTerm Term { get; set; }
    }
 }

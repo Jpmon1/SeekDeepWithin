@@ -56,6 +56,11 @@ namespace SeekDeepWithin.Models
       public string Chapter { get; set; }
 
       /// <summary>
+      /// Gets or Sets the id of the chapter.
+      /// </summary>
+      public int ChapterId { get; set; }
+
+      /// <summary>
       /// Gets or Sets the search text of the link.
       /// </summary>
       public string Search { get; set; }

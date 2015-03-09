@@ -23,5 +23,15 @@ namespace SeekDeepWithin.Pocos
       /// Get or Sets the list of tags.
       /// </summary>
       public virtual ICollection<GlossaryTermTag> Tags { get; set; }
+
+      /// <summary>
+      /// Get or Sets the list of see also.
+      /// </summary>
+      public virtual ICollection<GlossarySeeAlso> SeeAlsos { get; set; }
+
+      /// <summary>
+      /// Get or Sets the list of see also.
+      /// </summary>
+      public virtual ICollection<GlossaryAmazonItem> AmazonItems { get; set; }
    }
 }
