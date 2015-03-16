@@ -14,7 +14,7 @@
 
 <div class="row" id="entry_@id" @if(Model.Footers.Count == 0){ @Html.Raw("style=\"padding-bottom: 0.9375rem\"") }>
    <div class="small-12 large-12 columns">
-      @Html.Raw(Model.Render ())
+      @Html.Raw(Model.Render (Request.Url))
    </div>
 </div>
 

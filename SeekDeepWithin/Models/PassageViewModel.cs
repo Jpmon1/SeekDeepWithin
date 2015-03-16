@@ -1,5 +1,7 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using SeekDeepWithin.Controllers;
+using SeekDeepWithin.DataAccess;
 using SeekDeepWithin.Pocos;
 
 namespace SeekDeepWithin.Models
@@ -81,6 +83,18 @@ namespace SeekDeepWithin.Models
       public string Title { get; set; }
 
       /// <summary>
+      /// Gets the title without the verse number.
+      /// </summary>
+      /// <returns></returns>
+      public string GetTitleNoVerse ()
+      {
+         var titleSplit = this.Title.Split(':');
+         if (titleSplit.Length > 1)
+            return titleSplit [0];
+         return Title;
+      }
+
+      /// <summary>
       /// Gets or Sets the id of the passage.
       /// </summary>
       public int Id { get; set; }
@@ -158,9 +172,16 @@ namespace SeekDeepWithin.Models
       /// <summary>
       /// Renders the passage.
       /// </summary>
+      /// <param name="url"></param>
       /// <returns>The html to display for the passage.</returns>
-      public string Render ()
+      public string Render (Uri url)
       {
+         if (this.Text.StartsWith ("|PARSE|"))
+         {
+            var parser = new PassageParser (new SdwDatabase ());
+            parser.Parse (this.Text.Substring (7));
+            return parser.BuildHtmlOutput (url);
+         }
          if (this.Renderer == null)
             this.Renderer = new SdwRenderer ();
          return Renderer.Render (this);

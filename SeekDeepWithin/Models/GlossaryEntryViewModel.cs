@@ -1,5 +1,7 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using SeekDeepWithin.Controllers;
+using SeekDeepWithin.DataAccess;
 using SeekDeepWithin.Pocos;
 
 namespace SeekDeepWithin.Models
@@ -79,8 +81,16 @@ namespace SeekDeepWithin.Models
       /// Renders the passage.
       /// </summary>
       /// <returns>The html to display for the passage.</returns>
-      public string Render ()
+      public string Render (Uri url)
       {
+         if (this.Text.StartsWith ("|PARSE|"))
+         {
+            var parser = new PassageParser (new SdwDatabase ());
+            parser.Parse(this.Text.Substring(7));
+            return parser.BuildHtmlOutput (url);
+         }
+         if (this.Renderer == null)
+            this.Renderer = new SdwRenderer ();
          return Renderer.Render (this);
       }
    }

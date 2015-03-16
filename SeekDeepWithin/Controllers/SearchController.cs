@@ -1,4 +1,5 @@
 ﻿using System.Web.Mvc;
+using DotNetOpenAuth.Messaging;
 using SeekDeepWithin.DataAccess;
 using SeekDeepWithin.Models;
 
@@ -46,8 +47,8 @@ namespace SeekDeepWithin.Controllers
          var parser = new PassageParser (this.m_Db);
          parser.Parse(searchFor);
          viewModel.ParserLog = parser.Log;
-         foreach (var entry in parser.PassageList)
-            viewModel.Passages.Add (new PassageViewModel (entry));
+         if (parser.PassageList.Count > 0)
+            viewModel.Passages.AddRange(parser.PassageList);
          var passages = this.m_Db.Passages.Get (p => p.Text.Contains (searchFor));
          foreach (var passage in passages)
          {

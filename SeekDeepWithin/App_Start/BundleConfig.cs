@@ -33,6 +33,7 @@ namespace SeekDeepWithin
             "~/Scripts/sdw/sdw.header.js",
             "~/Scripts/sdw/sdw.style.js",
             "~/Scripts/sdw/sdw.link.js",
+            "~/Scripts/jquery.nouislider.all.js",
             "~/Scripts/sdw/sdw.passage.js"));
 
          bundles.Add (new ScriptBundle ("~/bundles/sdw.editglossaryitem").Include ("~/Scripts/jquery.autocomplete.js",
@@ -41,6 +42,7 @@ namespace SeekDeepWithin
             "~/Scripts/sdw/sdw.footer.js",
             "~/Scripts/sdw/sdw.header.js",
             "~/Scripts/sdw/sdw.style.js",
+            "~/Scripts/jquery.nouislider.all.js",
             "~/Scripts/sdw/sdw.link.js"));
 
          bundles.Add (new ScriptBundle ("~/bundles/sdw.editTerm").Include ("~/Scripts/jquery.autocomplete.js",
@@ -56,8 +58,10 @@ namespace SeekDeepWithin
          bundles.Add (new ScriptBundle ("~/bundles/sdw.contentsedit").Include ("~/Scripts/jstree.js",
             "~/Scripts/sdw/sdw.contentsedit.js"));
 
-         bundles.Add (new ScriptBundle ("~/bundles/sdw.read").Include ("~/Scripts/jstree.js",
+         bundles.Add (new ScriptBundle ("~/bundles/sdw.read").Include ("~/Scripts/jquery.sticky-kit.js",
             "~/Scripts/sdw/sdw.read.js"));
+
+         bundles.Add (new ScriptBundle ("~/bundles/sdw.versionedit").Include ("~/Scripts/sdw/sdw.version.js"));
 
          bundles.Add (new StyleBundle ("~/Content/css").Include ("~/Content/normalize.css",
             "~/Content/jquery-ui.css",

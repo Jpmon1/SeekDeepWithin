@@ -19,15 +19,23 @@
       </select>
    </div>
    <div class="small-6 large-2 columns">
-      <label for="hfIsBold">Bold</label>
-      <input type="checkbox" id="hfIsBold" name="hfIsBold" @if (Model.IsBold) { <text> checked </text>  } />
+      <div class="switch">
+         <i class="icon-bold"></i>
+         <input type="checkbox" id="hfIsBold" name="hfIsBold" @if (Model.IsBold) { <text> checked </text>   } />
+         <label for="hfIsBold">Bold</label>
+      </div>
    </div>
    <div class="small-6 large-2 columns">
-      <label for="hfIsItalic">Italic</label>
-      <input type="checkbox" id="hfIsItalic" name="hfIsItalic" @if (Model.IsItalic) { <text> checked </text>  } />
+      <div class="switch">
+         <i class="icon-italic"></i>
+         <input type="checkbox" id="hfIsItalic" name="hfIsItalic" @if (Model.IsItalic) { <text> checked </text>   } />
+         <label for="hfIsItalic">Italic</label>
+      </div>
    </div>
    <div class="small-12 large-4 columns">
-      <label for="hfEditIndex">Index</label>
-      <input type="text" readonly="readonly" value="@Model.Index" id="hfEditIndex" name="hfEditIndex" />
+      @if (Model.Type.ToLower() == "footer") {
+         <label for="hfEditIndex">Index</label>
+         <input type="text" readonly="readonly" value="@Model.Index" id="hfEditIndex" name="hfEditIndex" />
+      }
    </div>
 </div>

@@ -39,7 +39,7 @@ namespace SeekDeepWithin.Controllers
       /// <returns>The partial footer create view.</returns>
       public ActionResult Create (int itemId, string type, int index)
       {
-         return PartialView (new HeaderFooterViewModel { ItemId = itemId, Index = index, For = type });
+         return PartialView (new HeaderFooterViewModel { ItemId = itemId, Index = index, For = type, Type = "footer"});
       }
 
       /// <summary>

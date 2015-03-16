@@ -15,9 +15,9 @@
    <div class="small-12 medium-6 large-8 columns">
       <small><strong>convert new lines to:</strong></small>
       <ul class="button-group radius">
-         <li><a href="#" class="tiny button" onclick="convert('LinesToSpaces');">Spaces</a></li>
-         <li><a href="#" class="tiny button" onclick="convert('LinesToBreaks');">Breaks</a></li>
-         <li><a href="#" class="tiny button" onclick="convertToPassages();">Passages</a></li>
+         <li><a href="javascript:void(0)" class="tiny button" onclick="convert('LinesToSpaces');">Spaces</a></li>
+         <li><a href="javascript:void(0)" class="tiny button" onclick="convert('LinesToBreaks');">Breaks</a></li>
+         <li><a href="javascript:void(0)" class="tiny button" onclick="convertToPassages();">Passages</a></li>
       </ul>
    </div>
    <div class="small-12 medium-6 large-4 columns">
@@ -27,7 +27,7 @@
             <input type="text" placeholder="Regex to Remove" id="regex" value="(\d)+\.">
          </div>
          <div class="small-3 columns">
-            <a href="#" class="button postfix" onclick="regexRemove();">Remove</a>
+            <a href="javascript:void(0)" class="button postfix" onclick="regexRemove();">Remove</a>
          </div>
       </div>
    </div>
@@ -42,7 +42,7 @@
             <input type="text" placeholder="Regex to Passages" id="regexToPass" value="(?<chapter>\d+):(?<number>\d+)(?<text>\D+)">
          </div>
          <div class="small-2 columns">
-            <a href="#" class="button postfix" onclick="regexToPassages();">Convert</a>
+            <a href="javascript:void(0)" class="button postfix" onclick="regexToPassages();">Convert</a>
          </div>
       </div>
    </div>
@@ -79,7 +79,7 @@
       </div>
    </div>
    <div class="small-12 large-2 columns">
-      <a href="#" onclick="addSingle();" class="button expand small">Add<span id="singleAddCheck"><i class="icon-ok-sign"></i></span></a>
+      <a href="javascript:void(0)" onclick="addSingle();" class="button expand small">Add<span id="singleAddCheck"><i class="icon-ok-sign"></i></span></a>
    </div>
 </div>
 

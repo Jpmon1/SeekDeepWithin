@@ -67,9 +67,9 @@ function setSelection(event) {
    if (selection.charAt(selection.length - 1) === ' ')
       end--;
    selection = selection.replace(/^\s+|\s+$/g, '');//.trim (); - Trim not supported by IE
-   $('#StartIndex').val(start);
+   /*$('#StartIndex').val(start);
    $('#FooterIndex').val(start);
-   $('#EndIndex').val(end);
+   $('#EndIndex').val(end);*/
    var link = selection.toLowerCase().replace(/\b[a-z]/g, function (letter) {
       return letter.toUpperCase();
    });

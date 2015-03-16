@@ -71,7 +71,7 @@
          @if (randomPassage != null) {
             <dl>
                <dt>@randomPassage.Title</dt>
-               <dd>@randomPassage.Render()</dd>
+               <dd>@randomPassage.Render(Request.Url)</dd>
             </dl>
             <a href="@Url.Action("Index", "Passage", new { entryId = randomPassage.EntryId }, Request.Url.Scheme)" class="button small expand">View Excerpt</a>
          } else {

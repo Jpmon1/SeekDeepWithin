@@ -10,6 +10,7 @@ Delete
    Headers
    Footers
 Notes
+Read - View paragraph and numbers.
 View Search as List/Tree
 View books a list
 Facebook/twitter/email share
@@ -19,6 +20,7 @@ Favorites
 User preferences
    View footers at end or after verse
    if editor show edit item
+   Highlight alternating rows
 Glossary Entry voting
 Book on amazon links
 Read multiple books
@@ -32,3 +34,4 @@ Help
 Api
 News/Updates
 Convert all action links to url.action with absolute uri
+Remove duplication between glossary entries and reading passages.

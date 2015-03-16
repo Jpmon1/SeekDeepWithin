@@ -29,8 +29,9 @@
    <div class="row">
       <div class="small-12 large-12 columns" id="readRow">
          <div class="off-canvas-wrap" data-offcanvas style="min-height: 200px;" id="readOffCanvas">
-            <div class="inner-wrap">
-               <nav class="tab-bar" id="readNavBar">
+            <div class="contain-to-grid" id="readNavBar" style="z-index: 9899;">
+               <nav class="tab-bar">
+                  
                   <section class="left-small text-center">
                      <a class="left-off-canvas-toggle" href="#" style="color: black;"><i class="icon-menu"></i></a>
                   </section>
@@ -58,17 +59,21 @@
                      </h1>
                   </section>
                </nav>
-
-               <aside class="left-off-canvas-menu" style="min-height: 200px;" id="readMenu">
+            </div>
+            <div class="inner-wrap" id="readMenuParent">
+               <div class="left-off-canvas-menu" id="readMenu">
                   @Html.DisplayFor(c => contents)
-               </aside>
+               </div>
 
                <section class="main-section" style="margin-top:10px;" id="readArea">
                   @Html.DisplayFor(model => model.Headers)
                   @foreach (var passage in Model.Passages) {
                      @Html.Partial("_Passage", passage)
                   }
-                  @Html.DisplayFor(model => model.Footers)
+                  @if (Model.Footers.Count > 0) {
+                     <br/>
+                     @Html.DisplayFor(model => model.Footers)
+                  }
                   <div class="row">
                      <div class="small-6 pagination-centered columns">
                         <ul class="pagination" role="menubar" aria-label="Pagination" style="width: 100%">
@@ -134,5 +139,5 @@
    </div>
 </div>
 @section scripts {
-   <script src="~/Scripts/sdw/sdw.read.js"></script>
+   @Scripts.Render("~/bundles/sdw.read")
 }

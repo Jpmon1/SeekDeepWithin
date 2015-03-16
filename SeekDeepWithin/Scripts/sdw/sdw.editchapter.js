@@ -6,6 +6,33 @@ $(document).ready(function () {
    $('#passText').mouseup(setSelection);
    $('#verseRadio').change(verseParaChanged);
    $('#paraRadio').change(verseParaChanged);
+   $("#textRangeSlider").noUiSlider({
+      start: [0, 1],
+      behaviour: 'drag-tap',
+      connect: true,
+      step: 1,
+      range: {
+         'min': 0,
+         'max': 100
+      },
+      format: wNumb({
+         decimals: 0
+      })
+   }).on({
+      slide: function () {
+         var text = $('#textSelectArea').text();
+         var vals = $('#textRangeSlider').val();
+         var html = text.substring(0, vals[0]);
+         html += '<span style="background-color:#A0D3E8">';
+         html += text.substring(vals[0], vals[1]);
+         html += '</span>';
+         html += text.substring(vals[1]);
+         $('#textSelectArea').html(html);
+      }
+   });;
+   $("#textRangeSlider").Link('lower').to($('#StartIndex'));
+   $("#textRangeSlider").Link('upper').to($('#FooterIndex'));
+   $("#textRangeSlider").Link('upper').to($('#EndIndex'));
 });
 
 function verseParaChanged() {
@@ -46,9 +73,27 @@ function editEntry(id) {
       $.each(data.footers, function (i, val) {
          addDisplay('footer', val.text, val.id);
       });
+      var len = data.passageText.length;
+      $("#textRangeSlider").noUiSlider({
+         start: [0, len > 5 ? 5 : len],
+         range: {
+            'min': 0,
+            'max': len
+         }
+      }, true);
+      /*var textSplit = data.passageText.split('/\s+/');
+      var html = '';
+      for (var a = 0; a < textSplit.length; a++) {
+         html += '<span onclick="wordClick()">' + textSplit[a] + '</span> ';
+      }*/
+      $('#textSelectArea').text(data.passageText);
    }).fail(function (data) {
       alert(data.responseText);
    });
+}
+
+function wordClick() {
+   alert('Click!');
 }
 
 function addDisplay(type, text, id) {

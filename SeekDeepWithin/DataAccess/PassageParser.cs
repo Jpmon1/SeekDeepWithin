@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
+using SeekDeepWithin.Controllers;
+using SeekDeepWithin.Models;
 using SeekDeepWithin.Pocos;
 
 namespace SeekDeepWithin.DataAccess
@@ -11,7 +14,7 @@ namespace SeekDeepWithin.DataAccess
       private string m_LastBook = "";
       private readonly ISdwDatabase m_Db;
       private readonly StringBuilder m_Log = new StringBuilder();
-      private readonly List<PassageEntry> m_PassageList = new List<PassageEntry> ();
+      private readonly List<PassageViewModel> m_PassageList = new List<PassageViewModel> ();
 
       /// <summary>
       /// Initializes a new passage parser.
@@ -24,7 +27,7 @@ namespace SeekDeepWithin.DataAccess
       /// <summary>
       /// Gets or Sets the list of parsed passages.
       /// </summary>
-      public List<PassageEntry> PassageList { get { return this.m_PassageList; } }
+      public List<PassageViewModel> PassageList { get { return this.m_PassageList; } }
 
       public string Log { get; private set; }
 
@@ -213,21 +216,62 @@ namespace SeekDeepWithin.DataAccess
                for (int a = 0; a < chaps.Count; a++)
                {
                   if (passages.Count == 0)
-                     this.PassageList.AddRange (chaps[a].Passages);
+                     this.PassageList.AddRange (chaps[a].Passages.Select(pe => new PassageViewModel(pe)));
                   else
                   {
                      if (a + 1 == chaps.Count)
                      {
                         this.PassageList.AddRange ((from passageEntry in chaps[a].Passages
                                                     where passages.Contains (passageEntry.Number)
-                                                    select passageEntry));
+                                                    select new PassageViewModel (passageEntry)));
                      }
                      else
-                        this.PassageList.AddRange (chaps[a].Passages);
+                        this.PassageList.AddRange (chaps[a].Passages.Select (pe => new PassageViewModel (pe)));
                   }
                }
             }
          }
+      }
+
+      /// <summary>
+      /// Builds html output for the parsed passages.
+      /// </summary>
+      /// <param name="url"></param>
+      /// <returns>The html output of the parse.</returns>
+      public string BuildHtmlOutput (Uri url)
+      {
+         var renderer = new SdwRenderer ();
+         var html = new StringBuilder ();
+         html.AppendLine("<div class=\"panel passageParseTable\">");
+         var lastChapter = -1;
+         var host = url == null ? string.Empty : url.AbsoluteUri.Replace (url.AbsolutePath, "");
+         foreach (var passage in this.PassageList)
+         {
+            passage.Renderer = renderer;
+            if (passage.ChapterId != lastChapter)
+            {
+               html.AppendLine ("<div class=\"row\">");
+               html.AppendLine ("<div class=\"small-12 columns\">");
+               html.AppendFormat ("<a href=\"{0}/Chapter/Read/{1}\">", host, passage.ChapterId);
+               html.AppendLine (passage.GetTitleNoVerse ());
+               html.AppendLine ("</a>");
+               html.AppendLine ("</div>");
+               html.AppendLine ("</div>");
+               lastChapter = passage.ChapterId;
+            }
+            html.AppendLine ("<div class=\"row\">");
+            html.AppendLine ("<div class=\"small-2 medium-1 large-1 columns\"><blockquote>");
+            html.AppendFormat ("<a href=\"{0}/Passage?entryId={1}\">", host, passage.EntryId);
+            html.AppendLine (passage.Number.ToString (CultureInfo.InvariantCulture));
+            html.AppendLine ("</a>");
+            html.AppendLine ("</blockquote></div>");
+            html.AppendLine ("<div class=\"small-10 medium-11 large-11 columns\">");
+            html.AppendLine (passage.Render(url));
+            html.AppendLine ("</div>");
+            html.AppendLine ("</div>");
+         }
+         html.AppendLine ("</div>");
+         return html.ToString();
       }
 
       /// <summary>

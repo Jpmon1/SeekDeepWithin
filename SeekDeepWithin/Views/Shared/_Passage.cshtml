@@ -30,7 +30,7 @@
       </div>
    }
    <div class="small-@smallSpan medium-@mediumSpan large-@largeSpan columns">
-      @Html.Raw(Model.Render ())
+      @Html.Raw(Model.Render (Request.Url))
    </div>
 </div>
 

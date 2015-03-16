@@ -18,25 +18,37 @@
       }
       @foreach (var item in Model.Items) {
          <div id="item_@item.Id">
-            <div class="panel" style="padding: 3px 10px;">
-               @if (Request.IsAuthenticated && User.IsInRole ("Creator")) {
-                  <small>@Html.ActionLink("add", "Add", new { id = item.Id, termId = Model.Id }) | </small>
-               }
-               @if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
-                  <small>@Html.ActionLink("edit", "Edit", new { id = item.Id, termId = Model.Id }) | </small>
-                  <small>@Html.ActionLink("edit source", "EditSource", "Source", new { id = item.Id, type = "entry", parentId = Model.Id }, null)</small>
-               }
-               @if (!string.IsNullOrWhiteSpace (item.SourceUrl)) {
-                  <a href="@item.SourceUrl" class="right" target="_blank">@item.SourceName</a>
-               }
+            <div class="row">
+               <div class="small-12 large-12 columns">
+                  <div class="alert-box secondary">
+                     @if (!string.IsNullOrWhiteSpace (item.SourceUrl)) {
+                        <a href="@item.SourceUrl" target="_blank">@item.SourceName</a>
+                     }
+                  </div>
+               </div>
             </div>
             @foreach (var entry in item.Entries) {
                @Html.Partial("_GlossaryEntry", entry)
             }
          </div>
+         if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
+            <div class="row">
+               <div class="small-12 large-12 columns">
+                  <div class="alert-box secondary">
+                     @if (Request.IsAuthenticated && User.IsInRole ("Creator")) {
+                        <small>@Html.ActionLink("add", "Add", new {id = item.Id, termId = Model.Id}) | </small>
+                     }
+                     @if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
+                        <small>@Html.ActionLink("edit", "Edit", new {id = item.Id, termId = Model.Id}) | </small>
+                        <small>@Html.ActionLink("edit source", "EditSource", "Source", new {id = item.Id, type = "entry", parentId = Model.Id}, null)</small>
+                     }
+                  </div>
+               </div>
+            </div>
+         }
       }
    </div>
-   <div class="small-12 large-3 columns">
+   <div class="small-12 large-3 columns">&nbsp;
       @if (Model.Tags.Count > 0) {
          <div class="row">
             <div class="small-12 large-12 columns">

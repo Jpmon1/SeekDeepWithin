@@ -100,12 +100,17 @@ function footer_CreateEntry() {
    }
 }
 
+function footer_UpdateIndex() {
+   $('#hfEditIndex').val($('#FooterIndex').val());
+}
+
 function footer_ShowEdit(id, type) {
    $('#modal').foundation('reveal', 'open', {
       url: '/Footer/Edit',
       data: { id: id, type: type },
       success: function (data) {
          $('#modal').html(data);
+         $('#currentFootIndex').val($('#FooterIndex').val());
       },
       error: function (data) {
          alert(data.responseText);

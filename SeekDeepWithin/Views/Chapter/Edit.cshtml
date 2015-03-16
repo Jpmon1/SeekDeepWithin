@@ -8,6 +8,10 @@
    title += " | " + Model.Name;
    ViewBag.Title = "Edit " + title;
 }
+@section styles {
+   <link href="~/Content/jquery.nouislider.css" rel="stylesheet" />
+   <link href="~/Content/jquery.nouislider.pips.css" rel="stylesheet" />
+}
 <h3>
    <small>editing</small> @title
 </h3>
@@ -48,7 +52,7 @@
 
 <div class="row">
    <div class="small-12 large-12 columns text-center">
-      <a href="#" onclick="header_CreateChapter();" class="button success tiny">Add Header for Chapter</a>
+      <a href="javascript:void(0)" onclick="header_CreateChapter();" class="button success tiny">Add Header for Chapter</a>
    </div>
 </div>
 
@@ -78,7 +82,7 @@
             @foreach (var passage in Model.Passages) {
                var len = passage.Text.Length > 20 ? 20 : passage.Text.Length;
                <li>
-                  <a href="#" onclick="editEntry(@passage.EntryId)">@passage.Number - @passage.Text.Substring(0, len)...</a>
+                  <a href="javascript:void(0)" onclick="editEntry(@passage.EntryId)">@passage.Number - @passage.Text.Substring(0, len)...</a>
                </li>
             }
          </ul>
@@ -87,9 +91,9 @@
       <aside class="right-off-canvas-menu">
          <ul class="off-canvas-list" id="rightMenu">
             <li id="headersLabel"><label>Headers</label></li>
-            <li id="addHeaderBtn"><a href="#" onclick="header_CreatePassage();">Add New Header</a></li>
+            <li id="addHeaderBtn"><a href="javascript:void(0)" onclick="header_CreatePassage();">Add New Header</a></li>
             <li id="footersLabel"><label>Footers</label></li>
-            <li id="addFooterBtn"><a href="#" onclick="footer_CreatePassage();">Add New Footer</a></li>
+            <li id="addFooterBtn"><a href="javascript:void(0)" onclick="footer_CreatePassage();">Add New Footer</a></li>
             <li id="endLabel"><label>Seek Deep Within</label></li>
          </ul>
       </aside>
@@ -103,11 +107,25 @@
          </div>
 
          <div class="row">
-            <div class="small-12 large-2 columns">
-               <a href="#" class="button tiny" onclick="savePassage();">Save</a>
-               <span id="saveCheck"><i class="icon-ok-sign" style="color: green"></i></span>
+            <div class="small-12 large-4 large-offset-4 columns">
+               <a href="javascript:void(0)" class="button small expand" onclick="savePassage();">Save <span id="saveCheck"><i class="icon-ok-sign"></i></span></a>
             </div>
-            <div class="small-12 large-5 columns">
+         </div>
+         <hr/>
+         <div class="row">
+            <div class="small-12 large-12 columns" id="textSelectArea">
+            </div>
+         </div>
+
+         <div class="row">
+            <div class="small-12 large-12 columns">
+               <div id="textRangeSlider" style="margin-bottom: 1.125rem; margin-top: 1.125rem">
+               </div>
+            </div>
+         </div>
+
+         <div class="row">
+            <div class="small-12 large-6 columns">
                <div class="row collapse prefix-radius">
                   <div class="small-3 columns">
                      <span class="prefix">Start</span>
@@ -117,7 +135,7 @@
                   </div>
                </div>
             </div>
-            <div class="small-12 large-5 columns">
+            <div class="small-12 large-6 columns">
                <div class="row collapse prefix-radius">
                   <div class="small-3 columns">
                      <span class="prefix">End</span>
@@ -150,7 +168,7 @@
 
 <div class="row">
    <div class="small-12 large-12 columns text-center">
-      <a href="#" onclick="footer_CreateChapter();" class="button success tiny">Add Footer for Chapter</a>
+      <a href="javascript:void(0)" onclick="footer_CreateChapter();" class="button success tiny">Add Footer for Chapter</a>
    </div>
 </div>
 
@@ -159,8 +177,6 @@
 </div>
 
 @section Scripts {
-   @Scripts.Render("~/bundles/jqueryval")
-   @Scripts.Render("~/bundles/jqueryui")
    @Scripts.Render("~/bundles/sdw.editchapter")
    @if (Model.Passages.Count > 0) {
       <script type="text/javascript">

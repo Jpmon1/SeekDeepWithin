@@ -354,6 +354,8 @@
     <Content Include="Content\images\ui-icons_cd0a0a_256x240.png" />
     <Content Include="Content\images\ui-icons_FFFFFF_256x240.png" />
     <Content Include="Content\jquery-ui.css" />
+    <Content Include="Content\jquery.nouislider.css" />
+    <Content Include="Content\jquery.nouislider.pips.css" />
     <Content Include="Content\normalize.css" />
     <Content Include="Content\PagedList.css" />
     <Content Include="Content\sdw.default.css" />
@@ -467,8 +469,12 @@
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery-ui-1.8.24.js" />
     <Content Include="Scripts\jquery-ui-1.8.24.min.js" />
+    <Content Include="Scripts\jquery-ui.js" />
     <Content Include="Scripts\jquery.autocomplete.js" />
     <Content Include="Scripts\jquery.cookie.js" />
+    <Content Include="Scripts\jquery.nouislider.all.js" />
+    <Content Include="Scripts\jquery.sticky-kit.js" />
+    <Content Include="Scripts\jquery.sticky-kit.min.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
     <Content Include="Scripts\jquery.validate.js" />
@@ -491,6 +497,7 @@
     <Content Include="Scripts\sdw\sdw.link.js" />
     <Content Include="Scripts\sdw\sdw.passage.js" />
     <Content Include="Scripts\sdw\sdw.read.js" />
+    <Content Include="Scripts\sdw\sdw.select.js" />
     <Content Include="Scripts\sdw\sdw.style.js" />
     <Content Include="Scripts\sdw\sdw.tag.js" />
     <Content Include="Scripts\sdw\sdw.version.js" />

@@ -139,7 +139,7 @@ namespace SeekDeepWithin.Controllers
          {
             Term = glossaryTerm,
             Link = link,
-            Name = this.GetLinkName(viewModel)
+            Name = GetLinkName(viewModel)
          });
          this.m_Db.Save ();
          return Json ("Success!");
@@ -163,7 +163,7 @@ namespace SeekDeepWithin.Controllers
          return link;
       }
 
-      private string GetLinkName (EditLinkViewModel viewModel)
+      private static string GetLinkName (EditLinkViewModel viewModel)
       {
          var linkName = string.Empty;
          if (!string.IsNullOrWhiteSpace (viewModel.Search))
@@ -175,9 +175,9 @@ namespace SeekDeepWithin.Controllers
          else if (!string.IsNullOrWhiteSpace (viewModel.Book) && !string.IsNullOrWhiteSpace (viewModel.Version))
          {
             linkName = viewModel.Version;
-            if (!string.IsNullOrEmpty (viewModel.SubBook) && viewModel.SubBook != "default" && viewModel.SubBook != viewModel.Version)
+            if (!string.IsNullOrEmpty (viewModel.SubBook) && viewModel.SubBook != viewModel.Version)
                linkName += " " + viewModel.SubBook;
-            if (!string.IsNullOrEmpty (viewModel.Chapter) && viewModel.Chapter != "default" && viewModel.Chapter != viewModel.SubBook)
+            if (!string.IsNullOrEmpty (viewModel.Chapter) && viewModel.Chapter != viewModel.SubBook)
                linkName += " " + viewModel.Chapter;
          }
          return linkName;
@@ -185,6 +185,7 @@ namespace SeekDeepWithin.Controllers
 
       private string GetLinkUrl (EditLinkViewModel viewModel)
       {
+         var host = Request.Url == null ? string.Empty : Request.Url.AbsoluteUri.Replace (Request.Url.AbsolutePath, "");
          var linkUrl = string.Empty;
          if (!string.IsNullOrWhiteSpace (viewModel.Search))
             linkUrl = viewModel.Link;
@@ -208,7 +209,7 @@ namespace SeekDeepWithin.Controllers
          {
             linkUrl = "/Chapter/Read/" + viewModel.ChapterId;
          }
-         return linkUrl;
+         return host + linkUrl;
       }
 
       /// <summary>
