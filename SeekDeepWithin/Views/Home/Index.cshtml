@@ -16,7 +16,8 @@
       </hgroup>
       <p>
          This site is currently under construction, please bear with us until it is fully functional.<br />
-         If you like what we are doing, send us a comment from the @Html.ActionLink("about", "About") page.
+         If you like what we are doing, send us a comment from the 
+         <a href="@Url.Action("About", "Home", null, Request.Url.Scheme)">about</a> page.
       </p>
    </div>
 }

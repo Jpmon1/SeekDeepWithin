@@ -1,22 +1,169 @@
-﻿@model SeekDeepWithin.Models.HeaderFooterViewModel
+﻿@model SeekDeepWithin.Models.HeaderFooterEditViewModel
+@{
+   var totalLength = string.IsNullOrWhiteSpace (Model.ItemText) ? 0 : Model.ItemText.Length;
+}
+@section styles {
+   @Styles.Render("~/Content/css/slider")
+}
+<h3>Footer Edit</h3>
 
-<h3>Edit footer for @Model.For</h3>
+@using (Html.BeginForm (null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" })) {
+   @Html.AntiForgeryToken()
+}
 
-@Html.Partial("_HFView", Model)
+<input type="hidden" id="totalLength" name="totalLength" value="@totalLength" />
+<input type="hidden" id="itemType" name="itemType" value="@Model.ItemType" />
+<input type="hidden" id="itemId" name="itemId" value="@Model.ItemId" />
+<input type="hidden" id="editId" name="editId" value="0" />
 
 <div class="row">
-   <div class="small-12 large-6 columns text-center">
-      <a href="javascript:void(0)" onclick="footer_UpdateIndex();" class="button tiny expand">Update Index</a>
+   <div class="small-12 columns" id="itemText">
+      @Model.ItemText
    </div>
 </div>
 
 <div class="row">
-   <div class="small-6 large-6 columns text-center">
-      <a href="javascript:void(0)" onclick="footer_Edit();" class="button small">Save Changes</a>
-   </div>
-   <div class="small-6 large-6 columns text-center">
-      <a href="javascript:void(0)" onclick="footer_Delete();" class="button small alert">Delete</a>
+   <div class="small-12 columns">
+      <div id="textRangeSlider" style="margin-bottom: 1.125rem; margin-top: 1.125rem">
+      </div>
    </div>
 </div>
 
-<a class="close-reveal-modal">&#215;</a>
+<div class="row">
+   <div class="small-12 large-6 columns">
+      <ul class="pricing-table" id="footerList">
+         <li class="title">Current Footers</li>
+         @foreach (var footer in Model.Items) {
+            var len = footer.Text.Length > 15 ? 15 : footer.Text.Length;
+            <li class="bullet-item" id="item_@footer.Id">
+               <a href="javascript:void(0)" onclick="footer_edit(@footer.Id)">
+                  @footer.Index - @footer.Text.Substring(0, len)
+               </a>
+            </li>
+         }
+      </ul>
+   </div>
+   <div class="small-12 large-6 columns">
+      <div class="row">
+         <div class="small-12 large-12 columns">
+            <label for="hfText">Footer Text</label>
+            <textarea id="hfText" name="hfText" rows="4"></textarea>
+         </div>
+      </div>
+
+      <div class="row">
+         <div class="small-12 large-4 columns">
+            <label for="hfJustify">Justify</label>
+            <select id="hfJustify" name="hfJustify">
+               <option id="justifyLeft" value="0" selected="selected">Left</option>
+               <option id="justifyCenter" value="1">Center</option>
+               <option id="justifyRight" value="2">Right</option>
+            </select>
+         </div>
+
+         <div class="small-12 large-4 columns">
+            <label for="hfIndex">Index</label>
+            <input type="number" value="" id="hfIndex" name="hfIndex" />
+         </div>
+
+         <div class="small-6 large-2 columns text-center">
+            <label for="hfIsBold"><i class="icon-bold"></i> Bold</label>
+            <div class="switch">
+               <input type="checkbox" id="hfIsBold" name="hfIsBold" />
+               <label for="hfIsBold">Bold</label>
+            </div>
+         </div>
+         <div class="small-6 large-2 columns text-center">
+            <label for="hfIsItalic"><i class="icon-italic"></i> Italic</label>
+            <div class="switch">
+               <input type="checkbox" id="hfIsItalic" name="hfIsItalic" />
+               <label for="hfIsItalic">Italic</label>
+            </div>
+         </div>
+      </div>
+
+      <div class="row" id="rowCreate">
+         <div class="small-12 columns">
+            <a href="javascript:void(0)" class="button expand" onclick="footer_create();">
+               Create
+            </a>
+         </div>
+      </div>
+      <div class="row" id="rowUpdate" style="display: none;">
+         <div class="small-4 columns">
+            <a href="javascript:void(0)" class="button success expand" onclick="footer_update();">
+               Update
+            </a>
+         </div>
+         <div class="small-4 columns">
+            <a href="javascript:void(0)" class="button alert expand" onclick="footer_delete();">Delete</a>
+         </div>
+         <div class="small-4 columns">
+            <a href="javascript:void(0)" class="button secondary expand" onclick="footer_new();">Cancel</a>
+         </div>
+      </div>
+   </div>
+</div>
+
+<div class="row">
+   <div class="small-6 pagination-centered columns">
+      <ul class="pagination" role="menubar" aria-label="Pagination" style="width: 100%">
+         @if (Model.PreviousEntryId != -1) {
+            <li class="arrow">
+               <a href="@Url.Action("Edit", "Footer", new {id = Model.PreviousEntryId, type=Model.ItemType}, Request.Url.Scheme)">&laquo; Previous Item</a>
+            </li>
+         }
+      </ul>
+   </div>
+   <div class="small-6 pagination-centered columns">
+      <ul class="pagination" role="menubar" aria-label="Pagination" style="width: 100%">
+         @if (Model.NextEntryId != -1) {
+            <li class="arrow">
+               <a href="@Url.Action("Edit", "Footer", new {id = Model.NextEntryId, type=Model.ItemType}, Request.Url.Scheme)">Next Item &raquo;</a>
+            </li>
+         }
+      </ul>
+   </div>
+</div>
+
+<div class="row">
+   <div class="small-6 medium-3 large-3 columns">
+      @if (Model.ItemType == "Entry") {
+         <a href="@Url.Action("Edit", "Glossary", new {id = Model.ParentId}, Request.Url.Scheme)" class="button secondary expand">
+            <i class="icon-editalt"></i> Edit Item
+         </a>
+      } else {
+         <a href="@Url.Action("Edit", "Chapter", new {id = Model.ParentId}, Request.Url.Scheme)" class="button secondary expand">
+            <i class="icon-editalt"></i> Edit Chapter
+         </a>
+      }
+   </div>
+   <div class="small-6 medium-3 large-3 columns">
+      <a href="@Url.Action("Edit" + Model.ItemType, "Style", new {id = Model.ItemId}, Request.Url.Scheme)" class="button secondary expand">
+         <i class="icon-paintroll"></i> Edit Styles
+      </a>
+   </div>
+   <div class="small-6 medium-3 large-3 columns">
+      <a href="@Url.Action("Edit", "Header", new {id=Model.ItemId, type=Model.ItemType}, Request.Url.Scheme)" class="button secondary expand">
+         <i class="icon-notificationbottom"></i> Edit Headers
+      </a>
+   </div>
+   @if (Model.ItemType != "Chapter") {
+      <div class="small-6 medium-3 large-3 columns">
+         <a href="@Url.Action("Edit" + Model.ItemType, "Link", new {id = Model.ItemId}, Request.Url.Scheme)" class="button secondary expand">
+            <i class="icon-link"></i> Edit Links
+         </a>
+      </div>
+   }
+</div>
+
+@Html.Partial("_Modal")
+
+@section scripts {
+   @Scripts.Render("~/bundles/sdw.footeredit")
+   <script type="text/javascript">
+      $(document).ready(function () {
+         select_initSlider(@totalLength);
+      });
+   </script>
+}

@@ -8,11 +8,6 @@
    <link href="~/Content/themes/default/style.css" rel="stylesheet" />
 }
 
-<h3>
-   Contents for @Model.Title <small><a href="@TempData["RefUrl"]">return</a> | </small>
-   <small>@Html.ActionLink("read", "Read", "Chapter", new {id=Model.DefaultReadChapter}, null)</small>
-</h3>
-
 @using (Html.BeginForm (null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" })){
    @Html.AntiForgeryToken()
 }
@@ -20,6 +15,51 @@
 <input type="hidden" id="bookId" name="bookId" value="@Model.BookId" />
 <input type="hidden" id="versionId" name="versionId" value="@Model.Id" />
 <input type="hidden" id="editNodeId" name="editNodeId" value="" />
+<div class="contain-to-grid" id="contentsNavBar" style="z-index: 9899;">
+   <nav class="top-bar" data-topbar role="navigation">
+      <ul class="title-area">
+         <li class="name">
+            <h1>
+               <a href="@Url.Action("Read", "Chapter", new { id = Model.DefaultReadChapter }, Request.Url.Scheme)">@Model.Title Contents</a>
+            </h1>
+         </li>
+         <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
+      </ul>
+      <section class="top-bar-section">
+         <ul class="left">
+            <li class="has-form" style="padding-top: 5px;">
+               <div class="switch">
+                  <i class="icon-eye-close" style="color: white"></i>
+                  <input id="hideSwitch" type="checkbox">
+                  <label for="hideSwitch"></label>
+                  <i class="icon-eye-open" style="color: white"></i>
+                  <span id="hideSaved"><i class="icon-ok-sign" style="color: green"></i></span>
+               </div>
+            </li>
+         </ul>
+         <ul class="right">
+            <li class="has-dropdown">
+               <a href="#">Add</a>
+               <ul class="dropdown">
+                  <li><a href="javascript:void(0)" onclick="createSubBook();"><i class="icon-createfile"></i> Sub Book</a></li>
+                  <li><a href="javascript:void(0)" onclick="createChapter();"><i class="icon-createfile"></i> Chapter</a></li>
+                  <li><a href="javascript:void(0)" onclick="showAddList();"><i class="icon-createfile"></i> Add List</a></li>
+               </ul>
+            </li>
+            <li class="has-dropdown">
+               <a href="#">Options</a>
+               <ul class="dropdown">
+                  <li><a href="javascript:void(0)" onclick="deleteItem();"><i class="icon-remove-circle"></i> Delete</a></li>
+                  <li><a href="javascript:void(0)" onclick="renameItem();"><i class="icon-edit"></i> Rename</a></li>
+                  <li><a href="javascript:void(0)" onclick="setDefaultChapter();"><i class="icon-bookmark"></i> Default Chapter</a></li>
+               </ul>
+            </li>
+            <li><a href="javascript:void(0)" onclick="collapseAll();">Collapse All</a></li>
+            <li><a href="javascript:void(0)" onclick="editItem();">Edit</a></li>
+         </ul>
+      </section>
+   </nav>
+</div>
 
 <div id="deleteModal" class="reveal-modal small" data-reveal>
    <div class="row">
@@ -124,35 +164,7 @@
    <a class="close-reveal-modal">&#215;</a>
 </div>
 
-<div class="row">
-   <div class="small-12 large-12 columns">
-      <ul class="button-group radius">
-         <li><a href="#" class="button success tiny" onclick="createSubBook();"><i class="icon-createfile"></i> Sub Book</a></li>
-         <li><a href="#" class="button success tiny" onclick="createChapter();"><i class="icon-createfile"></i> Chapter</a></li>
-         <li><a href="#" class="button success tiny" onclick="showAddList();"><i class="icon-createfile"></i> Add List</a></li>
-         <li><a href="#" class="button alert tiny" onclick="deleteItem();"><i class="icon-remove-circle"></i> Delete</a></li>
-         <li><a href="#" class="button secondary tiny" onclick="editItem();"><i class="icon-editalt"></i> Edit</a></li>
-         <li><a href="#" class="button secondary tiny" onclick="renameItem();"><i class="icon-edit"></i> Rename</a></li>
-         <li><a href="#" class="button secondary tiny" onclick="setDefaultChapter();"><i class="icon-bookmark"></i> Default Chapter</a></li>
-      </ul>
-   </div>
-</div>
-
-<div class="row" style="margin-bottom: 10px;">
-   <div class="small-6 large-6 columns">
-      <div class="switch tiny">
-         <i class="icon-eye-close"></i>
-         <input id="hideSwitch" type="checkbox">
-         <label for="hideSwitch"></label>
-         <i class="icon-eye-open"></i>
-         <span id="hideSaved"><i class="icon-ok-sign" style="color: green"></i></span>
-      </div>
-   </div>
-   <div class="small-6 large-6 columns text-right">
-      <span id="contentsSaved" class="label success">Contents Saved!</span>
-   </div>
-</div>
-
+<br />
 <div class="row">
    <div class="small-12 large-12 columns">
       @{

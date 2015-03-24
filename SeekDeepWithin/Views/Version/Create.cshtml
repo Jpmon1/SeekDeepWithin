@@ -4,14 +4,14 @@
     ViewBag.Title = "Add Version";
 }
 
-<h2>New version for @ViewBag.BookTitle</h2>
+<h3><small>new version</small> @ViewBag.BookTitle</h3>
 
 @using (Html.BeginForm ()) {
    @Html.AntiForgeryToken()
    @Html.ValidationSummary(true)
 
    <fieldset>
-      <legend>New Version</legend>
+      <legend>Version Information</legend>
       @Html.HiddenFor(model => model.BookId)
       <div class="row">
          <div class="small-12 large-6 columns">

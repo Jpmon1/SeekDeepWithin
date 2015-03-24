@@ -49,7 +49,7 @@ namespace SeekDeepWithin.Models
          this.Headers = new Collection<HeaderFooterViewModel> ();
          this.Footers = new Collection<HeaderFooterViewModel> ();
 
-         foreach (var link in entry.Passage.PassageLinks)
+         foreach (var link in entry.Passage.Links)
          {
             this.Links.Add (new LinkViewModel
             {

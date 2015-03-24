@@ -168,15 +168,16 @@ namespace SeekDeepWithin.Controllers
       /// Gets the edit entry view.
       /// </summary>
       /// <param name="id">The id of the entry to edit.</param>
-      /// <param name="termId">The id of the parent term.</param>
       /// <returns>The ecit entry view.</returns>
       [Authorize (Roles = "Editor")]
-      public ActionResult Edit (int id, int termId)
+      public ActionResult Edit (int id)
       {
          if (Request.UrlReferrer != null) TempData["RefUrl"] = Request.UrlReferrer.ToString ();
          var item = this.m_Db.GlossaryItems.Get (id);
-         var term = this.m_Db.GlossaryTerms.Get (termId);
-         return View (new GlossaryItemViewModel (item, new SdwRenderer()) { Term = new GlossaryTermViewModel {Id = term.Id, Name = term.Name}});
+         return View (new GlossaryItemViewModel (item, new SdwRenderer ())
+            {
+               Term = new GlossaryTermViewModel {Id = item.Term.Id, Name = item.Term.Name}
+            });
       }
 
       /// <summary>
@@ -222,6 +223,71 @@ namespace SeekDeepWithin.Controllers
       }
 
       /// <summary>
+      /// Gets information for the given term.
+      /// </summary>
+      /// <param name="termName">Term name to get information for.</param>
+      /// <returns>Term information.</returns>
+      public ActionResult Get (string termName)
+      {
+         var term = this.m_Db.GlossaryTerms.Get (t => t.Name == termName).FirstOrDefault ();
+         if (term == null)
+         {
+            Response.StatusCode = 500;
+            return Json ("Tag not found.");
+         }
+         return Json (new { id = term.Id, name = term.Name }, JsonRequestBehavior.AllowGet);
+      }
+
+      #region Entries
+
+      /// <summary>
+      /// Performs an edit for the given entry.
+      /// </summary>
+      /// <param name="entryId">The entry to edit.</param>
+      /// <param name="text">The entry text.</param>
+      /// <param name="order">The entry order.</param>
+      /// <returns>Results.</returns>
+      [HttpPost]
+      [ValidateAntiForgeryToken]
+      [Authorize (Roles = "Editor")]
+      public ActionResult UpdateEntry (int entryId, string text, int? order)
+      {
+         var entry = this.m_Db.GlossaryEntries.Get (entryId);
+         if (entry == null)
+         {
+            Response.StatusCode = 500;
+            return Json ("Data is not valid.");
+         }
+         entry.Text = text;
+         if (order != null)
+            entry.Order = order.Value;
+         this.m_Db.Save ();
+         return Json ("Success");
+      }
+
+      /// <summary>
+      /// Deletes the given entry.
+      /// </summary>
+      /// <param name="entryId">The entry to delete.</param>
+      /// <returns>Results.</returns>
+      [HttpPost]
+      [ValidateAntiForgeryToken]
+      [Authorize (Roles = "Creator")]
+      public ActionResult DeleteEntry (int entryId)
+      {
+         if (ModelState.IsValid)
+         {
+            var entry = this.m_Db.GlossaryEntries.Get (entryId);
+            entry.Item.Entries.Remove (entry);
+            this.m_Db.GlossaryEntries.Delete (entry);
+            this.m_Db.Save ();
+            return Json ("Success");
+         }
+         Response.StatusCode = 500;
+         return Json ("Data is not valid.");
+      }
+
+      /// <summary>
       /// Gets details about the entry with the given id.
       /// </summary>
       /// <param name="id"></param>
@@ -233,13 +299,13 @@ namespace SeekDeepWithin.Controllers
          var result = new
          {
             entryId = id,
-            order = entry.Order,
             text = entry.Text,
-            headers = entry.Headers.Select (h => new { text = h.Text, id = h.Id }),
-            footers = entry.Footers.Select (f => new { text = f.Text, index = f.Index, id = f.Id })
+            order = entry.Order
          };
          return Json (result, JsonRequestBehavior.AllowGet);
       }
+
+      #endregion
 
       /// <summary>
       /// Gets auto complete items for the given term.

@@ -26,6 +26,14 @@
                   @Html.ValidationMessageFor(model => model.Title)
                </div>
             </div>
+
+            <div class="row">
+               <div class="small-12 large-8 columns">
+                  @Html.LabelFor(model => model.SubTitle)
+                  @Html.EditorFor(model => model.SubTitle)
+                  @Html.ValidationMessageFor(model => model.SubTitle)
+               </div>
+            </div>
        
             <div class="row">
                <div class="small-12 large-12 columns">
@@ -45,7 +53,7 @@
          @if (Request.IsAuthenticated && User.IsInRole ("Creator")) {
             var returnUrl = Request.Url != null ? Request.Url.ToString () : string.Empty;
             <span style="font-size: small">
-               @Html.ActionLink("new tag", "Create", "Tag", new {returnUrl}, null))
+               <a href="@Url.Action("Create", "Tag", new {returnUrl}, Request.Url.Scheme)">new tag</a>
             </span>
          }
       </h5>
@@ -53,10 +61,10 @@
          var id = tag.ItemId;
          <div class="row" id="tag_@id">
             <div class="small-8 large-8 columns">
-               @Html.ActionLink(tag.Name, "Details", "Tag", new { id = tag.Id }, null)
+               <a href="@Url.Action("Details", "Tag", new {id = tag.Id}, Request.Url.Scheme)">@tag.Name</a>
             </div>
             <div class="small-4 large-4 columns text-center">
-               <a href="javascript:void(0);" onclick="RemoveTag(@id, @Model.Id, 'Book');" title="Remove tag">
+               <a href="javascript:void(0);" onclick="tag_remove(@id, @Model.Id, 'Book');" title="Remove tag">
                   <i class="icon-remove-circle" style="color:red;"></i>
                </a>
             </div>
@@ -67,7 +75,7 @@
             @Html.DropDownList("tagId", ViewBag.Tags as SelectList)
          </div>
          <div class="small-4 large-4 columns">
-            <button class="button success tiny" onclick="AddTag(@Model.Id, 'Book');">Add</button>
+            <button class="button success tiny" onclick="tag_add(@Model.Id, 'Book');">Add</button>
          </div>
       </div>
    </div>

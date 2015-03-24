@@ -254,7 +254,8 @@
     <Compile Include="Models\GlossaryEntryViewModel.cs" />
     <Compile Include="Models\GlossaryItemViewModel.cs" />
     <Compile Include="Models\GlossaryTermViewModel.cs" />
-    <Compile Include="Models\EditLinkViewModel.cs" />
+    <Compile Include="Models\HeaderFooterEditViewModel.cs" />
+    <Compile Include="Models\LinkEditViewModel.cs" />
     <Compile Include="Models\HeaderFooterViewModel.cs" />
     <Compile Include="Models\IRenderable.cs" />
     <Compile Include="Models\ItemType.cs" />
@@ -266,6 +267,7 @@
     <Compile Include="Models\RegisterViewModel.cs" />
     <Compile Include="Models\SearchViewModel.cs" />
     <Compile Include="Models\SourceViewModel.cs" />
+    <Compile Include="Models\StyleEditViewModel.cs" />
     <Compile Include="Models\StyleViewModel.cs" />
     <Compile Include="Models\SubBookViewModel.cs" />
     <Compile Include="DataAccess\UsersContext.cs" />
@@ -283,6 +285,7 @@
     <Compile Include="Pocos\GlossarySeeAlso.cs" />
     <Compile Include="Pocos\PassageLocation.cs" />
     <Compile Include="Pocos\SubBookChapter.cs" />
+    <Compile Include="Pocos\SubBookTag.cs" />
     <Compile Include="Pocos\UserData.cs" />
     <Compile Include="Pocos\UserProfile.cs" />
     <Compile Include="Models\VersionSourceViewModel.cs" />
@@ -328,6 +331,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\SeekDeepWithin.DataAccess.SdwDbContext.mdf" />
+    <Content Include="Content\ajax-loader.gif" />
     <Content Include="Content\BurntOrange.png" />
     <Content Include="Content\Colors1.png" />
     <Content Include="Content\Colors2.png" />
@@ -444,21 +448,21 @@
     <Content Include="Images\Untitled.ico" />
     <Content Include="Scripts\fastclick.js" />
     <Content Include="Scripts\foundation.min.js" />
-    <Content Include="Scripts\foundation\foundation.abide.js" />
-    <Content Include="Scripts\foundation\foundation.accordion.js" />
+    <Content Include="Scripts\foundation.abide.js" />
+    <Content Include="Scripts\foundation.accordion.js" />
     <Content Include="Scripts\foundation\foundation.alert.js" />
-    <Content Include="Scripts\foundation\foundation.clearing.js" />
-    <Content Include="Scripts\foundation\foundation.dropdown.js" />
+    <Content Include="Scripts\foundation.clearing.js" />
+    <Content Include="Scripts\foundation.dropdown.js" />
     <Content Include="Scripts\foundation\foundation.equalizer.js" />
     <Content Include="Scripts\foundation\foundation.interchange.js" />
-    <Content Include="Scripts\foundation\foundation.joyride.js" />
+    <Content Include="Scripts\foundation.joyride.js" />
     <Content Include="Scripts\foundation\foundation.js" />
-    <Content Include="Scripts\foundation\foundation.magellan.js" />
+    <Content Include="Scripts\foundation.magellan.js" />
     <Content Include="Scripts\foundation\foundation.offcanvas.js" />
-    <Content Include="Scripts\foundation\foundation.orbit.js" />
+    <Content Include="Scripts\foundation.orbit.js" />
     <Content Include="Scripts\foundation\foundation.reveal.js" />
-    <Content Include="Scripts\foundation\foundation.slider.js" />
-    <Content Include="Scripts\foundation\foundation.tab.js" />
+    <Content Include="Scripts\foundation.slider.js" />
+    <Content Include="Scripts\foundation.tab.js" />
     <Content Include="Scripts\foundation\foundation.tooltip.js" />
     <Content Include="Scripts\foundation\foundation.topbar.js" />
     <Content Include="Scripts\jquery-1.11.1.min.js" />
@@ -491,7 +495,7 @@
     <Content Include="Scripts\sdw\sdw.addstyle.js" />
     <Content Include="Scripts\sdw\sdw.contentsedit.js" />
     <Content Include="Scripts\sdw\sdw.convert.js" />
-    <Content Include="Scripts\sdw\sdw.editchapter.js" />
+    <Content Include="Scripts\sdw\sdw.chapter.js" />
     <Content Include="Scripts\sdw\sdw.footer.js" />
     <Content Include="Scripts\sdw\sdw.header.js" />
     <Content Include="Scripts\sdw\sdw.link.js" />
@@ -545,7 +549,7 @@
     <Content Include="Views\Web.config" />
     <Content Include="Views\Writer\Details.cshtml" />
     <Content Include="Views\Writer\Edit.cshtml" />
-    <Content Include="Scripts\sdw\sdw.glossaryitem.js" />
+    <Content Include="Scripts\sdw\sdw.glossary.js" />
     <Content Include="Views\Book\Details.cshtml" />
     <Content Include="Scripts\sdw\sdw.subbook.js" />
     <None Include="Views\Book\Index.cshtml">
@@ -578,24 +582,19 @@
     <Content Include="Views\Source\Index.cshtml" />
     <Content Include="Views\Glossary\Edit.cshtml" />
     <Content Include="Views\Version\EditSource.cshtml" />
-    <Content Include="Views\Shared\_LinkForm.cshtml" />
     <Content Include="Views\Source\EditSource.cshtml" />
     <Content Include="Views\Source\Edit.cshtml" />
     <Content Include="Views\Shared\_SourceForm.cshtml" />
     <Content Include="Views\Chapter\Add.cshtml" />
-    <Content Include="Views\Header\Create.cshtml" />
-    <Content Include="Views\Footer\Create.cshtml" />
     <Content Include="Views\Shared\_HeaderFooter.cshtml" />
     <Content Include="Views\Shared\_Passage.cshtml" />
     <Content Include="Views\Version\Contents.cshtml" />
     <Content Include="Views\Footer\Edit.cshtml" />
     <Content Include="Views\Header\Edit.cshtml" />
-    <Content Include="Views\Shared\_HFView.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\ChapterHeaderViewModel.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\ChapterFooterViewModel.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\ChapterHeaderViewModel.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\ChapterFooterViewModel.cshtml" />
-    <Content Include="Views\Shared\_StyleView.cshtml" />
     <Content Include="Views\Shared\_GlossaryEntry.cshtml" />
     <Content Include="Views\Glossary\Add.cshtml" />
     <Content Include="Views\Tag\Details.cshtml" />
@@ -604,6 +603,9 @@
     <Content Include="Views\Shared\DisplayTemplates\VersionContents.cshtml" />
     <Content Include="Views\SubBook\Edit.cshtml" />
     <Content Include="Views\SubBook\About.cshtml" />
+    <Content Include="Views\Link\Edit.cshtml" />
+    <Content Include="Views\Style\Edit.cshtml" />
+    <Content Include="Views\Shared\_Modal.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

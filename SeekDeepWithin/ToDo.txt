@@ -1,15 +1,10 @@
 Comments
 Advanced search
 Filter books/terms by tags, etc.
-Edit number and order of passage and chapter
-Sub book tags (i.e. New/Old Testament)
-Delete
-   Contents
-   Styles --> Edit also
-   Links --> Edit also
-   Headers
-   Footers
+Edit number and order of chapter
+Search with tag filter
 Notes
+Show TOC on large screens
 Read - View paragraph and numbers.
 View Search as List/Tree
 View books a list
@@ -21,6 +16,7 @@ User preferences
    View footers at end or after verse
    if editor show edit item
    Highlight alternating rows
+Sub book details should show different versions of sub book.
 Glossary Entry voting
 Book on amazon links
 Read multiple books

@@ -1,5 +1,5 @@
 ﻿$(document).ready(function() {
-   $('#defaultCheck').hide();
+   $('#saveCheck').hide();
 });
 
 function setAsDefaultVersion() {
@@ -14,8 +14,8 @@ function setAsDefaultVersion() {
          versionId: $('#Id').val()
       }
    }).done(function () {
-      $('#defaultCheck').show(200, function () {
-         setTimeout(function () { $('#defaultCheck').hide(100); }, 2000);
+      $('#saveCheck').show(200, function () {
+         setTimeout(function () { $('#saveCheck').hide(100); }, 2000);
       });
       createToc();
    }).fail(function (d) {

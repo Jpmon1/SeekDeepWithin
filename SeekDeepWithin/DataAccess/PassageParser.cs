@@ -198,7 +198,8 @@ namespace SeekDeepWithin.DataAccess
          this.m_Log.AppendFormat ("<li>Found {0} abbreviation(s)</li>", abbreviations.Count);
          foreach (var abbreviation in abbreviations)
          {
-            var version = abbreviation.SubBook.Versions.FirstOrDefault (v => v.Version.IsDefault);
+            var version = abbreviation.SubBook.Versions.FirstOrDefault (v => v.Version.IsDefault) ??
+                          abbreviation.SubBook.Versions.FirstOrDefault ();
             if (version != null)
             {
                var chaps = new List <SubBookChapter> ();
@@ -240,7 +241,7 @@ namespace SeekDeepWithin.DataAccess
       /// <returns>The html output of the parse.</returns>
       public string BuildHtmlOutput (Uri url)
       {
-         var renderer = new SdwRenderer ();
+         var renderer = new SdwRenderer { DoFooters = false };
          var html = new StringBuilder ();
          html.AppendLine("<div class=\"panel passageParseTable\">");
          var lastChapter = -1;
@@ -273,7 +274,7 @@ namespace SeekDeepWithin.DataAccess
          html.AppendLine ("</div>");
          return html.ToString();
       }
-
+      /*
       /// <summary>
       /// Gets the fully qualified name of the given book.
       /// </summary>
@@ -291,97 +292,6 @@ namespace SeekDeepWithin.DataAccess
 
          if (b == "")
             subBook = b;
-         else if (b == "genesis" || b == "gen" || b == "ge" || b == "gn")
-            subBook = "Genesis";
-         else if (b == "exodus" || b == "exo" || b == "ex" || b == "exod")
-            subBook = "Exodus";
-         else if (b == "leviticus" || b == "lev" || b == "le" || b == "lv")
-            subBook = "Leviticus";
-         else if (b == "numbers" || b == "num" || b == "nu" || b == "nm" || b == "nb")
-            subBook = "Numbers";
-         else if (b == "deuteronomy" || b == "deut" || b == "dt" || b == "deu" || b == "de")
-            subBook = "Deuteronomy";
-         else if (b == "joshua" || b == "josh" || b == "jos" || b == "jsh")
-            subBook = "Joshua";
-         else if (b == "judges" || b == "judg" || b == "jdg" || b == "jg" || b == "jdgs")
-            subBook = "Judges";
-         else if (b == "ruth" || b == "rth" || b == "ru" || b == "rut")
-            subBook = "Ruth";
-         else if (b == "1samuel" || b == "1sam" || b == "1sa" || b == "1s" || b == "1sm" || b == "isam" || b == "isamuel" ||
-                  b == "1stsamuel" || b == "firstsamuel")
-            subBook = "1 Samuel";
-         else if (b == "2samuel" || b == "2sam" || b == "2sa" || b == "2s" || b == "iisa" || b == "2sm" || b == "iisam" ||
-                  b == "iisamuel" || b == "2ndsamuel" || b == "secondsamuel")
-            subBook = "2 Samuel";
-         else if (b == "1kings" || b == "1kgs" || b == "1kg" || b == "1ki" || b == "1k" || b == "ikgs" || b == "iki" ||
-                  b == "ikings" || b == "1stkgs" || b == "1stkings" || b == "firstkings" || b == "firstkgs" ||
-                  b == "1kin")
-            subBook = "1 Kings";
-         else if (b == "2kings" || b == "2kgs" || b == "2kg" || b == "2ki" || b == "2k" || b == "iikgs" ||
-                  b == "iiki" || b == "iikings" || b == "2ndkgs" || b == "2ndkings" || b == "secondkings" ||
-                  b == "secondkgs" || b == "2kin")
-            subBook = "2 Kings";
-         else if (b == "1chronicles" || b == "1chron" || b == "1ch" || b == "ich" || b == "1chr" ||
-                  b == "ichr" || b == "ichron" || b == "ichronicles" || b == "1stchronicles" ||
-                  b == "firstchronicles")
-            subBook = "1 Chronicles";
-         else if (b == "2chronicles" || b == "2chron" || b == "2ch" || b == "iich" || b == "iichr" ||
-                  b == "2chr" || b == "iichron" || b == "iichronicles" || b == "2ndchronicles" ||
-                  b == "secondchronicles")
-            subBook = "2 Chronicles";
-         else if (b == "ezra" || b == "ezr")
-            subBook = "Ezra";
-         else if (b == "nehemiah" || b == "neh" || b == "ne")
-            subBook = "Nehemiah";
-         else if (b == "esther" || b == "esth" || b == "es")
-            subBook = "Esther";
-         else if (b == "job" || b == "jb")
-            subBook = "Job";
-         else if (b == "psalm" || b == "pslm" || b == "ps" || b == "psalms" || b == "psa" || b == "psm" ||
-                  b == "pss")
-            subBook = "Psalms";
-         else if (b == "proverbs" || b == "prov" || b == "pr" || b == "prv" || b == "pro")
-            subBook = "Proverbs";
-         else if (b == "ecclesiastes" || b == "eccles" || b == "ec" || b == "qoh" || b == "qoheleth" ||
-                  b == "ecc" || b == "eccl")
-            subBook = "Ecclesiastes";
-         else if (b == "songofsolomon" || b == "song" || b == "so" || b == "canticleofcanticles" ||
-                  b == "canticles" || b == "songofsongs" || b == "sos")
-            subBook = "Song of Solomon";
-         else if (b == "isaiah" || b == "isa" || b == "is")
-            subBook = "Isaiah";
-         else if (b == "jeremiah" || b == "jer" || b == "je" || b == "jr")
-            subBook = "Jeremiah";
-         else if (b == "lamentations" || b == "lam" || b == "la")
-            subBook = "Lamentations";
-         else if (b == "ezekiel" || b == "ezek" || b == "eze" || b == "ezk")
-            subBook = "Ezekiel";
-         else if (b == "daniel" || b == "dan" || b == "da" || b == "dn")
-            subBook = "Daniel";
-         else if (b == "hosea" || b == "hos" || b == "ho")
-            subBook = "Hosea";
-         else if (b == "joel" || b == "joe" || b == "jl")
-            subBook = "Joel";
-         else if (b == "amos" || b == "am" || b == "amo")
-            subBook = "Amos";
-         else if (b == "obadiah" || b == "obad" || b == "ob" || b == "obd" || b == "oba")
-            subBook = "Obadiah";
-         else if (b == "jonah" || b == "jnh" || b == "jon")
-            subBook = "Jonah";
-         else if (b == "micah" || b == "mic")
-            subBook = "Micah";
-         else if (b == "nahum" || b == "nah" || b == "na")
-            subBook = "Nahum";
-         else if (b == "habakkuk" || b == "hab")
-            subBook = "Habakkuk";
-         else if (b == "zephaniah" || b == "zeph" || b == "zep" || b == "zp")
-            subBook = "Zephaniah";
-         else if (b == "haggai" || b == "hag" || b == "hg")
-            subBook = "Haggai";
-         else if (b == "zechariah" || b == "zech" || b == "zec" || b == "zc")
-            subBook = "Zechariah";
-         else if (b == "malachi" || b == "mal" || b == "ml")
-            subBook = "Malachi";
          else if (b == "tobit" || b == "tob" || b == "tb")
          {
             version = "Douay-Rheims Bible";
@@ -483,311 +393,6 @@ namespace SeekDeepWithin.DataAccess
          {
             subBook = "Epistle to the Laodiceans";
          }
-         else if (b == "matthew" || b == "matt" ||
-                  b == "mt" || b == "mat")
-            subBook = "Matthew";
-         else if (b == "mark" || b == "mrk" ||
-                  b == "mk" || b == "mr")
-            subBook = "Mark";
-         else if (b == "luke" || b == "luk" ||
-                  b == "lk" || b == "lu")
-            subBook = "Luke";
-         else if (b == "john" ||
-                  b == "jn" || b == "jhn" ||
-                  b == "joh")
-            subBook = "John";
-         else if (b == "acts" ||
-                  b == "ac" ||
-                  b == "act")
-            subBook = "Acts";
-         else if (b == "romans" ||
-                  b == "rom" ||
-                  b == "ro" ||
-                  b == "rm")
-            subBook = "Romans";
-         else if (b == "1corinthians" ||
-                  b == "1cor" ||
-                  b == "1co" ||
-                  b == "ico" ||
-                  b == "icor" ||
-                  b == "icorinthians" ||
-                  b == "1stcorinthians" ||
-                  b == "firstcorinthians")
-         {
-            subBook ="1 Corinthians";
-         }
-         else if (b == "2corinthians" ||
-                  b == "2cor" ||
-                  b == "2co" ||
-                  b == "iico" ||
-                  b == "iicor" ||
-                  b == "iicorinthians" ||
-                  b == "2ndcorinthians" ||
-                  b == "secondcorinthians")
-         {
-            subBook = "2 Corinthians";
-         }
-         else if (b == "galatians" || b == "gal" || b == "ga")
-         {
-            subBook = "Galatians";
-         }
-         else if (b == "ephesians" || b == "ephes" || b == "eph")
-         {
-            subBook = "Ephesians";
-         }
-         else if (b == "philippians" || b == "phil" || b == "php" || b == "phili" || b == "philip")
-            subBook = "Philippians";
-         else if (b == "colossians" || b == "col")
-            subBook = "Colossians";
-         else if (b == "1thessalonians" || b == "1thess" || b == "1th" || b == "ith" || b == "ithes" ||
-                  b == "1thes" || b == "ithess" || b == "ithessalonians" || b == "1stthessalonians" || b == "firstthessalonians")
-         {
-            subBook = "1 Thessalonians";
-         }
-         else if (b == "2thessalonians" || b == "2thess" || b == "2th" || b == "iith" || b == "iithes" ||
-            b == "2thes" || b == "iithess" || b == "iithessalonians" || b == "2ndthessalonians" || b == "secondthessalonians")
-         {
-            subBook = "2 Thessalonians";
-         }
-         else if (b == "1timothy" || b == "1tim" || b == "1ti" || b == "iti" || b == "itim" || b == "itimothy" ||
-            b == "1sttimothy" || b == "firsttimothy")
-         {
-            subBook = "1 Timothy";
-         }
-         else if (b == "2timothy" || b == "2tim" || b == "2ti" || b == "iiti" || b == "iitim" ||
-            b == "iitimothy" || b == "2ndtimothy" || b == "secondtimothy")
-         {
-            subBook = "2 Timothy";
-         }
-         else if (b == "titus" || b == "tit")
-         {
-            subBook = "Titus";
-         }
-         else if (b == "philemon" || b == "philem" || b == "phm")
-         {
-            subBook = "Philemon";
-         }
-         else if (b == "hebrews" || b == "heb")
-         {
-            subBook = "Hebrews";
-         }
-         else if (b == "james" || b == "jas" || b == "jm" || b == "jam")
-         {
-            subBook = "James";
-         }
-         else if (b == "1peter" || b == "1pet" || b == "1pe" || b == "ipe" || b == "ipet" || b == "ipt" ||
-            b == "1pt" || b == "ipeter" || b == "1stpeter" || b == "firstpeter")
-         {
-            subBook = "1 Peter";
-         }
-         else if (b == "2peter" ||
-            b ==
-            "2pet" ||
-            b ==
-            "2pe" ||
-            b ==
-            "iipe" ||
-            b ==
-            "iipet" ||
-            b ==
-            "iipt" ||
-            b ==
-            "2pt" ||
-            b ==
-            "iipeter" ||
-            b ==
-            "2ndpeter" ||
-            b ==
-            "secondpeter")
-         {
-            subBook = "2 Peter";
-         }
-         else if
-            (
-            b ==
-            "1john" ||
-            b ==
-            "1jn" ||
-            b ==
-            "ijn" ||
-            b ==
-            "ijo" ||
-            b ==
-            "1jo" ||
-            b ==
-            "ijoh" ||
-            b ==
-            "1joh" ||
-            b ==
-            "ijhn" ||
-            b ==
-            "1jhn" ||
-            b ==
-            "ijohn" ||
-            b ==
-            "1stjohn" ||
-            b ==
-            "firstjohn")
-         {
-            subBook
-               =
-               "1 John";
-         }
-         else if
-            (
-            b ==
-            "2john" ||
-            b ==
-            "2jn" ||
-            b ==
-            "iijn" ||
-            b ==
-            "iijo" ||
-            b ==
-            "2jo" ||
-            b ==
-            "iijoh" ||
-            b ==
-            "2joh" ||
-            b ==
-            "iijhn" ||
-            b ==
-            "2jhn" ||
-            b ==
-            "iijohn" ||
-            b ==
-            "2ndjohn" ||
-            b ==
-            "secondjohn")
-         {
-            subBook
-               =
-               "2 John";
-         }
-         else if
-            (
-            b ==
-            "3john" ||
-            b ==
-            "3jn" ||
-            b ==
-            "iiijn" ||
-            b ==
-            "iiijo" ||
-            b ==
-            "3jo" ||
-            b ==
-            "iiijoh" ||
-            b ==
-            "3joh" ||
-            b ==
-            "iiijhn" ||
-            b ==
-            "3jhn" ||
-            b ==
-            "iiijohn" ||
-            b ==
-            "3rdjohn" ||
-            b ==
-            "thirdjohn")
-         {
-            subBook
-               =
-               "3 John";
-         }
-         else if
-            (
-            b ==
-            "jude" ||
-            b ==
-            "jud")
-         {
-            subBook
-               =
-               "Jude";
-         }
-         else if
-            (
-            b ==
-            "revelation" ||
-            b ==
-            "rev" ||
-            b ==
-            "re" ||
-            b ==
-            "therevelation")
-         {
-            subBook
-               =
-               "Revelation";
-         }
-         else if
-            (
-            b ==
-            "aquariangospelofjesusthechrist" ||
-            b ==
-            "agjc")
-         {
-            subBook
-               =
-               "default";
-            version
-               =
-               "default";
-            rtnBook
-               =
-               "Aquarian Gospel of Jesus the Christ";
-         }
-         else if
-            (
-            b ==
-            "gospelofbuddha" ||
-            b ==
-            "gob" ||
-            b ==
-            "gospelofbuddha,the")
-         {
-            subBook
-               =
-               "default";
-            version
-               =
-               "default";
-            rtnBook
-               =
-               "Gospel of Buddha, The";
-         }
-         else if (b == "bhagavadgita" || b == "bg")
-         {
-            subBook = "default";
-            version = "default";
-            rtnBook = "Bhagavad Gita";
-         }
-         else if (b == "tao" || b == "taoteching")
-         {
-            subBook = "default";
-            version = "default";
-            rtnBook = "Tao Te Ching";
-         }
-         else if (b == "thelifeofsaintissa" || b == "lifeofsaintissa" || b == "lsi" || b == "lsibsm")
-         {
-            subBook = "default";
-            version = "default";
-            rtnBook = "The Life of Saint Issa";
-         }
-         else if (b == "thegospelofpeter" || b == "gospelofpeter" || b == "gop")
-         {
-            hasChapters = false;
-            subBook = "default";
-            version = "default";
-            rtnBook = "Gospel of Peter";
-         }
-         else if (b == "q" || b == "qur" || b == "quran" || b == "koran" || b == "qur'an")
-         {
-            subBook = "default";
-            version = "default";
-            rtnBook = "Quran";
-         }
 
          return new Dictionary <string, string>
          {
@@ -796,6 +401,6 @@ namespace SeekDeepWithin.DataAccess
             {"subbook", subBook},
             {"haschapters", hasChapters ? "true" : "false"}
          };
-      }
+      }*/
    }
 }

@@ -97,7 +97,41 @@ namespace SeekDeepWithin.Controllers
          var terms = this.m_Db.GlossaryTerms.Get (b => b.Tags.Any (t => t.Tag.Id == id));
          foreach (var term in terms)
             viewModel.Terms.Add (term.Id, term.Name);
+         var subBooks = this.m_Db.SubBooks.Get (b => b.Tags.Any (t => t.Tag.Id == id));
+         foreach (var subBook in subBooks)
+            viewModel.SubBooks.Add (subBook.Id, subBook.Name);
          return View (viewModel);
+      }
+
+      /// <summary>
+      /// Gets information for the given tag.
+      /// </summary>
+      /// <param name="tagName">Tag name to get information for.</param>
+      /// <returns>Tag information.</returns>
+      public ActionResult Get (string tagName)
+      {
+         var tag = this.m_Db.Tags.Get (t => t.Name == tagName).FirstOrDefault ();
+         if (tag == null)
+         {
+            Response.StatusCode = 500;
+            return Json ("Tag not found.");
+         }
+         return Json (new { id = tag.Id, name = tag.Name }, JsonRequestBehavior.AllowGet);
+      }
+
+      /// <summary>
+      /// Gets auto complete items for the given tag.
+      /// </summary>
+      /// <param name="tag">Tag to get auto complete items for.</param>
+      /// <returns>The list of possible tags for the given item.</returns>
+      public ActionResult AutoComplete (string tag)
+      {
+         var result = new
+         {
+            suggestions = this.m_Db.Tags.Get (t => t.Name.Contains (tag))
+                                                 .Select (t => new { value = t.Name, data = t.Id })
+         };
+         return Json (result, JsonRequestBehavior.AllowGet);
       }
    }
 }

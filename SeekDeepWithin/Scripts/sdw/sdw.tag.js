@@ -1,4 +1,4 @@
-﻿function RemoveTag(tagId, itemId, type) {
+﻿function tag_remove(tagId, itemId, type) {
    var form = $('#__AjaxAntiForgeryForm');
    var token = $('input[name="__RequestVerificationToken"]', form).val();
    $.ajax({
@@ -16,7 +16,7 @@
    });
 }
 
-function AddTag(itemId, type) {
+function tag_add(itemId, type) {
    var form = $('#__AjaxAntiForgeryForm');
    var token = $('input[name="__RequestVerificationToken"]', form).val();
    $.ajax({

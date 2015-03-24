@@ -43,27 +43,6 @@ namespace SeekDeepWithin.Controllers
       }
 
       /// <summary>
-      /// Performs an edit for the given model.
-      /// </summary>
-      /// <param name="viewModel">The view model with edits.</param>
-      /// <returns>The edit page.</returns>
-      [HttpPost]
-      [ValidateAntiForgeryToken]
-      [Authorize (Roles = "Editor")]
-      public ActionResult Edit (PassageViewModel viewModel)
-      {
-         if (ModelState.IsValid)
-         {
-            var passage = this.m_Db.Passages.Get (viewModel.Id);
-            this.m_Db.SetValues (passage, viewModel);
-            this.m_Db.Save ();
-            return Json ("Success");
-         }
-         Response.StatusCode = 500;
-         return Json ("Data is not valid.");
-      }
-
-      /// <summary>
       /// Creates a passage for the given chapter.
       /// </summary>
       /// <param name="viewModel">View model with data.</param>
@@ -94,6 +73,79 @@ namespace SeekDeepWithin.Controllers
       }
 
       /// <summary>
+      /// Performs an edit for the given passage.
+      /// </summary>
+      /// <param name="entryId">The passage entry to edit.</param>
+      /// <param name="text">The passage text.</param>
+      /// <param name="order">The passage order.</param>
+      /// <param name="number">The passage number.</param>
+      /// <returns>The edit page.</returns>
+      [HttpPost]
+      [ValidateAntiForgeryToken]
+      [Authorize (Roles = "Editor")]
+      public ActionResult Update (int entryId, string text, int? order, int? number)
+      {
+         var passage = this.m_Db.PassageEntries.Get (entryId);
+         if (passage == null)
+         {
+            Response.StatusCode = 500;
+            return Json ("Data is not valid.");
+         }
+         passage.Passage.Text = text;
+         if (order != null)
+            passage.Order = order.Value;
+         if (number != null)
+            passage.Number = number.Value;
+         this.m_Db.Save ();
+         return Json ("Success");
+      }
+
+      /// <summary>
+      /// Deletes the given passage.
+      /// </summary>
+      /// <param name="entryId">The passage entry to delete.</param>
+      /// <returns>The edit page.</returns>
+      [HttpPost]
+      [ValidateAntiForgeryToken]
+      [Authorize (Roles = "Creator")]
+      public ActionResult Delete (int entryId)
+      {
+         if (ModelState.IsValid)
+         {
+            var passage = this.m_Db.PassageEntries.Get (entryId);
+            passage.Chapter.Passages.Remove (passage);
+            if (passage.Passage.Entries.Count == 1)
+            {
+               this.m_Db.Passages.Delete(passage.Passage);
+            }
+            this.m_Db.Save();
+            return Json ("Success");
+         }
+         Response.StatusCode = 500;
+         return Json ("Data is not valid.");
+      }
+
+      /// <summary>
+      /// Gets the entry data for the given entry id.
+      /// </summary>
+      /// <param name="id">Id of entry to get text for.</param>
+      /// <returns>The text of the entry.</returns>
+      [AllowAnonymous]
+      public ActionResult Get (int id)
+      {
+         var entry = this.m_Db.PassageEntries.Get (id);
+         var result = new
+         {
+            entryId = id,
+            order = entry.Order,
+            passageId = entry.PassageId,
+            passageNumber = entry.Number,
+            passageText = entry.Passage.Text
+         };
+         return Json (result, JsonRequestBehavior.AllowGet);
+      }
+
+      /// <summary>
       /// Gets the passage in the database with the given text.
       /// </summary>
       /// <param name="text">The text of the passage to get.</param>
@@ -118,28 +170,6 @@ namespace SeekDeepWithin.Controllers
       public PassageViewModel GetRandomPassage ()
       {
          return new PassageViewModel(this.m_Db.PassageEntries.All (q => q.OrderBy (r => Guid.NewGuid ())).Take (1).FirstOrDefault());
-      }
-
-      /// <summary>
-      /// Gets the entry data for the given entry id.
-      /// </summary>
-      /// <param name="id">Id of entry to get text for.</param>
-      /// <returns>The text of the entry.</returns>
-      [AllowAnonymous]
-      public ActionResult GetEntry (int id)
-      {
-         var entry = this.m_Db.PassageEntries.Get (id);
-         var result = new
-         {
-            entryId = id,
-            order = entry.Order,
-            passageId = entry.PassageId,
-            passageNumber = entry.Number,
-            passageText = entry.Passage.Text,
-            headers = entry.Headers.Select(h => new { text = h.Text, id = h.Id }),
-            footers = entry.Footers.Select(f => new { text = f.Text, index = f.Index, id = f.Id })
-         };
-         return Json (result, JsonRequestBehavior.AllowGet);
       }
    }
 }

@@ -1,5 +1,8 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text.RegularExpressions;
+using System.Web;
 using System.Web.Mvc;
 using SeekDeepWithin.DataAccess;
 using SeekDeepWithin.Pocos;
@@ -67,6 +70,7 @@ namespace SeekDeepWithin.Controllers
       {
          var subBook = this.m_Db.VersionSubBooks.Get (id);
          ViewBag.Writers = new SelectList (this.m_Db.Writers.All (), "Id", "Name");
+         ViewBag.Tags = new SelectList (this.m_Db.Tags.All (q => q.OrderBy (t => t.Name)), "Id", "Name");
          return View (new SubBookViewModel (subBook));
       }
 
@@ -220,6 +224,121 @@ namespace SeekDeepWithin.Controllers
          subBook.Abbreviations.Remove (abbreviation);
          this.m_Db.Abbreviations.Delete(abbreviation);
          this.m_Db.Save();
+         return Json ("success");
+      }
+
+      /// <summary>
+      /// Adds passages to the sub book, based on the given regex.
+      /// </summary>
+      /// <returns>The result.</returns>
+      [HttpPost]
+      [ValidateAntiForgeryToken]
+      [Authorize (Roles = "Editor")]
+      public ActionResult AddPassages (int id, string text, string regex)
+      {
+         if (string.IsNullOrWhiteSpace (text))
+         {
+            Response.StatusCode = 500;
+            return Json ("The text cannot be empty.", JsonRequestBehavior.AllowGet);
+         }
+
+         regex = HttpUtility.UrlDecode (regex);
+         if (string.IsNullOrWhiteSpace (regex))
+         {
+            Response.StatusCode = 500;
+            return Json ("The regex cannot be empty.", JsonRequestBehavior.AllowGet);
+         }
+
+         var startOrder = 1;
+         var startNumber = 1;
+         var chapterId = -1;
+         var lastChapter = -1;
+         var subBook = this.m_Db.VersionSubBooks.Get (id);
+         var passageController = new PassageController (this.m_Db);
+         var matches = Regex.Matches (text, regex, RegexOptions.IgnoreCase);
+         foreach (Match match in matches)
+         {
+            var order = match.Groups["order"];
+            var number = match.Groups["number"];
+            var chapter = match.Groups["chapter"];
+            var cInt = Convert.ToInt32 (chapter.Value);
+            if (cInt != lastChapter)
+            {
+               startOrder = 1;
+               startNumber = 1;
+               lastChapter = cInt;
+               var subBookChapter = subBook.Chapters.FirstOrDefault (c => c.Order == cInt);
+               if (subBookChapter != null)
+                  chapterId = subBookChapter.Id;
+               else
+               {
+                  Response.StatusCode = 500;
+                  return Json ("Unable to determine the correct chapter to add passages to: " + chapter.Value);
+               }
+            }
+            passageController.Create (new AddItemViewModel
+            {
+               ItemType = ItemType.Passage,
+               Number = number.Success ? Convert.ToInt32 (number.Value) : startNumber,
+               Order = order.Success ? Convert.ToInt32 (order.Value) : startOrder,
+               ParentId = chapterId,
+               Text = match.Groups["text"].Value.Replace ("\"", "&quot;").Trim ()
+            });
+            startOrder++;
+            startNumber++;
+         }
+         return Json ("success", JsonRequestBehavior.AllowGet);
+      }
+
+      /// <summary>
+      /// Adds the given tag to the given sub book.
+      /// </summary>
+      /// <param name="tagId">Id of tag to add.</param>
+      /// <param name="id">Id of sub book to add tag to.</param>
+      /// <returns></returns>
+      [HttpPost]
+      [ValidateAntiForgeryToken]
+      [Authorize (Roles = "Editor")]
+      public ActionResult AddTag (int tagId, int id)
+      {
+         var subBook = this.m_Db.SubBooks.Get (id);
+         var foundTag = subBook.Tags.FirstOrDefault (bt => bt.Tag.Id == tagId);
+         if (foundTag != null)
+         {
+            Response.StatusCode = 500;
+            return Json ("That tag is already assigned to the sub book.");
+         }
+         var tag = this.m_Db.Tags.Get (tagId);
+         subBook.Tags.Add (new SubBookTag { SubBook = subBook, Tag = tag });
+         this.m_Db.Save ();
+         return Json ("success");
+      }
+
+      /// <summary>
+      /// Removes the tag with the given id from the given term.
+      /// </summary>
+      /// <param name="tagId">Id of tag to remove.</param>
+      /// <param name="id">Id of term to remove tag from.</param>
+      /// <returns></returns>
+      [HttpPost]
+      [ValidateAntiForgeryToken]
+      [Authorize (Roles = "Editor")]
+      public ActionResult RemoveTag (int tagId, int id)
+      {
+         var subBook = this.m_Db.SubBooks.Get (id);
+         if (subBook == null)
+         {
+            Response.StatusCode = 500;
+            return Json ("Unable to get sub book - " + id);
+         }
+         var subBookTag = subBook.Tags.FirstOrDefault (bt => bt.Id == tagId);
+         if (subBookTag == null)
+         {
+            Response.StatusCode = 500;
+            return Json ("Unable to find the given tag.");
+         }
+         subBook.Tags.Remove (subBookTag);
+         this.m_Db.Save ();
          return Json ("success");
       }
 

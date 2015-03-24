@@ -8,7 +8,7 @@
       /// <summary>
       /// Gets or Sets the id.
       /// </summary>
-      public int Id { get; set; }
+      public int ItemId { get; set; }
 
       /// <summary>
       /// Gets or Sets the start of the style.
@@ -29,5 +29,10 @@
       /// Gets or Sets the end index of the style.
       /// </summary>
       public int EndIndex { get; set; }
+
+      /// <summary>
+      /// Gets or Sets the id of the style
+      /// </summary>
+      public int StyleId { get; set; }
    }
 }

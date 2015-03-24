@@ -18,6 +18,9 @@
          else {
             <li class="description">No books are assigned to this tag.</li>
          }
+         @foreach (var subBook in Model.SubBooks) {
+            <li class="bullet-item">@subBook.Value</li>
+         }
       </ul>
    </div>
    <div class="small-12 large-6 columns">

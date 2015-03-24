@@ -29,5 +29,15 @@
       /// Gets or Sets a name for the link if needed.
       /// </summary>
       public string Name { get; set; }
+
+      /// <summary>
+      /// Gets or Sets the id.
+      /// </summary>
+      public int ItemId { get; set; }
+
+      /// <summary>
+      /// Gets or Sets the id of the link
+      /// </summary>
+      public int LinkId { get; set; }
    }
 }

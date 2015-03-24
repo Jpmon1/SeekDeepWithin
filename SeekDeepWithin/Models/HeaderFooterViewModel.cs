@@ -23,7 +23,7 @@ namespace SeekDeepWithin.Models
       /// <param name="header">Header data to copy.</param>
       public HeaderFooterViewModel (IHeader header)
       {
-         this.Type = "header";
+         this.HorF = "header";
          this.Id = header.Id;
          this.IsBold = header.IsBold;
          this.IsItalic = header.IsItalic;
@@ -37,7 +37,7 @@ namespace SeekDeepWithin.Models
       /// <param name="footer">Footer data to copy.</param>
       public HeaderFooterViewModel (IFooter footer)
       {
-         this.Type = "footer";
+         this.HorF = "footer";
          this.Id = footer.Id;
          this.Index = footer.Index;
          this.IsBold = footer.IsBold;
@@ -86,7 +86,7 @@ namespace SeekDeepWithin.Models
       /// <summary>
       /// Gets or Sets the type either header/footer.
       /// </summary>
-      public string Type { get; set; }
+      public string HorF { get; set; }
 
       /// <summary>
       /// Gets or Sets the number for footers.
@@ -96,6 +96,11 @@ namespace SeekDeepWithin.Models
       /// <summary>
       /// Gets what this header/footer is for.
       /// </summary>
-      public string For { get; set; }
+      public string ItemType { get; set; }
+
+      /// <summary>
+      /// Gets or Sets the item's text.
+      /// </summary>
+      public string ItemText { get; set; }
    }
 }

@@ -1,4 +1,6 @@
-﻿using System.Web.Mvc;
+﻿using System.Linq;
+using System.Web;
+using System.Web.Mvc;
 using DotNetOpenAuth.Messaging;
 using SeekDeepWithin.DataAccess;
 using SeekDeepWithin.Models;
@@ -32,6 +34,7 @@ namespace SeekDeepWithin.Controllers
       /// <returns>The search view.</returns>
       public ActionResult Index ()
       {
+         ViewBag.Tags = new SelectList (this.m_Db.Tags.All (q => q.OrderBy (t => t.Name)), "Id", "Name");
          return View ();
       }
 
@@ -43,6 +46,7 @@ namespace SeekDeepWithin.Controllers
       /// <returns>The search view.</returns>
       public ActionResult Results (string searchFor, bool? log)
       {
+         searchFor = HttpUtility.UrlDecode (searchFor);
          var viewModel = new SearchViewModel {Query = searchFor, ShowLog = log != null && log.Value};
          var parser = new PassageParser (this.m_Db);
          parser.Parse(searchFor);
@@ -52,7 +56,7 @@ namespace SeekDeepWithin.Controllers
          var passages = this.m_Db.Passages.Get (p => p.Text.Contains (searchFor));
          foreach (var passage in passages)
          {
-            foreach (var entry in passage.PassageEntries)
+            foreach (var entry in passage.Entries)
                viewModel.Passages.Add (new PassageViewModel(entry));
          }
          return View (viewModel);

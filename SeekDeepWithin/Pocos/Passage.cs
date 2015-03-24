@@ -17,11 +17,11 @@ namespace SeekDeepWithin.Pocos
       /// <summary>
       /// Gets the list of entries this passage is in.
       /// </summary>
-      public virtual ICollection<PassageEntry> PassageEntries { get; set; }
+      public virtual ICollection<PassageEntry> Entries { get; set; }
 
       /// <summary>
       /// Gets the list of links for this passage.
       /// </summary>
-      public virtual ICollection<PassageLink> PassageLinks { get; set; }
+      public virtual ICollection<PassageLink> Links { get; set; }
    }
 }

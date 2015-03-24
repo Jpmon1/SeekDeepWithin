@@ -31,120 +31,144 @@ namespace SeekDeepWithin.Controllers
       }
 
       /// <summary>
-      /// Posts a new link for the given passage.
+      /// Shows the edit page for styles.
       /// </summary>
-      /// <param name="viewModel"></param>
-      /// <returns></returns>
-      [HttpPost]
-      [ValidateAntiForgeryToken]
+      /// <param name="id">Id of item to edit.</param>
+      /// <returns>The edit page.</returns>
       [Authorize (Roles = "Editor")]
-      public ActionResult CreatePassage (EditLinkViewModel viewModel)
+      public ActionResult EditPassage (int id)
       {
-         var linkUrl = this.GetLinkUrl (viewModel);
-         if (string.IsNullOrEmpty (linkUrl))
+         var viewModel = new LinkEditViewModel { ItemId = id, ItemType = "Passage", NextEntryId = -1, PreviousEntryId = -1 };
+         var passage = this.m_Db.PassageEntries.Get (id);
+         viewModel.ItemText = passage.Passage.Text;
+         viewModel.ParentId = passage.Chapter.Id;
+         var prev = passage.Chapter.Passages.FirstOrDefault (p => p.Order == (passage.Order - 1));
+         if (prev != null) viewModel.PreviousEntryId = prev.Id;
+         var next = passage.Chapter.Passages.FirstOrDefault (p => p.Order == (passage.Order + 1));
+         if (next != null) viewModel.NextEntryId = next.Id;
+         var renderable = new PassageViewModel (passage);
+         renderable.Styles.Clear ();
+         renderable.Footers.Clear ();
+         viewModel.RenderedText = new SdwRenderer ().Render (renderable);
+         foreach (var link in passage.Passage.Links)
          {
-            Response.StatusCode = 500;
-            return Json ("Unable to determine the links url.");
+            viewModel.Links.Add (new LinkViewModel
+            {
+               ItemId = link.Id,
+               LinkId = link.Link.Id,
+               Url = link.Link.Url,
+               StartIndex = link.StartIndex,
+               EndIndex = link.EndIndex
+            });
          }
-
-         if (!string.IsNullOrWhiteSpace (viewModel.Anchor))
-            linkUrl += "#" + viewModel.Anchor;
-
-         var link = GetLink (linkUrl);
-         var passage = this.m_Db.Passages.Get (viewModel.LinkItemId);
-
-         passage.PassageLinks.Add (new PassageLink
-         {
-            Passage = passage,
-            Link = link,
-            OpenInNewWindow = viewModel.OpenInNewWindow,
-            StartIndex = viewModel.StartIndex,
-            EndIndex = viewModel.EndIndex
-         });
-         this.m_Db.Save ();
-         return Json ("Success!");
+         return View ("Edit", viewModel);
       }
 
       /// <summary>
-      /// Posts a new link for the given passage.
+      /// Shows the edit page for styles.
       /// </summary>
-      /// <param name="viewModel"></param>
-      /// <returns></returns>
-      [HttpPost]
-      [ValidateAntiForgeryToken]
+      /// <param name="id">Id of item to edit.</param>
+      /// <returns>The edit page.</returns>
       [Authorize (Roles = "Editor")]
-      public ActionResult CreateEntry (EditLinkViewModel viewModel)
+      public ActionResult EditEntry (int id)
       {
-         if (!ModelState.IsValid)
+         var viewModel = new LinkEditViewModel { ItemId = id, ItemType = "Entry", NextEntryId = -1, PreviousEntryId = -1 };
+         var entry = this.m_Db.GlossaryEntries.Get (id);
+         viewModel.ItemText = entry.Text;
+         viewModel.ParentId = entry.Item.Id;
+         var prev = entry.Item.Entries.FirstOrDefault (e => e.Order == (entry.Order - 1));
+         if (prev != null) viewModel.PreviousEntryId = prev.Id;
+         var next = entry.Item.Entries.FirstOrDefault (e => e.Order == (entry.Order + 1));
+         if (next != null) viewModel.NextEntryId = next.Id;
+         var renderable = new GlossaryEntryViewModel (entry, null);
+         renderable.Styles.Clear ();
+         renderable.Footers.Clear ();
+         viewModel.RenderedText = new SdwRenderer ().Render (renderable);
+         foreach (var link in entry.Links)
          {
-            Response.StatusCode = 500;
-            return Json ("Data is not Valid");
+            viewModel.Links.Add (new LinkViewModel
+            {
+               ItemId = link.Id,
+               LinkId = link.Link.Id,
+               Url = link.Link.Url,
+               StartIndex = link.StartIndex,
+               EndIndex = link.EndIndex
+            });
          }
-
-         var linkUrl = this.GetLinkUrl (viewModel);
-         if (string.IsNullOrEmpty (linkUrl))
-         {
-            Response.StatusCode = 500;
-            return Json ("Unable to determine the links url.");
-         }
-
-         if (!string.IsNullOrWhiteSpace (viewModel.Anchor))
-            linkUrl += "#" + viewModel.Anchor;
-
-         var link = GetLink (linkUrl);
-         var glossaryEntry = this.m_Db.GlossaryEntries.Get (viewModel.LinkItemId);
-
-         glossaryEntry.Links.Add (new GlossaryEntryLink
-         {
-            Entry = glossaryEntry,
-            Link = link,
-            OpenInNewWindow = viewModel.OpenInNewWindow,
-            StartIndex = viewModel.StartIndex,
-            EndIndex = viewModel.EndIndex
-         });
-         this.m_Db.Save ();
-         return Json ("Success!");
+         return View ("Edit", viewModel);
       }
 
       /// <summary>
-      /// Posts a new link for the given passage.
+      /// Shows the edit page for styles.
       /// </summary>
-      /// <param name="viewModel"></param>
-      /// <returns></returns>
+      /// <param name="id">Id of item to edit.</param>
+      /// <returns>The edit page.</returns>
+      [Authorize (Roles = "Editor")]
+      public ActionResult EditSeeAlso (int id)
+      {
+         var viewModel = new LinkEditViewModel { ItemId = id, ItemType = "SeeAlso", NextEntryId = -1, PreviousEntryId = -1 };
+         var glossaryTerm = this.m_Db.GlossaryTerms.Get (id);
+         viewModel.ParentId = glossaryTerm.Id;
+         foreach (var link in glossaryTerm.SeeAlsos)
+         {
+            viewModel.Links.Add (new LinkViewModel
+            {
+               ItemId = link.Id,
+               LinkId = link.Link.Id,
+               Url = link.Link.Url,
+               Name = link.Name
+            });
+         }
+         return View ("Edit", viewModel);
+      }
+
+      /// <summary>
+      /// Posts a new link for the given Item.
+      /// </summary>
+      /// <param name="itemId">The id of the link's parent item.</param>
+      /// <param name="itemType">The type of the link's parent item.</param>
+      /// <param name="startIndex">The start index of the link.</param>
+      /// <param name="endIndex">The end index of the link.</param>
+      /// <param name="openInNewWindow">True to open in new window.</param>
+      /// <param name="linkUrl">The url of the link.</param>
+      /// <param name="linkName">The name of the link .</param>
+      /// <returns>Results</returns>
       [HttpPost]
       [ValidateAntiForgeryToken]
       [Authorize (Roles = "Editor")]
-      public ActionResult CreateSeeAlso (EditLinkViewModel viewModel)
+      public ActionResult Create (int itemId, string itemType, int startIndex, int endIndex, bool openInNewWindow,
+         string linkUrl, string linkName)
       {
-         if (!ModelState.IsValid)
-         {
-            Response.StatusCode = 500;
-            return Json ("Data is not Valid");
-         }
-
-         var linkUrl = this.GetLinkUrl (viewModel);
-         if (string.IsNullOrEmpty (linkUrl))
-         {
-            Response.StatusCode = 500;
-            return Json ("Unable to determine the links url.");
-         }
-
-         if (!string.IsNullOrWhiteSpace (viewModel.Anchor))
-            linkUrl += "#" + viewModel.Anchor;
-
          var link = GetLink (linkUrl);
-         var glossaryTerm = this.m_Db.GlossaryTerms.Get (viewModel.LinkItemId);
-
-         glossaryTerm.SeeAlsos.Add (new GlossarySeeAlso
+         if (itemType.ToLower () == "passage")
          {
-            Term = glossaryTerm,
-            Link = link,
-            Name = GetLinkName(viewModel)
-         });
-         this.m_Db.Save ();
-         return Json ("Success!");
-      }
+            var passage = this.m_Db.PassageEntries.Get (itemId);
+            var pLink = new PassageLink { Link = link, StartIndex = startIndex, EndIndex = endIndex, OpenInNewWindow = openInNewWindow };
+            passage.Passage.Links.Add (pLink);
+            this.m_Db.Save ();
+            return Json (new { id = pLink.Id, startIndex, endIndex, linkUrl });
+         }
+         if (itemType.ToLower () == "entry")
+         {
+            var entry = this.m_Db.GlossaryEntries.Get (itemId);
+            var eLink = new GlossaryEntryLink { Link = link, StartIndex = startIndex, EndIndex = endIndex, OpenInNewWindow = openInNewWindow };
+            entry.Links.Add (eLink);
+            this.m_Db.Save ();
+            return Json (new { id = eLink.Id, startIndex, endIndex, linkUrl });
+         }
+         if (itemType.ToLower () == "seealso")
+         {
+            var term = this.m_Db.GlossaryTerms.Get (itemId);
+            var tLink = new GlossarySeeAlso { Link = link, Term = term, Name = linkName };
+            term.SeeAlsos.Add (tLink);
+            this.m_Db.Save ();
+            return Json (new { id = tLink.Id, startIndex, endIndex, linkUrl });
+         }
 
+         Response.StatusCode = 500;
+         return Json ("Unknown link item type.");
+      }
+      
       /// <summary>
       /// Gets the link in the database with the given url.
       /// </summary>
@@ -156,66 +180,200 @@ namespace SeekDeepWithin.Controllers
          var link = links.FirstOrDefault ();
          if (link == null)
          {
-            link = new Link {Url = linkUrl};
+            link = new Link { Url = linkUrl };
             this.m_Db.Links.Insert (link);
             this.m_Db.Save ();
          }
          return link;
       }
 
-      private static string GetLinkName (EditLinkViewModel viewModel)
+      /// <summary>
+      /// Updates a link for the given Item.
+      /// </summary>
+      /// <param name="linkId">The id of the link to update.</param>
+      /// <param name="itemId">The id of the link's parent entry.</param>
+      /// <param name="itemType">The type of the link's parent entry.</param>
+      /// <param name="startIndex">The start index of the link.</param>
+      /// <param name="endIndex">The end index of the link.</param>
+      /// <param name="openInNewWindow">True to open in new window.</param>
+      /// <param name="linkName">The name of the link .</param>
+      /// <returns>Results</returns>
+      [HttpPost]
+      [ValidateAntiForgeryToken]
+      [Authorize (Roles = "Editor")]
+      public ActionResult Update (int linkId, int itemId, string itemType, int startIndex, int endIndex, bool openInNewWindow, string linkName)
       {
-         var linkName = string.Empty;
-         if (!string.IsNullOrWhiteSpace (viewModel.Search))
-            linkName = viewModel.Link;
-         else if (!string.IsNullOrWhiteSpace (viewModel.Link))
-            linkName = viewModel.Link;
-         else if (!string.IsNullOrWhiteSpace (viewModel.GlossaryTerm))
-            linkName = viewModel.GlossaryTerm;
-         else if (!string.IsNullOrWhiteSpace (viewModel.Book) && !string.IsNullOrWhiteSpace (viewModel.Version))
+         if (itemType.ToLower () == "passage")
          {
-            linkName = viewModel.Version;
-            if (!string.IsNullOrEmpty (viewModel.SubBook) && viewModel.SubBook != viewModel.Version)
-               linkName += " " + viewModel.SubBook;
-            if (!string.IsNullOrEmpty (viewModel.Chapter) && viewModel.Chapter != viewModel.SubBook)
-               linkName += " " + viewModel.Chapter;
-         }
-         return linkName;
-      }
-
-      private string GetLinkUrl (EditLinkViewModel viewModel)
-      {
-         var host = Request.Url == null ? string.Empty : Request.Url.AbsoluteUri.Replace (Request.Url.AbsolutePath, "");
-         var linkUrl = string.Empty;
-         if (!string.IsNullOrWhiteSpace (viewModel.Search))
-            linkUrl = viewModel.Link;
-         else if (!string.IsNullOrWhiteSpace (viewModel.Link))
-         {
-            linkUrl = viewModel.Link;
-            viewModel.OpenInNewWindow = true;
-         }
-         else if (!string.IsNullOrWhiteSpace (viewModel.GlossaryTerm))
-         {
-            var term = this.m_Db.GlossaryTerms.Get (t => t.Name == viewModel.GlossaryTerm).FirstOrDefault ();
-            if (term == null)
+            var passage = this.m_Db.PassageEntries.Get (itemId);
+            var pLink = passage.Passage.Links.FirstOrDefault (l => l.Id == linkId);
+            if (pLink != null)
             {
-               term = new GlossaryTerm {Name = viewModel.GlossaryTerm};
-               this.m_Db.GlossaryTerms.Insert (term);
-               this.m_Db.Save ();
+               pLink.EndIndex = endIndex;
+               pLink.StartIndex = startIndex;
+               pLink.OpenInNewWindow = openInNewWindow;
             }
-            linkUrl = "/Glossary/Term/" + term.Id;
          }
-         else if (viewModel.ChapterId != 0)
+         else if (itemType.ToLower () == "entry")
          {
-            linkUrl = "/Chapter/Read/" + viewModel.ChapterId;
+            var entry = this.m_Db.GlossaryEntries.Get (itemId);
+            var eLink = entry.Links.FirstOrDefault (l => l.Id == linkId);
+            if (eLink != null)
+            {
+               eLink.EndIndex = endIndex;
+               eLink.StartIndex = startIndex;
+               eLink.OpenInNewWindow = openInNewWindow;
+            }
          }
-         return host + linkUrl;
+         else if (itemType.ToLower () == "seealso")
+         {
+            var term = this.m_Db.GlossaryTerms.Get (itemId);
+            var tLink = term.SeeAlsos.FirstOrDefault (l => l.Id == linkId);
+            if (tLink != null)
+               tLink.Name = linkName;
+         }
+         else
+         {
+            Response.StatusCode = 500;
+            return Json ("Unknown link item type.");
+         }
+         this.m_Db.Save ();
+         return Json ("Success!");
       }
 
       /// <summary>
-      /// Gets the links for the given entry id.
+      /// Deletes a style for the given item.
       /// </summary>
-      /// <param name="id">Id of entry to get links for.</param>
+      /// <param name="id">Id of style to get.</param>
+      /// <param name="itemId">Id of parent item.</param>
+      /// <param name="itemType">Type of parent item.</param>
+      /// <returns>Results.</returns>
+      [HttpPost]
+      [ValidateAntiForgeryToken]
+      [Authorize (Roles = "Editor")]
+      public ActionResult Delete (int id, int itemId, string itemType)
+      {
+         if (itemType.ToLower () == "passage")
+         {
+            var passage = this.m_Db.PassageEntries.Get (itemId);
+            var pLink = passage.Passage.Links.FirstOrDefault (s => s.Id == id);
+            if (pLink == null)
+               return Json ("No style to delete.");
+            passage.Passage.Links.Remove (pLink);
+         }
+         else if (itemType.ToLower () == "entry")
+         {
+            var entry = this.m_Db.GlossaryEntries.Get (itemId);
+            var eLink = entry.Links.FirstOrDefault (s => s.Id == id);
+            if (eLink == null)
+               return Json ("No style to delete.");
+            entry.Links.Remove (eLink);
+         }
+         else if (itemType.ToLower () == "seealso")
+         {
+            var term = this.m_Db.GlossaryTerms.Get (itemId);
+            var tLink = term.SeeAlsos.FirstOrDefault (s => s.Id == id);
+            if (tLink == null)
+               return Json ("No style to delete.");
+            term.SeeAlsos.Remove (tLink);
+         }
+         else
+         {
+            Response.StatusCode = 500;
+            return Json ("Unknown link item type.");
+         }
+         this.m_Db.Save ();
+         return Json ("Success!");
+      }
+
+      /// <summary>
+      /// Gets a style for the given item.
+      /// </summary>
+      /// <param name="id">Id of style to get.</param>
+      /// <param name="itemId">Id of parent item.</param>
+      /// <param name="itemType">Type of parent item.</param>
+      /// <returns>Results.</returns>
+      public ActionResult Get (int id, int itemId, string itemType)
+      {
+         if (itemType.ToLower () == "passage")
+         {
+            var passage = this.m_Db.PassageEntries.Get (itemId);
+            var pLink = passage.Passage.Links.FirstOrDefault (s => s.Id == id);
+            if (pLink != null)
+               return Json (new
+               {
+                  id = pLink.Id,
+                  startIndex = pLink.StartIndex,
+                  endIndex = pLink.EndIndex,
+                  url = pLink.Link.Url
+               }, JsonRequestBehavior.AllowGet);
+         }
+         else if (itemType.ToLower () == "entry")
+         {
+            var entry = this.m_Db.GlossaryEntries.Get (itemId);
+            var eLink = entry.Links.FirstOrDefault (s => s.Id == id);
+            if (eLink != null)
+               return Json (new
+               {
+                  id = eLink.Id,
+                  startIndex = eLink.StartIndex,
+                  endIndex = eLink.EndIndex,
+                  url = eLink.Link.Url
+               }, JsonRequestBehavior.AllowGet);
+         }
+         else if (itemType.ToLower () == "seealso")
+         {
+            var term = this.m_Db.GlossaryTerms.Get (itemId);
+            var tLink = term.SeeAlsos.FirstOrDefault (s => s.Id == id);
+            if (tLink != null)
+               return Json (new
+               {
+                  id = tLink.Id,
+                  name = tLink.Name,
+                  url = tLink.Link.Url
+               }, JsonRequestBehavior.AllowGet);
+         }
+
+         Response.StatusCode = 500;
+         return Json ("Invalid Data.", JsonRequestBehavior.AllowGet);
+      }
+
+      /// <summary>
+      /// Renders the style for the given item.
+      /// </summary>
+      /// <param name="itemId">Id of parent item.</param>
+      /// <param name="itemType">Type of parent item.</param>
+      /// <returns>Results.</returns>
+      public ActionResult Render (int itemId, string itemType)
+      {
+         IRenderable renderable = null;
+         if (itemType.ToLower () == "passage")
+         {
+            var passage = this.m_Db.PassageEntries.Get (itemId);
+            renderable = new PassageViewModel (passage);
+         }
+         else if (itemType.ToLower () == "entry")
+         {
+            var entry = this.m_Db.GlossaryEntries.Get (itemId);
+            renderable = new GlossaryEntryViewModel (entry, null);
+         }
+
+         if (renderable == null)
+         {
+            Response.StatusCode = 500;
+            return Json ("Invalid Data.", JsonRequestBehavior.AllowGet);
+         }
+
+         renderable.Styles.Clear ();
+         renderable.Footers.Clear ();
+         var html = new SdwRenderer ().Render (renderable);
+         return Json (new { html }, JsonRequestBehavior.AllowGet);
+      }
+
+      /// <summary>
+      /// Gets the links for the given item id.
+      /// </summary>
+      /// <param name="id">Id of item to get links for.</param>
       /// <returns>JSON object with links.</returns>
       [AllowAnonymous]
       public ActionResult GetLinksForEntry (int id)
@@ -225,7 +383,7 @@ namespace SeekDeepWithin.Controllers
          {
             entryId = id,
             passageText = entry.Passage.Text,
-            links = entry.Passage.PassageLinks.Select(l => new
+            links = entry.Passage.Links.Select (l => new
             {
                id = l.Id,
                url = l.Link.Url,

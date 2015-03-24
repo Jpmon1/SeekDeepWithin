@@ -66,6 +66,12 @@ namespace SeekDeepWithin.Controllers
       public ActionResult ReplaceRegex (string text, string regex, string replace)
       {
          var newText = string.Empty;
+         regex = HttpUtility.UrlDecode (regex);
+         if (string.IsNullOrWhiteSpace (regex))
+         {
+            Response.StatusCode = 500;
+            return Json ("The regex cannot be empty.", JsonRequestBehavior.AllowGet);
+         }
          if (!string.IsNullOrWhiteSpace (text))
          {
             var r = new Regex (regex);
@@ -139,10 +145,12 @@ namespace SeekDeepWithin.Controllers
          foreach (Match match in matches)
          {
             var order = match.Groups ["order"];
-            var number = match.Groups ["number"];
+            var number = match.Groups["number"];
+            var chapter = match.Groups["chapter"];
             passageList.Add (new
             {
                text = match.Groups["text"].Value.Replace ("\"", "&quot;").Trim (),
+               chapter = chapter.Success ? chapter.Value : "unknown",
                number = number.Success ? Convert.ToInt32(number.Value) : startNumber,
                order = order.Success ? Convert.ToInt32 (order.Value) : startOrder
             });

@@ -20,6 +20,11 @@ namespace SeekDeepWithin.Pocos
       public string Text { get; set; }
 
       /// <summary>
+      /// Gets or Sets the parent item.
+      /// </summary>
+      public virtual GlossaryItem Item { get; set; }
+
+      /// <summary>
       /// Gets the list of headers for this entry.
       /// </summary>
       public virtual ICollection<GlossaryEntryHeader> Headers { get; set; }

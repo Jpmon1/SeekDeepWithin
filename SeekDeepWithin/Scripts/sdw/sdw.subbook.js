@@ -1,7 +1,30 @@
 ﻿$(document).ready(function() {
    $('#abbrevSaved').hide();
    $('#writerSaved').hide();
+   $('#tagSaved').hide();
 });
+
+function subBook_createPassages() {
+   $('#addingModal').foundation('reveal', 'open');
+   var form = $('#__AjaxAntiForgeryForm');
+   var token = $('input[name="__RequestVerificationToken"]', form).val();
+   $.ajax({
+      type: 'POST',
+      url: '/SubBook/AddPassages/',
+      data: {
+         __RequestVerificationToken: token,
+         id: $('#vSubBookId').val(),
+         text: $('#passText').val(),
+         regex: encodeURIComponent($('#regexToPass').val())
+      }
+   }).done(function () {
+      $('#passText').val('');
+      $('#addingModal').foundation('reveal', 'close');
+      alert('Passages added successfully!');
+   }).fail(function (d) {
+      alert(d.responseText);
+   });
+}
 
 function assignWriter() {
    var form = $('#__AjaxAntiForgeryForm');
@@ -19,9 +42,9 @@ function assignWriter() {
       if ($('#noWriters').length > 0)
          $('#noWriters').remove();
       $('#writers').append('<div class="row" id="abbrev_' + d.id + '">' +
-         '<div class="small-2 large-1 columns text-right">' +
-         '<a href="javascript:void(0)" onclick="removeWriter(' + d.subBookId + ', ' + d.writerId + ')" class="button alert tiny" title="Remove">' +
-         '<i class="icon-remove"></i></a></div><div class="small-10 large-11 columns">' + d.writer + '</div></div>');
+         '<div class="small-1 columns">' +
+         '<a href="javascript:void(0)" onclick="removeWriter(' + d.subBookId + ', ' + d.writerId + ')" title="Remove">' +
+         '<i class="icon-remove-circle" style="color:red;"></i></a></div><div class="small-11 columns">' + d.writer + '</div></div>');
       $('#writerSaved').show(200, function () {
          setTimeout(function () { $('#writerSaved').hide(100); }, 2000);
       });
@@ -72,9 +95,9 @@ function postAbbreviations(abbreviations, token) {
          if ($('#noAbbreviations').length > 0)
             $('#noAbbreviations').remove();
          $('#abbreviations').append('<div class="row" id="abbrev_' + d.id + '">' +
-            '<div class="small-2 large-1 columns text-right">' +
-            '<a href="javascript:void(0)" onclick="removeAbbreviation(' + d.id + ')" class="button alert tiny" title="Remove">' +
-            '<i class="icon-remove"></i></a></div><div class="small-10 large-11 columns">' + d.text + '</div></div>');
+            '<div class="small-1 columns">' +
+            '<a href="javascript:void(0)" onclick="removeAbbreviation(' + d.id + ')" title="Remove">' +
+            '<i class="icon-remove-circle" style="color:red;"></i></a></div><div class="small-11 columns">' + d.text + '</div></div>');
          $('#abbrevSaved').show(200, function () {
             setTimeout(function () { $('#abbrevSaved').hide(100); }, 2000);
          });

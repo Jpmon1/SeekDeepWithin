@@ -4,7 +4,7 @@
       url: '/Convert/RemoveRegex/',
       data: {
          text: $('#Text').val(),
-         regex: $('#regex').val()
+         regex: encodeURIComponent($('#regex').val())
       }
    }).done(function (data) {
       $('#Text').val(data.text);

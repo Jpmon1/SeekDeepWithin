@@ -1,6 +1,8 @@
 ﻿$(document).ready(function () {
    $('#hideSaved').hide();
    $('#contentsSaved').hide();
+   var topNavHeight = $('#siteNavDiv').height();
+   $('#contentsNavBar').stick_in_parent({ offset_top: topNavHeight });
 
    $('#hideSwitch').change(function () {
       var ref = $('#contentTree').jstree(true);
@@ -93,7 +95,10 @@
       'core': {
          'animation': 0,
          "multiple": false,
-         'check_callback': true
+         'check_callback': true,
+         'themes': {
+            'responsive': true
+         }
       },
       'types': {
          '#': {
@@ -157,6 +162,12 @@ function createToc() {
    }).fail(function (d) {
       alert(d.responseText);
    });
+}
+
+function collapseAll() {
+   var ref = $('#contentTree').jstree(true);
+   var root = ref.get_node('root');
+   ref.close_all(root);
 }
 
 function createSubBook() {

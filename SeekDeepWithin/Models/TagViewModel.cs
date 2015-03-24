@@ -10,6 +10,7 @@ namespace SeekDeepWithin.Models
    {
       private readonly Dictionary<int, string> m_Terms;
       private readonly Dictionary<int, string> m_Books;
+      private readonly Dictionary <int, string> m_SubBooks;
 
       /// <summary>
       /// Initializes a new tag view model.
@@ -17,7 +18,8 @@ namespace SeekDeepWithin.Models
       public TagViewModel ()
       {
          this.m_Terms = new Dictionary <int, string> ();
-         this.m_Books = new Dictionary <int, string> ();
+         this.m_Books = new Dictionary<int, string> ();
+         this.m_SubBooks = new Dictionary<int, string> ();
       }
 
       /// <summary>
@@ -45,5 +47,10 @@ namespace SeekDeepWithin.Models
       /// Gets the collection of books that belong to this tag.
       /// </summary>
       public Dictionary<int, string> Books { get { return this.m_Books; } }
+
+      /// <summary>
+      /// Gets the collection of sub books that belong to this tag.
+      /// </summary>
+      public Dictionary <int, string> SubBooks { get { return m_SubBooks; } }
    }
 }
