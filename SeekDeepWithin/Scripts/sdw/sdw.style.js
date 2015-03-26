@@ -55,6 +55,7 @@ function style_post(action, done) {
             startIndex: startIndex,
             endIndex: endIndex,
             id: $('#editId').val(),
+            spansMultiple: $('#multiSpan').prop('checked'),
             startStyle: encodeURIComponent($('#styleStart').val()),
             endStyle: encodeURIComponent($('#styleEnd').val()),
             parentId: $('#itemId').val()

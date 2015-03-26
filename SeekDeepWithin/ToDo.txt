@@ -4,6 +4,8 @@ Filter books/terms by tags, etc.
 Edit number and order of chapter
 Search with tag filter
 Notes
+Images...
+Links/Styles in footers/headers
 Show TOC on large screens
 Read - View paragraph and numbers.
 View Search as List/Tree
@@ -12,6 +14,7 @@ Facebook/twitter/email share
 Adiminstration Page
 Bookmarks
 Favorites
+Sub book alias
 User preferences
    View footers at end or after verse
    if editor show edit item

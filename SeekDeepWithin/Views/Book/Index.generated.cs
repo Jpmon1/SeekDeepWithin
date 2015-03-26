@@ -118,7 +118,7 @@ WriteLiteral("\r\n");
             #line hidden
 WriteLiteral("         <div");
 
-WriteLiteral(" class=\"large-4 small-12 medium-6 columns\"");
+WriteLiteral(" class=\"large-4 small-12 medium-4 columns\"");
 
 WriteLiteral(">\r\n            <ul");
 
@@ -388,13 +388,13 @@ WriteLiteral("      ");
             #line hidden
 WriteLiteral("         <div");
 
-WriteLiteral(" class=\"large-4 medium-6 small-12 columns\"");
+WriteLiteral(" class=\"large-4 medium-4 small-12 columns\"");
 
 WriteLiteral(">&nbsp;</div>\r\n");
 
 WriteLiteral("         <div");
 
-WriteLiteral(" class=\"large-4 medium-6 small-12 columns\"");
+WriteLiteral(" class=\"large-4 medium-4 small-12 columns\"");
 
 WriteLiteral(">&nbsp;</div>\r\n");
 
@@ -416,7 +416,7 @@ WriteLiteral("      ");
             #line hidden
 WriteLiteral("         <div");
 
-WriteLiteral(" class=\"large-4 medium-6 small-12 columns\"");
+WriteLiteral(" class=\"large-4 medium-4 small-12 columns\"");
 
 WriteLiteral(">&nbsp;</div>\r\n");
 

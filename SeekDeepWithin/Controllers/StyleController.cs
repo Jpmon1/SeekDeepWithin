@@ -57,7 +57,8 @@ namespace SeekDeepWithin.Controllers
                Start = style.Style.Start,
                End = style.Style.End,
                StartIndex = style.StartIndex,
-               EndIndex = style.EndIndex
+               EndIndex = style.EndIndex,
+               SpansMultiple = style.Style.SpansMultiple
             });
          }
          return View ("Edit", viewModel);
@@ -92,7 +93,8 @@ namespace SeekDeepWithin.Controllers
                Start = style.Style.Start,
                End = style.Style.End,
                StartIndex = style.StartIndex,
-               EndIndex = style.EndIndex
+               EndIndex = style.EndIndex,
+               SpansMultiple = style.Style.SpansMultiple
             });
          }
          return View ("Edit", viewModel);
@@ -347,11 +349,11 @@ namespace SeekDeepWithin.Controllers
       {
          var start = HttpUtility.UrlDecode (viewModel.StartStyle) ?? "<span>";
          var end = HttpUtility.UrlDecode (viewModel.EndStyle) ?? "</span>";
-         var styles = this.m_Db.Styles.Get (s => s.Start == start  && s.End == end);
+         var styles = this.m_Db.Styles.Get (s => s.Start == start  && s.End == end && s.SpansMultiple == viewModel.SpansMultiple);
          var style = styles.FirstOrDefault ();
          if (style == null)
          {
-            style = new Style {Start = start, End = end};
+            style = new Style {Start = start, End = end, SpansMultiple = viewModel.SpansMultiple};
             this.m_Db.Styles.Insert (style);
             this.m_Db.Save ();
          }

@@ -56,12 +56,17 @@
       
       
       <div class="row">
-         <div class="small-12 large-6 columns">
+         <div class="small-12 large-4 columns">
             <input type="submit" value="Save" class="button expand" />
          </div>
-         <div class="small-12 large-6 columns">
+         <div class="small-6 large-4 columns">
             <a href="javascript:void(0)" onclick="setAsDefaultVersion()" class="button expand">
-               Set as Default <i id="saveCheck" class="icon-ok-sign"></i>
+               Set as Default <i id="saveCheck" class="icon-ok-sign" style="display: none;"></i>
+            </a>
+         </div>
+         <div class="small-6 large-4 columns">
+            <a href="@Url.Action("EditSource", "Source", new {id=Model.Id, type="version"}, Request.Url.Scheme)" class="button expand secondary">
+               Edit Source
             </a>
          </div>
       </div>
@@ -71,5 +76,5 @@
 
 @section Scripts {
    @Scripts.Render("~/bundles/jqueryval")
-   @Scripts.Render("~/bundles/versionedit")
+   @Scripts.Render("~/bundles/sdw.versionedit")
 }

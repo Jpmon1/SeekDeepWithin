@@ -268,6 +268,9 @@ function link_add(id, start, end, url) {
 function link_post(action, linkUrl, done) {
    var startIndex = $('#startIndex').val();
    var endIndex = $('#endIndex').val();
+   var anchor = $('#linkAnchor').val();
+   if (anchor.length > 0)
+      linkUrl = linkUrl + '#' + anchor;
    if (startIndex != '' && endIndex != '') {
       var form = $('#__AjaxAntiForgeryForm');
       var token = $('input[name="__RequestVerificationToken"]', form).val();

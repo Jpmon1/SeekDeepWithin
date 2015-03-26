@@ -16,6 +16,11 @@
       public string Start { get; set; }
 
       /// <summary>
+      /// Gets or Sets if this style spans multiple items (entries/passages).
+      /// </summary>
+      public bool SpansMultiple { get; set; }
+
+      /// <summary>
       /// Gets or Sets the end of the style.
       /// </summary>
       public string End { get; set; }

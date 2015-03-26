@@ -44,6 +44,7 @@ function postNewPassage(text, order, number, complete) {
          text: text,
          Order: order,
          Number: number,
+         IsInsert: $('#isInsert').prop('checked'),
          parentId: $('#ParentId').val()
       }
    }).done(complete).fail(function (data) {

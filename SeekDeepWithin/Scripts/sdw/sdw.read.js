@@ -15,7 +15,7 @@
       });
    var topNavHeight = $('#siteNavDiv').height();
    var readNavHeight = $('#readNavBar').height();
-   resizeReadMenu(topNavHeight, readNavHeight);
+   resizeReadMenu(readMenu, topNavHeight, readNavHeight);
    $('#readNavBar').stick_in_parent({ offset_top: topNavHeight });
    readMenu.stick_in_parent({ offset_top: topNavHeight + readNavHeight })
       .on("sticky_kit:stick", function () {

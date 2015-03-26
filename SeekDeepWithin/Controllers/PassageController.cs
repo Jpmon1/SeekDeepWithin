@@ -55,6 +55,16 @@ namespace SeekDeepWithin.Controllers
          if (ModelState.IsValid)
          {
             var chapter = this.m_Db.SubBookChapters.Get (viewModel.ParentId);
+            if (viewModel.IsInsert)
+            {
+               foreach (var passage in chapter.Passages)
+               {
+                  if (passage.Order >= viewModel.Order)
+                     passage.Order++;
+                  if (passage.Number >= viewModel.Number)
+                     passage.Number++;
+               }
+            }
             var passageEntry = new PassageEntry
             {
                Chapter = chapter,

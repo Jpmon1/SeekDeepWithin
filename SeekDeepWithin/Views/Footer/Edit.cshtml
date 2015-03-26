@@ -30,7 +30,7 @@
 </div>
 
 <div class="row">
-   <div class="small-12 large-6 columns">
+   <div class="small-12 medium-6 large-6 columns">
       <ul class="pricing-table" id="footerList">
          <li class="title">Current Footers</li>
          @foreach (var footer in Model.Items) {
@@ -43,7 +43,7 @@
          }
       </ul>
    </div>
-   <div class="small-12 large-6 columns">
+   <div class="small-12 medium-6 large-6 columns">
       <div class="row">
          <div class="small-12 large-12 columns">
             <label for="hfText">Footer Text</label>
@@ -52,7 +52,7 @@
       </div>
 
       <div class="row">
-         <div class="small-12 large-4 columns">
+         <div class="small-12 medium-6 large-4 columns">
             <label for="hfJustify">Justify</label>
             <select id="hfJustify" name="hfJustify">
                <option id="justifyLeft" value="0" selected="selected">Left</option>
@@ -61,19 +61,19 @@
             </select>
          </div>
 
-         <div class="small-12 large-4 columns">
+         <div class="small-12 medium-6 large-4 columns">
             <label for="hfIndex">Index</label>
             <input type="number" value="" id="hfIndex" name="hfIndex" />
          </div>
 
-         <div class="small-6 large-2 columns text-center">
+         <div class="small-6 medium-6 large-2 columns text-center" style="margin-bottom: 1rem">
             <label for="hfIsBold"><i class="icon-bold"></i> Bold</label>
             <div class="switch">
                <input type="checkbox" id="hfIsBold" name="hfIsBold" />
                <label for="hfIsBold">Bold</label>
             </div>
          </div>
-         <div class="small-6 large-2 columns text-center">
+         <div class="small-6 medium-6 large-2 columns text-center" style="margin-bottom: 1rem">
             <label for="hfIsItalic"><i class="icon-italic"></i> Italic</label>
             <div class="switch">
                <input type="checkbox" id="hfIsItalic" name="hfIsItalic" />
@@ -139,21 +139,24 @@
       }
    </div>
    <div class="small-6 medium-3 large-3 columns">
-      <a href="@Url.Action("Edit" + Model.ItemType, "Style", new {id = Model.ItemId}, Request.Url.Scheme)" class="button secondary expand">
-         <i class="icon-paintroll"></i> Edit Styles
-      </a>
-   </div>
-   <div class="small-6 medium-3 large-3 columns">
       <a href="@Url.Action("Edit", "Header", new {id=Model.ItemId, type=Model.ItemType}, Request.Url.Scheme)" class="button secondary expand">
          <i class="icon-notificationbottom"></i> Edit Headers
       </a>
    </div>
    @if (Model.ItemType != "Chapter") {
       <div class="small-6 medium-3 large-3 columns">
+         <a href="@Url.Action("Edit" + Model.ItemType, "Style", new {id = Model.ItemId}, Request.Url.Scheme)" class="button secondary expand">
+            <i class="icon-paintroll"></i> Edit Styles
+         </a>
+      </div>
+      <div class="small-6 medium-3 large-3 columns">
          <a href="@Url.Action("Edit" + Model.ItemType, "Link", new {id = Model.ItemId}, Request.Url.Scheme)" class="button secondary expand">
             <i class="icon-link"></i> Edit Links
          </a>
       </div>
+   } else {
+      <div class="small-6 medium-3 large-3 columns"></div>
+      <div class="small-6 medium-3 large-3 columns"></div>
    }
 </div>
 

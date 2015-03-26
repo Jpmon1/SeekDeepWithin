@@ -67,7 +67,8 @@ namespace SeekDeepWithin.Models
                StartIndex = style.StartIndex,
                EndIndex = style.EndIndex,
                Start = style.Style.Start,
-               End = style.Style.End
+               End = style.Style.End,
+               SpansMultiple = style.Style.SpansMultiple
             });
          }
 

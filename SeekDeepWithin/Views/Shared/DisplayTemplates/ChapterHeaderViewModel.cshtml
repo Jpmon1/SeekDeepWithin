@@ -11,6 +11,6 @@
 }
 <div class="row">
    <div class="small-12 large-12 columns @align" style="@style">
-      <h4>@Html.Raw(HtmlSanitizer.Sanitize (Model.Text))</h4>
+      @Html.Raw(HtmlSanitizer.Sanitize (Model.Text))
    </div>
 </div>

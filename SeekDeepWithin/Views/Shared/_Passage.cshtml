@@ -1,4 +1,5 @@
 ﻿@using System.Globalization
+@using System.Net.Configuration
 @model SeekDeepWithin.Models.PassageViewModel
 
 @{
@@ -12,6 +13,11 @@
    }
    var id = Model.EntryId.ToString(CultureInfo.InvariantCulture);
 }
+
+@foreach (var style in Model.Styles.Where (s => s.SpansMultiple && !string.IsNullOrWhiteSpace (s.Start))) {
+   @Html.Raw(style.Start)
+}
+
 @foreach (var header in Model.Headers) {
    <div class="row">
       @if (Model.Number > 0) { <div class="small-4 medium-2 large-1 columns">&nbsp;</div> }
@@ -27,6 +33,7 @@
          <blockquote>
             @Html.ActionLink(Model.Number.ToString(CultureInfo.InvariantCulture), "Index", "Passage", new { entryId = Model.EntryId }, null)
          </blockquote>
+         <a class="anchor" id="num_@Model.Number"></a>
       </div>
    }
    <div class="small-@smallSpan medium-@mediumSpan large-@largeSpan columns">
@@ -34,11 +41,21 @@
    </div>
 </div>
 
-@foreach (var footer in Model.Footers) {
-   <div class="row">
-      @if (Model.Number > 0) { <div class="small-4 medium-2 large-1 columns">&nbsp;</div> }
-      <div class="small-@smallSpan medium-@mediumSpan large-@largeSpan columns footer">
-         @Html.Partial("_HeaderFooter", footer)
-      </div>
-   </div>
+@if (Model.Footers.Count > 0) {
+       <div class="row">
+          @if (Model.Number > 0) {
+             <div class="small-4 medium-2 large-1 columns">&nbsp;</div>
+          }
+          <div class="small-@smallSpan medium-@mediumSpan large-@largeSpan columns">
+             <div class="alert-box secondary">
+                @foreach (var footer in Model.Footers) {
+                   @Html.Partial("_HeaderFooter", footer)
+                }
+             </div>
+          </div>
+    </div>
+}
+
+@foreach (var style in Model.Styles.Where (s => s.SpansMultiple && !string.IsNullOrWhiteSpace (s.End))) {
+   @Html.Raw(style.End)
 }

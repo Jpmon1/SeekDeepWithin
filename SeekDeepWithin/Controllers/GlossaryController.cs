@@ -150,6 +150,14 @@ namespace SeekDeepWithin.Controllers
          if (ModelState.IsValid)
          {
             var item = this.m_Db.GlossaryItems.Get (viewModel.ParentId);
+            if (viewModel.IsInsert)
+            {
+               foreach (var entry in item.Entries)
+               {
+                  if (entry.Order >= viewModel.Order)
+                     entry.Order++;
+               }
+            }
             var glossaryEntry = new GlossaryEntry
             {
                Order = viewModel.Order,

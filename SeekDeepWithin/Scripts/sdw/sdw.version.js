@@ -1,7 +1,4 @@
-﻿$(document).ready(function() {
-   $('#saveCheck').hide();
-});
-
+﻿
 function setAsDefaultVersion() {
    var form = $('#__AjaxAntiForgeryForm');
    var token = $('input[name="__RequestVerificationToken"]', form).val();

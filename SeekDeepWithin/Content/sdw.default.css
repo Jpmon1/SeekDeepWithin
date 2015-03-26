@@ -1,8 +1,4 @@
-﻿.footer {
-   padding: 0 2rem;
-}
-
-.pricing-table .title {
+﻿.pricing-table .title {
    background-color: #f2f2f2;
    font-weight: bold;
    color: black;
@@ -24,7 +20,13 @@
   border-right: solid 1px #C7C7C7;
 }
 .right-small {
-  border-left: solid 1px #C7C7C7;
+   border-left: solid 1px #C7C7C7;
+}
+a.anchor {
+   display: block;
+    position: relative;
+     top: -150px;
+      visibility: hidden;
 }
 
 .autocomplete-suggestions { border: 1px solid #999; background: #FFF; overflow: auto; }

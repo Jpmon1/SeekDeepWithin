@@ -32,7 +32,7 @@
       </nav>
 
       <aside class="left-off-canvas-menu">
-         <ul class="off-canvas-list">
+         <ul class="off-canvas-list" id="itemList">
             <li><label>Passages</label></li>
             @foreach (var passage in Model.Passages) {
                var len = passage.Text.Length > 20 ? 20 : passage.Text.Length;
@@ -52,7 +52,7 @@
          </div>
 
          <div class="row">
-            <div class="small-12 large-6 columns">
+            <div class="small-12 medium-6 large-6 columns">
                <div class="row collapse">
                   <div class="small-3 large-2 columns">
                      <span class="prefix">Number</span>
@@ -62,7 +62,7 @@
                   </div>
                </div>
             </div>
-            <div class="small-12 large-6 columns">
+            <div class="small-12 medium-6 large-6 columns">
                <div class="row collapse">
                   <div class="small-3 large-2 columns">
                      <span class="prefix">Order</span>
@@ -88,6 +88,23 @@
             <div class="small-12 large-2 columns"></div>
          </div>
 
+         <div class="row">
+            <div class="small-6 pagination-centered columns">
+               <ul class="pagination" role="menubar" aria-label="Pagination" style="width: 100%">
+                  <li class="arrow">
+                     <a href="javascript:void(0)" onclick="passage_previous();">&laquo; Previous Item</a>
+                  </li>
+               </ul>
+            </div>
+            <div class="small-6 pagination-centered columns">
+               <ul class="pagination" role="menubar" aria-label="Pagination" style="width: 100%">
+                  <li class="arrow">
+                     <a href="javascript:void(0)" onclick="passage_next();">Next Item &raquo;</a>
+                  </li>
+               </ul>
+            </div>
+         </div>
+
          <hr/>
 
          <div class="row">
@@ -106,27 +123,31 @@
          </div>
 
          <div class="row">
-            <div class="small-6 large-3 columns">
+            <div class="small-6 medium-3 large-3 columns">
                <a href="@Url.Action("Read", "Chapter", new {id=Model.Id}, Request.Url.Scheme)" class="button expand secondary">
                   <i class="icon-preview"></i> Read
                </a>
             </div>
-            <div class="small-6 large-3 columns">
-               <a href="@Url.Action("Edit", "Header", new{id=Model.Id, type="Chapter"})" class="button expand">
-                  <i class="icon-editalt"></i> Edit Chapter Headers
-               </a>
-            </div>
-            <div class="small-6 large-3 columns">
-               <a href="@Url.Action("Edit", "Footer", new{id=Model.Id, type="Chapter"})" class="button expand">
-                  <i class="icon-editalt"></i> Edit Chapter Footers
-               </a>
-            </div>
             @if (Request.IsAuthenticated && User.IsInRole ("Creator")) {
-               <div class="small-6 large-3 columns">
+               <div class="small-6 medium-3 large-3 columns">
                   <a href="@Url.Action("Add", "Chapter", new {id = Model.Id}, Request.Url.Scheme)" class="button expand success">
                      <i class="icon-plus"></i> Add Passages
                   </a>
                </div>
+            }
+            <div class="small-6 medium-3 large-3 columns">
+               <a href="@Url.Action("Edit", "Header", new{id=Model.Id, type="Chapter"})" class="button expand">
+                  <i class="icon-editalt"></i> Edit Chapter Headers
+               </a>
+            </div>
+            <div class="small-6 medium-3 large-3 columns">
+               <a href="@Url.Action("Edit", "Footer", new{id=Model.Id, type="Chapter"})" class="button expand">
+                  <i class="icon-editalt"></i> Edit Chapter Footers
+               </a>
+            </div>
+            @if (!Request.IsAuthenticated || !User.IsInRole ("Creator"))
+            {
+               <div class="small-6 medium-3 large-3 columns"></div>
             }
          </div>
 

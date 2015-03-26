@@ -34,6 +34,7 @@ function postNewEntry(text, order, complete) {
       data: {
          __RequestVerificationToken: token,
          text: text,
+         IsInsert: $('#isInsert').prop('checked'),
          parentId: $('#ParentId').val(),
          Order: order
       }

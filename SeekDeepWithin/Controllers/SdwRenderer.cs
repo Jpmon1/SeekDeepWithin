@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using SeekDeepWithin.Models;
 
 namespace SeekDeepWithin.Controllers
@@ -59,7 +60,7 @@ namespace SeekDeepWithin.Controllers
 
          if (this.DoStyles)
          {
-            foreach (var style in renderable.Styles)
+            foreach (var style in renderable.Styles.Where(s => !s.SpansMultiple))
                this.Insert (style.Start, style.StartIndex, style.End, style.EndIndex);
          }
 

@@ -77,3 +77,27 @@ function passage_get(id) {
       $('#modalText').text('An error occured - ' + data.responseText);
    });
 }
+
+function passage_next() {
+   var entryId = $('#editEntryId').text();
+   var item = $('#item_' + entryId);
+   if (item.length > 0) {
+      var nextItem = item.next();
+      if (nextItem.length > 0) {
+         var id = nextItem.attr('id');
+         passage_get(id.substring(5));
+      }
+   }
+}
+
+function passage_previous() {
+   var entryId = $('#editEntryId').text();
+   var item = $('#item_' + entryId);
+   if (item.length > 0) {
+      var prevItem = item.prev();
+      if (prevItem.length > 0) {
+         var id = prevItem.attr('id');
+         passage_get(id.substring(5));
+      }
+   }
+}

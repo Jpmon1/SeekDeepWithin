@@ -71,3 +71,27 @@ function entry_delete() {
       $('#modalText').text('An error occured - ' + data.responseText);
    });
 }
+
+function entry_next() {
+   var entryId = $('#editEntryId').text();
+   var item = $('#item_' + entryId);
+   if (item.length > 0) {
+      var nextItem = item.next();
+      if (nextItem.length > 0) {
+         var id = nextItem.attr('id');
+         entry_get(id.substring(5));
+      }
+   }
+}
+
+function entry_previous() {
+   var entryId = $('#editEntryId').text();
+   var item = $('#item_' + entryId);
+   if (item.length > 0) {
+      var prevItem = item.prev();
+      if (prevItem.length > 0) {
+         var id = prevItem.attr('id');
+         entry_get(id.substring(5));
+      }
+   }
+}
