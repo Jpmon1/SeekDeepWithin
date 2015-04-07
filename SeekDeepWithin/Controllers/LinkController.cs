@@ -31,7 +31,7 @@ namespace SeekDeepWithin.Controllers
       }
 
       /// <summary>
-      /// Shows the edit page for styles.
+      /// Shows the edit page for links.
       /// </summary>
       /// <param name="id">Id of item to edit.</param>
       /// <returns>The edit page.</returns>
@@ -40,6 +40,13 @@ namespace SeekDeepWithin.Controllers
       {
          var viewModel = new LinkEditViewModel { ItemId = id, ItemType = "Passage", NextEntryId = -1, PreviousEntryId = -1 };
          var passage = this.m_Db.PassageEntries.Get (id);
+         var title = passage.Chapter.SubBook.Version.Title + " | ";
+         if (!passage.Chapter.SubBook.Hide)
+            title += passage.Chapter.SubBook.SubBook.Name + " | ";
+         if (!passage.Chapter.Hide)
+            title += passage.Chapter.Chapter.Name + ":";
+         title += passage.Number;
+         viewModel.Title = title;
          viewModel.ItemText = passage.Passage.Text;
          viewModel.ParentId = passage.Chapter.Id;
          var prev = passage.Chapter.Passages.FirstOrDefault (p => p.Order == (passage.Order - 1));
@@ -51,21 +58,12 @@ namespace SeekDeepWithin.Controllers
          renderable.Footers.Clear ();
          viewModel.RenderedText = new SdwRenderer ().Render (renderable);
          foreach (var link in passage.Passage.Links)
-         {
-            viewModel.Links.Add (new LinkViewModel
-            {
-               ItemId = link.Id,
-               LinkId = link.Link.Id,
-               Url = link.Link.Url,
-               StartIndex = link.StartIndex,
-               EndIndex = link.EndIndex
-            });
-         }
+            viewModel.Links.Add (new LinkViewModel (link));
          return View ("Edit", viewModel);
       }
 
       /// <summary>
-      /// Shows the edit page for styles.
+      /// Shows the edit page for links.
       /// </summary>
       /// <param name="id">Id of item to edit.</param>
       /// <returns>The edit page.</returns>
@@ -74,6 +72,7 @@ namespace SeekDeepWithin.Controllers
       {
          var viewModel = new LinkEditViewModel { ItemId = id, ItemType = "Entry", NextEntryId = -1, PreviousEntryId = -1 };
          var entry = this.m_Db.GlossaryEntries.Get (id);
+         viewModel.Title = entry.Item.Term.Name;
          viewModel.ItemText = entry.Text;
          viewModel.ParentId = entry.Item.Id;
          var prev = entry.Item.Entries.FirstOrDefault (e => e.Order == (entry.Order - 1));
@@ -85,21 +84,12 @@ namespace SeekDeepWithin.Controllers
          renderable.Footers.Clear ();
          viewModel.RenderedText = new SdwRenderer ().Render (renderable);
          foreach (var link in entry.Links)
-         {
-            viewModel.Links.Add (new LinkViewModel
-            {
-               ItemId = link.Id,
-               LinkId = link.Link.Id,
-               Url = link.Link.Url,
-               StartIndex = link.StartIndex,
-               EndIndex = link.EndIndex
-            });
-         }
+            viewModel.Links.Add (new LinkViewModel (link));
          return View ("Edit", viewModel);
       }
 
       /// <summary>
-      /// Shows the edit page for styles.
+      /// Shows the edit page for links.
       /// </summary>
       /// <param name="id">Id of item to edit.</param>
       /// <returns>The edit page.</returns>
@@ -111,14 +101,58 @@ namespace SeekDeepWithin.Controllers
          viewModel.ParentId = glossaryTerm.Id;
          foreach (var link in glossaryTerm.SeeAlsos)
          {
-            viewModel.Links.Add (new LinkViewModel
-            {
-               ItemId = link.Id,
-               LinkId = link.Link.Id,
-               Url = link.Link.Url,
-               Name = link.Name
-            });
+            var vm = new LinkViewModel (link) {Name = link.Name};
+            viewModel.Links.Add (vm);
          }
+         return View ("Edit", viewModel);
+      }
+
+      /// <summary>
+      /// Gets the link edit page for a footer.
+      /// </summary>
+      /// <param name="id">Id of footer.</param>
+      /// <param name="itemId">Parent item id.</param>
+      /// <param name="itemType">Type of parent item.</param>
+      /// <returns>The edit view.</returns>
+      public ActionResult EditFooter (int id, int itemId, string itemType)
+      {
+         var viewModel = new LinkEditViewModel
+         {
+            ItemId = id,
+            ParentId = itemId,
+            ItemType = itemType + "Footer",
+            NextEntryId = -1,
+            PreviousEntryId = -1
+         };
+         IFooter footer = null;
+         if (itemType.ToLower () == "chapter")
+         {
+            var chapter = this.m_Db.SubBookChapters.Get (itemId);
+            viewModel.Title = chapter.Chapter.Name;
+            footer = chapter.Footers.FirstOrDefault (f => f.Id == id);
+         }
+         if (itemType.ToLower () == "passage")
+         {
+            var passage = this.m_Db.PassageEntries.Get (itemId);
+            footer = passage.Footers.FirstOrDefault (f => f.Id == id);
+         }
+         if (itemType.ToLower () == "entry")
+         {
+            var entry = this.m_Db.GlossaryEntries.Get (itemId);
+            viewModel.Title = entry.Item.Term.Name;
+            footer = entry.Footers.FirstOrDefault (f => f.Id == id);
+         }
+         if (footer == null)
+         {
+            Response.StatusCode = 500;
+            return Json ("Invalid Data.", JsonRequestBehavior.AllowGet);
+         }
+         viewModel.ItemText = footer.Text;
+         foreach (var link in footer.LinkList)
+            viewModel.Links.Add (new LinkViewModel (link));
+         var renderable = new HeaderFooterViewModel (footer);
+         renderable.Styles.Clear();
+         viewModel.RenderedText = new SdwRenderer ().Render (renderable);
          return View ("Edit", viewModel);
       }
 
@@ -132,37 +166,69 @@ namespace SeekDeepWithin.Controllers
       /// <param name="openInNewWindow">True to open in new window.</param>
       /// <param name="linkUrl">The url of the link.</param>
       /// <param name="linkName">The name of the link .</param>
+      /// <param name="parentId">The parent id of the item.</param>
       /// <returns>Results</returns>
       [HttpPost]
       [ValidateAntiForgeryToken]
       [Authorize (Roles = "Editor")]
       public ActionResult Create (int itemId, string itemType, int startIndex, int endIndex, bool openInNewWindow,
-         string linkUrl, string linkName)
+         string linkUrl, string linkName, int? parentId)
       {
+         ILink rtnLink = null;
          var link = GetLink (linkUrl);
          if (itemType.ToLower () == "passage")
          {
             var passage = this.m_Db.PassageEntries.Get (itemId);
-            var pLink = new PassageLink { Link = link, StartIndex = startIndex, EndIndex = endIndex, OpenInNewWindow = openInNewWindow };
-            passage.Passage.Links.Add (pLink);
-            this.m_Db.Save ();
-            return Json (new { id = pLink.Id, startIndex, endIndex, linkUrl });
+            rtnLink = new PassageLink { Link = link, StartIndex = startIndex, EndIndex = endIndex, OpenInNewWindow = openInNewWindow };
+            passage.Passage.Links.Add ((PassageLink)rtnLink);
          }
-         if (itemType.ToLower () == "entry")
+         else if (itemType.ToLower () == "entry")
          {
             var entry = this.m_Db.GlossaryEntries.Get (itemId);
-            var eLink = new GlossaryEntryLink { Link = link, StartIndex = startIndex, EndIndex = endIndex, OpenInNewWindow = openInNewWindow };
-            entry.Links.Add (eLink);
-            this.m_Db.Save ();
-            return Json (new { id = eLink.Id, startIndex, endIndex, linkUrl });
+            rtnLink = new GlossaryEntryLink { Link = link, StartIndex = startIndex, EndIndex = endIndex, OpenInNewWindow = openInNewWindow };
+            entry.Links.Add ((GlossaryEntryLink)rtnLink);
          }
-         if (itemType.ToLower () == "seealso")
+         else if (itemType.ToLower () == "seealso")
          {
             var term = this.m_Db.GlossaryTerms.Get (itemId);
-            var tLink = new GlossarySeeAlso { Link = link, Term = term, Name = linkName };
-            term.SeeAlsos.Add (tLink);
+            rtnLink = new GlossarySeeAlso { Link = link, Term = term, Name = linkName };
+            term.SeeAlsos.Add ((GlossarySeeAlso)rtnLink);
+         }
+         else if (itemType.ToLower () == "passagefooter" && parentId.HasValue)
+         {
+            var passage = this.m_Db.PassageEntries.Get (parentId.Value);
+            var footer = passage.Footers.FirstOrDefault (f => f.Id == itemId);
+            if (footer != null)
+            {
+               rtnLink = new PassageFooterLink { Link = link, StartIndex = startIndex, EndIndex = endIndex, OpenInNewWindow = openInNewWindow };
+               footer.Links.Add ((PassageFooterLink)rtnLink);
+            }
+         }
+         else if (itemType.ToLower () == "entryfooter" && parentId.HasValue)
+         {
+            var entry = this.m_Db.GlossaryEntries.Get (parentId.Value);
+            var footer = entry.Footers.FirstOrDefault (f => f.Id == itemId);
+            if (footer != null)
+            {
+               rtnLink = new GlossaryFooterLink { Link = link, StartIndex = startIndex, EndIndex = endIndex, OpenInNewWindow = openInNewWindow };
+               footer.Links.Add ((GlossaryFooterLink)rtnLink);
+            }
+         }
+         else if (itemType.ToLower () == "chapterfooter" && parentId.HasValue)
+         {
+            var chapter = this.m_Db.SubBookChapters.Get (parentId.Value);
+            var footer = chapter.Footers.FirstOrDefault (f => f.Id == itemId);
+            if (footer != null)
+            {
+               rtnLink = new ChapterFooterLink { Link = link, StartIndex = startIndex, EndIndex = endIndex, OpenInNewWindow = openInNewWindow };
+               footer.Links.Add ((ChapterFooterLink)rtnLink);
+            }
+         }
+
+         if (rtnLink != null)
+         {
             this.m_Db.Save ();
-            return Json (new { id = tLink.Id, startIndex, endIndex, linkUrl });
+            return Json (new { id = rtnLink.Id, startIndex, endIndex, linkUrl });
          }
 
          Response.StatusCode = 500;
@@ -242,40 +308,71 @@ namespace SeekDeepWithin.Controllers
       }
 
       /// <summary>
-      /// Deletes a style for the given item.
+      /// Deletes a link for the given item.
       /// </summary>
-      /// <param name="id">Id of style to get.</param>
+      /// <param name="id">Id of link to get.</param>
       /// <param name="itemId">Id of parent item.</param>
       /// <param name="itemType">Type of parent item.</param>
+      /// <param name="parentId">The parent id of the item.</param>
       /// <returns>Results.</returns>
       [HttpPost]
       [ValidateAntiForgeryToken]
       [Authorize (Roles = "Editor")]
-      public ActionResult Delete (int id, int itemId, string itemType)
+      public ActionResult Delete (int id, int itemId, string itemType, int? parentId)
       {
          if (itemType.ToLower () == "passage")
          {
             var passage = this.m_Db.PassageEntries.Get (itemId);
-            var pLink = passage.Passage.Links.FirstOrDefault (s => s.Id == id);
-            if (pLink == null)
-               return Json ("No style to delete.");
-            passage.Passage.Links.Remove (pLink);
+            var link = passage.Passage.Links.FirstOrDefault (s => s.Id == id);
+            if (link != null)
+               passage.Passage.Links.Remove (link);
          }
          else if (itemType.ToLower () == "entry")
          {
             var entry = this.m_Db.GlossaryEntries.Get (itemId);
-            var eLink = entry.Links.FirstOrDefault (s => s.Id == id);
-            if (eLink == null)
-               return Json ("No style to delete.");
-            entry.Links.Remove (eLink);
+            var link = entry.Links.FirstOrDefault (s => s.Id == id);
+            if (link != null)
+               entry.Links.Remove (link);
          }
          else if (itemType.ToLower () == "seealso")
          {
             var term = this.m_Db.GlossaryTerms.Get (itemId);
-            var tLink = term.SeeAlsos.FirstOrDefault (s => s.Id == id);
-            if (tLink == null)
-               return Json ("No style to delete.");
-            term.SeeAlsos.Remove (tLink);
+            var link = term.SeeAlsos.FirstOrDefault (s => s.Id == id);
+            if (link != null)
+               term.SeeAlsos.Remove (link);
+         }
+         else if (itemType.ToLower () == "passagefooter" && parentId.HasValue)
+         {
+            var passage = this.m_Db.PassageEntries.Get (parentId.Value);
+            var footer = passage.Footers.FirstOrDefault (f => f.Id == itemId);
+            if (footer != null)
+            {
+               var link = footer.Links.FirstOrDefault (s => s.Id == id);
+               if (link != null)
+                  footer.Links.Remove (link);
+            }
+         }
+         else if (itemType.ToLower () == "entryfooter" && parentId.HasValue)
+         {
+            var entry = this.m_Db.GlossaryEntries.Get (parentId.Value);
+            var footer = entry.Footers.FirstOrDefault (f => f.Id == itemId);
+            if (footer != null)
+            {
+               var link = footer.Links.FirstOrDefault (s => s.Id == id);
+               if (link != null)
+                  footer.Links.Remove (link);
+            }
+         }
+         else if (itemType.ToLower () == "chapterfooter" && parentId.HasValue)
+         {
+            var chapter = this.m_Db.SubBookChapters.Get (parentId.Value);
+            var footer = chapter.Footers.FirstOrDefault (f => f.Id == itemId);
+            if (footer != null)
+            {
+               var link = footer.Links.FirstOrDefault (s => s.Id == id);
+               if (link != null)
+                  footer.Links.Remove (link);
+            }
          }
          else
          {
@@ -287,64 +384,82 @@ namespace SeekDeepWithin.Controllers
       }
 
       /// <summary>
-      /// Gets a style for the given item.
+      /// Gets a link for the given item.
       /// </summary>
-      /// <param name="id">Id of style to get.</param>
+      /// <param name="id">Id of link to get.</param>
       /// <param name="itemId">Id of parent item.</param>
       /// <param name="itemType">Type of parent item.</param>
+      /// <param name="parentId">The parent id of the item.</param>
       /// <returns>Results.</returns>
-      public ActionResult Get (int id, int itemId, string itemType)
+      public ActionResult Get (int id, int itemId, string itemType, int? parentId)
       {
+         ILink link = null;
+         var name = string.Empty;
          if (itemType.ToLower () == "passage")
          {
             var passage = this.m_Db.PassageEntries.Get (itemId);
-            var pLink = passage.Passage.Links.FirstOrDefault (s => s.Id == id);
-            if (pLink != null)
-               return Json (new
-               {
-                  id = pLink.Id,
-                  startIndex = pLink.StartIndex,
-                  endIndex = pLink.EndIndex,
-                  url = pLink.Link.Url
-               }, JsonRequestBehavior.AllowGet);
+            link = passage.Passage.Links.FirstOrDefault (s => s.Id == id);
          }
          else if (itemType.ToLower () == "entry")
          {
             var entry = this.m_Db.GlossaryEntries.Get (itemId);
-            var eLink = entry.Links.FirstOrDefault (s => s.Id == id);
-            if (eLink != null)
-               return Json (new
-               {
-                  id = eLink.Id,
-                  startIndex = eLink.StartIndex,
-                  endIndex = eLink.EndIndex,
-                  url = eLink.Link.Url
-               }, JsonRequestBehavior.AllowGet);
+            link = entry.Links.FirstOrDefault (s => s.Id == id);
          }
          else if (itemType.ToLower () == "seealso")
          {
             var term = this.m_Db.GlossaryTerms.Get (itemId);
-            var tLink = term.SeeAlsos.FirstOrDefault (s => s.Id == id);
-            if (tLink != null)
-               return Json (new
-               {
-                  id = tLink.Id,
-                  name = tLink.Name,
-                  url = tLink.Link.Url
-               }, JsonRequestBehavior.AllowGet);
+            var seeAlso = term.SeeAlsos.FirstOrDefault (s => s.Id == id);
+            if (seeAlso != null)
+            {
+               name = seeAlso.Name;
+               link = seeAlso;
+            }
+         }
+         else if (itemType.ToLower () == "passagefooter" && parentId.HasValue)
+         {
+            var passage = this.m_Db.PassageEntries.Get (parentId.Value);
+            var footer = passage.Footers.FirstOrDefault (f => f.Id == itemId);
+            if (footer != null)
+               link = footer.Links.FirstOrDefault (s => s.Id == id);
+         }
+         else if (itemType.ToLower () == "entryfooter" && parentId.HasValue)
+         {
+            var entry = this.m_Db.GlossaryEntries.Get (parentId.Value);
+            var footer = entry.Footers.FirstOrDefault (f => f.Id == itemId);
+            if (footer != null)
+               link = footer.Links.FirstOrDefault (s => s.Id == id);
+         }
+         else if (itemType.ToLower () == "chapterfooter" && parentId.HasValue)
+         {
+            var chapter = this.m_Db.SubBookChapters.Get (parentId.Value);
+            var footer = chapter.Footers.FirstOrDefault (f => f.Id == itemId);
+            if (footer != null)
+               link = footer.Links.FirstOrDefault (s => s.Id == id);
          }
 
+         if (link != null)
+         {
+            return Json (new
+            {
+               name,
+               id = link.Id,
+               startIndex = link.StartIndex,
+               endIndex = link.EndIndex,
+               url = link.Link.Url
+            }, JsonRequestBehavior.AllowGet);
+         }
          Response.StatusCode = 500;
          return Json ("Invalid Data.", JsonRequestBehavior.AllowGet);
       }
 
       /// <summary>
-      /// Renders the style for the given item.
+      /// Renders the link for the given item.
       /// </summary>
       /// <param name="itemId">Id of parent item.</param>
       /// <param name="itemType">Type of parent item.</param>
+      /// <param name="parentId">The parent id of the item.</param>
       /// <returns>Results.</returns>
-      public ActionResult Render (int itemId, string itemType)
+      public ActionResult Render (int itemId, string itemType, int? parentId)
       {
          IRenderable renderable = null;
          if (itemType.ToLower () == "passage")
@@ -357,6 +472,24 @@ namespace SeekDeepWithin.Controllers
             var entry = this.m_Db.GlossaryEntries.Get (itemId);
             renderable = new GlossaryEntryViewModel (entry, null);
          }
+         else if (itemType.ToLower () == "passagefooter" && parentId.HasValue)
+         {
+            var passage = this.m_Db.PassageEntries.Get (parentId.Value);
+            var footer = passage.Footers.FirstOrDefault (f => f.Id == itemId);
+            renderable = new HeaderFooterViewModel (footer);
+         }
+         else if (itemType.ToLower () == "entryfooter" && parentId.HasValue)
+         {
+            var entry = this.m_Db.GlossaryEntries.Get (parentId.Value);
+            var footer = entry.Footers.FirstOrDefault (f => f.Id == itemId);
+            renderable = new HeaderFooterViewModel (footer);
+         }
+         else if (itemType.ToLower () == "chapterfooter" && parentId.HasValue)
+         {
+            var chapter = this.m_Db.SubBookChapters.Get (parentId.Value);
+            var footer = chapter.Footers.FirstOrDefault (f => f.Id == itemId);
+            renderable = new HeaderFooterViewModel (footer);
+         }
 
          if (renderable == null)
          {
@@ -368,32 +501,6 @@ namespace SeekDeepWithin.Controllers
          renderable.Footers.Clear ();
          var html = new SdwRenderer ().Render (renderable);
          return Json (new { html }, JsonRequestBehavior.AllowGet);
-      }
-
-      /// <summary>
-      /// Gets the links for the given item id.
-      /// </summary>
-      /// <param name="id">Id of item to get links for.</param>
-      /// <returns>JSON object with links.</returns>
-      [AllowAnonymous]
-      public ActionResult GetLinksForEntry (int id)
-      {
-         var entry = this.m_Db.PassageEntries.Get (id);
-         var result = new
-         {
-            entryId = id,
-            passageText = entry.Passage.Text,
-            links = entry.Passage.Links.Select (l => new
-            {
-               id = l.Id,
-               url = l.Link.Url,
-               linkId = l.Link.Id,
-               endIndex = l.EndIndex,
-               startIndex = l.StartIndex,
-               openInNewWindow = l.OpenInNewWindow
-            })
-         };
-         return Json (result, JsonRequestBehavior.AllowGet);
       }
    }
 }

@@ -45,6 +45,11 @@ namespace SeekDeepWithin.Models
       public string RenderedText { get; set; }
 
       /// <summary>
+      /// Gets or Sets the title of what we are editing.
+      /// </summary>
+      public string Title { get; set; }
+
+      /// <summary>
       /// Gets the list of styles.
       /// </summary>
       public Collection<StyleViewModel> Styles { get { return this.m_Styles; } }

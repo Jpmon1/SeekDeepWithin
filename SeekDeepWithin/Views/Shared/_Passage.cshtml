@@ -1,12 +1,12 @@
 ﻿@using System.Globalization
-@using System.Net.Configuration
+@using SeekDeepWithin.Models
 @model SeekDeepWithin.Models.PassageViewModel
 
 @{
    var smallSpan = "12";
    var mediumSpan = "12";
    var largeSpan = "12";
-   if (Model.Number > 0) {
+   if (Model.DisplayType == VerseDisplayType.Number) {
       smallSpan = "10";
       mediumSpan = "11";
       largeSpan = "11";
@@ -20,7 +20,9 @@
 
 @foreach (var header in Model.Headers) {
    <div class="row">
-      @if (Model.Number > 0) { <div class="small-4 medium-2 large-1 columns">&nbsp;</div> }
+      @if (Model.DisplayType == VerseDisplayType.Number) {
+         <div class="small-4 medium-2 large-1 columns">&nbsp;</div>
+      }
       <div class="small-@smallSpan medium-@mediumSpan large-@largeSpan columns">
          @Html.Partial("_HeaderFooter", header)
       </div>
@@ -28,7 +30,7 @@
 }
 
 <div class="row" id="pass_@id" @if(Model.Number == 0 && Model.Footers.Count == 0){ @Html.Raw("style=\"padding-bottom: 0.9375rem\"") }>
-   @if (Model.Number > 0) {
+   @if (Model.DisplayType == VerseDisplayType.Number) {
       <div class="small-2 medium-1 large-1 columns">
          <blockquote>
             @Html.ActionLink(Model.Number.ToString(CultureInfo.InvariantCulture), "Index", "Passage", new { entryId = Model.EntryId }, null)
@@ -43,7 +45,7 @@
 
 @if (Model.Footers.Count > 0) {
        <div class="row">
-          @if (Model.Number > 0) {
+          @if (Model.DisplayType == VerseDisplayType.Number) {
              <div class="small-4 medium-2 large-1 columns">&nbsp;</div>
           }
           <div class="small-@smallSpan medium-@mediumSpan large-@largeSpan columns">

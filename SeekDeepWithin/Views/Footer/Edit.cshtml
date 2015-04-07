@@ -5,7 +5,7 @@
 @section styles {
    @Styles.Render("~/Content/css/slider")
 }
-<h3>Footer Edit</h3>
+<h3><small>footer edit</small> @Model.Title</h3>
 
 @using (Html.BeginForm (null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" })) {
    @Html.AntiForgeryToken()
@@ -53,32 +53,8 @@
 
       <div class="row">
          <div class="small-12 medium-6 large-4 columns">
-            <label for="hfJustify">Justify</label>
-            <select id="hfJustify" name="hfJustify">
-               <option id="justifyLeft" value="0" selected="selected">Left</option>
-               <option id="justifyCenter" value="1">Center</option>
-               <option id="justifyRight" value="2">Right</option>
-            </select>
-         </div>
-
-         <div class="small-12 medium-6 large-4 columns">
             <label for="hfIndex">Index</label>
             <input type="number" value="" id="hfIndex" name="hfIndex" />
-         </div>
-
-         <div class="small-6 medium-6 large-2 columns text-center" style="margin-bottom: 1rem">
-            <label for="hfIsBold"><i class="icon-bold"></i> Bold</label>
-            <div class="switch">
-               <input type="checkbox" id="hfIsBold" name="hfIsBold" />
-               <label for="hfIsBold">Bold</label>
-            </div>
-         </div>
-         <div class="small-6 medium-6 large-2 columns text-center" style="margin-bottom: 1rem">
-            <label for="hfIsItalic"><i class="icon-italic"></i> Italic</label>
-            <div class="switch">
-               <input type="checkbox" id="hfIsItalic" name="hfIsItalic" />
-               <label for="hfIsItalic">Italic</label>
-            </div>
          </div>
       </div>
 
@@ -91,15 +67,31 @@
       </div>
       <div class="row" id="rowUpdate" style="display: none;">
          <div class="small-4 columns">
-            <a href="javascript:void(0)" class="button success expand" onclick="footer_update();">
-               Update
+            <a href="javascript:void(0)" class="button success expand" onclick="footer_update();" title="Save Changes">
+               <i class="icon-savetodrive"></i> Save
             </a>
          </div>
          <div class="small-4 columns">
-            <a href="javascript:void(0)" class="button alert expand" onclick="footer_delete();">Delete</a>
+            <a href="javascript:void(0)" class="button alert expand" onclick="footer_delete();" title="Delete Footer">
+               <i class="icon-remove-circle"></i> Delete
+            </a>
          </div>
          <div class="small-4 columns">
-            <a href="javascript:void(0)" class="button secondary expand" onclick="footer_new();">Cancel</a>
+            <a href="javascript:void(0)" class="button secondary expand" onclick="footer_new();" title="Cancel Changes">
+               <i class="icon-pageback"></i> Cancel
+            </a>
+         </div>
+      </div>
+      <div class="row" id="rowEdit" style="display: none;">
+         <div class="small-6 columns">
+            <a href="javascript:void(0)" class="button secondary expand" onclick="footer_link();" title="Save Changes">
+               <i class="icon-link"></i> Links
+            </a>
+         </div>
+         <div class="small-6 columns">
+            <a href="javascript:void(0)" class="button secondary expand" onclick="footer_style();" title="Delete Footer">
+               <i class="icon-paintroll"></i> Styles
+            </a>
          </div>
       </div>
    </div>

@@ -125,6 +125,9 @@
 });
 
 function createToc() {
+   $('#modalClose').hide();
+   $('#modalText').text('Saving Contents, please wait...');
+   $('#modal').foundation('reveal', 'open');
    var ref = $('#contentTree').jstree(true);
    var json = ref.get_json()[0];
    var contents = new Array(json.children.length);
@@ -156,11 +159,11 @@ function createToc() {
          contents: JSON.stringify(contents)
       }
    }).done(function () {
-      $('#contentsSaved').show(200, function () {
-         setTimeout(function () { $('#contentsSaved').hide(100); }, 2000);
-      });
+      $('#modalText').text('Contents Saved!');
+      setTimeout(function () { $('#modal').foundation('reveal', 'close'); }, 700);
    }).fail(function (d) {
-      alert(d.responseText);
+      $('#modalClose').show();
+      $('#modalText').text('An error occured - ' + d.responseText);
    });
 }
 

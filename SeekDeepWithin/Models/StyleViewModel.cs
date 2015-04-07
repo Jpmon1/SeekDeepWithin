@@ -1,10 +1,23 @@
-﻿namespace SeekDeepWithin.Models
+﻿using SeekDeepWithin.Pocos;
+
+namespace SeekDeepWithin.Models
 {
    /// <summary>
    /// View model for a style
    /// </summary>
    public class StyleViewModel
    {
+      public StyleViewModel (IStyle style)
+      {
+         this.Start = style.Style.Start;
+         this.StartIndex = style.StartIndex;
+         this.End = style.Style.End;
+         this.EndIndex = style.EndIndex;
+         this.SpansMultiple = style.Style.SpansMultiple;
+         this.ItemId = style.Id;
+         this.StyleId = style.Style.Id;
+      }
+
       /// <summary>
       /// Gets or Sets the id.
       /// </summary>

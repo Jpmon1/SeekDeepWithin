@@ -21,7 +21,7 @@
          <i class="icon-preview"></i> view term
       </a>
       @if (Request.IsAuthenticated && User.IsInRole ("Creator")) {
-         <a href="@Url.Action("Add", "Glossary", new {id=Model.Id, termId=Model.Term.Id}, Request.Url.Scheme)" class="button tiny success">
+         <a href="@Url.Action("Add", "Glossary", new {id=Model.Id}, Request.Url.Scheme)" class="button tiny success">
             <i class="icon-plus"></i> add entries
          </a>
       }
@@ -49,7 +49,7 @@
             @foreach (var entry in Model.Entries) {
                var len = entry.Text.Length > 25 ? 25 : entry.Text.Length;
                <li id="item_@entry.Id">
-                  <a href="#" onclick="entry_get(@entry.Id)">@entry.Text.Substring(0, len)...</a>
+                  <a href="#" onclick="entry_get(@entry.Id)"><small>@entry.Order</small> - @entry.Text.Substring(0, len)...</a>
                </li>
             }
          </ul>

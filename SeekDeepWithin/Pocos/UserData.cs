@@ -15,6 +15,11 @@ namespace SeekDeepWithin.Pocos
       public bool? ShowEditActions { get; set; }
 
       /// <summary>
+      /// Gets or Sets if we should highlight alernating rows while reading.
+      /// </summary>
+      public bool? HighlightAlternatingRows { get; set; }
+
+      /// <summary>
       /// Get or Sets the associated user profile.
       /// </summary>
       public virtual UserProfile UserProfile { get; set; }

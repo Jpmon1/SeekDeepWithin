@@ -24,6 +24,7 @@ Glossary Entry voting
 Book on amazon links
 Read multiple books
 Search while reading
+Search headers/footers.
 Definitions (Glossary entry ballons)
 Google/Facebook login
 Random Verse - Change to Daily
@@ -34,3 +35,6 @@ Api
 News/Updates
 Convert all action links to url.action with absolute uri
 Remove duplication between glossary entries and reading passages.
+Add tags and authors to terms with the same name.
+Remove chapter/read
+Remove glossary/term, create term controller

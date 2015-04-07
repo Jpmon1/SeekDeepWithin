@@ -1,4 +1,6 @@
-﻿namespace SeekDeepWithin.Pocos
+﻿using System.Collections.Generic;
+
+namespace SeekDeepWithin.Pocos
 {
    /// <summary>
    /// Interface for headers.
@@ -29,5 +31,10 @@
       /// Gets or Sets the header.
       /// </summary>
       string Text { get; set; }
+
+      /// <summary>
+      /// Gets the list of styles.
+      /// </summary>
+      IEnumerable<IStyle> StyleList { get; }
    }
 }

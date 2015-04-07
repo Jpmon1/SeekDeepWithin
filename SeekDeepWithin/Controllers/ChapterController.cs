@@ -62,6 +62,12 @@ namespace SeekDeepWithin.Controllers
          if (Request.UrlReferrer != null) TempData["RefUrl"] = Request.UrlReferrer.ToString ();
          var viewModel = new AddItemViewModel { ParentId = id, ItemType = ItemType.Passage };
          var chapter = this.m_Db.SubBookChapters.Get (id);
+         var title = chapter.SubBook.Version.Title + " | ";
+         if (!chapter.SubBook.Hide)
+            title += chapter.SubBook.SubBook.Name + " | ";
+         if (!chapter.Hide)
+            title += chapter.Chapter.Name;
+         viewModel.Title = title;
          if (chapter.Passages.Count > 0)
          {
             viewModel.Order = chapter.Passages.Max (p => p.Order) + 1;

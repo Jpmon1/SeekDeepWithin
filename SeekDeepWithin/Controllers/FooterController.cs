@@ -48,6 +48,13 @@ namespace SeekDeepWithin.Controllers
          if (type.ToLower () == "passage")
          {
             var passage = this.m_Db.PassageEntries.Get (id);
+            var title = passage.Chapter.SubBook.Version.Title + " | ";
+            if (!passage.Chapter.SubBook.Hide)
+               title += passage.Chapter.SubBook.SubBook.Name + " | ";
+            if (!passage.Chapter.Hide)
+               title += passage.Chapter.Chapter.Name + ":";
+            title += passage.Number;
+            viewModel.Title = title;
             viewModel.ItemText = passage.Passage.Text;
             viewModel.ParentId = passage.Chapter.Id;
             foreach (var footer in passage.Footers)
@@ -60,6 +67,7 @@ namespace SeekDeepWithin.Controllers
          else if (type.ToLower () == "entry")
          {
             var entry = this.m_Db.GlossaryEntries.Get (id);
+            viewModel.Title = entry.Item.Term.Name;
             viewModel.ParentId = entry.Item.Id;
             viewModel.ItemText = entry.Text;
             foreach (var footer in entry.Footers)
@@ -72,6 +80,12 @@ namespace SeekDeepWithin.Controllers
          else if (type.ToLower () == "chapter")
          {
             var chapter = this.m_Db.SubBookChapters.Get (id);
+            var title = chapter.SubBook.Version.Title + " | ";
+            if (!chapter.SubBook.Hide)
+               title += chapter.SubBook.SubBook.Name + " | ";
+            if (!chapter.Hide)
+               title += chapter.Chapter.Name;
+            viewModel.Title = title;
             viewModel.ParentId = id;
             foreach (var footer in chapter.Footers)
                viewModel.Items.Add(new HeaderFooterViewModel (footer));

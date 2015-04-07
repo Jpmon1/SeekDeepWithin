@@ -89,42 +89,39 @@ namespace SeekDeepWithin.Controllers
       {
          var term = this.m_Db.GlossaryTerms.Get (termId);
          if (Request.UrlReferrer != null) TempData["RefUrl"] = Request.UrlReferrer.ToString ();
-         return View (new GlossaryItemViewModel { Term = new GlossaryTermViewModel { Id = termId, Name = term.Name } });
+         return View (new GlossaryItemViewModel { Term = new GlossaryTermViewModel {Id = termId, Name = term.Name} });
       }
 
       /// <summary>
-      /// Posts a new entry.
+      /// Creates a new glossary item.
       /// </summary>
-      /// <param name="viewModel">Entry data.</param>
+      /// <param name="termId">The item's term id.</param>
+      /// <param name="sourceName">The item's term id.</param>
+      /// <param name="sourceUrl">The item's term id.</param>
       /// <returns>Creation result</returns>
       [HttpPost]
       [ValidateAntiForgeryToken]
       [Authorize (Roles = "Creator")]
-      public ActionResult CreateItem (GlossaryItemViewModel viewModel)
+      public ActionResult CreateItem (int termId, string sourceName, string sourceUrl)
       {
-         if (ModelState.IsValid)
-         {
-            var term = this.m_Db.GlossaryTerms.Get (viewModel.Term.Id);
-            var source = SourceController.GetSource (viewModel.SourceName, viewModel.SourceUrl, this.m_Db);
-            var item = new GlossaryItem { Term = term };
-            if (item.Sources == null)
-               item.Sources = new Collection<GlossaryItemSource> ();
-            item.Sources.Add (new GlossaryItemSource { GlossaryItem = item, Source = source });
-            this.m_Db.GlossaryItems.Insert (item);
-            this.m_Db.Save ();
-            return RedirectToAction ("Term", new { id = viewModel.Term.Id });
-         }
-         return View (viewModel);
+         var term = this.m_Db.GlossaryTerms.Get (termId);
+         var source = SourceController.GetSource (sourceName, sourceUrl, this.m_Db);
+         var item = new GlossaryItem { Term = term };
+         if (item.Sources == null)
+            item.Sources = new Collection<GlossaryItemSource> ();
+         item.Sources.Add (new GlossaryItemSource { GlossaryItem = item, Source = source });
+         this.m_Db.GlossaryItems.Insert (item);
+         this.m_Db.Save ();
+         return RedirectToAction ("Term", new { id = termId });
       }
 
       /// <summary>
       /// Gets the add entry view for a glossary item.
       /// </summary>
       /// <param name="id">The id of the glossary item to add entries for.</param>
-      /// <param name="termId">The id of the parent term.</param>
       /// <returns>The add entry view.</returns>
       [Authorize (Roles = "Creator")]
-      public ActionResult Add (int id, int termId)
+      public ActionResult Add (int id)
       {
          if (Request.UrlReferrer != null) TempData["RefUrl"] = Request.UrlReferrer.ToString ();
          var viewModel = new AddItemViewModel { ParentId = id, ItemType = ItemType.Entry };
@@ -133,7 +130,8 @@ namespace SeekDeepWithin.Controllers
             viewModel.Order = glossaryItem.Entries.Max (p => p.Order) + 1;
          else
             viewModel.Order = 1;
-         ViewBag.TermId = termId;
+         viewModel.Title = glossaryItem.Term.Name;
+         ViewBag.TermId = glossaryItem.Term.Id;
          return View (viewModel);
       }
 
@@ -216,16 +214,6 @@ namespace SeekDeepWithin.Controllers
       public ActionResult Term (int id)
       {
          var term = this.m_Db.GlossaryTerms.Get (id);
-         if (term.Items.Count == 1)
-         {
-            var source = term.Items.First ().Sources.FirstOrDefault ();
-            if (source != null && source.Source.Name == "|REDIRECT|")
-            {
-               TempData["RedirectTerm"] = term.Name;
-               TempData["RedirectTermId"] = id;
-               return Redirect (source.Source.Url);
-            }
-         }
          var viewModel = new GlossaryTermViewModel (term);
          return View (viewModel);
       }

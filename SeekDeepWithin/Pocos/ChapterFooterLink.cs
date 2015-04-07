@@ -1,12 +1,12 @@
 ﻿namespace SeekDeepWithin.Pocos
 {
    /// <summary>
-   /// Represents a link for a given passage.
+   /// Link for a chapter footer.
    /// </summary>
-   public class PassageLink : ILink
+   public class ChapterFooterLink : ILink
    {
       /// <summary>
-      /// Gets or Sets the id of the passage link.
+      /// Gets or Sets the id of the entry link.
       /// </summary>
       public int Id { get; set; }
 
@@ -26,13 +26,13 @@
       public bool OpenInNewWindow { get; set; }
 
       /// <summary>
-      /// Gets or Sets the passage.
-      /// </summary>
-      public virtual Passage Passage { get; set; }
-
-      /// <summary>
       /// Gets or Sets the link.
       /// </summary>
       public virtual Link Link { get; set; }
+
+      /// <summary>
+      /// Gets or Sets the footer.
+      /// </summary>
+      public virtual ChapterFooter Footer { get; set; }
    }
 }

@@ -24,13 +24,15 @@ function footer_edit(id) {
       $('#editId').val(id);
       $('#rowCreate').hide();
       $('#rowUpdate').show();
+      $('#rowEdit').show();
       $('#hfText').val(data.text);
       $('#hfIndex').val(data.index);
       $('#hfJustify').val(data.justify);
       $('#hfIsBold').prop('checked', data.isBold);
       $('#hfIsItalic').prop('checked', data.isItalic);
    }).fail(function (data) {
-      alert(data.responseText);
+      $('#modalClose').show();
+      $('#modalText').text('An error occured - ' + data.responseText);
    });
 }
 
@@ -94,10 +96,19 @@ function footer_GetData() {
 function footer_new() {
    $('#rowCreate').show();
    $('#rowUpdate').hide();
+   $('#rowEdit').hide();
    $('#hfText').val('');
    $('#editId').val('');
    $('#hfIndex').val(0);
    $('#hfJustify').val(0);
    $('#hfIsBold').prop('checked', false);
    $('#hfIsItalic').prop('checked', false);
+}
+
+function footer_style() {
+   window.location = '/Style/EditFooter?id=' + $('#editId').val() + '&itemId=' + $('#itemId').val() + '&itemType=' + $('#itemType').val();
+}
+
+function footer_link() {
+   window.location = '/Link/EditFooter?id=' + $('#editId').val() + '&itemId=' + $('#itemId').val() + '&itemType=' + $('#itemType').val();
 }

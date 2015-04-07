@@ -209,6 +209,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\ExtensionMethods.cs" />
+    <Compile Include="Controllers\ReadController.cs" />
     <Compile Include="Controllers\WriterController.cs" />
     <Compile Include="Controllers\BookController.cs" />
     <Compile Include="Controllers\DbHelper.cs" />
@@ -272,9 +273,13 @@
     <Compile Include="Models\SubBookViewModel.cs" />
     <Compile Include="DataAccess\UsersContext.cs" />
     <Compile Include="Models\TagViewModel.cs" />
+    <Compile Include="Models\VerseDisplayType.cs" />
     <Compile Include="Models\VersionContents.cs" />
     <Compile Include="Pocos\Abbreviation.cs" />
     <Compile Include="Pocos\AmazonItem.cs" />
+    <Compile Include="Pocos\ChapterFooterLink.cs" />
+    <Compile Include="Pocos\ChapterFooterStyle.cs" />
+    <Compile Include="Pocos\ChapterHeaderStyle.cs" />
     <Compile Include="Pocos\Comment.cs" />
     <Compile Include="Pocos\GlossaryAmazonItem.cs" />
     <Compile Include="Pocos\GlossaryEntry.cs" />
@@ -282,7 +287,15 @@
     <Compile Include="Pocos\GlossaryEntryHeader.cs" />
     <Compile Include="Pocos\GlossaryEntryLink.cs" />
     <Compile Include="Pocos\GlossaryEntryStyle.cs" />
+    <Compile Include="Pocos\GlossaryFooterLink.cs" />
+    <Compile Include="Pocos\GlossaryFooterStyle.cs" />
+    <Compile Include="Pocos\GlossaryHeaderStyle.cs" />
     <Compile Include="Pocos\GlossarySeeAlso.cs" />
+    <Compile Include="Pocos\ILink.cs" />
+    <Compile Include="Pocos\IStyle.cs" />
+    <Compile Include="Pocos\PassageFooterLink.cs" />
+    <Compile Include="Pocos\PassageFooterStyle.cs" />
+    <Compile Include="Pocos\PassageHeaderStyle.cs" />
     <Compile Include="Pocos\PassageLocation.cs" />
     <Compile Include="Pocos\SubBookChapter.cs" />
     <Compile Include="Pocos\SubBookTag.cs" />
@@ -606,6 +619,7 @@
     <Content Include="Views\Link\Edit.cshtml" />
     <Content Include="Views\Style\Edit.cshtml" />
     <Content Include="Views\Shared\_Modal.cshtml" />
+    <Content Include="Views\Read\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

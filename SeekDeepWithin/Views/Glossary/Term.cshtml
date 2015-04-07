@@ -19,6 +19,20 @@
    </div>
 </div>
 
+@if (TempData.ContainsKey ("RedirectTerm")) {
+   <div class="row">
+      <div class="small-12 columns">
+         <div class="alert-box info">
+            <em>Redirected from: 
+               <a href="@Url.Action("Term", "Glossary", new {id=TempData["RedirectTermId"]}, Request.Url.Scheme)">
+                  @TempData["RedirectTerm"]
+               </a>
+            </em>
+         </div>
+      </div>
+   </div>
+}
+
 <div class="row">
    <div class="small-12 large-9 columns">
       @if (Model.Items.Count == 0) {

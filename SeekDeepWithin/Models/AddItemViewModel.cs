@@ -41,5 +41,10 @@ namespace SeekDeepWithin.Models
       /// </summary>
       [Required]
       public int ParentId { get; set; }
+
+      /// <summary>
+      /// Gets or Sets the title we are adding for.
+      /// </summary>
+      public string Title { get; set; }
    }
 }

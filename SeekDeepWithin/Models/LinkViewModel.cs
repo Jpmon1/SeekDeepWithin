@@ -1,10 +1,22 @@
-﻿namespace SeekDeepWithin.Models
+﻿using SeekDeepWithin.Pocos;
+
+namespace SeekDeepWithin.Models
 {
    /// <summary>
    /// Represents a passage link.
    /// </summary>
    public class LinkViewModel
    {
+      public LinkViewModel (ILink link)
+      {
+         this.ItemId = link.Id;
+         this.LinkId = link.Link.Id;
+         this.Url = link.Link.Url;
+         this.StartIndex = link.StartIndex;
+         this.EndIndex = link.EndIndex;
+         this.OpenInNewWindow = link.OpenInNewWindow;
+      }
+
       /// <summary>
       /// Gets or Sets the start index of the link.
       /// </summary>

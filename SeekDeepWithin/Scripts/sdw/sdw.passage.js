@@ -24,8 +24,13 @@ function passage_update() {
    });
 }
 
+function passage_check_delete() {
+   $('#deleteModal').foundation('reveal', 'open');
+}
+
 function passage_delete() {
    $('#modalClose').hide();
+   $('#deleteModal').foundation('reveal', 'close');
    $('#modalText').text('Deleting Passage, please wait...');
    $('#modal').foundation('reveal', 'open');
    var form = $('#__AjaxAntiForgeryForm');
@@ -63,6 +68,7 @@ function passage_get(id) {
       url: '/Passage/Get/' + id
    }).done(function (data) {
       $('#passText').val(data.passageText);
+      $('#passText').selectRange(0);
       $('#entryNumber').val(data.passageNumber);
       $('#entryOrder').val(data.order);
       $('#editPassId').text(data.passageId);
@@ -76,6 +82,20 @@ function passage_get(id) {
       $('#modal').foundation('reveal', 'open');
       $('#modalText').text('An error occured - ' + data.responseText);
    });
+}
+
+function setSelectionRange(input, selectionStart, selectionEnd) {
+   if (input.setSelectionRange) {
+      input.focus();
+      input.setSelectionRange(selectionStart, selectionEnd);
+   }
+   else if (input.createTextRange) {
+      var range = input.createTextRange();
+      range.collapse(true);
+      range.moveEnd('character', selectionEnd);
+      range.moveStart('character', selectionStart);
+      range.select();
+   }
 }
 
 function passage_next() {

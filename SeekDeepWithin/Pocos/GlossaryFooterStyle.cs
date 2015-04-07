@@ -1,12 +1,12 @@
-﻿namespace SeekDeepWithin.Pocos
+namespace SeekDeepWithin.Pocos
 {
    /// <summary>
-   /// Represents a style found in a passage.
+   /// Glossary footer style
    /// </summary>
-   public class PassageStyle : IDbTable, IStyle
+   public class GlossaryFooterStyle : IStyle
    {
       /// <summary>
-      /// Gets the id of the item.
+      /// Gets or Sets the id of the entry style.
       /// </summary>
       public int Id { get; set; }
 
@@ -21,13 +21,13 @@
       public int EndIndex { get; set; }
 
       /// <summary>
-      /// Gets the passage entry this style belongs to.
-      /// </summary>
-      public virtual PassageEntry PassageEntry { get; set; }
-
-      /// <summary>
-      /// Gets the Style for this...style....
+      /// Gets or Sets the style.
       /// </summary>
       public virtual Style Style { get; set; }
+
+      /// <summary>
+      /// Gets or Sets the footer.
+      /// </summary>
+      public virtual GlossaryEntryFooter Footer { get; set; }
    }
 }

@@ -1,4 +1,6 @@
-﻿namespace SeekDeepWithin.Pocos
+﻿using System.Collections.Generic;
+
+namespace SeekDeepWithin.Pocos
 {
    /// <summary>
    /// Represents a footer for a glossary entry.
@@ -39,5 +41,25 @@
       /// Gets or Sets the glossary entry the footer belongs to.
       /// </summary>
       public virtual GlossaryEntry Entry { get; set; }
+
+      /// <summary>
+      /// Gets the list of links for this entry.
+      /// </summary>
+      public virtual ICollection<GlossaryFooterLink> Links { get; set; }
+
+      /// <summary>
+      /// Gets the list of styles for this entry.
+      /// </summary>
+      public virtual ICollection<GlossaryFooterStyle> Styles { get; set; }
+
+      /// <summary>
+      /// Gets the list of links.
+      /// </summary>
+      public IEnumerable<ILink> LinkList { get { return this.Links; } }
+
+      /// <summary>
+      /// Gets the list of styles.
+      /// </summary>
+      public IEnumerable<IStyle> StyleList { get { return this.Styles; } }
    }
 }

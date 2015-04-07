@@ -21,15 +21,18 @@ namespace SeekDeepWithin.Controllers
                 { "ul", null},
                 { "ol", null},
                 { "li", null},
-                { "div", new[] { "align" } },
+                { "div", new[] { "align", "class", "style" } },
                 { "strike", null},
-                { "u", null},                
+                { "u", null},
                 { "sub", null},
                 { "sup", null},
-                { "table", null },
-                { "tr", null },
-                { "td", null },
-                { "th", null }
+                { "table", new[] { "align", "class", "style" } },
+                { "tr", new[] { "align", "class", "style" } },
+                { "td", new[] { "align", "class", "style" } },
+                { "th", new[] { "align", "class", "style" } },
+                { "h3", new[] { "align", "class", "style" } },
+                { "h4", new[] { "align", "class", "style" } },
+                { "h5", new[] { "align", "class", "style" } }
                 };
       }
 

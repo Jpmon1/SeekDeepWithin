@@ -131,7 +131,7 @@ namespace SeekDeepWithin.Controllers
                   version.VersionSources.First ().Source = source;
                   this.m_Db.Save ();
                }
-               return RedirectToAction ("Read", "Chapter", new {id = version.DefaultReadChapter});
+               return RedirectToAction ("Index", "Read", new {id = version.DefaultReadChapter});
             }
             if (viewModel.Type == "entry")
             {

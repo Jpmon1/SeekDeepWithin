@@ -1,5 +1,21 @@
 ﻿(function ($) {
 
+   $.fn.selectRange = function (start, end) {
+      if (!end) end = start;
+      return this.each(function () {
+         if (this.setSelectionRange) {
+            this.focus();
+            this.setSelectionRange(start, end);
+         } else if (this.createTextRange) {
+            var range = this.createTextRange();
+            range.collapse(true);
+            range.moveEnd('character', end);
+            range.moveStart('character', start);
+            range.select();
+         }
+      });
+   };
+
    $.fn.get_selection = function () {
       var e = this.get(0);
       //Mozilla and DOM 3.0
@@ -26,14 +42,12 @@
 
    $.fn.set_selection = function (startPos, endPos) {
       var e = this.get(0);
+      e.focus();
       //Mozilla and DOM 3.0
-      if ('selectionStart' in e) {
-         e.focus();
-         e.selectionStart = startPos;
-         e.selectionEnd = endPos;
+      if (e.setSelectionRange) {
+         e.setSelectionRange(startPos, endPos);
       }
-      else if (document.selection) { //IE
-         e.focus();
+      else if (e.createTextRange) { //IE
          var tr = e.createTextRange();
 
          //Fix IE from counting the newline characters as two seperate characters
@@ -46,6 +60,7 @@
             if (e.value[i].search(/[\r\n]/) != -1)
                endPos = endPos - .5;
 
+         top.collapse(true);
          tr.moveEnd('textedit', -1);
          tr.moveStart('character', startPos);
          tr.moveEnd('character', endPos - startPos);

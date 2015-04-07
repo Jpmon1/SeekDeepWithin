@@ -24,12 +24,15 @@ function header_edit(id) {
       $('#editId').val(id);
       $('#rowCreate').hide();
       $('#rowUpdate').show();
+      $('#rowEdit').show();
       $('#hfText').val(data.text);
       $('#hfJustify').val(data.justify);
       $('#hfIsBold').prop('checked', data.isBold);
       $('#hfIsItalic').prop('checked', data.isItalic);
    }).fail(function (data) {
-      alert(data.responseText);
+      $('#modalClose').show();
+      $('#modalText').text(data.responseText);
+      $('#modal').foundation('reveal', 'open');
    });
 }
 
@@ -74,6 +77,10 @@ function header_delete() {
    });
 }
 
+function header_style() {
+   window.location = '/Style/EditHeader?id=' + $('#editId').val() + '&itemId=' + $('#itemId').val() + '&itemType=' + $('#itemType').val();
+}
+
 function header_GetData() {
    var form = $('#__AjaxAntiForgeryForm');
    var token = $('input[name="__RequestVerificationToken"]', form).val();
@@ -93,9 +100,11 @@ function header_GetData() {
 function header_new() {
    $('#rowCreate').show();
    $('#rowUpdate').hide();
+   $('#rowHide').hide();
    $('#hfText').val('');
    $('#editId').val('');
    $('#hfJustify').val(0);
+   $('#styleArea').html('');
    $('#hfIsBold').prop('checked', false);
    $('#hfIsItalic').prop('checked', false);
 }

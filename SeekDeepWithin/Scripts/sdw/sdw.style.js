@@ -1,28 +1,20 @@
 ﻿
-$(document).ready(function() {
-   $('#rowUpdate').hide();
-   $('#createStyleCheck').hide();
-   $('#updateStyleCheck').hide();
-});
-
 function style_create() {
    style_post('create', function (d) {
       $('#styleStart').val('');
       $('#styleEnd').val('');
       style_render();
-      $('#createStyleCheck').show(200, function () {
-         setTimeout(function () { $('#createStyleCheck').hide(100); }, 2000);
-      });
+      $('#modalText').text('Success!');
+      setTimeout(function () { $('#modal').foundation('reveal', 'close'); }, 700);
       $('#styleList').append('<li id="listItem_' + d.id + '" class="bullet-item"><a href="javascript:void(0)" onclick="style_edit(' + d.id +
          ')">Start: ' + d.startIndex + ' End: ' + d.endIndex + '</a></li>');
    });
 }
 
 function style_update() {
-   style_post('update', function() {
-      $('#updateStyleCheck').show(200, function() {
-         setTimeout(function () { $('#updateStyleCheck').hide(100); }, 2000);
-      });
+   style_post('update', function () {
+      $('#modalText').text('Success!');
+      setTimeout(function () { $('#modal').foundation('reveal', 'close'); }, 700);
       style_render();
       $('#listItem_' + $('#editId').val()).remove();
       $('#styleList').append('<li class="bullet-item" id="listItem_' + $('#editId').val() +
@@ -41,34 +33,62 @@ function escapeHtml(str) {
 };
 
 function style_post(action, done) {
+   $('#modalClose').hide();
+   $('#modalText').text('Saving Style, please wait...');
+   $('#modal').foundation('reveal', 'open');
    var startIndex = $('#startIndex').val();
    var endIndex = $('#endIndex').val();
    if (startIndex != '' && endIndex != '') {
       var type = $('#itemType').val();
-      var form = $('#__AjaxAntiForgeryForm');
-      var token = $('input[name="__RequestVerificationToken"]', form).val();
       $.ajax({
          type: 'POST',
          url: '/Style/' + action + type + '/',
-         data: {
-            __RequestVerificationToken: token,
-            startIndex: startIndex,
-            endIndex: endIndex,
-            id: $('#editId').val(),
-            spansMultiple: $('#multiSpan').prop('checked'),
-            startStyle: encodeURIComponent($('#styleStart').val()),
-            endStyle: encodeURIComponent($('#styleEnd').val()),
-            parentId: $('#itemId').val()
-         }
+         data: style_get_data(type)
       }).done(done).fail(function (data) {
-         alert(data.responseText);
+         $('#modalClose').show();
+         $('#modalText').text(data.responseText);
+         $('#modal').foundation('reveal', 'open');
       });
    } else {
-      alert('Please select where in the text you would like the style.');
+      $('#modalClose').show();
+      $('#modalText').text('Please select where in the text you would like the style.');
+   }
+}
+
+function style_get_data(type) {
+   var form = $('#__AjaxAntiForgeryForm');
+   var token = $('input[name="__RequestVerificationToken"]', form).val();
+   var startIndex = $('#startIndex').val();
+   var endIndex = $('#endIndex').val();
+   if (type.indexOf("Footer") != -1 || type.indexOf("Header") != -1) {
+      return {
+         __RequestVerificationToken: token,
+         startIndex: startIndex,
+         endIndex: endIndex,
+         id: $('#itemId').val(),
+         spansMultiple: false,
+         startStyle: encodeURIComponent($('#styleStart').val()),
+         endStyle: encodeURIComponent($('#styleEnd').val()),
+         parentId: $('#parentId').val()
+      }
+   } else {
+      return {
+         __RequestVerificationToken: token,
+         startIndex: startIndex,
+         endIndex: endIndex,
+         id: $('#editId').val(),
+         spansMultiple: $('#multiSpan').prop('checked'),
+         startStyle: encodeURIComponent($('#styleStart').val()),
+         endStyle: encodeURIComponent($('#styleEnd').val()),
+         parentId: $('#itemId').val()
+      }
    }
 }
 
 function style_delete() {
+   $('#modalClose').hide();
+   $('#modalText').text('Deleting Style, please wait...');
+   $('#modal').foundation('reveal', 'open');
    var type = $('#itemType').val();
    var form = $('#__AjaxAntiForgeryForm');
    var token = $('input[name="__RequestVerificationToken"]', form).val();
@@ -78,15 +98,19 @@ function style_delete() {
       data: {
          __RequestVerificationToken: token,
          id: $('#editId').val(),
-         itemId: $('#itemId').val()
+         itemId: $('#itemId').val(),
+         parentId: $('#parentId').val()
       }
    }).done(function () {
       var id = $('#editId').val();
       $('#listItem_' + id).remove();
+      setTimeout(function () { $('#modal').foundation('reveal', 'close'); }, 700);
       style_new();
       style_render();
    }).fail(function (data) {
-      alert(data.responseText);
+      $('#modalClose').show();
+      $('#modalText').text(data.responseText);
+      $('#modal').foundation('reveal', 'open');
    });
 }
 
@@ -96,7 +120,8 @@ function style_edit(itemId) {
       data: {
          itemId: $('#itemId').val(),
          id: itemId,
-         itemType: $('#itemType').val()
+         itemType: $('#itemType').val(),
+         parentId: $('#parentId').val()
       }
    }).done(function (data) {
       $('#rowCreate').hide();
@@ -115,7 +140,8 @@ function style_render() {
       url: '/Style/Render/',
       data: {
          itemId: $('#itemId').val(),
-         itemType: $('#itemType').val()
+         itemType: $('#itemType').val(),
+         parentId: $('#parentId').val()
       }
    }).done(function(data) {
       $('#renderedText').html(data.html);

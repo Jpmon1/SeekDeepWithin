@@ -4,6 +4,7 @@ $(document).ready(function () {
    $('#tabRead').hide();
    $('#tabSearch').hide();
    $('#tabTag').hide();
+   $('#tabWriter').hide();
    $('#tabExternal').hide();
    $('#rowUpdate').hide();
    $('#rowOpenLink').hide();
@@ -28,6 +29,13 @@ $(document).ready(function () {
          if ($('#itemType').val() == 'SeeAlso') {
             $('#linkName').val(suggestion.value);
          }
+      }
+   });
+   $('#linkWriter').autocomplete({
+      serviceUrl: '/Writer/AutoComplete',
+      paramName: 'name',
+      onSelect: function (suggestion) {
+         $('#selWriterId').val(suggestion.data);
       }
    });
    $('#linkBook').autocomplete({
@@ -127,6 +135,7 @@ $(document).ready(function () {
       $('#tabSearch').hide();
       $('#tabTag').hide();
       $('#tabExternal').hide();
+      $('#tabWriter').hide();
       $('#rowAnchor').show();
       $('#linkNewWindow').prop('checked', false);
       if (selected == 0) {
@@ -137,6 +146,8 @@ $(document).ready(function () {
          $('#tabSearch').show();
       } else if (selected == 3) {
          $('#tabTag').show();
+      } else if (selected == 5) {
+         $('#tabWriter').show();
       } else {
          $('#tabExternal').show();
          $('#rowAnchor').hide();
@@ -155,6 +166,8 @@ function link_create() {
       link_createSearch();
    } else if (selected == 3) {
       link_createTag();
+   } else if (selected == 5) {
+      link_createWriter();
    } else {
       link_createExternal();
    }
@@ -196,12 +209,30 @@ function link_createTag() {
    }
 }
 
+function link_createWriter() {
+   var tagId = $('#selWriterId').val();
+   if (tagId == '') {
+      alert('Select a writer to link to first.');
+   } else {
+      var linkUrl = window.location.protocol + "//" + window.location.host + "/Writer/Details/" + tagId;
+      link_post('create', linkUrl, function (d) {
+         link_render();
+         $('#linkWriter').val('');
+         $('#selWriterId').val('');
+         $('#createLinkCheck').show(200, function () {
+            setTimeout(function () { $('#createLinkCheck').hide(100); }, 2000);
+         });
+         link_add(d.id, d.startIndex, d.endIndex, linkUrl);
+      });
+   }
+}
+
 function link_createRead() {
    var chapterId = $('#selChapterId').val();
    if (chapterId == '') {
       alert('Select a chapter to link to first.');
    } else {
-      var linkUrl = window.location.protocol + "//" + window.location.host + "/Chapter/Read/" + chapterId;
+      var linkUrl = window.location.protocol + "//" + window.location.host + "/Read/" + chapterId;
       link_post('create', linkUrl, function (d) {
          link_render();
          $('#linkChapter').val('');
@@ -230,7 +261,6 @@ function link_createSearch() {
          link_add(d.id, d.startIndex, d.endIndex, d.linkUrl);
       });
    }
-
 }
 
 function link_createExternal() {
@@ -286,9 +316,10 @@ function link_post(action, linkUrl, done) {
             itemType: $('#itemType').val(),
             openInNewWindow: $('#linkNewWindow').prop('checked'),
             linkUrl: linkUrl,
-            linkName: $('#linkName').val()
-   }
-      }).done(done).fail(function (data) {
+            linkName: $('#linkName').val(),
+            parentId: $('#parentId').val()
+         }
+      }).done(done).fail(function(data) {
          alert(data.responseText);
       });
    } else {
@@ -306,7 +337,8 @@ function link_delete() {
          __RequestVerificationToken: token,
          id: $('#editId').val(),
          itemId: $('#itemId').val(),
-         itemType: $('#itemType').val()
+         itemType: $('#itemType').val(),
+         parentId: $('#parentId').val()
       }
    }).done(function () {
       var id = $('#editId').val();
@@ -324,7 +356,8 @@ function link_edit(itemId) {
       data: {
          itemId: $('#itemId').val(),
          id: itemId,
-         itemType: $('#itemType').val()
+         itemType: $('#itemType').val(),
+         parentId: $('#parentId').val()
       }
    }).done(function (data) {
       $('#rowCreate').hide();
@@ -344,7 +377,8 @@ function link_render() {
       url: '/Link/Render/',
       data: {
          itemId: $('#itemId').val(),
-         itemType: $('#itemType').val()
+         itemType: $('#itemType').val(),
+         parentId: $('#parentId').val()
       }
    }).done(function (data) {
       $('#renderedText').html(data.html);

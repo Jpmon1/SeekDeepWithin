@@ -3,7 +3,7 @@
    /// <summary>
    /// Represents a link for a glossary entry.
    /// </summary>
-   public class GlossaryEntryLink
+   public class GlossaryEntryLink : ILink
    {
       /// <summary>
       /// Gets or Sets the id of the entry link.

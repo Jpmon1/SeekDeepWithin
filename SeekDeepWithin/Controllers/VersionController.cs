@@ -96,7 +96,7 @@ namespace SeekDeepWithin.Controllers
                TempData.Remove ("RefUrl");
                return Redirect (TempData["RefUrl"].ToString ());
             }
-            return RedirectToAction ("Read", "Chapter", new { id = viewModel.DefaultReadChapter });
+            return RedirectToAction ("Index", "Read", new { id = viewModel.DefaultReadChapter });
          }
          return View (viewModel);
       }

@@ -18,6 +18,7 @@ namespace SeekDeepWithin.Models
          this.Headers = new Collection <HeaderFooterViewModel> ();
          this.Footers = new Collection <HeaderFooterViewModel> ();
       }
+
       /// <summary>
       /// Initializes a new passage view model.
       /// </summary>
@@ -50,33 +51,19 @@ namespace SeekDeepWithin.Models
          this.Footers = new Collection<HeaderFooterViewModel> ();
 
          foreach (var link in entry.Passage.Links)
-         {
-            this.Links.Add (new LinkViewModel
-            {
-               StartIndex = link.StartIndex,
-               EndIndex = link.EndIndex,
-               Url = link.Link.Url,
-               OpenInNewWindow = link.OpenInNewWindow
-            });
-         }
-
+            this.Links.Add (new LinkViewModel (link));
          foreach (var style in entry.Styles)
-         {
-            this.Styles.Add (new StyleViewModel
-            {
-               StartIndex = style.StartIndex,
-               EndIndex = style.EndIndex,
-               Start = style.Style.Start,
-               End = style.Style.End,
-               SpansMultiple = style.Style.SpansMultiple
-            });
-         }
-
+            this.Styles.Add (new StyleViewModel (style));
          foreach (var header in entry.Headers)
             this.Headers.Add (new HeaderFooterViewModel (header));
          foreach (var footer in entry.Footers)
             this.Footers.Add (new HeaderFooterViewModel (footer));
       }
+
+      /// <summary>
+      /// Gets or Sets how to display this verse.
+      /// </summary>
+      public VerseDisplayType DisplayType { get; set; }
 
       /// <summary>
       /// Gets or Sets the title of the page.

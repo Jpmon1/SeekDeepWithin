@@ -1,4 +1,6 @@
-﻿namespace SeekDeepWithin.Pocos
+﻿using System.Collections.Generic;
+
+namespace SeekDeepWithin.Pocos
 {
    public class PassageFooter : IDbTable, IFooter
    {
@@ -36,5 +38,25 @@
       /// Gets or Sets the passage the footer belongs to.
       /// </summary>
       public virtual PassageEntry Passage { get; set; }
+
+      /// <summary>
+      /// Gets the list of links for this entry.
+      /// </summary>
+      public virtual ICollection<PassageFooterLink> Links { get; set; }
+
+      /// <summary>
+      /// Gets the list of styles for this entry.
+      /// </summary>
+      public virtual ICollection<PassageFooterStyle> Styles { get; set; }
+
+      /// <summary>
+      /// Gets the list of links.
+      /// </summary>
+      public IEnumerable<ILink> LinkList { get { return this.Links; } }
+
+      /// <summary>
+      /// Gets the list of styles.
+      /// </summary>
+      public IEnumerable<IStyle> StyleList { get { return this.Styles; } }
    }
 }

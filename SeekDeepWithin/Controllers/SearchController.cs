@@ -59,6 +59,12 @@ namespace SeekDeepWithin.Controllers
             foreach (var entry in passage.Entries)
                viewModel.Passages.Add (new PassageViewModel(entry));
          }
+         var renderer = new SdwRenderer ();
+         var entries = this.m_Db.GlossaryEntries.Get (e => e.Text.Contains (searchFor));
+         foreach (var entry in entries)
+         {
+            viewModel.Entries.Add (new GlossaryEntryViewModel (entry, renderer));
+         }
          return View (viewModel);
       }
    }

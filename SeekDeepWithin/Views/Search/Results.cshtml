@@ -5,7 +5,7 @@
    ViewBag.Title = "Search Results";
 }
 
-<h3>Search Results for '@Model.Query' <small>found @Model.Passages.Count matches</small></h3>
+<h3><small>search results</small> @Model.Query <small>found @Model.NumMatches matches</small></h3>
 
 @if (Request.IsAuthenticated && User.IsInRole ("Administrator") && Model.ShowLog) {
    <div class="row">
@@ -24,7 +24,7 @@
          int index = 0;
       }
       @if (Model.Passages.Count == 0) {
-         <div class="panel info"><em>No results found!</em></div>
+         <div class="panel info"><em>'@Model.Query' was not found in any book.</em></div>
       } else {
          foreach (var result in Model.Passages) {
             if (index == 0) {
@@ -37,6 +37,56 @@
                         var anchor = string.Format("#pass_{0}",result.EntryId);
                      }
                      <a href="@Url.Action("Read", "Chapter", new { id = result.ChapterId }, Request.Url.Scheme)@anchor">@result.Title</a>
+                  </li>
+                  <li class="bullet-item" style="border-bottom: 0">
+                     @Html.Raw(result.Text.Highlight(Model.Query))
+                  </li>
+               </ul>
+            </div>
+            index++;
+            if (index == 4) {
+               @Html.Raw("</div>")
+               index = 0;
+            }
+         }
+         if (index == 1) {
+            <div class="small-12 medium-6 large-3 columns">&nbsp;</div>
+            <div class="small-12 medium-6 large-3 columns">&nbsp;</div>
+            <div class="small-12 medium-6 large-3 columns">&nbsp;</div>
+         }
+         if (index == 2) {
+            <div class="small-12 medium-6 large-3 columns">&nbsp;</div>
+            <div class="small-12 medium-6 large-3 columns">&nbsp;</div>
+         }
+         if (index == 3) {
+            <div class="small-12 medium-6 large-3 columns">&nbsp;</div>
+         }
+         if (index != 0) {
+            @Html.Raw("</div>");
+         }
+      }
+   </div>
+</div>
+
+<div class="row">
+   <div class="large-12 columns">
+      @{
+         index = 0;
+      }
+      @if (Model.Entries.Count == 0) {
+         <div class="panel info"><em>'@Model.Query' was not found in any glossary term.</em></div>
+      } else {
+         foreach (var result in Model.Entries) {
+            if (index == 0) {
+               @Html.Raw("<div class=\"row\" data-equalizer>")
+            }
+            <div class="small-12 medium-6 large-3 columns">
+               <ul class="pricing-table" data-equalizer-watch>
+                  <li class="description">
+                     @{
+                        var anchor = string.Format("#entry_{0}",result.Id);
+                     }
+                     <a href="@Url.Action("Term", "Glossary", new { id = result.TermId }, Request.Url.Scheme)@anchor">@result.TermName</a>
                   </li>
                   <li class="bullet-item" style="border-bottom: 0">
                      @Html.Raw(result.Text.Highlight(Model.Query))

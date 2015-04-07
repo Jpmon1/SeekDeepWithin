@@ -3,7 +3,7 @@
    /// <summary>
    /// Represents a style for a glossary entry.
    /// </summary>
-   public class GlossaryEntryStyle
+   public class GlossaryEntryStyle : IDbTable, IStyle
    {
       /// <summary>
       /// Gets the id of the item.

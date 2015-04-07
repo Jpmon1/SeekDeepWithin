@@ -11,6 +11,6 @@ namespace SeekDeepWithin.Models
       /// Initializes a new header view model.
       /// </summary>
       /// <param name="header">Header to copy data from.</param>
-      public ChapterHeaderViewModel (ChapterHeader header) : base (header) {}
+      public ChapterHeaderViewModel (IHeader header) : base (header) {}
    }
 }

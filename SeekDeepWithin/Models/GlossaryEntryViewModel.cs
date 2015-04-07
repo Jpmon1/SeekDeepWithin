@@ -12,36 +12,39 @@ namespace SeekDeepWithin.Models
       {
          this.Id = entry.Id;
          this.Text = entry.Text;
+         this.Order = entry.Order;
          this.Renderer = renderer;
+         this.TermId = entry.Item.Term.Id;
+         this.TermName = entry.Item.Term.Name;
          this.Headers = new Collection<HeaderFooterViewModel> ();
          this.Footers = new Collection <HeaderFooterViewModel> ();
          this.Links = new Collection <LinkViewModel> ();
          this.Styles = new Collection <StyleViewModel> ();
 
          foreach (var link in entry.Links)
-            this.Links.Add (new LinkViewModel
-            {
-               StartIndex = link.StartIndex,
-               EndIndex = link.EndIndex,
-               Url = link.Link.Url,
-               OpenInNewWindow = link.OpenInNewWindow
-            });
-
+            this.Links.Add (new LinkViewModel (link));
          foreach (var style in entry.Styles)
-            this.Styles.Add (new StyleViewModel
-            {
-               StartIndex = style.StartIndex,
-               EndIndex = style.EndIndex,
-               Start = style.Style.Start,
-               End = style.Style.End,
-               SpansMultiple = style.Style.SpansMultiple
-            });
-
+            this.Styles.Add (new StyleViewModel (style));
          foreach (var header in entry.Headers)
             this.Headers.Add (new HeaderFooterViewModel (header));
          foreach (var footer in entry.Footers)
             this.Footers.Add (new HeaderFooterViewModel (footer));
       }
+
+      /// <summary>
+      /// Gets or Sets the term id.
+      /// </summary>
+      public int TermId { get; set; }
+
+      /// <summary>
+      /// Gets or Sets the term name.
+      /// </summary>
+      public string TermName { get; set; }
+
+      /// <summary>
+      /// Gets or Sets the order.
+      /// </summary>
+      public int Order { get; set; }
 
       /// <summary>
       /// Gets or Sets the id of the entry.

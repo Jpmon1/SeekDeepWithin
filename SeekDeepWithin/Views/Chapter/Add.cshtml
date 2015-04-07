@@ -3,7 +3,7 @@
     ViewBag.Title = "Add Passages";
 }
 
-<h3>Add Passages <small>@Html.ActionLink("read", "Read", new { id = Model.ParentId })</small></h3>
+<h3><small>add passages</small> @Model.Title <small>@Html.ActionLink("read", "Read", new { id = Model.ParentId })</small></h3>
 
 @using (Html.BeginForm (null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" })){
    @Html.AntiForgeryToken()

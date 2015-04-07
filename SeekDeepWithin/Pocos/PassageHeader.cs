@@ -1,4 +1,6 @@
-﻿namespace SeekDeepWithin.Pocos
+﻿using System.Collections.Generic;
+
+namespace SeekDeepWithin.Pocos
 {
    public class PassageHeader : IDbTable, IHeader
    {
@@ -31,5 +33,15 @@
       /// Gets or Sets the passage the header belongs to.
       /// </summary>
       public virtual PassageEntry Passage { get; set; }
+
+      /// <summary>
+      /// Gets the list of styles.
+      /// </summary>
+      public virtual ICollection<PassageHeaderStyle> Styles { get; set; }
+
+      /// <summary>
+      /// Gets the list of styles.
+      /// </summary>
+      public IEnumerable<IStyle> StyleList { get { return this.Styles; } }
    }
 }
