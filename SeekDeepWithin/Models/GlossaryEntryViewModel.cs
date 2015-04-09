@@ -14,8 +14,24 @@ namespace SeekDeepWithin.Models
          this.Text = entry.Text;
          this.Order = entry.Order;
          this.Renderer = renderer;
-         this.TermId = entry.Item.Term.Id;
-         this.TermName = entry.Item.Term.Name;
+         if (entry.Item != null)
+         {
+            if (entry.Item.Term != null)
+            {
+               this.TermId = entry.Item.Term.Id;
+               this.TermName = entry.Item.Term.Name;
+            }
+            else
+            {
+               this.TermId = -1;
+               this.TermName = "Null Term";
+            }
+         }
+         else
+         {
+            this.TermId = -1;
+            this.TermName = "Null Item";
+         }
          this.Headers = new Collection<HeaderFooterViewModel> ();
          this.Footers = new Collection <HeaderFooterViewModel> ();
          this.Links = new Collection <LinkViewModel> ();

@@ -1,4 +1,28 @@
-﻿.pricing-table .title {
+﻿body {
+   font-family: 'Merriweather', Helvetica, Arial, sans-serif;
+}
+
+.button {
+   font-family: 'Merriweather', Helvetica, Arial, sans-serif;
+}
+
+h1 {
+   font-family: 'Merriweather', Helvetica, Arial, sans-serif;
+}
+h2 {
+   font-family: 'Merriweather', Helvetica, Arial, sans-serif;
+}
+h3 {
+   font-family: 'Merriweather', Helvetica, Arial, sans-serif;
+}
+h4 {
+   font-family: 'Merriweather', Helvetica, Arial, sans-serif;
+}
+h5 {
+   font-family: 'Merriweather', Helvetica, Arial, sans-serif;
+}
+
+.pricing-table .title {
    background-color: #f2f2f2;
    font-weight: bold;
    color: black;

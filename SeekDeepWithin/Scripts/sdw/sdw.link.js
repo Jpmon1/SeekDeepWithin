@@ -33,7 +33,7 @@ $(document).ready(function () {
    });
    $('#linkWriter').autocomplete({
       serviceUrl: '/Writer/AutoComplete',
-      paramName: 'name',
+      paramName: 'writer',
       onSelect: function (suggestion) {
          $('#selWriterId').val(suggestion.data);
       }

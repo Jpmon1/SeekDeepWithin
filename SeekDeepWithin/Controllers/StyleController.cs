@@ -105,6 +105,7 @@ namespace SeekDeepWithin.Controllers
             Title = "Header"
          };
          IHeader header = null;
+         ViewBag.RefUrl = (Request.UrlReferrer != null) ? Request.UrlReferrer.AbsoluteUri : string.Empty;
          if (itemType.ToLower () == "chapter")
          {
             var chapter = this.m_Db.SubBookChapters.Get (itemId);
@@ -154,6 +155,7 @@ namespace SeekDeepWithin.Controllers
             Title = "Footer"
          };
          IFooter footer = null;
+         ViewBag.RefUrl = (Request.UrlReferrer != null) ? Request.UrlReferrer.AbsoluteUri : string.Empty;
          if (itemType.ToLower () == "chapter")
          {
             var chapter = this.m_Db.SubBookChapters.Get (itemId);

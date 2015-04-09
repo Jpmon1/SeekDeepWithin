@@ -284,10 +284,10 @@ WriteLiteral(">No information has been entered for this book!</span>\r\n        
             #line hidden
 WriteLiteral("                        <a");
 
-WriteAttribute("href", Tuple.Create(" href=\"", 2163), Tuple.Create("\"", 2260)
+WriteAttribute("href", Tuple.Create(" href=\"", 2163), Tuple.Create("\"", 2258)
             
             #line 56 "..\..\Views\Book\Index.cshtml"
-, Tuple.Create(Tuple.Create("", 2170), Tuple.Create<System.Object, System.Int32>(Url.Action("Read", "Chapter", new{ id = version.DefaultReadChapter }, Request.Url.Scheme)
+, Tuple.Create(Tuple.Create("", 2170), Tuple.Create<System.Object, System.Int32>(Url.Action("Index", "Read", new{ id = version.DefaultReadChapter }, Request.Url.Scheme)
             
             #line default
             #line hidden
@@ -319,14 +319,14 @@ WriteLiteral(" class=\"bullet-item\"");
 
 WriteLiteral(">\r\n                        <a");
 
-WriteAttribute("href", Tuple.Create(" href=\"", 2534), Tuple.Create("\"", 2631)
+WriteAttribute("href", Tuple.Create(" href=\"", 2532), Tuple.Create("\"", 2627)
             
             #line 64 "..\..\Views\Book\Index.cshtml"
-, Tuple.Create(Tuple.Create("", 2541), Tuple.Create<System.Object, System.Int32>(Url.Action("Read", "Chapter", new{ id = version.DefaultReadChapter }, Request.Url.Scheme)
+, Tuple.Create(Tuple.Create("", 2539), Tuple.Create<System.Object, System.Int32>(Url.Action("Index", "Read", new{ id = version.DefaultReadChapter }, Request.Url.Scheme)
             
             #line default
             #line hidden
-, 2541), false)
+, 2539), false)
 );
 
 WriteLiteral(">\r\n");
@@ -525,14 +525,14 @@ WriteLiteral(" class=\"small-12 medium-4 large-4 columns\"");
 
 WriteLiteral(">\r\n         <a");
 
-WriteAttribute("href", Tuple.Create(" href=\"", 3801), Tuple.Create("\"", 3863)
+WriteAttribute("href", Tuple.Create(" href=\"", 3797), Tuple.Create("\"", 3859)
             
             #line 101 "..\..\Views\Book\Index.cshtml"
-, Tuple.Create(Tuple.Create("", 3808), Tuple.Create<System.Object, System.Int32>(Url.Action("Create", "Book", null, Request.Url.Scheme)
+, Tuple.Create(Tuple.Create("", 3804), Tuple.Create<System.Object, System.Int32>(Url.Action("Create", "Book", null, Request.Url.Scheme)
             
             #line default
             #line hidden
-, 3808), false)
+, 3804), false)
 );
 
 WriteLiteral(" class=\"button success expand tiny\"");

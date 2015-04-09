@@ -13,7 +13,7 @@
             <li role="menuitem"><a href="@Url.Action("About", "SubBook", new { id = @Model.SubBookId }, Request.Url.Scheme)">@Model.SubBookName</a></li>
          }
          @if (Model.ChapterName != "default") {
-            <li role="menuitem"><a href="@Url.Action("Read", "Chapter", new {id = @Model.ChapterId}, Request.Url.Scheme)">@Model.ChapterName</a></li>
+            <li role="menuitem"><a href="@Url.Action("Index", "Read", new {id = @Model.ChapterId}, Request.Url.Scheme)">@Model.ChapterName</a></li>
          }
          <li role="menuitem" class="current"><a href="#">@Model.Number</a></li>
       </ul>

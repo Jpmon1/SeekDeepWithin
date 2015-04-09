@@ -13,21 +13,6 @@ namespace SeekDeepWithin.Pocos
       int Id { get; set; }
 
       /// <summary>
-      /// Gets or Sets if the content should be bolded.
-      /// </summary>
-      bool IsBold { get; set; }
-
-      /// <summary>
-      /// Gets or Sets if the content should be italicized.
-      /// </summary>
-      bool IsItalic { get; set; }
-
-      /// <summary>
-      /// Gets or Sets the justification of the header.
-      /// </summary>
-      int Justify { get; set; }
-
-      /// <summary>
       /// Gets or Sets the header.
       /// </summary>
       string Text { get; set; }

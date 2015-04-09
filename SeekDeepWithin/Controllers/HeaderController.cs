@@ -126,9 +126,6 @@ namespace SeekDeepWithin.Controllers
          if (header != null)
          {
             header.Text = viewModel.Text;
-            header.IsBold = viewModel.IsBold;
-            header.Justify = viewModel.Justify;
-            header.IsItalic = viewModel.IsItalic;
             this.m_Db.Save ();
             return Json (new { id = header.Id });
          }
@@ -165,9 +162,6 @@ namespace SeekDeepWithin.Controllers
          if (header != null)
          {
             header.Text = viewModel.Text;
-            header.IsBold = viewModel.IsBold;
-            header.Justify = viewModel.Justify;
-            header.IsItalic = viewModel.IsItalic;
          }
          this.m_Db.Save ();
          return Json ("Success");
@@ -227,30 +221,21 @@ namespace SeekDeepWithin.Controllers
             var chapter = this.m_Db.SubBookChapters.Get (itemId);
             var header = chapter.Headers.FirstOrDefault (f => f.Id == id);
             if (header != null)
-               return Json (new
-               {
-                  text = header.Text, justify = header.Justify, isBold = header.IsBold, isItalic = header.IsItalic
-               }, JsonRequestBehavior.AllowGet);
+               return Json (new {text = header.Text}, JsonRequestBehavior.AllowGet);
          }
          if (itemType.ToLower () == "passage")
          {
             var passage = this.m_Db.PassageEntries.Get (itemId);
             var header = passage.Headers.FirstOrDefault (f => f.Id == id);
             if (header != null)
-               return Json (new
-               {
-                  text = header.Text, justify = header.Justify, isBold = header.IsBold, isItalic = header.IsItalic
-               }, JsonRequestBehavior.AllowGet);
+               return Json (new {text = header.Text}, JsonRequestBehavior.AllowGet);
          }
          if (itemType.ToLower () == "entry")
          {
             var entry = this.m_Db.GlossaryEntries.Get (itemId);
             var header = entry.Headers.FirstOrDefault (f => f.Id == id);
             if (header != null)
-               return Json (new
-               {
-                  text = header.Text, justify = header.Justify, isBold = header.IsBold, isItalic = header.IsItalic
-               }, JsonRequestBehavior.AllowGet);
+               return Json (new {text = header.Text}, JsonRequestBehavior.AllowGet);
          }
          Response.StatusCode = 500;
          return Json ("Invalid Data.", JsonRequestBehavior.AllowGet);

@@ -29,9 +29,6 @@ namespace SeekDeepWithin.Models
       {
          this.HorF = "header";
          this.Id = header.Id;
-         this.IsBold = header.IsBold;
-         this.IsItalic = header.IsItalic;
-         this.Justify = header.Justify;
          this.Text = header.Text;
          foreach (var style in header.StyleList)
             this.Styles.Add(new StyleViewModel(style));
@@ -46,9 +43,6 @@ namespace SeekDeepWithin.Models
          this.HorF = "footer";
          this.Id = footer.Id;
          this.Index = footer.Index;
-         this.IsBold = footer.IsBold;
-         this.IsItalic = footer.IsItalic;
-         this.Justify = footer.Justify;
          this.Text = footer.Text;
          foreach (var link in footer.LinkList)
             this.Links.Add (new LinkViewModel (link));
@@ -100,21 +94,6 @@ namespace SeekDeepWithin.Models
       /// Gets or Sets the index for a footer.
       /// </summary>
       public int Index { get; set; }
-
-      /// <summary>
-      /// Gets or Sets if the content should be bolded.
-      /// </summary>
-      public bool IsBold { get; set; }
-
-      /// <summary>
-      /// Gets or Sets if the content should be italicized.
-      /// </summary>
-      public bool IsItalic { get; set; }
-
-      /// <summary>
-      /// Gets or Sets the justification of the header.
-      /// </summary>
-      public int Justify { get; set; }
 
       /// <summary>
       /// Gets or Sets the type either header/footer.

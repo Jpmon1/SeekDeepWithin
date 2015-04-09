@@ -26,6 +26,7 @@
       @if (Model.Passages.Count == 0) {
          <div class="panel info"><em>'@Model.Query' was not found in any book.</em></div>
       } else {
+         <div class="panel info"><h5>Passages</h5></div>
          foreach (var result in Model.Passages) {
             if (index == 0) {
                @Html.Raw("<div class=\"row\" data-equalizer>")
@@ -34,9 +35,9 @@
                <ul class="pricing-table" data-equalizer-watch>
                   <li class="description">
                      @{
-                        var anchor = string.Format("#pass_{0}",result.EntryId);
+                        var anchor = string.Format("#num_{0}",result.Number);
                      }
-                     <a href="@Url.Action("Read", "Chapter", new { id = result.ChapterId }, Request.Url.Scheme)@anchor">@result.Title</a>
+                     <a href="@Url.Action("Index", "Read", new { id = result.ChapterId }, Request.Url.Scheme)@anchor">@result.Title</a>
                   </li>
                   <li class="bullet-item" style="border-bottom: 0">
                      @Html.Raw(result.Text.Highlight(Model.Query))
@@ -76,6 +77,7 @@
       @if (Model.Entries.Count == 0) {
          <div class="panel info"><em>'@Model.Query' was not found in any glossary term.</em></div>
       } else {
+         <div class="panel info"><h5>Glossary Terms</h5></div>
          foreach (var result in Model.Entries) {
             if (index == 0) {
                @Html.Raw("<div class=\"row\" data-equalizer>")

@@ -14,14 +14,14 @@
    ViewBag.Title = title;
 }
 
-<div class="row show-for-small-only">
-   <div class="small-12 large-12 columns alert-box secondary text-center" style="padding: 3px 10px;">
-      <h4>
-         <a href="@Url.Action("Read", "Chapter", new { id = @Model.SubBook.Version.DefaultReadChapter }, Request.Url.Scheme)">@Model.SubBook.Version.Title</a>
+<div class="row">
+   <div class="small-12 columns">
+      <div class="alert-box secondary text-center" style="padding-top: 0.5rem;padding-bottom: 0.5rem">
+         <a href="@Url.Action("Index", "Read", new { id = @Model.SubBook.Version.DefaultReadChapter }, Request.Url.Scheme)">@Model.SubBook.Version.Title</a>
          @if (!Model.SubBook.Hide) {
             <text> | </text><a href="@Url.Action("About", "SubBook", new { id = @Model.SubBook.Id }, Request.Url.Scheme)">@Model.SubBook.Name</a>
          }
-      </h4>
+      </div>
    </div>
 </div>
 
@@ -36,26 +36,15 @@
                      <a class="left-off-canvas-toggle" href="#" style="color: black;"><i class="icon-menu"></i></a>
                   </section>
 
-                  <section class="middle tab-bar-section">
+                  <section class="middle tab-bar-section" style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis">
                      <h1 class="title">
-                        <span class="show-for-medium-up">
-                           <a href="@Url.Action("Read", "Chapter", new { id = @Model.SubBook.Version.DefaultReadChapter }, Request.Url.Scheme)">@Model.SubBook.Version.Title</a>
-                           @if (!Model.SubBook.Hide) {
-                              <text> | </text><a href="@Url.Action("About", "SubBook", new { id = @Model.SubBook.Id }, Request.Url.Scheme)">@Model.SubBook.Name</a>
-                           }
-                           @if (!Model.Hide) {
-                              <text> | </text>@Model.Name
-                           }
-                        </span>
-                        <span class="show-for-small-only">
-                           @if (!Model.Hide) {
-                              <text>@Model.Name</text>
-                           } else if (!Model.SubBook.Hide) {
-                              <text>@Model.SubBook.Name</text>}
-                           else {
-                              <text>@Model.SubBook.Version.Title</text>
-                           }
-                        </span>
+                        @if (!Model.Hide) {
+                           <text>@Model.Name</text>
+                        } else if (!Model.SubBook.Hide) {
+                           <text>@Model.SubBook.Name</text>}
+                        else {
+                           <text>@Model.SubBook.Version.Title</text>
+                        }
                      </h1>
                   </section>
                </nav>
@@ -78,22 +67,18 @@
                   }
                   <div class="row">
                      <div class="small-6 pagination-centered columns">
-                        <ul class="pagination" role="menubar" aria-label="Pagination" style="width: 100%">
-                           @if (contents.PreviousChapter == -1) {
-                              <li class="arrow unavailable" aria-disabled="true"><a href="javascript:void(0)">&laquo; Previous Chapter</a></li>
-                           } else {
-                              <li class="arrow"><a href="@Url.Action("Read", "Chapter", new { id = contents.PreviousChapter }, Request.Url.Scheme)">&laquo; Previous Chapter</a></li>
+                           @if (contents.PreviousChapter != -1) {
+                              <ul class="pagination" role="menubar" aria-label="Pagination" style="width: 100%">
+                                 <li class="arrow"><a href="@Url.Action("Index", "Read", new { id = contents.PreviousChapter }, Request.Url.Scheme)">&laquo; Previous Chapter</a></li>
+                              </ul>
                            }
-                        </ul>
                      </div>
                      <div class="small-6 pagination-centered columns">
-                        <ul class="pagination" role="menubar" aria-label="Pagination" style="width: 100%">
-                           @if (contents.NextChapter == -1) {
-                              <li class="arrow unavailable" aria-disabled="true"><a href="javascript:void(0)">Next Chapter &raquo;</a></li>
-                           } else {
-                              <li class="arrow"><a href="@Url.Action("Read", "Chapter", new { id = contents.NextChapter }, Request.Url.Scheme)">Next Chapter &raquo;</a></li>
-                           }
-                        </ul>
+                        @if (contents.NextChapter != -1) {
+                           <ul class="pagination" role="menubar" aria-label="Pagination" style="width: 100%">
+                              <li class="arrow"><a href="@Url.Action("Index", "Read", new { id = contents.NextChapter }, Request.Url.Scheme)">Next Chapter &raquo;</a></li>
+                           </ul>
+                        }
                      </div>
                   </div>
                </section>

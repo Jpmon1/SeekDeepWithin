@@ -167,13 +167,18 @@ function style_italic() {
 }
 
 function style_blockQuote() {
-   $('#styleStart').val('<blockquote>');
+   $('#styleStart').val('<blockquote style="color:black">');
    $('#styleEnd').val('</blockquote>');
 }
 
 function style_list() {
    $('#styleStart').val('<ul>');
    $('#styleEnd').val('</ul>');
+}
+
+function style_div() {
+   $('#styleStart').val('<div>');
+   $('#styleEnd').val('</div>');
 }
 
 function style_orderedList() {
@@ -184,4 +189,34 @@ function style_orderedList() {
 function style_listItem() {
    $('#styleStart').val('<li>');
    $('#styleEnd').val('</li>');
+}
+
+function style_small() {
+   $('#styleStart').val('<small>');
+   $('#styleEnd').val('</small>');
+}
+
+function style_center() {
+   $('#styleStart').val('<div class="text-center">');
+   $('#styleEnd').val('</div>');
+}
+
+function style_right() {
+   $('#styleStart').val('<div class="text-right">');
+   $('#styleEnd').val('</div>');
+}
+
+function style_heading() {
+   $('#styleStart').val('<h5 class="text-center" style="font-weight:bold;">');
+   $('#styleEnd').val('</h5>');
+}
+
+function style_subheading() {
+   $('#styleStart').val('<div class="text-center" style="font-weight:bold;font-style:italic;">');
+   $('#styleEnd').val('</div>');
+}
+
+function style_headingsum() {
+   $('#styleStart').val('<div class="text-center" style="font-size:smaller;margin:0.825rem">');
+   $('#styleEnd').val('</div>');
 }

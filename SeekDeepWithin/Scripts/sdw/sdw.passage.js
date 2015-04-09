@@ -68,7 +68,7 @@ function passage_get(id) {
       url: '/Passage/Get/' + id
    }).done(function (data) {
       $('#passText').val(data.passageText);
-      $('#passText').selectRange(0);
+      //$('#passText').selectRange(0);
       $('#entryNumber').val(data.passageNumber);
       $('#entryOrder').val(data.order);
       $('#editPassId').text(data.passageId);

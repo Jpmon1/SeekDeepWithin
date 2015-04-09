@@ -11,86 +11,6 @@
 <input type="hidden" id="editId" name="editId" value="0" />
 
 <div class="row">
-   <div class="small-12 columns" id="itemText">
-      @Model.ItemText
-   </div>
-</div>
-
-<div class="row" style="margin-top: 1.125rem">
-   <div class="small-12 medium-6 large-6 columns">
-      <ul class="pricing-table" id="headerList">
-         <li class="title">Current Headers</li>
-         @foreach (var header in Model.Items) {
-            var len = header.Text.Length > 15 ? 15 : header.Text.Length;
-            <li class="bullet-item" id="item_@header.Id">
-               <a href="javascript:void(0)" onclick="header_edit(@header.Id)">@header.Text.Substring(0, len)</a>
-            </li>
-         }
-      </ul>
-   </div>
-   <div class="small-12 medium-6 large-6 columns">
-      <div class="row">
-         <div class="small-12 large-12 columns">
-            <label for="hfText">Text</label>
-            <textarea id="hfText" name="hfText" rows="4"></textarea>
-         </div>
-      </div>
-
-      <div class="row" id="rowCreate">
-         <div class="small-12 columns">
-            <a href="javascript:void(0)" class="button expand" onclick="header_create();">
-               Create <i id="createCheck" class="icon-ok-circle" style="display: none;"></i>
-            </a>
-         </div>
-      </div>
-      <div class="row" id="rowUpdate" style="display: none;">
-         <div class="small-6 medium-4 large-4 columns">
-            <a href="javascript:void(0)" class="button success expand" onclick="header_update();" title="Save Changes">
-               <i class="icon-savetodrive"></i> Save
-            </a>
-         </div>
-         <div class="small-6 medium-4 large-4 columns">
-            <a href="javascript:void(0)" class="button alert expand" onclick="header_delete();" title="Delete Header">
-               <i class="icon-remove-circle"></i> Delete
-            </a>
-         </div>
-         <div class="small-6 medium-4 large-4 columns">
-            <a href="javascript:void(0)" class="button secondary expand" onclick="header_new();" title="Cancel Changes">
-               <i class="icon-pageback"></i> Cancel
-            </a>
-         </div>
-      </div>
-      <div class="row" id="rowEdit" style="display: none;">
-         <div class="small-12 columns">
-            <a href="javascript:void(0)" class="button secondary expand" onclick="header_style();" title="Style Header">
-               <i class="icon-paintroll"></i> Styles
-            </a>
-         </div>
-      </div>
-   </div>
-</div>
-<div class="row">
-   <div class="small-6 pagination-centered columns">
-      <ul class="pagination" role="menubar" aria-label="Pagination" style="width: 100%">
-         @if (Model.PreviousEntryId != -1) {
-            <li class="arrow">
-               <a href="@Url.Action("Edit", "Header", new {id = Model.PreviousEntryId, type=Model.ItemType}, Request.Url.Scheme)">&laquo; Previous Item</a>
-            </li>
-         }
-      </ul>
-   </div>
-   <div class="small-6 pagination-centered columns">
-      <ul class="pagination" role="menubar" aria-label="Pagination" style="width: 100%">
-         @if (Model.NextEntryId != -1) {
-            <li class="arrow">
-               <a href="@Url.Action("Edit", "Header", new {id = Model.NextEntryId, type=Model.ItemType}, Request.Url.Scheme)">Next Item &raquo;</a>
-            </li>
-         }
-      </ul>
-   </div>
-</div>
-
-<div class="row">
    <div class="small-6 medium-3 large-3 columns">
       @if (Model.ItemType == "Entry") {
          <a href="@Url.Action("Edit", "Glossary", new {id = Model.ParentId}, Request.Url.Scheme)" class="button secondary expand">
@@ -124,9 +44,75 @@
    }
 </div>
 
+<div class="row" style="margin-top: 1.125rem">
+   <div class="small-12 medium-6 large-6 columns">
+      <ul class="pricing-table" id="headerList">
+         <li class="title">Current Headers</li>
+         @foreach (var header in Model.Items) {
+            var len = header.Text.Length > 15 ? 15 : header.Text.Length;
+            <li class="bullet-item" id="item_@header.Id">
+               <a href="javascript:void(0)" onclick="header_edit(@header.Id)">@header.Text.Substring(0, len)</a>
+            </li>
+         }
+      </ul>
+   </div>
+   <div class="small-12 medium-6 large-6 columns">
+      <div class="row">
+         <div class="small-12 large-12 columns">
+            <label for="hfText">Text</label>
+            <textarea id="hfText" name="hfText" rows="4"></textarea>
+         </div>
+      </div>
+
+      <div class="row" id="rowCreate">
+         <div class="small-12 columns">
+            <a href="javascript:void(0)" class="button expand" onclick="header_create();">
+               Create <i id="createCheck" class="icon-ok-circle" style="display: none;"></i>
+            </a>
+         </div>
+      </div>
+      <div class="row" id="rowUpdate" style="display: none;">
+         <div class="small-6 columns">
+            <a href="javascript:void(0)" class="button success expand" onclick="header_update();" title="Save Changes">
+               <i class="icon-savetodrive"></i> Save
+            </a>
+         </div>
+         <div class="small-6 columns">
+            <a href="javascript:void(0)" class="button alert expand" onclick="header_delete();" title="Delete Header">
+               <i class="icon-remove-circle"></i> Delete
+            </a>
+         </div>
+         <div class="small-6 columns">
+            <a href="javascript:void(0)" class="button secondary expand" onclick="header_style();" title="Style Header">
+               <i class="icon-paintroll"></i> Styles
+            </a>
+         </div>
+         <div class="small-6 columns">
+            <a href="javascript:void(0)" class="button secondary expand" onclick="header_new();" title="Cancel Changes">
+               <i class="icon-pageback"></i> Cancel
+            </a>
+         </div>
+      </div>
+   </div>
+</div>
 <div class="row">
-   <div class="small-12 columns" id="styleArea">
-      
+   <div class="small-6 pagination-centered columns">
+      <ul class="pagination" role="menubar" aria-label="Pagination" style="width: 100%">
+         @if (Model.PreviousEntryId != -1) {
+            <li class="arrow">
+               <a href="@Url.Action("Edit", "Header", new {id = Model.PreviousEntryId, type=Model.ItemType}, Request.Url.Scheme)">&laquo; Previous Item</a>
+            </li>
+         }
+      </ul>
+   </div>
+   <div class="small-6 pagination-centered columns">
+      <ul class="pagination" role="menubar" aria-label="Pagination" style="width: 100%">
+         @if (Model.NextEntryId != -1) {
+            <li class="arrow">
+               <a href="@Url.Action("Edit", "Header", new {id = Model.NextEntryId, type=Model.ItemType}, Request.Url.Scheme)">Next Item &raquo;</a>
+            </li>
+         }
+      </ul>
    </div>
 </div>
 

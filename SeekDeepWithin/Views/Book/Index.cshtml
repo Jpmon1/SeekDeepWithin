@@ -53,7 +53,7 @@
                            <span class="label secondary">No information has been entered for this book!</span>
                         </li>
                      } else {
-                        <a href="@Url.Action("Read", "Chapter", new{ id = version.DefaultReadChapter }, Request.Url.Scheme)">
+                        <a href="@Url.Action("Index", "Read", new{ id = version.DefaultReadChapter }, Request.Url.Scheme)">
                            Read
                         </a>
                      }
@@ -61,7 +61,7 @@
                } else {
                   foreach (var version in book.Versions) {
                      <li class="bullet-item">
-                        <a href="@Url.Action("Read", "Chapter", new{ id = version.DefaultReadChapter }, Request.Url.Scheme)">
+                        <a href="@Url.Action("Index", "Read", new{ id = version.DefaultReadChapter }, Request.Url.Scheme)">
                            @version.Title
                         </a>
                      </li>

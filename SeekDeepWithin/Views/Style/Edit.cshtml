@@ -120,6 +120,41 @@
                      <i class="icon-radiobutton"></i>
                   </a>
                </li>
+               <li>
+                  <a href="javascript:void(0);" class="button tiny" onclick="style_small();" title="Small">
+                     <i class="icon-resize-small"></i>
+                  </a>
+               </li>
+               <li>
+                  <a href="javascript:void(0);" class="button tiny" onclick="style_div();" title="Divider">
+                     <i class="icon-pagebreak"></i>
+                  </a>
+               </li>
+               <li>
+                  <a href="javascript:void(0);" class="button tiny" onclick="style_center();" title="Align Center">
+                     <i class="icon-align-center"></i>
+                  </a>
+               </li>
+               <li>
+                  <a href="javascript:void(0);" class="button tiny" onclick="style_right();" title="Align Right">
+                     <i class="icon-align-right"></i>
+                  </a>
+               </li>
+               <li>
+                  <a href="javascript:void(0);" class="button tiny" onclick="style_heading();" title="Heading">
+                     <i class="icon-text-height"></i>
+                  </a>
+               </li>
+               <li>
+                  <a href="javascript:void(0);" class="button tiny" onclick="style_subheading();" title="Sub Heading">
+                     <i class="icon-text-width"></i>
+                  </a>
+               </li>
+               <li>
+                  <a href="javascript:void(0);" class="button tiny" onclick="style_headingsum();" title="Heading Summary">
+                     <i class="icon-sum"></i>
+                  </a>
+               </li>
             </ul>
          </div>
       </div>
@@ -201,8 +236,7 @@
             <a href="@Url.Action("Edit", "Chapter", new {id = Model.ParentId}, Request.Url.Scheme)" class="button secondary expand" id="btnEditFooters">
                <i class="icon-editalt"></i> Edit Chapter
             </a>
-         }
-         else if (Model.ItemType == "Entry") {
+         } else if (Model.ItemType == "Entry") {
             <a href="@Url.Action("Edit", "Glossary", new {id = Model.ParentId}, Request.Url.Scheme)" class="button secondary expand" id="btnEditFooters">
                <i class="icon-editalt"></i> Edit Item
             </a>
@@ -221,6 +255,14 @@
       <div class="small-6 medium-3 large-3 columns">
          <a href="@Url.Action("Edit", "Footer", new {id = Model.ItemId, type = Model.ItemType}, Request.Url.Scheme)" class="button secondary expand" id="btnEditFooters">
             <i class="icon-notificationtop"></i> Edit Footers
+         </a>
+      </div>
+   </div>
+} else {
+   <div class="row">
+      <div class="small-6 columns">
+         <a href="@ViewBag.RefUrl" class="button secondary expand" id="btnEditFooters">
+            <i class="icon-pageback"></i> Back
          </a>
       </div>
    </div>

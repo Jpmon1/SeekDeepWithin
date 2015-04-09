@@ -18,18 +18,26 @@
    @Html.Raw(style.Start)
 }
 
-@foreach (var header in Model.Headers) {
-   <div class="row">
-      @if (Model.DisplayType == VerseDisplayType.Number) {
-         <div class="small-4 medium-2 large-1 columns">&nbsp;</div>
+@if (Model.Headers.Count > 0) {
+   <div style="margin-top: 0.825rem">
+      @foreach (var header in Model.Headers) {
+         <div class="row">
+            @if (Model.DisplayType == VerseDisplayType.Number) {
+               <div class="small-4 medium-2 large-1 columns">&nbsp;</div>
+            }
+            <div class="small-@smallSpan medium-@mediumSpan large-@largeSpan columns">
+               @Html.Partial("_HeaderFooter", header)
+            </div>
+         </div>
       }
-      <div class="small-@smallSpan medium-@mediumSpan large-@largeSpan columns">
-         @Html.Partial("_HeaderFooter", header)
-      </div>
    </div>
 }
-
-<div class="row" id="pass_@id" @if(Model.Number == 0 && Model.Footers.Count == 0){ @Html.Raw("style=\"padding-bottom: 0.9375rem\"") }>
+<div class="row" id="pass_@id"
+     @if (Model.DisplayType == VerseDisplayType.Paragraph && Model.Footers.Count == 0) {
+        @Html.Raw("style=\"padding-bottom: 0.9375rem\"")
+     } else if (Model.DisplayType == VerseDisplayType.Number && Model.Footers.Count == 0) {
+        @Html.Raw("style=\"padding-bottom: 0.5rem\"")
+     }>
    @if (Model.DisplayType == VerseDisplayType.Number) {
       <div class="small-2 medium-1 large-1 columns">
          <blockquote>

@@ -4,34 +4,6 @@
     ViewBag.Title = Model.Name;
 }
 <h3>@Model.Name</h3>
-<div class="row">
-   <div class="small-12 columns">
-      @if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
-         <a href="@Url.Action("EditTerm", "Glossary", new {id = Model.Id}, Request.Url.Scheme)" class="button tiny">
-            <i class="icon-edit"></i> edit term
-         </a>
-      }
-      @if (Request.IsAuthenticated && User.IsInRole ("Creator")) {
-         <a href="@Url.Action("CreateItem", "Glossary", new {termId = Model.Id}, Request.Url.Scheme)" class="button tiny success">
-            <i class="icon-plus"></i> add item
-         </a>
-      }
-   </div>
-</div>
-
-@if (TempData.ContainsKey ("RedirectTerm")) {
-   <div class="row">
-      <div class="small-12 columns">
-         <div class="alert-box info">
-            <em>Redirected from: 
-               <a href="@Url.Action("Term", "Glossary", new {id=TempData["RedirectTermId"]}, Request.Url.Scheme)">
-                  @TempData["RedirectTerm"]
-               </a>
-            </em>
-         </div>
-      </div>
-   </div>
-}
 
 <div class="row">
    <div class="small-12 large-9 columns">
@@ -46,6 +18,9 @@
                      @if (!string.IsNullOrWhiteSpace (item.SourceUrl)) {
                         <a href="@item.SourceUrl" target="_blank">@item.SourceName</a>
                      }
+                     @if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
+                        <small><a href="@Url.Action("Edit", "Glossary", new {id = item.Id}, Request.Url.Scheme)">[edit]</a></small>
+                     }
                   </div>
                </div>
             </div>
@@ -53,15 +28,6 @@
                @Html.Partial("_GlossaryEntry", entry)
             }
          </div>
-         if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
-            <div class="row">
-               <div class="small-12 large-12 columns">
-                  <div class="alert-box secondary">
-                     <a href="@Url.Action("Edit", "Glossary", new {id = item.Id}, Request.Url.Scheme)">edit</a>
-                  </div>
-               </div>
-            </div>
-         }
       }
    </div>
    <div class="small-12 large-3 columns">
@@ -93,5 +59,23 @@
             </div>
          </div>
       }
+      <div class="row">
+         <div class="small-12 columns">
+            @if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
+               <a href="@Url.Action("EditTerm", "Glossary", new {id = Model.Id}, Request.Url.Scheme)" class="button expand tiny">
+                  <i class="icon-edit"></i> edit term
+               </a>
+            }
+         </div>
+      </div>
+      <div class="row">
+         <div class="small-12 columns">
+            @if (Request.IsAuthenticated && User.IsInRole ("Creator")) {
+               <a href="@Url.Action("CreateItem", "Glossary", new {termId = Model.Id}, Request.Url.Scheme)" class="button expand tiny success">
+                  <i class="icon-plus"></i> add item
+               </a>
+            }
+         </div>
+      </div>
    </div>
 </div>

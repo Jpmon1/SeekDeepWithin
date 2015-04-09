@@ -29,7 +29,7 @@ function addMultiple(i) {
          addMultiple(parseInt(i) + 1);
       });
    } else {
-      window.location = '/Chapter/Read/' + $('#ParentId').val();
+      window.location = '/Read/Index/' + $('#ParentId').val();
    }
 }
 

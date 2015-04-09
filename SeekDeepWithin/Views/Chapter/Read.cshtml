@@ -17,7 +17,7 @@
 <div class="row show-for-small-only">
    <div class="small-12 large-12 columns alert-box secondary text-center" style="padding: 3px 10px;">
       <h4>
-         <a href="@Url.Action("Read", "Chapter", new { id = @Model.SubBook.Version.DefaultReadChapter }, Request.Url.Scheme)">@Model.SubBook.Version.Title</a>
+         <a href="@Url.Action("Index", "Read", new { id = @Model.SubBook.Version.DefaultReadChapter }, Request.Url.Scheme)">@Model.SubBook.Version.Title</a>
          @if (!Model.SubBook.Hide) {
             <text> | </text><a href="@Url.Action("About", "SubBook", new { id = @Model.SubBook.Id }, Request.Url.Scheme)">@Model.SubBook.Name</a>
          }
@@ -39,7 +39,7 @@
                   <section class="middle tab-bar-section">
                      <h1 class="title">
                         <span class="show-for-medium-up">
-                           <a href="@Url.Action("Read", "Chapter", new { id = @Model.SubBook.Version.DefaultReadChapter }, Request.Url.Scheme)">@Model.SubBook.Version.Title</a>
+                           <a href="@Url.Action("Index", "Read", new { id = @Model.SubBook.Version.DefaultReadChapter }, Request.Url.Scheme)">@Model.SubBook.Version.Title</a>
                            @if (!Model.SubBook.Hide) {
                               <text> | </text><a href="@Url.Action("About", "SubBook", new { id = @Model.SubBook.Id }, Request.Url.Scheme)">@Model.SubBook.Name</a>
                            }
@@ -82,7 +82,7 @@
                            @if (contents.PreviousChapter == -1) {
                               <li class="arrow unavailable" aria-disabled="true"><a href="javascript:void(0)">&laquo; Previous Chapter</a></li>
                            } else {
-                              <li class="arrow"><a href="@Url.Action("Read", "Chapter", new { id = contents.PreviousChapter }, Request.Url.Scheme)">&laquo; Previous Chapter</a></li>
+                              <li class="arrow"><a href="@Url.Action("Index", "Read", new { id = contents.PreviousChapter }, Request.Url.Scheme)">&laquo; Previous Chapter</a></li>
                            }
                         </ul>
                      </div>
@@ -91,7 +91,7 @@
                            @if (contents.NextChapter == -1) {
                               <li class="arrow unavailable" aria-disabled="true"><a href="javascript:void(0)">Next Chapter &raquo;</a></li>
                            } else {
-                              <li class="arrow"><a href="@Url.Action("Read", "Chapter", new { id = contents.NextChapter }, Request.Url.Scheme)">Next Chapter &raquo;</a></li>
+                              <li class="arrow"><a href="@Url.Action("Index", "Read", new { id = contents.NextChapter }, Request.Url.Scheme)">Next Chapter &raquo;</a></li>
                            }
                         </ul>
                      </div>

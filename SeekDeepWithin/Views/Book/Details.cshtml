@@ -24,7 +24,7 @@
          @if (Model.Versions.Count > 0) {
             foreach (var version in Model.Versions) {
                <li class="bullet-item">
-                  <a href="@Url.Action("Read", "Chapter", new { id = version.DefaultReadChapter }, Request.Url.Scheme)">
+                  <a href="@Url.Action("Index", "Read", new { id = version.DefaultReadChapter }, Request.Url.Scheme)">
                      @version.Title
                   </a>
                   @if (!string.IsNullOrEmpty (version.Abbreviation)) {

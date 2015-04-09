@@ -26,6 +26,7 @@ namespace SeekDeepWithin.Controllers
                 { "u", null},
                 { "sub", null},
                 { "sup", null},
+                { "small", null},
                 { "table", new[] { "align", "class", "style" } },
                 { "tr", new[] { "align", "class", "style" } },
                 { "td", new[] { "align", "class", "style" } },

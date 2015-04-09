@@ -18,21 +18,6 @@ namespace SeekDeepWithin.Pocos
       public int Index { get; set; }
 
       /// <summary>
-      /// Gets or Sets if the content should be bolded.
-      /// </summary>
-      public bool IsBold { get; set; }
-
-      /// <summary>
-      /// Gets or Sets if the content should be italicized.
-      /// </summary>
-      public bool IsItalic { get; set; }
-
-      /// <summary>
-      /// Gets or Sets the justification of the footer.
-      /// </summary>
-      public int Justify { get; set; }
-
-      /// <summary>
       /// Gets or Sets the footer.
       /// </summary>
       public string Text { get; set; }

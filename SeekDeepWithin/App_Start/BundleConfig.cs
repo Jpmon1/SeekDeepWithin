@@ -75,7 +75,6 @@ namespace SeekDeepWithin
             "~/Scripts/sdw/sdw.link.js"));
 
          bundles.Add (new StyleBundle ("~/Content/css").Include ("~/Content/normalize.css",
-            "~/Content/jquery-ui.css",
             "~/Content/foundation.css",
             "~/Content/whhg.css",
             "~/Content/sdw.default.css"));

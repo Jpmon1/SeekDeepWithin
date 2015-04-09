@@ -26,9 +26,6 @@ function header_edit(id) {
       $('#rowUpdate').show();
       $('#rowEdit').show();
       $('#hfText').val(data.text);
-      $('#hfJustify').val(data.justify);
-      $('#hfIsBold').prop('checked', data.isBold);
-      $('#hfIsItalic').prop('checked', data.isItalic);
    }).fail(function (data) {
       $('#modalClose').show();
       $('#modalText').text(data.responseText);
@@ -47,14 +44,20 @@ function header_update() {
 }
 
 function header_post(action, done) {
-   $.ajax({
-      type: 'POST',
-      url: '/Header/' + action + '/',
-      data: header_GetData()
-   }).done(done).fail(function (data) {
+   var header = $('#hfText').val();
+   if (header == '') {
       $('#modalClose').show();
-      $('#modalText').text('An error occured - ' + data.responseText);
-   });
+      $('#modalText').text('Please add some text for the header.');
+   } else {
+      $.ajax({
+         type: 'POST',
+         url: '/Header/' + action + '/',
+         data: header_GetData()
+      }).done(done).fail(function(data) {
+         $('#modalClose').show();
+         $('#modalText').text('An error occured - ' + data.responseText);
+      });
+   }
 }
 
 function header_delete() {
@@ -90,10 +93,7 @@ function header_GetData() {
       id: $('#editId').val(),
       text: $('#hfText').val(),
       itemId: $('#itemId').val(),
-      itemType: $('#itemType').val(),
-      isBold: $('#hfIsBold').prop('checked'),
-      isItalic: $('#hfIsItalic').prop('checked'),
-      justify: $("#hfJustify option:selected").val()
+      itemType: $('#itemType').val()
    };
 }
 
@@ -103,8 +103,5 @@ function header_new() {
    $('#rowHide').hide();
    $('#hfText').val('');
    $('#editId').val('');
-   $('#hfJustify').val(0);
    $('#styleArea').html('');
-   $('#hfIsBold').prop('checked', false);
-   $('#hfIsItalic').prop('checked', false);
 }

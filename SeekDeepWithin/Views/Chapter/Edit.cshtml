@@ -45,9 +45,39 @@
 
       <section class="main-section">
 
+         <div class="row" style="margin-top: 10px;">
+            <div class="small-6 medium-3 large-3 columns">
+               <a href="@Url.Action("Index", "Read", new {id=Model.Id}, Request.Url.Scheme)" class="button expand secondary">
+                  <i class="icon-notebook"></i> Read
+               </a>
+            </div>
+            <div class="small-6 medium-3 large-3 columns">
+               @if (Request.IsAuthenticated && User.IsInRole ("Creator"))
+               {
+                  <a href="@Url.Action("Add", "Chapter", new {id = Model.Id}, Request.Url.Scheme)" class="button expand success">
+                     <i class="icon-plus"></i> Add Passages
+                  </a>
+               }
+            </div>
+            <div class="small-6 medium-3 large-3 columns text-center">
+               <label for="verseRadio"><i class="icon-numberlist"></i> Verses</label>
+               <div class="switch">
+                  <input id="verseRadio" type="radio" name="versePara" @if (!Model.DefaultToParagraph) { <text> checked="checked" </text>  }>
+                  <label for="verseRadio"></label>
+               </div>
+            </div>
+            <div class="small-6 medium-3 large-3 columns text-center">
+               <label for="paraRadio"><i class="icon-align-left"></i> Paragraphs</label>
+               <div class="switch">
+                  <input id="paraRadio" type="radio" name="versePara" @if (Model.DefaultToParagraph) { <text> checked="checked" </text>   }>
+                  <label for="paraRadio"></label>
+               </div>
+            </div>
+         </div>
+
          <div class="row">
             <div class="small-12 large-12 columns">
-               <textarea cols="10" id="passText" name="passText" rows="8" style="margin-top: 10px;"></textarea>
+               <textarea cols="10" id="passText" name="passText" rows="8"></textarea>
             </div>
          </div>
 
@@ -123,59 +153,15 @@
          </div>
 
          <div class="row">
-            <div class="small-6 medium-3 large-3 columns">
-               <a href="@Url.Action("Read", "Chapter", new {id=Model.Id}, Request.Url.Scheme)" class="button expand secondary">
-                  <i class="icon-preview"></i> Read
-               </a>
-            </div>
-            @if (Request.IsAuthenticated && User.IsInRole ("Creator")) {
-               <div class="small-6 medium-3 large-3 columns">
-                  <a href="@Url.Action("Add", "Chapter", new {id = Model.Id}, Request.Url.Scheme)" class="button expand success">
-                     <i class="icon-plus"></i> Add Passages
-                  </a>
-               </div>
-            }
-            <div class="small-6 medium-3 large-3 columns">
+            <div class="small-6 columns">
                <a href="@Url.Action("Edit", "Header", new{id=Model.Id, type="Chapter"})" class="button expand">
                   <i class="icon-editalt"></i> Edit Chapter Headers
                </a>
             </div>
-            <div class="small-6 medium-3 large-3 columns">
+            <div class="small-6 columns">
                <a href="@Url.Action("Edit", "Footer", new{id=Model.Id, type="Chapter"})" class="button expand">
                   <i class="icon-editalt"></i> Edit Chapter Footers
                </a>
-            </div>
-            @if (!Request.IsAuthenticated || !User.IsInRole ("Creator"))
-            {
-               <div class="small-6 medium-3 large-3 columns"></div>
-            }
-         </div>
-
-         <div class="row">
-            <div class="small-12 columns">
-               <fieldset>
-                  <legend>Reading Style <i class="icon-ok-sign" id="saveReadStyleCheck" style="color: green"></i></legend>
-                  
-                  <div class="row">
-                     <div class="small-6 medium-3 large-3 columns">
-                        <label for="verseRadio"><i class="icon-numberlist"></i> Verses</label>
-                        <div class="switch">
-                           <input id="verseRadio" type="radio" name="versePara" @if (!Model.DefaultToParagraph) { <text> checked="checked" </text> }>
-                           <label for="verseRadio"></label>
-                        </div>
-                     </div>
-                     <div class="small-6 medium-3 large-3 columns">
-                        <label for="paraRadio"><i class="icon-align-left"></i> Paragraphs</label>
-                        <div class="switch">
-                           <input id="paraRadio" type="radio" name="versePara" @if (Model.DefaultToParagraph) { <text> checked="checked" </text>  }>
-                           <label for="paraRadio"></label>
-                        </div>
-                     </div>
-                     <div class="small-12 medium-6 large-6 columns">
-                        
-                     </div>
-                  </div>
-               </fieldset>
             </div>
          </div>
 

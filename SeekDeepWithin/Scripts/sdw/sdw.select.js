@@ -61,7 +61,7 @@ function select_initSlider(end) {
 
 function select_initRangeSlider(end) {
    $("#textRangeSlider").noUiSlider({
-      start: [0, end > 5 ? 5 : end],
+      start: [0, end],
       behaviour: 'drag-tap',
       connect: true,
       step: 1,
@@ -84,4 +84,5 @@ function select_initRangeSlider(end) {
    });
    $("#textRangeSlider").Link('lower').to($('#startIndex'));
    $("#textRangeSlider").Link('upper').to($('#endIndex'));
+   select_text(0, end);
 }

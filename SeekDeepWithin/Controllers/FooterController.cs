@@ -126,9 +126,6 @@ namespace SeekDeepWithin.Controllers
          {
             footer.Text = viewModel.Text;
             footer.Index = viewModel.Index;
-            footer.IsBold = viewModel.IsBold;
-            footer.Justify = viewModel.Justify;
-            footer.IsItalic = viewModel.IsItalic;
             this.m_Db.Save ();
             return Json (new {id=footer.Id, index=footer.Index});
          }
@@ -163,13 +160,7 @@ namespace SeekDeepWithin.Controllers
             footer = entry.Footers.FirstOrDefault (f => f.Id == viewModel.Id);
          }
          if (footer != null)
-         {
             footer.Text = viewModel.Text;
-            footer.Index = viewModel.Index;
-            footer.IsBold = viewModel.IsBold;
-            footer.Justify = viewModel.Justify;
-            footer.IsItalic = viewModel.IsItalic;
-         }
          this.m_Db.Save ();
          return Json ("Success");
       }
@@ -228,30 +219,21 @@ namespace SeekDeepWithin.Controllers
             var chapter = this.m_Db.SubBookChapters.Get (itemId);
             var footer = chapter.Footers.FirstOrDefault (f => f.Id == id);
             if (footer != null)
-               return Json (new
-               {
-                  text = footer.Text, justify = footer.Justify, isBold = footer.IsBold, isItalic = footer.IsItalic, index = footer.Index
-               }, JsonRequestBehavior.AllowGet);
+               return Json (new {text = footer.Text}, JsonRequestBehavior.AllowGet);
          }
          if (itemType.ToLower () == "passage")
          {
             var passage = this.m_Db.PassageEntries.Get (itemId);
             var footer = passage.Footers.FirstOrDefault (f => f.Id == id);
             if (footer != null)
-               return Json (new
-               {
-                  text = footer.Text, justify = footer.Justify, isBold = footer.IsBold, isItalic = footer.IsItalic, index = footer.Index
-               }, JsonRequestBehavior.AllowGet);
+               return Json (new {text = footer.Text}, JsonRequestBehavior.AllowGet);
          }
          if (itemType.ToLower () == "entry")
          {
             var entry = this.m_Db.GlossaryEntries.Get (itemId);
             var footer = entry.Footers.FirstOrDefault (f => f.Id == id);
             if (footer != null)
-               return Json (new
-               {
-                  text = footer.Text, justify = footer.Justify, isBold = footer.IsBold, isItalic = footer.IsItalic, index = footer.Index
-               }, JsonRequestBehavior.AllowGet);
+               return Json (new {text = footer.Text}, JsonRequestBehavior.AllowGet);
          }
          Response.StatusCode = 500;
          return Json ("Invalid Data.", JsonRequestBehavior.AllowGet);

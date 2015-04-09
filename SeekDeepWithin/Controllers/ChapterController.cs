@@ -28,17 +28,6 @@ namespace SeekDeepWithin.Controllers
       }
 
       /// <summary>
-      /// Gets the read chapter Page.
-      /// </summary>
-      /// <param name="id">The id of the chapter to read.</param>
-      /// <returns>The read page.</returns>
-      public ActionResult Read (int id)
-      {
-         var chapter = this.m_Db.SubBookChapters.Get (id);
-         return View (new ChapterViewModel (chapter));
-      }
-
-      /// <summary>
       /// Gets the edit chapter Page.
       /// </summary>
       /// <param name="id">The id of the chapter to edit.</param>

@@ -27,9 +27,6 @@ function footer_edit(id) {
       $('#rowEdit').show();
       $('#hfText').val(data.text);
       $('#hfIndex').val(data.index);
-      $('#hfJustify').val(data.justify);
-      $('#hfIsBold').prop('checked', data.isBold);
-      $('#hfIsItalic').prop('checked', data.isItalic);
    }).fail(function (data) {
       $('#modalClose').show();
       $('#modalText').text('An error occured - ' + data.responseText);
@@ -47,14 +44,21 @@ function footer_update() {
 }
 
 function footer_post(action, done) {
-   $.ajax({
-      type: 'POST',
-      url: '/Footer/' + action + '/',
-      data: footer_GetData()
-   }).done(done).fail(function (data) {
+   var footer = $('#hfText').val();
+   var index = $('#hfIndex').val();
+   if (footer == '' || index == '' || index == '0') {
       $('#modalClose').show();
-      $('#modalText').text('An error occured - ' + data.responseText);
-   });
+      $('#modalText').text('Please add some text for the footer, and specify it\'s location.');
+   } else {
+      $.ajax({
+         type: 'POST',
+         url: '/Footer/' + action + '/',
+         data: footer_GetData()
+      }).done(done).fail(function(data) {
+         $('#modalClose').show();
+         $('#modalText').text('An error occured - ' + data.responseText);
+      });
+   }
 }
 
 function footer_delete() {
@@ -86,10 +90,7 @@ function footer_GetData() {
       text: $('#hfText').val(),
       itemId: $('#itemId').val(),
       itemType: $('#itemType').val(),
-      index: $('#hfIndex').val(),
-      isBold: $('#hfIsBold').prop('checked'),
-      isItalic: $('#hfIsItalic').prop('checked'),
-      justify: $("#hfJustify option:selected").val()
+      index: $('#hfIndex').val()
    };
 }
 
@@ -100,9 +101,6 @@ function footer_new() {
    $('#hfText').val('');
    $('#editId').val('');
    $('#hfIndex').val(0);
-   $('#hfJustify').val(0);
-   $('#hfIsBold').prop('checked', false);
-   $('#hfIsItalic').prop('checked', false);
 }
 
 function footer_style() {

@@ -5,6 +5,7 @@
     ViewBag.Title = "Contents for " + Model.Title;
 }
 @section styles{
+   @*Tree Style*@
    <link href="~/Content/themes/default/style.css" rel="stylesheet" />
 }
 
@@ -20,7 +21,7 @@
       <ul class="title-area">
          <li class="name">
             <h1>
-               <a href="@Url.Action("Read", "Chapter", new { id = Model.DefaultReadChapter }, Request.Url.Scheme)">@Model.Title Contents</a>
+               <a href="@Url.Action("Index", "Read", new { id = Model.DefaultReadChapter }, Request.Url.Scheme)">@Model.Title Contents</a>
             </h1>
          </li>
          <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
