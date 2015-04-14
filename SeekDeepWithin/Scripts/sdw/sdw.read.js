@@ -11,11 +11,16 @@
       clickSelector: '.toggle-left-panel',
       enableEscapeKey: true
    });
+   document.rightMenu = scotchPanel;
    $('#smallLeftMenu').show();
    $(window).resize(function () {
       resizeReadMenu(scotchPanel);
    });
    resizeReadMenu(scotchPanel);
+   $('.overlay').click(function () {
+      // CLOSE ONLY
+      scotchPanel.close();
+   });
 });
 
 function resizeReadMenu(scotchPanel) {

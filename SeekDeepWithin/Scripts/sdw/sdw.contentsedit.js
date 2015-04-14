@@ -1,8 +1,7 @@
 ﻿$(document).ready(function () {
    $('#hideSaved').hide();
    $('#contentsSaved').hide();
-   var topNavHeight = $('#siteNavDiv').height();
-   $('#contentsNavBar').stick_in_parent({ offset_top: topNavHeight });
+   $('#smallLeftMenu').css({ 'background': '#333333' });
 
    $('#hideSwitch').change(function () {
       var ref = $('#contentTree').jstree(true);
@@ -168,12 +167,14 @@ function createToc() {
 }
 
 function collapseAll() {
+   document.rightMenu.close();
    var ref = $('#contentTree').jstree(true);
    var root = ref.get_node('root');
    ref.close_all(root);
 }
 
 function createSubBook() {
+   document.rightMenu.close();
    var ref = $('#contentTree').jstree(true);
    var root = ref.get_node('root');
    var sel = ref.create_node(root, { 'type': 'subbook', 'text': 'new' });
@@ -183,6 +184,7 @@ function createSubBook() {
 }
 
 function createChapter() {
+   document.rightMenu.close();
    var ref = $('#contentTree').jstree(true);
    var sel = ref.get_selected();
    if (!sel.length) { return; }
@@ -212,6 +214,7 @@ function editItem() {
 }
 
 function renameItem() {
+   document.rightMenu.close();
    var ref = $('#contentTree').jstree(true);
    var sel = ref.get_selected();
    if (!sel.length) { return; }
@@ -255,6 +258,11 @@ function setDefaultChapter() {
             id: $('#versionId').val(),
             chapterId: node.data.id
          }
+      }).done(function () {
+         $('#modalClose').hide();
+         $('#modalText').text('Success!');
+         $('#modal').foundation('reveal', 'open');
+         setTimeout(function () { $('#modal').foundation('reveal', 'close'); }, 700);
       }).fail(function (d) {
          alert(d.responseText);
       });
@@ -264,6 +272,7 @@ function setDefaultChapter() {
 }
 
 function deleteItem() {
+   document.rightMenu.close();
    var ref = $('#contentTree').jstree(true);
    var sel = ref.get_selected();
    if (!sel.length) { return; }
@@ -287,6 +296,7 @@ function okToDelete() {
 }
 
 function showAddList() {
+   document.rightMenu.close();
    var ref = $('#contentTree').jstree(true);
    var sel = ref.get_selected();
    if (!sel.length) { return; }

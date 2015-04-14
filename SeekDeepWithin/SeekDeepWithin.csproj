@@ -517,6 +517,7 @@
     <Content Include="Scripts\sdw\sdw.link.js" />
     <Content Include="Scripts\sdw\sdw.passage.js" />
     <Content Include="Scripts\sdw\sdw.read.js" />
+    <Content Include="Scripts\sdw\sdw.search.js" />
     <Content Include="Scripts\sdw\sdw.select.js" />
     <Content Include="Scripts\sdw\sdw.style.js" />
     <Content Include="Scripts\sdw\sdw.tag.js" />

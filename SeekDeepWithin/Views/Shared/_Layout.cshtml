@@ -47,12 +47,9 @@
 
             <!-- Left Nav Section -->
             <ul class="left">
-               @if (Request.IsAuthenticated)
-               {
+               @if (Request.IsAuthenticated) {
                   <li><a href="@Url.Action("Manage", "Account", null, Request.Url.Scheme)">Welcome @User.Identity.Name!</a></li>
-               }
-               else
-               {
+               } else {
                   var returnUrl = Request.Url != null ? Request.Url.ToString () : string.Empty;
                   <li><a href="@Url.Action("Register", "Account", null, Request.Url.Scheme)"><i class="icon-ok-sign"></i> Register</a></li>
                   <li><a href="@Url.Action("Login", "Account", new { returnUrl }, Request.Url.Scheme)"><i class="icon-enter"></i> Log in</a></li>
@@ -60,6 +57,8 @@
             </ul>
          </section>
       </nav>
+      
+      <span class="overlay"></span>
 
       <div class="small-bar row show-for-small-only" id="smallMenuBar">
          <div class="small-1 columns toggle-left-panel" style="display: none;" id="smallLeftMenuSelector">
@@ -110,7 +109,7 @@
          </div>
       </div>
    
-      <div class="row" style="margin-top: 10px">
+      <div class="row">
          <div class="small-12 large-12 columns">
             @RenderSection("featured", required: false)
             <section class="content-wrapper main-content clear-fix">
@@ -153,6 +152,11 @@
             distanceX: '250px',
             clickSelector: '.toggle-right-panel',
             enableEscapeKey: true
+         });
+         document.leftMenu = scotchPanel;
+         $('.overlay').click(function () {
+            // CLOSE ONLY
+            scotchPanel.close();
          });
       </script>
    </body>
