@@ -21,71 +21,58 @@
          @if (!Model.SubBook.Hide) {
             <text> | </text><a href="@Url.Action("About", "SubBook", new { id = @Model.SubBook.Id }, Request.Url.Scheme)">@Model.SubBook.Name</a>
          }
+         @if (!Model.Hide) {
+            <text> | @Model.Name</text>
+         }
       </div>
    </div>
 </div>
 
 <div id="readingRow">
    <div class="row">
-      <div class="small-12 large-12 columns" id="readRow">
-         <div class="off-canvas-wrap" data-offcanvas style="min-height: 200px;" id="readOffCanvas">
-            <div class="contain-to-grid" id="readNavBar" style="z-index: 9899;">
-               <nav class="tab-bar">
-                  
-                  <section class="left-small text-center">
-                     <a class="left-off-canvas-toggle" href="#" style="color: black;"><i class="icon-menu"></i></a>
-                  </section>
-
-                  <section class="middle tab-bar-section" style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis">
-                     <h1 class="title">
-                        @if (!Model.Hide) {
-                           <text>@Model.Name</text>
-                        } else if (!Model.SubBook.Hide) {
-                           <text>@Model.SubBook.Name</text>}
-                        else {
-                           <text>@Model.SubBook.Version.Title</text>
-                        }
-                     </h1>
-                  </section>
-               </nav>
+      <div class="small-12 medium-9 large-9 columns">
+         @Html.DisplayFor(model => model.Headers)
+         @foreach (var passage in Model.Passages) {
+            @Html.Partial("_Passage", passage)
+         }
+         @if (Model.Footers.Count > 0) {
+            <br/>
+            <div class="alert-box secondary">
+               @Html.DisplayFor(model => model.Footers)
             </div>
-            <div class="inner-wrap" id="readMenuParent">
-               <div class="left-off-canvas-menu" id="readMenu">
-                  @Html.DisplayFor(c => contents)
-               </div>
-
-               <section class="main-section" style="margin-top:10px;" id="readArea">
-                  @Html.DisplayFor(model => model.Headers)
-                  @foreach (var passage in Model.Passages) {
-                     @Html.Partial("_Passage", passage)
-                  }
-                  @if (Model.Footers.Count > 0) {
-                     <br/>
-                     <div class="alert-box secondary">
-                        @Html.DisplayFor(model => model.Footers)
-                     </div>
-                  }
-                  <div class="row">
-                     <div class="small-6 pagination-centered columns">
-                           @if (contents.PreviousChapter != -1) {
-                              <ul class="pagination" role="menubar" aria-label="Pagination" style="width: 100%">
-                                 <li class="arrow"><a href="@Url.Action("Index", "Read", new { id = contents.PreviousChapter }, Request.Url.Scheme)">&laquo; Previous Chapter</a></li>
-                              </ul>
-                           }
-                     </div>
-                     <div class="small-6 pagination-centered columns">
-                        @if (contents.NextChapter != -1) {
-                           <ul class="pagination" role="menubar" aria-label="Pagination" style="width: 100%">
-                              <li class="arrow"><a href="@Url.Action("Index", "Read", new { id = contents.NextChapter }, Request.Url.Scheme)">Next Chapter &raquo;</a></li>
-                           </ul>
-                        }
-                     </div>
-                  </div>
-               </section>
-
-               <a class="exit-off-canvas" style="min-height: 200px;"></a>
+         }
+         <div class="row">
+            <div class="small-6 pagination-centered columns">
+               @if (contents.PreviousChapter != -1) {
+                  <ul class="pagination" role="menubar" aria-label="Pagination" style="width: 100%">
+                     <li class="arrow"><a href="@Url.Action("Index", "Read", new { id = contents.PreviousChapter }, Request.Url.Scheme)">&laquo; Previous Chapter</a></li>
+                  </ul>
+               }
+            </div>
+            <div class="small-6 pagination-centered columns">
+               @if (contents.NextChapter != -1) {
+                  <ul class="pagination" role="menubar" aria-label="Pagination" style="width: 100%">
+                     <li class="arrow"><a href="@Url.Action("Index", "Read", new { id = contents.NextChapter }, Request.Url.Scheme)">Next Chapter &raquo;</a></li>
+                  </ul>
+               }
             </div>
          </div>
+      </div>
+      <div id="contentPanel" class="small-12 medium-3 large-3 columns hide-for-small-only">
+         @Html.DisplayFor(c => contents)
+      </div>
+   </div>
+               
+   <div class="row">
+      <div class="small-6 columns">
+         @if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
+            <a href="@Url.Action("Edit", "Chapter", new {id = Model.Id}, Request.Url.Scheme)" class="button secondary small expand">Edit Chapter</a>
+         }
+      </div>
+      <div class="small-6 columns">
+         @if (Request.IsAuthenticated && User.IsInRole ("Creator")) {
+            <a href="@Url.Action("Contents", "Version", new {id = Model.SubBook.VersionId}, Request.Url.Scheme)" class="button secondary small expand">Edit Contents</a>
+         }
       </div>
    </div>
 
@@ -104,16 +91,18 @@
          <div class="small-6 large-6 columns text-right">
             @{
                var writers = Model.SubBook.Writers.Where (w => !w.IsTranslator).ToList ();
+               writers.AddRange (Model.SubBook.Version.Writers.Where(w => !w.IsTranslator));
                if (writers.Count > 0) {
                   <em>written by:</em>
-                  foreach (var writer in writers) {
+                  foreach (var writer in writers.Distinct(new WriterComparer ())) {
                      <a href="@Url.Action("Details", "Writer", new { id = writer.Id }, Request.Url.Scheme)">@writer.Name</a>
                   }
                }
                var translators = Model.SubBook.Writers.Where (w => w.IsTranslator).ToList ();
+               translators.AddRange (Model.SubBook.Version.Writers.Where (w => w.IsTranslator));
                if (translators.Count > 0) {
                   <em>translated by:</em>
-                  foreach (var writer in translators) {
+                  foreach (var writer in translators.Distinct(new WriterComparer ())) {
                      <a href="@Url.Action("Details", "Writer", new { id = writer.Id }, Request.Url.Scheme)">@writer.Name</a>
                   }
                }

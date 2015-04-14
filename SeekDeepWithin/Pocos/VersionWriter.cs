@@ -16,5 +16,7 @@
       /// Gets or Sets the sub book.
       /// </summary>
       public virtual Version Version { get; set; }
+
+      public bool IsTranslator { get; set; }
    }
 }

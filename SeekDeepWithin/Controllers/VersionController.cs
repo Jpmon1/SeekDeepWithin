@@ -72,6 +72,7 @@ namespace SeekDeepWithin.Controllers
          if (Request.UrlReferrer != null) TempData["RefUrl"] = Request.UrlReferrer.ToString ();
          if (TempData.ContainsKey ("ErrorMessage"))
             ViewBag.ErrorMessage = TempData["ErrorMessage"];
+         ViewBag.Writers = new SelectList (this.m_Db.Writers.All (), "Id", "Name");
          var viewModel = new VersionViewModel (this.m_Db.Versions.Get (id));
          return View (viewModel);
       }
@@ -99,6 +100,55 @@ namespace SeekDeepWithin.Controllers
             return RedirectToAction ("Index", "Read", new { id = viewModel.DefaultReadChapter });
          }
          return View (viewModel);
+      }
+
+      /// <summary>
+      /// Assigns a writer to a sub book.
+      /// </summary>
+      /// <returns>The result.</returns>
+      [HttpPost]
+      [ValidateAntiForgeryToken]
+      [Authorize (Roles = "Editor")]
+      public ActionResult AssignWriter (int id, int writerId, bool isTranslator)
+      {
+         var version = this.m_Db.Versions.Get (id);
+         var author = this.m_Db.Writers.Get (writerId);
+         var writer = new VersionWriter
+         {
+            Version = version,
+            IsTranslator = isTranslator,
+            Writer = author
+         };
+         version.Writers.Add (writer);
+         this.m_Db.Save ();
+         return Json (new { writerId = writer.Id, id, writer = author.Name });
+         //return RedirectToAction ("Details", new { id = subBook.Id });
+      }
+
+      /// <summary>
+      /// Removes a writer from a sub book.
+      /// </summary>
+      /// <returns>The result.</returns>
+      [HttpPost]
+      [ValidateAntiForgeryToken]
+      [Authorize (Roles = "Editor")]
+      public ActionResult RemoveWriter (int subBookId, int writerId)
+      {
+         var version = this.m_Db.Versions.Get (subBookId);
+         if (version == null)
+         {
+            Response.StatusCode = 500;
+            return Json ("Unknown version");
+         }
+         var writer = version.Writers.FirstOrDefault (w => w.Id == writerId);
+         if (writer == null)
+         {
+            Response.StatusCode = 500;
+            return Json ("Unknown writer");
+         }
+         version.Writers.Remove (writer);
+         this.m_Db.Save ();
+         return Json ("success");
       }
 
       /// <summary>

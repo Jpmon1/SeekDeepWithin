@@ -1,29 +1,28 @@
 ﻿@using SeekDeepWithin.Models
 @model VersionContents
 
-<div id="contentTree">
+<div id="leftMenu">
    @if (Model.SubBooks.Count > 0) {
-      <ul class="off-canvas-list">
-         @if (Request.IsAuthenticated && User.IsInRole ("Creator")) {
-            <li>
-               <a href="@Url.Action("Contents", "Version", new {id=Model.VersionId}, Request.Url.Scheme)">Edit Contents</a>
-            </li>
-         }
-         @if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
-            <li>
-               <a href="@Url.Action("Edit", "Chapter", new {id=Model.CurrentChapter}, Request.Url.Scheme)">Edit Chapter</a>
-            </li>
-         }
+      <div class="contents">
          @foreach (var subBook in Model.SubBooks) {
             if (!subBook.Hide) {
-               <li><label>@subBook.Name</label></li>
+               <a href="javascript:void(0);" class="item subBook" onclick="showContents(@subBook.Id)">
+                  @subBook.Name
+               </a>
+               @(subBook.Id != Model.CurrentSubBook
+                  ? Html.Raw ("<div id=\"subBook_" + subBook.Id + "\" style=\"display:none;\">")
+                  : Html.Raw ("<div id=\"subBook_" + subBook.Id + "\">"))
             }
-            foreach (var chapter in subBook.Chapters.Where(c => !c.Hide)) {
-               <li>
-                  <a href="@Url.Action("Index", "Read", new {id=chapter.Id}, Request.Url.Scheme)">@chapter.Name</a>
-               </li>
+            foreach (var chapter in subBook.Chapters.Where (c => !c.Hide))
+            {
+               <a class="item @if(chapter.Id == Model.CurrentChapter){<text>active</text>}" href="@Url.Action("Index", "Read", new {id=chapter.Id}, Request.Url.Scheme)">
+                  @chapter.Name
+               </a>
+            }
+            if (!subBook.Hide) {
+               @Html.Raw("</div>")
             }
          }
-      </ul>
+      </div>
    }
 </div>

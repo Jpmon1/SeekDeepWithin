@@ -12,7 +12,8 @@ namespace SeekDeepWithin
             "~/Scripts/jquery-1.11.2.js",
             "~/Scripts/jquery.cookie.js",
             "~/Scripts/foundation/foundation.js",
-            "~/Scripts/foundation/foundation.*"));
+            "~/Scripts/foundation/foundation.*",
+            "~/Scripts/scotchPanels.js"));
 
          bundles.Add (new ScriptBundle ("~/bundles/jqueryui").Include (
             "~/Scripts/jquery-ui-{version}.js"));
@@ -49,7 +50,8 @@ namespace SeekDeepWithin
 
          bundles.Add (new ScriptBundle ("~/bundles/sdw.contentsedit").Include ("~/Scripts/jstree.js",
             "~/Scripts/jquery.sticky-kit.js",
-            "~/Scripts/sdw/sdw.contentsedit.js"));
+            "~/Scripts/sdw/sdw.contentsedit.js",
+            "~/Scripts/sdw/sdw.read.js"));
 
          bundles.Add (new ScriptBundle ("~/bundles/sdw.read").Include ("~/Scripts/jquery.sticky-kit.js",
             "~/Scripts/sdw/sdw.read.js"));

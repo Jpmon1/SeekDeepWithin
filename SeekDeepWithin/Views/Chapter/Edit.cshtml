@@ -8,9 +8,12 @@
    title += " | " + Model.Name;
    ViewBag.Title = "Edit " + title;
 }
-<h3>
-   <small>editing</small> @title
-</h3>
+<ul class="breadcrumbs">
+   <li class="unavailable">editing</li>
+   <li><a href="@Url.Action("Edit", "Version", new {id=Model.SubBook.VersionId}, Request.Url.Scheme)">@Model.SubBook.Version.Title</a></li>
+   <li><a href="@Url.Action("Edit", "SubBook", new {id=Model.SubBookId}, Request.Url.Scheme)">@Model.SubBook.Name</a></li>
+   <li class="current">@Model.Name</li>
+</ul>
 @using (Html.BeginForm (null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" })){
    @Html.AntiForgeryToken()
 }
@@ -26,7 +29,7 @@
             <a class="left-off-canvas-toggle" href="#" style="color: black;"><i class="icon-menu"></i></a>
          </section>
 
-         <section class="middle tab-bar-section">
+         <section class="middle tab-bar-section" style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis">
             <h1 class="title">Passage <small>(passage id: <span id="editPassId"></span> entry id: <span id="editEntryId"></span>)</small></h1>
          </section>
       </nav>
@@ -47,28 +50,28 @@
 
          <div class="row" style="margin-top: 10px;">
             <div class="small-6 medium-3 large-3 columns">
-               <a href="@Url.Action("Index", "Read", new {id=Model.Id}, Request.Url.Scheme)" class="button expand secondary">
+               <a href="@Url.Action("Index", "Read", new {id=Model.Id}, Request.Url.Scheme)" class="button expand secondary small">
                   <i class="icon-notebook"></i> Read
                </a>
             </div>
             <div class="small-6 medium-3 large-3 columns">
                @if (Request.IsAuthenticated && User.IsInRole ("Creator"))
                {
-                  <a href="@Url.Action("Add", "Chapter", new {id = Model.Id}, Request.Url.Scheme)" class="button expand success">
+                  <a href="@Url.Action("Add", "Chapter", new {id = Model.Id}, Request.Url.Scheme)" class="button expand success small">
                      <i class="icon-plus"></i> Add Passages
                   </a>
                }
             </div>
             <div class="small-6 medium-3 large-3 columns text-center">
                <label for="verseRadio"><i class="icon-numberlist"></i> Verses</label>
-               <div class="switch">
+               <div class="switch small">
                   <input id="verseRadio" type="radio" name="versePara" @if (!Model.DefaultToParagraph) { <text> checked="checked" </text>  }>
                   <label for="verseRadio"></label>
                </div>
             </div>
             <div class="small-6 medium-3 large-3 columns text-center">
                <label for="paraRadio"><i class="icon-align-left"></i> Paragraphs</label>
-               <div class="switch">
+               <div class="switch small">
                   <input id="paraRadio" type="radio" name="versePara" @if (Model.DefaultToParagraph) { <text> checked="checked" </text>   }>
                   <label for="paraRadio"></label>
                </div>
@@ -106,12 +109,12 @@
 
          <div class="row">
             <div class="small-6 large-3 large-offset-2 columns">
-               <a href="javascript:void(0)" class="button expand" onclick="passage_update();">
+               <a href="javascript:void(0)" class="button expand small" onclick="passage_update();">
                   <i class="icon-savetodrive"></i> Save
                </a>
             </div>
             <div class="small-6 large-3 large-offset-2 columns">
-               <a href="javascript:void(0)" class="button alert expand" onclick="passage_check_delete();">
+               <a href="javascript:void(0)" class="button alert expand small" onclick="passage_check_delete();">
                   <i class="icon-remove-circle"></i> Delete
                </a>
             </div>
@@ -139,27 +142,27 @@
 
          <div class="row">
             <div class="small-6 medium-3 large-3 columns">
-               <a href="#" class="button expand" id="btnEditLinks"><i class="icon-link"></i> Edit Links</a>
+               <a href="#" class="button expand small" id="btnEditLinks"><i class="icon-link"></i> Edit Links</a>
             </div>
             <div class="small-6 medium-3 large-3 columns">
-               <a href="#" class="button expand" id="btnEditStyles"><i class="icon-paintroll"></i> Edit Styles</a>
+               <a href="#" class="button expand small" id="btnEditStyles"><i class="icon-paintroll"></i> Edit Styles</a>
             </div>
             <div class="small-6 medium-3 large-3 columns">
-               <a href="#" class="button expand" id="btnEditHeaders"><i class="icon-notificationbottom"></i> Edit Headers</a>
+               <a href="#" class="button expand small" id="btnEditHeaders"><i class="icon-notificationbottom"></i> Edit Headers</a>
             </div>
             <div class="small-6 medium-3 large-3 columns">
-               <a href="#" class="button expand" id="btnEditFooters"><i class="icon-notificationtop"></i> Edit Footers</a>
+               <a href="#" class="button expand small" id="btnEditFooters"><i class="icon-notificationtop"></i> Edit Footers</a>
             </div>
          </div>
 
          <div class="row">
             <div class="small-6 columns">
-               <a href="@Url.Action("Edit", "Header", new{id=Model.Id, type="Chapter"})" class="button expand">
+               <a href="@Url.Action("Edit", "Header", new{id=Model.Id, type="Chapter"})" class="button expand small">
                   <i class="icon-editalt"></i> Edit Chapter Headers
                </a>
             </div>
             <div class="small-6 columns">
-               <a href="@Url.Action("Edit", "Footer", new{id=Model.Id, type="Chapter"})" class="button expand">
+               <a href="@Url.Action("Edit", "Footer", new{id=Model.Id, type="Chapter"})" class="button expand small">
                   <i class="icon-editalt"></i> Edit Chapter Footers
                </a>
             </div>

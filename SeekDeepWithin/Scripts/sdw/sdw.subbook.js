@@ -41,7 +41,7 @@ function assignWriter() {
    }).done(function (d) {
       if ($('#noWriters').length > 0)
          $('#noWriters').remove();
-      $('#writers').append('<div class="row" id="abbrev_' + d.id + '">' +
+      $('#writers').append('<div class="row" id="writer_' + d.writerId + '">' +
          '<div class="small-1 columns">' +
          '<a href="javascript:void(0)" onclick="removeWriter(' + d.subBookId + ', ' + d.writerId + ')" title="Remove">' +
          '<i class="icon-remove-circle" style="color:red;"></i></a></div><div class="small-11 columns">' + d.writer + '</div></div>');

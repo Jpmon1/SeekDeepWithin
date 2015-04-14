@@ -14,64 +14,105 @@
 @if (ViewBag.ErrorMessage != null) {
    <div class ="alert-box alert">@ViewBag.ErrorMessage</div>
 }
-
 @using (Html.BeginForm (null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" })){
    @Html.AntiForgeryToken()
 }
 
-@using (Html.BeginForm ())
-{
-   @Html.AntiForgeryToken()
-   @Html.ValidationSummary(true)
-
-   <fieldset>
-      <legend>Version Details</legend>
-
-      @Html.HiddenFor(model => model.Id)
-      @Html.HiddenFor(model => model.BookId)
-
-      <div class="row">
-         <div class="small-12 columns">
-            @Html.LabelFor(model => model.Abbreviation)
-            @Html.EditorFor(model => model.Abbreviation)
-            @Html.ValidationMessageFor(model => model.Abbreviation)
+<div class="row">
+   <div class="small-12 medium-6 large-6 columns">
+      @using (Html.BeginForm ()) {
+         @Html.AntiForgeryToken()
+         @Html.ValidationSummary(true)
+         <fieldset>
+            <legend>Version Details</legend>
+            @Html.HiddenFor(model => model.Id)
+            @Html.HiddenFor(model => model.BookId)
+            <div class="row">
+               <div class="small-12 columns">
+                  @Html.LabelFor(model => model.Abbreviation)
+                  @Html.EditorFor(model => model.Abbreviation)
+                  @Html.ValidationMessageFor(model => model.Abbreviation)
+               </div>
+            </div>
+            <div class="row">
+               <div class="small-12 columns">
+                  @Html.LabelFor(model => model.Title)
+                  @Html.EditorFor(model => model.Title)
+                  @Html.ValidationMessageFor(model => model.Title)
+               </div>
+            </div>
+            <div class="row">
+               <div class="small-12 columns">
+                  @Html.LabelFor(model => model.PublishDate)
+                  @Html.EditorFor(model => model.PublishDate)
+                  @Html.ValidationMessageFor(model => model.PublishDate)
+               </div>
+            </div>
+            <div class="row">
+               <div class="small-12 large-4 columns">
+                  <input type="submit" value="Save" class="button expand" />
+               </div>
+               <div class="small-6 large-4 columns">
+                  <a href="javascript:void(0)" onclick="version_default()" class="button expand">
+                     Set as Default <i id="saveCheck" class="icon-ok-sign" style="display: none;"></i>
+                  </a>
+               </div>
+               <div class="small-6 large-4 columns">
+                  <a href="@Url.Action("EditSource", "Source", new {id=Model.Id, type="version"}, Request.Url.Scheme)" class="button expand secondary">
+                     Edit Source
+                  </a>
+               </div>
+            </div>
+         </fieldset>
+      }
+   </div>
+   <div class="small-12 medium-6 large-6 columns">
+      <fieldset>
+         <legend>Assign Writer <span style="font-size: small"><a href="@Url.Action("Create", "Writer", null, Request.Url.Scheme)">new writer</a></span></legend>
+         <div class="row">
+            <div class="small-8 columns">
+               @Html.DropDownList("writerId", ViewBag.Writers as SelectList)
+            </div>
+            <div class="small-4 columns">
+               <div class="switch">
+                  <input id="isTranslator" name="isTranslator" type="checkbox">
+                  <label for="isTranslator"></label>
+               </div>
+               Translator
+            </div>
          </div>
-      </div>
-      
-      <div class="row">
-         <div class="small-12 columns">
-            @Html.LabelFor(model => model.Title)
-            @Html.EditorFor(model => model.Title)
-            @Html.ValidationMessageFor(model => model.Title)
+         <div class="row">
+            <div class="small-12 columns">
+               <a href="javascript:void(0)" class="button expand" onclick="version_assignWriter()">Assign 
+                  <i class="icon-ok-sign" id="writerSaved" style="display: none;"></i>
+               </a>
+            </div>
          </div>
-      </div>
-      
-      <div class="row">
-         <div class="small-12 columns">
-            @Html.LabelFor(model => model.PublishDate)
-            @Html.EditorFor(model => model.PublishDate)
-            @Html.ValidationMessageFor(model => model.PublishDate)
+         <div class="row">
+            <div class="small-12 columns">
+               <div id="writers">
+                  @if (Model.Writers.Count > 0) {
+                     foreach (var writer in Model.Writers) {
+                        <div class="row" id="writer_@writer.Id">
+                           <div class="small-1 columns">
+                              <a href="javascript:void(0)" onclick="version_removeWriter(@Model.Id, @writer.Id) " title="Remove">
+                                 <i class="icon-remove-circle" style="color:red;"></i>
+                              </a>
+                           </div>
+                           <div class="small-11 columns">
+                              <a href="@Url.Action("Details", "Writer", new { id = writer.Id }, Request.Url.Scheme)">@writer.Name</a>
+                           </div>
+                        </div>
+                     }
+                  } else {
+                     <div class="alert-box info" id="noWriters">No writers have been added to this book.</div>
+                  }
+               </div>
+            </div>
          </div>
-      </div>
-      
-      
-      <div class="row">
-         <div class="small-12 large-4 columns">
-            <input type="submit" value="Save" class="button expand" />
-         </div>
-         <div class="small-6 large-4 columns">
-            <a href="javascript:void(0)" onclick="setAsDefaultVersion()" class="button expand">
-               Set as Default <i id="saveCheck" class="icon-ok-sign" style="display: none;"></i>
-            </a>
-         </div>
-         <div class="small-6 large-4 columns">
-            <a href="@Url.Action("EditSource", "Source", new {id=Model.Id, type="version"}, Request.Url.Scheme)" class="button expand secondary">
-               Edit Source
-            </a>
-         </div>
-      </div>
-   </fieldset>
-}
+      </fieldset>
+   </div>
+</div>
 
 
 @section Scripts {

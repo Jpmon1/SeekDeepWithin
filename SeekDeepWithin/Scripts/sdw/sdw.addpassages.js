@@ -14,18 +14,23 @@ function addSingle() {
 }
 
 function addMultiple(i) {
+   if (i === 0) {
+      $('#addAllButton').hide();
+   }
    var itemOrder = $('#addOrder' + i);
    if (itemOrder.length > 0) {
       var itemText = $('#addText' + i);
       var itemNumber = $('#addNumber' + i);
       postNewPassage(itemText.val(), itemOrder.val(), itemNumber.val(), function () {
-         itemText.hide();
-         $('#multiAddCheck' + i + '').show();
          if (!isElementInViewport(itemOrder)) {
             $('html, body').animate({
                scrollTop: itemOrder.offset().top
             }, 100);
          }
+         itemText.hide();
+         itemOrder.hide();
+         itemNumber.hide();
+         $('#multiAddCheck' + i + '').show();
          addMultiple(parseInt(i) + 1);
       });
    } else {

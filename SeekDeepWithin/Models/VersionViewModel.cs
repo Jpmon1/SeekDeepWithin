@@ -10,13 +10,13 @@ namespace SeekDeepWithin.Models
    /// </summary>
    public class VersionViewModel
    {
+      private readonly Collection<WriterViewModel> m_Writers = new Collection<WriterViewModel> ();
+      private readonly Collection<SubBookViewModel> m_SubBooks = new Collection<SubBookViewModel> ();
+
       /// <summary>
       /// Initializes a new version view model.
       /// </summary>
-      public VersionViewModel ()
-      {
-         this.SubBooks = new Collection <SubBookViewModel> ();
-      }
+      public VersionViewModel () { }
 
       /// <summary>
       /// Initializes a new version view model.
@@ -25,7 +25,6 @@ namespace SeekDeepWithin.Models
       public VersionViewModel (Version version)
       {
          var source = version.VersionSources.FirstOrDefault ();
-         this.SubBooks = new Collection<SubBookViewModel> ();
          this.Id = version.Id;
          this.Title = version.Title;
          this.BookId = version.Book.Id;
@@ -36,6 +35,8 @@ namespace SeekDeepWithin.Models
          this.DefaultReadChapter = version.DefaultReadChapter;
          this.SourceName = source == null ? string.Empty : source.Source.Name;
          this.SourceUrl = source == null ? string.Empty : source.Source.Url;
+         foreach (var writer in version.Writers)
+            this.Writers.Add(new WriterViewModel {Id = writer.Writer.Id, Name = writer.Writer.Name, IsTranslator = writer.IsTranslator});
       }
 
       /// <summary>
@@ -92,6 +93,11 @@ namespace SeekDeepWithin.Models
       /// <summary>
       /// Gets or Sets the list of sub books.
       /// </summary>
-      public Collection<SubBookViewModel> SubBooks { get; set; }
+      public Collection<SubBookViewModel> SubBooks { get { return this.m_SubBooks; } }
+
+      /// <summary>
+      /// Gets or Sets the list of writers.
+      /// </summary>
+      public Collection<WriterViewModel> Writers { get { return this.m_Writers; } }
    }
 }

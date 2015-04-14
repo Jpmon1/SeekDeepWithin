@@ -13,28 +13,28 @@
 <div class="row">
    <div class="small-6 medium-3 large-3 columns">
       @if (Model.ItemType == "Entry") {
-         <a href="@Url.Action("Edit", "Glossary", new {id = Model.ParentId}, Request.Url.Scheme)" class="button secondary expand">
+         <a href="@Url.Action("Edit", "Glossary", new {id = Model.ParentId}, Request.Url.Scheme)" class="button secondary expand small">
             <i class="icon-editalt"></i> Edit Item
          </a>
       } else {
-         <a href="@Url.Action("Edit", "Chapter", new {id = Model.ParentId}, Request.Url.Scheme)" class="button secondary expand">
+         <a href="@Url.Action("Edit", "Chapter", new {id = Model.ParentId}, Request.Url.Scheme)" class="button secondary expand small">
             <i class="icon-editalt"></i> Edit Chapter
          </a>
       }
    </div>
    <div class="small-6 medium-3 large-3 columns">
-      <a href="@Url.Action("Edit", "Footer", new {id=Model.ItemId, type=Model.ItemType}, Request.Url.Scheme)" class="button secondary expand">
+      <a href="@Url.Action("Edit", "Footer", new {id=Model.ItemId, type=Model.ItemType}, Request.Url.Scheme)" class="button secondary expand small">
          <i class="icon-notificationtop"></i> Edit Footers
       </a>
    </div>
    @if (Model.ItemType != "Chapter") {
       <div class="small-6 medium-3 large-3 columns">
-         <a href="@Url.Action("Edit" + Model.ItemType, "Style", new {id = Model.ItemId}, Request.Url.Scheme)" class="button secondary expand">
+         <a href="@Url.Action("Edit" + Model.ItemType, "Style", new {id = Model.ItemId}, Request.Url.Scheme)" class="button secondary expand small">
             <i class="icon-paintroll"></i> Edit Styles
          </a>
       </div>
       <div class="small-6 medium-3 large-3 columns">
-         <a href="@Url.Action("Edit" + Model.ItemType, "Link", new {id = Model.ItemId}, Request.Url.Scheme)" class="button secondary expand">
+         <a href="@Url.Action("Edit" + Model.ItemType, "Link", new {id = Model.ItemId}, Request.Url.Scheme)" class="button secondary expand small">
             <i class="icon-link"></i> Edit Links
          </a>
       </div>
@@ -46,53 +46,59 @@
 
 <div class="row" style="margin-top: 1.125rem">
    <div class="small-12 medium-6 large-6 columns">
-      <ul class="pricing-table" id="headerList">
-         <li class="title">Current Headers</li>
-         @foreach (var header in Model.Items) {
-            var len = header.Text.Length > 15 ? 15 : header.Text.Length;
-            <li class="bullet-item" id="item_@header.Id">
-               <a href="javascript:void(0)" onclick="header_edit(@header.Id)">@header.Text.Substring(0, len)</a>
-            </li>
-         }
-      </ul>
+      <fieldset>
+         <legend>Current Headers</legend>
+         <ul class="side-nav" id="headerList">
+            @foreach (var header in Model.Items) {
+               var len = header.Text.Length > 45 ? 45 : header.Text.Length;
+               <li class="bullet-item" id="item_@header.Id">
+                  <a href="javascript:void(0)" onclick="header_edit(@header.Id)">@header.Text.Substring(0, len)</a>
+               </li>
+            }
+         </ul>
+      </fieldset>
    </div>
    <div class="small-12 medium-6 large-6 columns">
-      <div class="row">
-         <div class="small-12 large-12 columns">
-            <label for="hfText">Text</label>
-            <textarea id="hfText" name="hfText" rows="4"></textarea>
+      <fieldset>
+         <legend id="headerLegend">New Header</legend>
+         <div class="row">
+            <div class="small-12 large-12 columns">
+               <label for="hfText">Header Text</label>
+               <textarea id="hfText" name="hfText" rows="4"></textarea>
+            </div>
          </div>
-      </div>
 
-      <div class="row" id="rowCreate">
-         <div class="small-12 columns">
-            <a href="javascript:void(0)" class="button expand" onclick="header_create();">
-               Create <i id="createCheck" class="icon-ok-circle" style="display: none;"></i>
-            </a>
+         <div class="row" id="rowCreate">
+            <div class="small-12 columns">
+               <a href="javascript:void(0)" class="button expand small" onclick="header_create();">
+                  Create <i id="createCheck" class="icon-ok-circle" style="display: none;"></i>
+               </a>
+            </div>
          </div>
-      </div>
-      <div class="row" id="rowUpdate" style="display: none;">
-         <div class="small-6 columns">
-            <a href="javascript:void(0)" class="button success expand" onclick="header_update();" title="Save Changes">
-               <i class="icon-savetodrive"></i> Save
-            </a>
+
+         <div class="row" id="rowUpdate" style="display: none;">
+            <div class="small-6 columns">
+               <a href="javascript:void(0)" class="button success expand small" onclick="header_update();" title="Save Changes">
+                  <i class="icon-savetodrive"></i> Save
+               </a>
+            </div>
+            <div class="small-6 columns">
+               <a href="javascript:void(0)" class="button alert expand small" onclick="header_delete();" title="Delete Header">
+                  <i class="icon-remove-circle"></i> Delete
+               </a>
+            </div>
+            <div class="small-6 columns">
+               <a href="javascript:void(0)" class="button secondary expand small" onclick="header_style();" title="Style Header">
+                  <i class="icon-paintroll"></i> Styles
+               </a>
+            </div>
+            <div class="small-6 columns">
+               <a href="javascript:void(0)" class="button secondary expand small" onclick="header_new();" title="Cancel Changes">
+                  <i class="icon-pageback"></i> Cancel
+               </a>
+            </div>
          </div>
-         <div class="small-6 columns">
-            <a href="javascript:void(0)" class="button alert expand" onclick="header_delete();" title="Delete Header">
-               <i class="icon-remove-circle"></i> Delete
-            </a>
-         </div>
-         <div class="small-6 columns">
-            <a href="javascript:void(0)" class="button secondary expand" onclick="header_style();" title="Style Header">
-               <i class="icon-paintroll"></i> Styles
-            </a>
-         </div>
-         <div class="small-6 columns">
-            <a href="javascript:void(0)" class="button secondary expand" onclick="header_new();" title="Cancel Changes">
-               <i class="icon-pageback"></i> Cancel
-            </a>
-         </div>
-      </div>
+      </fieldset>
    </div>
 </div>
 <div class="row">

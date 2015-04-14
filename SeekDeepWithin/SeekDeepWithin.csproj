@@ -275,6 +275,7 @@
     <Compile Include="Models\TagViewModel.cs" />
     <Compile Include="Models\VerseDisplayType.cs" />
     <Compile Include="Models\VersionContents.cs" />
+    <Compile Include="Models\WriterComparer.cs" />
     <Compile Include="Pocos\Abbreviation.cs" />
     <Compile Include="Pocos\AmazonItem.cs" />
     <Compile Include="Pocos\ChapterFooterLink.cs" />
@@ -503,6 +504,8 @@
     <Content Include="Scripts\knockout-2.2.0.debug.js" />
     <Content Include="Scripts\knockout-2.2.0.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\scotchPanels.js" />
+    <Content Include="Scripts\scotchPanels.min.js" />
     <Content Include="Scripts\sdw\sdw.addentries.js" />
     <Content Include="Scripts\sdw\sdw.addpassages.js" />
     <Content Include="Scripts\sdw\sdw.addstyle.js" />

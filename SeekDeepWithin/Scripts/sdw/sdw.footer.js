@@ -27,6 +27,7 @@ function footer_edit(id) {
       $('#rowEdit').show();
       $('#hfText').val(data.text);
       $('#hfIndex').val(data.index);
+      $('#footerLegend').text('Edit Footer');
    }).fail(function (data) {
       $('#modalClose').show();
       $('#modalText').text('An error occured - ' + data.responseText);
@@ -101,6 +102,7 @@ function footer_new() {
    $('#hfText').val('');
    $('#editId').val('');
    $('#hfIndex').val(0);
+   $('#footerLegend').text('New Footer');
 }
 
 function footer_style() {

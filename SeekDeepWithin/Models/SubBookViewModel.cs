@@ -98,7 +98,7 @@ namespace SeekDeepWithin.Models
       public Collection<AbbreviationViewModel> Abbreviations { get { return this.m_Abbreviations; } }
 
       /// <summary>
-      /// Gets or Sets the list of authors.
+      /// Gets or Sets the list of writers.
       /// </summary>
       public Collection<WriterViewModel> Writers { get { return this.m_Writers; } }
 

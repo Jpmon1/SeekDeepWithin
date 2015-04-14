@@ -25,6 +25,7 @@ function header_edit(id) {
       $('#rowCreate').hide();
       $('#rowUpdate').show();
       $('#rowEdit').show();
+      $('#headerLegend').text('Edit Header');
       $('#hfText').val(data.text);
    }).fail(function (data) {
       $('#modalClose').show();
@@ -104,4 +105,5 @@ function header_new() {
    $('#hfText').val('');
    $('#editId').val('');
    $('#styleArea').html('');
+   $('#headerLegend').text('New Header');
 }

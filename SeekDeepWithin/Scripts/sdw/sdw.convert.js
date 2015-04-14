@@ -78,13 +78,13 @@ function addPassages(data) {
       var html = '<div class="row">';
       html += '<div class="small-6 large-1 columns">';
       html += '<input type="number" value="' + val.order + '" id="addOrder' + i + '">';
+      html += '<span id="multiAddCheck' + i + '" style="display:none;"><i class="icon-ok-sign" style="color: green"></i></span>';
       html += '</div>';
       html += '<div class="small-6 large-1 columns">';
       html += '<input type="number" value="' + val.number + '" id="addNumber' + i + '">';
       html += '</div>';
       html += '<div class="small-12 large-10 columns">';
       html += '<input type="text" value="' + val.text + '" id="addText' + i + '">';
-      html += '<span id="multiAddCheck' + i + '" style="display:none;"><i class="icon-ok-sign" style="color: green"></i></span>';
       html += '</div>';
       html += '</div>';
       $('#multiAdd').append(html);
