@@ -1,44 +1,71 @@
 ﻿@using System.Globalization
+@using SeekDeepWithin.Models
 @model SeekDeepWithin.Models.PassageViewModel
 
 @{
    var smallSpan = "12";
    var mediumSpan = "12";
    var largeSpan = "12";
-   if (Model.Number > 0) {
+   if (Model.DisplayType == VerseDisplayType.Number) {
       smallSpan = "10";
       mediumSpan = "11";
       largeSpan = "11";
    }
    var id = Model.EntryId.ToString(CultureInfo.InvariantCulture);
 }
-@foreach (var header in Model.Headers) {
-   <div class="row">
-      @if (Model.Number > 0) { <div class="small-4 medium-2 large-1 columns">&nbsp;</div> }
-      <div class="small-@smallSpan medium-@mediumSpan large-@largeSpan columns">
-         @Html.Partial("_HeaderFooter", header)
-      </div>
-   </div>
+
+@foreach (var style in Model.Styles.Where (s => s.SpansMultiple && !string.IsNullOrWhiteSpace (s.Start))) {
+   @Html.Raw(style.Start)
 }
 
-<div class="row" id="pass_@id" @if(Model.Number == 0 && Model.Footers.Count == 0){ @Html.Raw("style=\"padding-bottom: 0.9375rem\"") }>
-   @if (Model.Number > 0) {
+@if (Model.Headers.Count > 0) {
+   <div style="margin-top: 0.825rem">
+      @foreach (var header in Model.Headers) {
+         <div class="row">
+            @if (Model.DisplayType == VerseDisplayType.Number) {
+               <div class="small-4 medium-2 large-1 columns">&nbsp;</div>
+            }
+            <div class="small-@smallSpan medium-@mediumSpan large-@largeSpan columns">
+               @Html.Partial("_HeaderFooter", header)
+            </div>
+         </div>
+      }
+   </div>
+}
+<div class="row" id="pass_@id"
+     @if (Model.DisplayType == VerseDisplayType.Paragraph && Model.Footers.Count == 0) {
+        @Html.Raw("style=\"padding-bottom: 0.9375rem\"")
+     } else if (Model.DisplayType == VerseDisplayType.Number && Model.Footers.Count == 0) {
+        @Html.Raw("style=\"padding-bottom: 0.5rem\"")
+     }>
+   @if (Model.DisplayType == VerseDisplayType.Number) {
       <div class="small-2 medium-1 large-1 columns">
          <blockquote>
-            @Html.ActionLink(Model.Number.ToString(CultureInfo.InvariantCulture), "Index", "Passage", new { entryId = Model.Id }, null)
+            @Html.ActionLink(Model.Number.ToString(CultureInfo.InvariantCulture), "Index", "Passage", new { entryId = Model.EntryId }, null)
          </blockquote>
+         <a class="anchor" id="num_@Model.Number"></a>
       </div>
    }
    <div class="small-@smallSpan medium-@mediumSpan large-@largeSpan columns">
-      @Html.Raw(Model.Render ())
+      @Html.Raw(Model.Render (Request.Url))
    </div>
 </div>
 
-@foreach (var footer in Model.Footers) {
-   <div class="row">
-      @if (Model.Number > 0) { <div class="small-4 medium-2 large-1 columns">&nbsp;</div> }
-      <div class="small-@smallSpan medium-@mediumSpan large-@largeSpan columns footer">
-         @Html.Partial("_HeaderFooter", footer)
-      </div>
-   </div>
+@if (Model.Footers.Count > 0) {
+       <div class="row">
+          @if (Model.DisplayType == VerseDisplayType.Number) {
+             <div class="small-4 medium-2 large-1 columns">&nbsp;</div>
+          }
+          <div class="small-@smallSpan medium-@mediumSpan large-@largeSpan columns">
+             <div class="alert-box secondary">
+                @foreach (var footer in Model.Footers) {
+                   @Html.Partial("_HeaderFooter", footer)
+                }
+             </div>
+          </div>
+    </div>
+}
+
+@foreach (var style in Model.Styles.Where (s => s.SpansMultiple && !string.IsNullOrWhiteSpace (s.End))) {
+   @Html.Raw(style.End)
 }

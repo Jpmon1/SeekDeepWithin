@@ -1,4 +1,6 @@
-﻿namespace SeekDeepWithin.Pocos
+﻿using System.Collections.Generic;
+
+namespace SeekDeepWithin.Pocos
 {
    /// <summary>
    /// Interface for footers.
@@ -11,21 +13,6 @@
       int Id { get; set; }
 
       /// <summary>
-      /// Gets or Sets if the content should be bolded.
-      /// </summary>
-      bool IsBold { get; set; }
-
-      /// <summary>
-      /// Gets or Sets if the content should be italicized.
-      /// </summary>
-      bool IsItalic { get; set; }
-
-      /// <summary>
-      /// Gets or Sets the justification of the footer.
-      /// </summary>
-      int Justify { get; set; }
-
-      /// <summary>
       /// Gets or Sets the footer.
       /// </summary>
       string Text { get; set; }
@@ -34,5 +21,15 @@
       /// Gets or Sets the index of the footer.
       /// </summary>
       int Index { get; set; }
+
+      /// <summary>
+      /// Gets the list of links for this entry.
+      /// </summary>
+      IEnumerable<ILink> LinkList { get; }
+
+      /// <summary>
+      /// Gets the list of styles for this entry.
+      /// </summary>
+      IEnumerable<IStyle> StyleList { get; }
    }
 }

@@ -9,7 +9,7 @@
    <fieldset>
       <legend>Writer</legend>
       <p style="font-size: small;">
-         <a href="@Url.Action("Create", "Writer")"><i class="icon-plus"></i> add new writer</a>
+         <a href="@Url.Action("Create", "Writer", null, Request.Url.Scheme)"><i class="icon-plus"></i> add new writer</a>
       </p>
       <input type="hidden" id="subBookId" name="subBookId" value="@ViewBag.SubBookId" />
       <div class="row">

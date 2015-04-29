@@ -1,0 +1,378 @@
+﻿@model SeekDeepWithin.Models.LinkEditViewModel
+@{
+   ViewBag.Title = "Edit Links";
+   var totalLength = string.IsNullOrWhiteSpace (Model.ItemText) ? 0 : Model.ItemText.Length;
+}
+@section styles {
+   @Styles.Render("~/Content/css/slider")
+}
+<h3><small>link edit</small> @Model.Title</h3>
+@using (Html.BeginForm (null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" })) {
+   @Html.AntiForgeryToken()
+}
+
+<input type="hidden" id="totalLength" name="totalLength" value="@totalLength" />
+<input type="hidden" id="parentId" name="parentId" value="@Model.ParentId" />
+<input type="hidden" id="itemType" name="itemType" value="@Model.ItemType" />
+<input type="hidden" id="itemId" name="itemId" value="@Model.ItemId" />
+<input type="hidden" id="editId" name="editId" value="0" />
+@if (!string.IsNullOrWhiteSpace(Model.ItemText)) {
+   <div class="row">
+      <div class="small-12 columns" id="itemText">
+            @{
+               var index = 0;
+               var lastLetter = ' ';
+               var html = string.Empty;
+               var word = string.Empty;
+            }
+            @foreach (var letter in Model.ItemText) {
+               if (lastLetter == ' ') {
+                  word = string.Format ("{0},", index);
+                  html += "<span onclick=\"select_word(|WORD|)\">";
+               } else if (letter == ' ' || !Char.IsLetter(letter) || index == totalLength - 1) {
+                  word += index;
+                  html = html.Replace ("|WORD|", word);
+                  html += "</span>";
+               }
+               html += string.Format("<span id=\"index_{0}\">{1}</span>", index, letter);
+               lastLetter = letter;
+               index++;
+            }
+            @Html.Raw(html)
+      </div>
+   </div>
+
+   <div class="row">
+      <div class="small-12 columns">
+         <div id="textRangeSlider" style="margin-bottom: 1.125rem; margin-top: 1.125rem">
+         </div>
+      </div>
+   </div>
+}
+
+<div class="row">
+   <div class="small-12 medium-6 large-6 columns">
+      <ul class="pricing-table" id="linkList">
+         <li class="title">Current Links</li>
+         @foreach (var link in Model.Links) {
+            <li id="listItem_@link.ItemId" class="bullet-item">
+               <a href="javascript:void(0)" onclick="link_edit(@link.ItemId)">
+                  Start: @link.StartIndex End: @link.EndIndex (@link.Url)
+               </a>
+            </li>
+         }
+      </ul>
+   </div>
+   <div class="small-12 medium-6 large-6 columns">
+      <div class="row">
+         @if (Model.ItemType != "SeeAlso") {
+            <input type="hidden" id="linkName" name="linkName" value="0" />
+            <div class="small-6 columns">
+               <div class="row collapse">
+                  <div class="small-3 large-2 columns">
+                     <span class="prefix">Start</span>
+                  </div>
+                  <div class="small-9 large-10 columns">
+                     <input type="number" id="startIndex" name="startIndex" value="0" />
+                  </div>
+               </div>
+            </div>
+            <div class="small-6 columns">
+               <div class="row collapse">
+                  <div class="small-3 large-2 columns">
+                     <span class="prefix">End</span>
+                  </div>
+                  <div class="small-9 large-10 columns">
+                     <input type="number" id="endIndex" name="endIndex" value="0" />
+                  </div>
+               </div>
+            </div>
+         } else {
+            <input type="hidden" id="startIndex" name="startIndex" value="1" />
+            <input type="hidden" id="endIndex" name="endIndex" value="1" />
+            <div class="small-12 columns">
+               <div class="row collapse">
+                  <div class="small-4 large-3 columns">
+                     <span class="prefix">Name</span>
+                  </div>
+                  <div class="small-8 large-9 columns">
+                     <input type="text" id="linkName" name="linkName" value="" />
+                  </div>
+               </div>
+            </div>
+         }
+      </div>
+      <div id="linkEditArea">
+         <div class="row">
+            <div class="small-12 columns">
+               <label for="linkTypeCombo">Link Type</label>
+               <select id="linkTypeCombo" name="linkTypeCombo">
+                  <option id="linkTypeTerm" value="0">Glossary Term</option>
+                  <option id="linkTypeRead" value="1">Read Chapter</option>
+                  <option id="linkTypeSearch" value="2">Search</option>
+                  <option id="linkTypeTag" value="3">Tag</option>
+                  <option id="linkTypeExternal" value="4">External</option>
+                  <option id="linkTypeWriter" value="5">Writer</option>
+               </select>
+            </div>
+         </div>
+         <div class="row">
+            <div class="small-12 columns">
+               <div id="tabGlossary">
+                  <div class="row">
+                     <div class="small-12 columns">
+                        <div class="row collapse">
+                           <div class="small-4 large-3 columns">
+                              <span class="prefix">Term</span>
+                           </div>
+                           <div class="small-8 large-9 columns">
+                              <input type="text" id="linkGlossary" name="linkGlossary" />
+                              <input type="hidden" id="selTermId" name="selTermId" />
+                           </div>
+                        </div>
+                        <div class="alert-box info"><a href="@Url.Action("CreateTerm", "Glossary", null, Request.Url.Scheme)">create a new term</a></div>
+                     </div>
+                  </div>
+               </div>
+               <div id="tabRead">
+                  <div class="row">
+                     <div class="small-12 large-6 columns">
+                        <label for="linkBook">Book</label>
+                        <input type="text" id="linkBook" name="linkBook" />
+                        <input type="hidden" id="selBookId" name="selBookId" />
+                     </div>
+                     <div class="small-12 large-6 columns">
+                        <label for="linkVersion">Version</label>
+                        <input type="text" id="linkVersion" name="linkVersion" />
+                        <input type="hidden" id="selVersionId" name="selVersionId" />
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="small-12 large-6 columns">
+                        <label for="linkSubBook">Sub Book</label>
+                        <input type="text" id="linkSubBook" name="linkSubBook" />
+                        <input type="hidden" id="selSubBookId" name="selSubBookId" />
+                     </div>
+                     <div class="small-12 large-6 columns">
+                        <label for="linkChapter">Chapter</label>
+                        <input type="text" id="linkChapter" name="linkChapter" />
+                        <input type="hidden" id="selChapterId" name="selChapterId" />
+                     </div>
+                  </div>
+               </div>
+               <div id="tabTag">
+                  <div class="row">
+                     <div class="small-12 columns">
+                        <div class="row collapse">
+                           <div class="small-4 large-3 columns">
+                              <span class="prefix">Tag</span>
+                           </div>
+                           <div class="small-8 large-9 columns">
+                              <input type="text" id="linkTag" name="linkTag" />
+                              <input type="hidden" id="selTagId" name="selTagId" />
+                           </div>
+                        </div>
+                        <small><a href="@Url.Action("Create", "Tag", null, Request.Url.Scheme)">create a new tag</a></small>
+                     </div>
+                  </div>
+               </div>
+               <div id="tabSearch">
+                  <div class="row">
+                     <div class="small-12 columns">
+                        <div class="row collapse">
+                           <div class="small-4 large-3 columns">
+                              <span class="prefix">Search</span>
+                           </div>
+                           <div class="small-8 large-9 columns">
+                              <input type="text" id="linkSearch" name="linkSearch" />
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div id="tabExternal">
+                  <div class="row">
+                     <div class="small-12 columns">
+                        <div class="row collapse">
+                           <div class="small-4 large-3 columns">
+                              <span class="prefix">Link</span>
+                           </div>
+                           <div class="small-8 large-9 columns">
+                              <input type="text" id="linkExternal" name="linkExternal" />
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div id="tabWriter">
+                  <div class="row">
+                     <div class="small-12 columns">
+                        <div class="row collapse">
+                           <div class="small-4 large-3 columns">
+                              <span class="prefix">Writer</span>
+                           </div>
+                           <div class="small-8 large-9 columns">
+                              <input type="text" id="linkWriter" name="linkWriter" />
+                              <input type="hidden" id="selWriterId" name="selWriterId" />
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+
+      <div class="row" id="rowAnchor">
+         <div class="small-12 large-6 columns">
+            <label for="linkAnchor">Anchor</label>
+            <input type="text" id="linkAnchor" name="linkAnchor" />
+         </div>
+         <div class="small-12 large-6 columns">
+            <label for="linkNewWindow">Open in new window</label>
+            <div class="switch">
+               <input id="linkNewWindow" name="linkNewWindow" type="checkbox">
+               <label for="linkNewWindow">Open in new window</label>
+            </div>
+         </div>
+      </div>
+
+      <div class="row" id="rowCreate">
+         <div class="small-12 columns">
+            <a href="javascript:void(0)" class="button expand" onclick="link_create();">Create <span id="createLinkCheck"><i class="icon-ok-circle"></i></span></a>
+         </div>
+      </div>
+      <div class="row" id="rowOpenLink">
+         <div class="small-12 columns" id="openLinkArea">
+            
+         </div>
+      </div>
+      <div class="row" id="rowUpdate">
+         @if (!Model.ItemType.Contains ("Header") && !Model.ItemType.Contains ("Footer")) {
+         <div class="small-4 columns">
+            <a href="javascript:void(0)" class="button success expand" onclick="link_update();">Update <span id="updateLinkCheck"><i class="icon-ok-circle"></i></span></a>
+         </div>
+         <div class="small-4 columns">
+            <a href="javascript:void(0)" class="button alert expand" onclick="link_delete();">Delete</a>
+         </div>
+         <div class="small-4 columns">
+            <a href="javascript:void(0)" class="button secondary expand" onclick="link_new();">Cancel</a>
+         </div>
+         } else {
+            <div class="small-6 columns">
+               <a href="javascript:void(0)" class="button alert expand" onclick="link_delete(); ">Delete</a>
+            </div>
+            <div class="small-6 columns">
+               <a href="javascript:void(0)" class="button secondary expand" onclick="link_new(); ">Cancel</a>
+            </div>
+         }
+      </div>
+   </div>
+</div>
+
+<div class="row">
+   <div class="small-6 pagination-centered columns">
+      <ul class="pagination" role="menubar" aria-label="Pagination" style="width: 100%">
+         @if (Model.PreviousEntryId != -1) {
+            <li class="arrow">
+               <a href="@Url.Action("Edit" + Model.ItemType, "Link", new {id = Model.PreviousEntryId, type=Model.ItemType}, Request.Url.Scheme)">&laquo; Previous Item</a>
+            </li>
+         }
+      </ul>
+   </div>
+   <div class="small-6 pagination-centered columns">
+      <ul class="pagination" role="menubar" aria-label="Pagination" style="width: 100%">
+         @if (Model.NextEntryId != -1) {
+            <li class="arrow">
+               <a href="@Url.Action("Edit" + Model.ItemType, "Link", new {id = Model.NextEntryId, type=Model.ItemType}, Request.Url.Scheme)">Next Item &raquo;</a>
+            </li>
+         }
+      </ul>
+   </div>
+</div>
+
+@if (!Model.ItemType.Contains ("Header") && !Model.ItemType.Contains ("Footer")) {
+   <div class="row">
+      <div class="small-6 medium-3 large-3 columns">
+         @if (Model.ItemType == "Passage") {
+            <a href="@Url.Action("Edit", "Chapter", new {id = Model.ParentId}, Request.Url.Scheme)" class="button secondary expand" id="btnEditFooters">
+               <i class="icon-editalt"></i> Edit Chapter
+            </a>
+         }
+         else if (Model.ItemType == "Entry") {
+            <a href="@Url.Action("Edit", "Glossary", new {id = Model.ParentId}, Request.Url.Scheme)" class="button secondary expand" id="btnEditFooters">
+               <i class="icon-editalt"></i> Edit Item
+            </a>
+         }
+         else if (Model.ItemType == "SeeAlso") {
+            <a href="@Url.Action("EditTerm", "Glossary", new {id = Model.ParentId}, Request.Url.Scheme)" class="button secondary expand" id="btnEditFooters">
+               <i class="icon-editalt"></i> Edit Term
+            </a>
+         }
+      </div>
+      @if (Model.ItemType != "SeeAlso") {
+         <div class="small-6 medium-3 large-3 columns">
+            <a href="@Url.Action("Edit" + Model.ItemType, "Style", new {id = Model.ItemId}, Request.Url.Scheme)" class="button secondary expand" id="btnEditStyles">
+               <i class="icon-paintroll"></i> Edit Styles
+            </a>
+         </div>
+         <div class="small-6 medium-3 large-3 columns">
+            <a href="@Url.Action("Edit", "Header", new {id = Model.ItemId, type = Model.ItemType}, Request.Url.Scheme)" class="button secondary expand" id="btnEditHeaders">
+               <i class="icon-notificationbottom"></i> Edit Headers
+            </a>
+         </div>
+         <div class="small-6 medium-3 large-3 columns">
+            <a href="@Url.Action("Edit", "Footer", new {id = Model.ItemId, type = Model.ItemType}, Request.Url.Scheme)" class="button secondary expand" id="btnEditFooters">
+               <i class="icon-notificationtop"></i> Edit Footers
+            </a>
+         </div>
+      }
+   </div>
+} else {
+   <div class="row">
+      <div class="small-6 columns">
+         <a href="@ViewBag.RefUrl" class="button secondary expand" id="btnEditFooters">
+            <i class="icon-pageback"></i> Back
+         </a>
+      </div>
+   </div>
+}
+
+@if (!string.IsNullOrWhiteSpace (Model.ItemText)) {
+   <div class="row">
+      <div class="small-12 columns">
+         <fieldset>
+            <legend>Rendered Text</legend>
+            <div class="row">
+               <div class="small-12 columns" id="renderedText">
+                  @Html.Raw(Model.RenderedText)
+               </div>
+            </div>
+         </fieldset>
+      </div>
+   </div>
+
+   <div class="row">
+      <div class="small-12 columns">
+         <fieldset>
+            <legend>Generated HTML</legend>
+            <div class="row">
+               <div class="small-12 columns" id="generatedHtml">
+                  @Model.RenderedText
+               </div>
+            </div>
+         </fieldset>
+      </div>
+   </div>
+}
+
+@Html.Partial("_Modal")
+
+@section scripts {
+   @Scripts.Render("~/bundles/sdw.linkedit")
+   <script type="text/javascript">
+      $(document).ready(function () {
+         select_initRangeSlider(@totalLength);
+      });
+   </script>
+}

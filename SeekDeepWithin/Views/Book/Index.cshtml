@@ -5,14 +5,8 @@
 @{
    ViewBag.Title = "Read";
 }
-<h3>
-   Read
-   @if (Request.IsAuthenticated && User.IsInRole ("Creator")) {
-      <span style="font-size: small">
-         @Html.ActionLink("new book", "Create")
-      </span>
-   }
-</h3>
+<h3>Read</h3>
+
 <div class="row">
    @*<div class="large-3 small-12 columns">
       @foreach (var tag in ViewBag.Tags) {
@@ -31,12 +25,17 @@
          if (index == 0) {
             @Html.Raw("<div class=\"row\" data-equalizer>")
          }
-         <div class="large-4 small-12 medium-6 columns">
+         <div class="large-4 small-12 medium-4 columns">
             <ul class="pricing-table" data-equalizer-watch>
                <li class="title">
                   @book.Title
-                  @if (Request.IsAuthenticated && User.IsInRole("Editor")) {
-                     <small>@Html.ActionLink("[edit]", "Edit", "Book", new { id = book.Id }, null)</small>
+                  <span style="font-size: small">
+                     <a href="@Url.Action("Details", "Book", new {id=book.Id}, Request.Url.Scheme)">
+                        <i class="icon-info-sign"></i>
+                     </a>
+                  </span>
+                  @if (!string.IsNullOrWhiteSpace (book.SubTitle)) {
+                     <br/><small>@book.SubTitle</small>
                   }
                </li>
                <li class="description">
@@ -54,28 +53,19 @@
                            <span class="label secondary">No information has been entered for this book!</span>
                         </li>
                      } else {
-                        @Html.ActionLink("Read", "Read", "Chapter", new{ id = version.DefaultReadChapter }, new { @class = "button small" })
-                     }
-                     @if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
-                        <small>@Html.ActionLink("[edit]", "Edit", "Version", new { id = version.Id }, null)</small>
+                        <a href="@Url.Action("Index", "Read", new{ id = version.DefaultReadChapter }, Request.Url.Scheme)">
+                           Read
+                        </a>
                      }
                   </li>
                } else {
                   foreach (var version in book.Versions) {
                      <li class="bullet-item">
-                        @Html.ActionLink(version.Title, "Read", "Chapter", new{ id = version.DefaultReadChapter }, null)
-                        @if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
-                           <small>@Html.ActionLink("[edit]", "Edit", "Version", new { id = version.Id }, null)</small>
-                        }
+                        <a href="@Url.Action("Index", "Read", new{ id = version.DefaultReadChapter }, Request.Url.Scheme)">
+                           @version.Title
+                        </a>
                      </li>
                   }
-               }
-               @if (Request.IsAuthenticated && User.IsInRole ("Creator")) {
-                  <li class="bullet-item">
-                     <small>
-                        @Html.ActionLink("Add Version", "Create", "Version", new { bookId = book.Id }, null)
-                     </small>
-                  </li>
                }
             </ul>
          </div>
@@ -86,11 +76,11 @@
          }
       }
       @if (index == 1) {
-         <div class="large-4 medium-6 small-12 columns">&nbsp;</div>
-         <div class="large-4 medium-6 small-12 columns">&nbsp;</div>
+         <div class="large-4 medium-4 small-12 columns">&nbsp;</div>
+         <div class="large-4 medium-4 small-12 columns">&nbsp;</div>
       }
       @if (index == 2) {
-         <div class="large-4 medium-6 small-12 columns">&nbsp;</div>
+         <div class="large-4 medium-4 small-12 columns">&nbsp;</div>
       }
       @if (index != 0) {
          @Html.Raw("</div>")
@@ -105,3 +95,12 @@
       }
    </div>
 </div>
+@if (Request.IsAuthenticated && User.IsInRole ("Creator")) {
+   <div class="row">
+      <div class="small-12 medium-4 large-4 columns">
+         <a href="@Url.Action("Create", "Book", null, Request.Url.Scheme)" class="button success expand tiny">
+            <i class="icon-plus"></i> New Book
+         </a>
+      </div>
+   </div>
+}

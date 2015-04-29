@@ -1711,8 +1711,6 @@ meta.foundation-mq-topbar {
 
 .top-bar {
   overflow: hidden;
-  height: 2.8125rem;
-  line-height: 2.8125rem;
   position: relative;
   background: #333333;
   margin-bottom: 0; }
@@ -3740,7 +3738,7 @@ abbr {
 
 /* Blockquotes */
 blockquote {
-  margin: 0 0 1.25rem;
+  margin: 0 0 0.25rem;
   padding: 0.5625rem 1.25rem 0 1.1875rem;
   border-left: 1px solid #DDDDDD; }
   blockquote cite {

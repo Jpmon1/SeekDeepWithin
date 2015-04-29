@@ -2,10 +2,14 @@
 @model SeekDeepWithin.Models.SubBookViewModel
 
 @{
-    ViewBag.Title = "About" + Model.Name;
+    ViewBag.Title = "About " + Model.Name;
 }
 
-<h3><small>about</small> @Model.Name</h3>
+<h3><small>about</small> @Model.Name @if(!string.IsNullOrEmpty(Model.Alias)){<small>@Model.Alias</small>}
+   @if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
+      <small><a href="@Url.Action("Edit", "SubBook", new {id = Model.Id}, Request.Url.Scheme)">edit</a></small>
+   }
+</h3>
 
 <div class="row">
    <div class="small-12 large-12 columns">

@@ -59,46 +59,7 @@ WriteLiteral("\r\n");
             
             #line default
             #line hidden
-WriteLiteral("\r\n<h3>\r\n   Read\r\n");
-
-            
-            #line 10 "..\..\Views\Book\Index.cshtml"
-   
-            
-            #line default
-            #line hidden
-            
-            #line 10 "..\..\Views\Book\Index.cshtml"
-    if (Request.IsAuthenticated && User.IsInRole ("Creator")) {
-
-            
-            #line default
-            #line hidden
-WriteLiteral("      <span");
-
-WriteLiteral(" style=\"font-size: small\"");
-
-WriteLiteral(">\r\n");
-
-WriteLiteral("         ");
-
-            
-            #line 12 "..\..\Views\Book\Index.cshtml"
-    Write(Html.ActionLink("new book", "Create"));
-
-            
-            #line default
-            #line hidden
-WriteLiteral("\r\n      </span>\r\n");
-
-            
-            #line 14 "..\..\Views\Book\Index.cshtml"
-   }
-
-            
-            #line default
-            #line hidden
-WriteLiteral("</h3>\r\n<div");
+WriteLiteral("\r\n<h3>Read</h3>\r\n\r\n<div");
 
 WriteLiteral(" class=\"row\"");
 
@@ -111,13 +72,13 @@ WriteLiteral(" class=\"large-12 columns\"");
 WriteLiteral(">\r\n");
 
             
-            #line 27 "..\..\Views\Book\Index.cshtml"
+            #line 21 "..\..\Views\Book\Index.cshtml"
       
             
             #line default
             #line hidden
             
-            #line 27 "..\..\Views\Book\Index.cshtml"
+            #line 21 "..\..\Views\Book\Index.cshtml"
         
          int index = 0;
       
@@ -127,13 +88,13 @@ WriteLiteral(">\r\n");
 WriteLiteral("\r\n");
 
             
-            #line 30 "..\..\Views\Book\Index.cshtml"
+            #line 24 "..\..\Views\Book\Index.cshtml"
       
             
             #line default
             #line hidden
             
-            #line 30 "..\..\Views\Book\Index.cshtml"
+            #line 24 "..\..\Views\Book\Index.cshtml"
        foreach (var book in Model) {
          if (index == 0) {
             
@@ -141,14 +102,14 @@ WriteLiteral("\r\n");
             #line default
             #line hidden
             
-            #line 32 "..\..\Views\Book\Index.cshtml"
+            #line 26 "..\..\Views\Book\Index.cshtml"
        Write(Html.Raw("<div class=\"row\" data-equalizer>"));
 
             
             #line default
             #line hidden
             
-            #line 32 "..\..\Views\Book\Index.cshtml"
+            #line 26 "..\..\Views\Book\Index.cshtml"
                                                            
          }
 
@@ -157,7 +118,7 @@ WriteLiteral("\r\n");
             #line hidden
 WriteLiteral("         <div");
 
-WriteLiteral(" class=\"large-4 small-12 medium-6 columns\"");
+WriteLiteral(" class=\"large-4 small-12 medium-4 columns\"");
 
 WriteLiteral(">\r\n            <ul");
 
@@ -172,32 +133,54 @@ WriteLiteral(">\r\n");
 WriteLiteral("                  ");
 
             
-            #line 37 "..\..\Views\Book\Index.cshtml"
+            #line 31 "..\..\Views\Book\Index.cshtml"
              Write(book.Title);
 
             
             #line default
             #line hidden
-WriteLiteral("\r\n");
+WriteLiteral("\r\n                  <span");
+
+WriteLiteral(" style=\"font-size: small\"");
+
+WriteLiteral(">\r\n                     <a");
+
+WriteAttribute("href", Tuple.Create(" href=\"", 920), Tuple.Create("\"", 995)
+            
+            #line 33 "..\..\Views\Book\Index.cshtml"
+, Tuple.Create(Tuple.Create("", 927), Tuple.Create<System.Object, System.Int32>(Url.Action("Details", "Book", new {id=book.Id}, Request.Url.Scheme)
+            
+            #line default
+            #line hidden
+, 927), false)
+);
+
+WriteLiteral(">\r\n                        <i");
+
+WriteLiteral(" class=\"icon-info-sign\"");
+
+WriteLiteral("></i>\r\n                     </a>\r\n                  </span>\r\n");
 
             
-            #line 38 "..\..\Views\Book\Index.cshtml"
+            #line 37 "..\..\Views\Book\Index.cshtml"
                   
             
             #line default
             #line hidden
             
-            #line 38 "..\..\Views\Book\Index.cshtml"
-                   if (Request.IsAuthenticated && User.IsInRole("Editor")) {
+            #line 37 "..\..\Views\Book\Index.cshtml"
+                   if (!string.IsNullOrWhiteSpace (book.SubTitle)) {
 
             
             #line default
             #line hidden
-WriteLiteral("                     <small>");
+WriteLiteral("                     <br/>");
+
+WriteLiteral("<small>");
 
             
-            #line 39 "..\..\Views\Book\Index.cshtml"
-                       Write(Html.ActionLink("[edit]", "Edit", "Book", new { id = book.Id }, null));
+            #line 38 "..\..\Views\Book\Index.cshtml"
+                            Write(book.SubTitle);
 
             
             #line default
@@ -205,7 +188,7 @@ WriteLiteral("                     <small>");
 WriteLiteral("</small>\r\n");
 
             
-            #line 40 "..\..\Views\Book\Index.cshtml"
+            #line 39 "..\..\Views\Book\Index.cshtml"
                   }
 
             
@@ -220,7 +203,7 @@ WriteLiteral(">\r\n");
 WriteLiteral("                  ");
 
             
-            #line 43 "..\..\Views\Book\Index.cshtml"
+            #line 42 "..\..\Views\Book\Index.cshtml"
              Write(Html.Raw(HtmlSanitizer.Sanitize (book.Summary)));
 
             
@@ -229,13 +212,13 @@ WriteLiteral("                  ");
 WriteLiteral("\r\n               </li>\r\n");
 
             
-            #line 45 "..\..\Views\Book\Index.cshtml"
+            #line 44 "..\..\Views\Book\Index.cshtml"
                
             
             #line default
             #line hidden
             
-            #line 45 "..\..\Views\Book\Index.cshtml"
+            #line 44 "..\..\Views\Book\Index.cshtml"
                 if (book.Versions.Count == 0) {
 
             
@@ -253,7 +236,7 @@ WriteLiteral(">No information has been entered for this book!</span>\r\n        
 "");
 
             
-            #line 49 "..\..\Views\Book\Index.cshtml"
+            #line 48 "..\..\Views\Book\Index.cshtml"
                } else if (book.Versions.Count == 1 && book.Title == book.Versions[0].Title) {
                   var version = book.Versions [0];
 
@@ -269,13 +252,13 @@ WriteLiteral(" style=\"border-bottom: 0;\"");
 WriteLiteral(">\r\n");
 
             
-            #line 52 "..\..\Views\Book\Index.cshtml"
+            #line 51 "..\..\Views\Book\Index.cshtml"
                      
             
             #line default
             #line hidden
             
-            #line 52 "..\..\Views\Book\Index.cshtml"
+            #line 51 "..\..\Views\Book\Index.cshtml"
                       if (version.DefaultReadChapter == 0) {
 
             
@@ -293,49 +276,28 @@ WriteLiteral(">No information has been entered for this book!</span>\r\n        
 "/li>\r\n");
 
             
-            #line 56 "..\..\Views\Book\Index.cshtml"
+            #line 55 "..\..\Views\Book\Index.cshtml"
                      } else {
-                        
-            
-            #line default
-            #line hidden
-            
-            #line 57 "..\..\Views\Book\Index.cshtml"
-                   Write(Html.ActionLink("Read", "Read", "Chapter", new{ id = version.DefaultReadChapter }, new { @class = "button small" }));
 
             
             #line default
             #line hidden
-            
-            #line 57 "..\..\Views\Book\Index.cshtml"
-                                                                                                                                            
-                     }
+WriteLiteral("                        <a");
 
+WriteAttribute("href", Tuple.Create(" href=\"", 2163), Tuple.Create("\"", 2258)
+            
+            #line 56 "..\..\Views\Book\Index.cshtml"
+, Tuple.Create(Tuple.Create("", 2170), Tuple.Create<System.Object, System.Int32>(Url.Action("Index", "Read", new{ id = version.DefaultReadChapter }, Request.Url.Scheme)
             
             #line default
             #line hidden
-WriteLiteral("                     ");
+, 2170), false)
+);
+
+WriteLiteral(">\r\n                           Read\r\n                        </a>\r\n");
 
             
             #line 59 "..\..\Views\Book\Index.cshtml"
-                      if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
-
-            
-            #line default
-            #line hidden
-WriteLiteral("                        <small>");
-
-            
-            #line 60 "..\..\Views\Book\Index.cshtml"
-                          Write(Html.ActionLink("[edit]", "Edit", "Version", new { id = version.Id }, null));
-
-            
-            #line default
-            #line hidden
-WriteLiteral("</small>\r\n");
-
-            
-            #line 61 "..\..\Views\Book\Index.cshtml"
                      }
 
             
@@ -344,7 +306,7 @@ WriteLiteral("</small>\r\n");
 WriteLiteral("                  </li>\r\n");
 
             
-            #line 63 "..\..\Views\Book\Index.cshtml"
+            #line 61 "..\..\Views\Book\Index.cshtml"
                } else {
                   foreach (var version in book.Versions) {
 
@@ -355,88 +317,34 @@ WriteLiteral("                     <li");
 
 WriteLiteral(" class=\"bullet-item\"");
 
+WriteLiteral(">\r\n                        <a");
+
+WriteAttribute("href", Tuple.Create(" href=\"", 2532), Tuple.Create("\"", 2627)
+            
+            #line 64 "..\..\Views\Book\Index.cshtml"
+, Tuple.Create(Tuple.Create("", 2539), Tuple.Create<System.Object, System.Int32>(Url.Action("Index", "Read", new{ id = version.DefaultReadChapter }, Request.Url.Scheme)
+            
+            #line default
+            #line hidden
+, 2539), false)
+);
+
 WriteLiteral(">\r\n");
 
-WriteLiteral("                        ");
+WriteLiteral("                           ");
 
             
-            #line 66 "..\..\Views\Book\Index.cshtml"
-                   Write(Html.ActionLink(version.Title, "Read", "Chapter", new{ id = version.DefaultReadChapter }, null));
-
-            
-            #line default
-            #line hidden
-WriteLiteral("\r\n");
-
-            
-            #line 67 "..\..\Views\Book\Index.cshtml"
-                        
-            
-            #line default
-            #line hidden
-            
-            #line 67 "..\..\Views\Book\Index.cshtml"
-                         if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
+            #line 65 "..\..\Views\Book\Index.cshtml"
+                      Write(version.Title);
 
             
             #line default
             #line hidden
-WriteLiteral("                           <small>");
+WriteLiteral("\r\n                        </a>\r\n                     </li>\r\n");
 
             
             #line 68 "..\..\Views\Book\Index.cshtml"
-                             Write(Html.ActionLink("[edit]", "Edit", "Version", new { id = version.Id }, null));
-
-            
-            #line default
-            #line hidden
-WriteLiteral("</small>\r\n");
-
-            
-            #line 69 "..\..\Views\Book\Index.cshtml"
-                        }
-
-            
-            #line default
-            #line hidden
-WriteLiteral("                     </li>\r\n");
-
-            
-            #line 71 "..\..\Views\Book\Index.cshtml"
                   }
-               }
-
-            
-            #line default
-            #line hidden
-WriteLiteral("               ");
-
-            
-            #line 73 "..\..\Views\Book\Index.cshtml"
-                if (Request.IsAuthenticated && User.IsInRole ("Creator")) {
-
-            
-            #line default
-            #line hidden
-WriteLiteral("                  <li");
-
-WriteLiteral(" class=\"bullet-item\"");
-
-WriteLiteral(">\r\n                     <small>\r\n");
-
-WriteLiteral("                        ");
-
-            
-            #line 76 "..\..\Views\Book\Index.cshtml"
-                   Write(Html.ActionLink("Add Version", "Create", "Version", new { bookId = book.Id }, null));
-
-            
-            #line default
-            #line hidden
-WriteLiteral("\r\n                     </small>\r\n                  </li>\r\n");
-
-            
-            #line 79 "..\..\Views\Book\Index.cshtml"
                }
 
             
@@ -445,7 +353,7 @@ WriteLiteral("\r\n                     </small>\r\n                  </li>\r\n")
 WriteLiteral("            </ul>\r\n         </div>\r\n");
 
             
-            #line 82 "..\..\Views\Book\Index.cshtml"
+            #line 72 "..\..\Views\Book\Index.cshtml"
          index++;
          if (index == 3) {
             
@@ -453,14 +361,14 @@ WriteLiteral("            </ul>\r\n         </div>\r\n");
             #line default
             #line hidden
             
-            #line 84 "..\..\Views\Book\Index.cshtml"
+            #line 74 "..\..\Views\Book\Index.cshtml"
        Write(Html.Raw("</div>"));
 
             
             #line default
             #line hidden
             
-            #line 84 "..\..\Views\Book\Index.cshtml"
+            #line 74 "..\..\Views\Book\Index.cshtml"
                                
             index = 0;
          }
@@ -472,7 +380,7 @@ WriteLiteral("            </ul>\r\n         </div>\r\n");
 WriteLiteral("      ");
 
             
-            #line 88 "..\..\Views\Book\Index.cshtml"
+            #line 78 "..\..\Views\Book\Index.cshtml"
        if (index == 1) {
 
             
@@ -480,18 +388,18 @@ WriteLiteral("      ");
             #line hidden
 WriteLiteral("         <div");
 
-WriteLiteral(" class=\"large-4 medium-6 small-12 columns\"");
+WriteLiteral(" class=\"large-4 medium-4 small-12 columns\"");
 
 WriteLiteral(">&nbsp;</div>\r\n");
 
 WriteLiteral("         <div");
 
-WriteLiteral(" class=\"large-4 medium-6 small-12 columns\"");
+WriteLiteral(" class=\"large-4 medium-4 small-12 columns\"");
 
 WriteLiteral(">&nbsp;</div>\r\n");
 
             
-            #line 91 "..\..\Views\Book\Index.cshtml"
+            #line 81 "..\..\Views\Book\Index.cshtml"
       }
 
             
@@ -500,7 +408,7 @@ WriteLiteral(">&nbsp;</div>\r\n");
 WriteLiteral("      ");
 
             
-            #line 92 "..\..\Views\Book\Index.cshtml"
+            #line 82 "..\..\Views\Book\Index.cshtml"
        if (index == 2) {
 
             
@@ -508,12 +416,12 @@ WriteLiteral("      ");
             #line hidden
 WriteLiteral("         <div");
 
-WriteLiteral(" class=\"large-4 medium-6 small-12 columns\"");
+WriteLiteral(" class=\"large-4 medium-4 small-12 columns\"");
 
 WriteLiteral(">&nbsp;</div>\r\n");
 
             
-            #line 94 "..\..\Views\Book\Index.cshtml"
+            #line 84 "..\..\Views\Book\Index.cshtml"
       }
 
             
@@ -522,21 +430,21 @@ WriteLiteral(">&nbsp;</div>\r\n");
 WriteLiteral("      ");
 
             
-            #line 95 "..\..\Views\Book\Index.cshtml"
+            #line 85 "..\..\Views\Book\Index.cshtml"
        if (index != 0) {
          
             
             #line default
             #line hidden
             
-            #line 96 "..\..\Views\Book\Index.cshtml"
+            #line 86 "..\..\Views\Book\Index.cshtml"
     Write(Html.Raw("</div>"));
 
             
             #line default
             #line hidden
             
-            #line 96 "..\..\Views\Book\Index.cshtml"
+            #line 86 "..\..\Views\Book\Index.cshtml"
                             
       }
 
@@ -546,7 +454,7 @@ WriteLiteral("      ");
 WriteLiteral("      ");
 
             
-            #line 98 "..\..\Views\Book\Index.cshtml"
+            #line 88 "..\..\Views\Book\Index.cshtml"
        if (@Model.PageCount > 1) {
 
             
@@ -563,7 +471,7 @@ WriteLiteral(" class=\"small-12 large-12 columns\"");
 WriteLiteral(">\r\n               Page ");
 
             
-            #line 101 "..\..\Views\Book\Index.cshtml"
+            #line 91 "..\..\Views\Book\Index.cshtml"
                 Write(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber);
 
             
@@ -572,7 +480,7 @@ WriteLiteral(">\r\n               Page ");
 WriteLiteral(" of ");
 
             
-            #line 101 "..\..\Views\Book\Index.cshtml"
+            #line 91 "..\..\Views\Book\Index.cshtml"
                                                                                Write(Model.PageCount);
 
             
@@ -583,7 +491,7 @@ WriteLiteral("\r\n");
 WriteLiteral("               ");
 
             
-            #line 102 "..\..\Views\Book\Index.cshtml"
+            #line 92 "..\..\Views\Book\Index.cshtml"
           Write(Html.PagedListPager(Model, page => Url.Action ("Index", new {page})));
 
             
@@ -592,7 +500,7 @@ WriteLiteral("               ");
 WriteLiteral("\r\n            </div>\r\n         </div>\r\n");
 
             
-            #line 105 "..\..\Views\Book\Index.cshtml"
+            #line 95 "..\..\Views\Book\Index.cshtml"
       }
 
             
@@ -600,6 +508,48 @@ WriteLiteral("\r\n            </div>\r\n         </div>\r\n");
             #line hidden
 WriteLiteral("   </div>\r\n</div>\r\n");
 
+            
+            #line 98 "..\..\Views\Book\Index.cshtml"
+ if (Request.IsAuthenticated && User.IsInRole ("Creator")) {
+
+            
+            #line default
+            #line hidden
+WriteLiteral("   <div");
+
+WriteLiteral(" class=\"row\"");
+
+WriteLiteral(">\r\n      <div");
+
+WriteLiteral(" class=\"small-12 medium-4 large-4 columns\"");
+
+WriteLiteral(">\r\n         <a");
+
+WriteAttribute("href", Tuple.Create(" href=\"", 3797), Tuple.Create("\"", 3859)
+            
+            #line 101 "..\..\Views\Book\Index.cshtml"
+, Tuple.Create(Tuple.Create("", 3804), Tuple.Create<System.Object, System.Int32>(Url.Action("Create", "Book", null, Request.Url.Scheme)
+            
+            #line default
+            #line hidden
+, 3804), false)
+);
+
+WriteLiteral(" class=\"button success expand tiny\"");
+
+WriteLiteral(">\r\n            <i");
+
+WriteLiteral(" class=\"icon-plus\"");
+
+WriteLiteral("></i> New Book\r\n         </a>\r\n      </div>\r\n   </div>\r\n");
+
+            
+            #line 106 "..\..\Views\Book\Index.cshtml"
+}
+
+            
+            #line default
+            #line hidden
         }
     }
 }

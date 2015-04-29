@@ -13,6 +13,11 @@ namespace SeekDeepWithin.Models
       public ItemType ItemType { get; set; }
 
       /// <summary>
+      /// Gets or Sets the add operation is an insert operation.
+      /// </summary>
+      public bool IsInsert { get; set; }
+
+      /// <summary>
       /// Gets or Sets the text of the passage.
       /// </summary>
       [Required]
@@ -36,5 +41,10 @@ namespace SeekDeepWithin.Models
       /// </summary>
       [Required]
       public int ParentId { get; set; }
+
+      /// <summary>
+      /// Gets or Sets the title we are adding for.
+      /// </summary>
+      public string Title { get; set; }
    }
 }

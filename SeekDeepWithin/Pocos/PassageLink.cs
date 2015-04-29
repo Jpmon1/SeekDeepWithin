@@ -3,7 +3,7 @@
    /// <summary>
    /// Represents a link for a given passage.
    /// </summary>
-   public class PassageLink
+   public class PassageLink : ILink
    {
       /// <summary>
       /// Gets or Sets the id of the passage link.

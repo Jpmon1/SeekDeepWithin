@@ -4,7 +4,7 @@
       url: '/Convert/RemoveRegex/',
       data: {
          text: $('#Text').val(),
-         regex: $('#regex').val()
+         regex: encodeURIComponent($('#regex').val())
       }
    }).done(function (data) {
       $('#Text').val(data.text);
@@ -78,21 +78,25 @@ function addPassages(data) {
       var html = '<div class="row">';
       html += '<div class="small-6 large-1 columns">';
       html += '<input type="number" value="' + val.order + '" id="addOrder' + i + '">';
+      html += '<span id="multiAddCheck' + i + '" style="display:none;"><i class="icon-ok-sign" style="color: green"></i></span>';
       html += '</div>';
       html += '<div class="small-6 large-1 columns">';
       html += '<input type="number" value="' + val.number + '" id="addNumber' + i + '">';
       html += '</div>';
-      html += '<div class="small-10 large-9 columns">';
+      html += '<div class="small-12 large-10 columns">';
       html += '<input type="text" value="' + val.text + '" id="addText' + i + '">';
-      html += '</div>';
-      html += '<div class="small-2 large-1 columns">';
-      html += '<span id="multiAddCheck' + i + '" style="display:none;"><i class="icon-ok-sign" style="color: green"></i></span>';
       html += '</div>';
       html += '</div>';
       $('#multiAdd').append(html);
    });
    titleHtml = '<div class="row">';
-   titleHtml += '<div class="small-12 large-12 columns"><a href="#" onclick="addMultiple(0);" class="button">Add All</a></div>';
+   titleHtml += '<div class="small-12 large-12 columns">' +
+      '<a href="javascript:void(0)" onclick="addMultiple(0);" class="button expand" id="addAllButton">Add All</a>' +
+      '</div>';
    titleHtml += '</div>';
    $('#multiAdd').append(titleHtml);
+
+   $('html, body').animate({
+      scrollTop: $('#addAllButton').offset().top
+   }, 100);
 }

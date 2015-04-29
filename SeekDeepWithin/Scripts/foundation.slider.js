@@ -119,6 +119,7 @@
     },
 
     set_ui : function($handle, value) {
+       var endRange = $.data($handle[0], 'end_range');
       var settings = $.data($handle[0], 'settings'),
           handle_l = $.data($handle[0], 'handle_l'),
           bar_l = $.data($handle[0], 'bar_l'),
@@ -246,6 +247,19 @@
         $(this.scope).attr(self.attr_name(), value);
       }
       self.reflow();
+    },
+
+    set_end: function (value) {
+       var self = this;
+       $('[' + self.attr_name() + ']', this.scope).each(function () {
+          $(this).attr(self.attr_name(), value[0]);
+          $(this).data('end_range', value[1]);
+       });
+       if (!!$(this.scope).attr(self.attr_name())) {
+          $(this.scope).attr(self.attr_name(), value[0]);
+          $(this.scope).data('end_range', value[1]);
+       }
+       self.reflow();
     },
 
     reflow : function() {

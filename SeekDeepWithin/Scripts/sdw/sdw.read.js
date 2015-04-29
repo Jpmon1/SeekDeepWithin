@@ -1,22 +1,49 @@
 ﻿$(document).ready(function () {
-   //var navBar = $('#readNavBar');
-   //var offset = navBar.offset();
-   //$('#readArea').css({ 'top': offset.bottom });
-   //$('#readOffCanvas').css({ 'top': offset.top, 'left': offset.left });
-   //navBar.css({ 'position': 'fixed' });
-   //resizeReadArea();
-   //$(window).resize(function () {
-   //   resizeReadArea();
-   //});
+   $('#smallLeftMenuIcon').show();
+   $('#leftMenu').data('loc', 'on');
+   var scotchPanel = $('#smallLeftMenu').scotchPanel({
+      containerSelector: 'body',
+      direction: 'left',
+      duration: 300,
+      transition: 'ease-out',
+      distanceX: '250px',
+      forceMinHeight: true,
+      clickSelector: '.toggle-left-panel',
+      enableEscapeKey: true
+   });
+   document.rightMenu = scotchPanel;
+   $('#smallLeftMenu').show();
+   $(window).resize(function () {
+      resizeReadMenu(scotchPanel);
+   });
+   resizeReadMenu(scotchPanel);
+   $('.overlay').click(function () {
+      // CLOSE ONLY
+      scotchPanel.close();
+   });
 });
 
-function resizeReadArea() {
-   /*var readArea = $('#readArea');
-   //Element Height = Viewport height - element.offset.top - desired bottom margin
-   var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-   var height = h - readArea.offset().top - 100;
-   if (height > 200) {
-      var bH = $('#bottomPanel').height();
-      readArea.height(height - bH - 45);
-   }*/
+function resizeReadMenu(scotchPanel) {
+   var contents = $('#leftMenu');
+   var loc = contents.data('loc');
+   if (Foundation.utils.is_small_only()) {
+      if (loc === 'on') {
+         contents.remove();
+         $('#smallLeftMenuContent').append(contents);
+         contents.data('loc', 'off');
+      }
+      $('#smallLeftMenuContent').css({ 'height': $('body').height() });
+   } else {
+      if (loc === 'off') {
+         scotchPanel.close();
+         contents.remove();
+         $('#contentPanel').append(contents);
+         contents.data('loc', 'on');
+      }
+      $('#contentPanel').css({ 'height': $('#readingArea').height() });
+   }
+}
+
+function showContents(id) {
+   $('#subBook_' + id).slideToggle();
 }

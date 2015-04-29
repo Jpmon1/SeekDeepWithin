@@ -4,7 +4,7 @@
     ViewBag.Title = "Editing " + Model.Name;
 }
 
-<h3><small>editing</small> @Model.Name</h3>
+<h3><small>editing</small> @Model.Name @if(!string.IsNullOrEmpty(Model.Alias)){<small>@Model.Alias</small>}</h3>
 @using (Html.BeginForm (null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" })){
    @Html.AntiForgeryToken()
 }
@@ -12,93 +12,190 @@
 <input type="hidden" id="vSubBookId" name="vSubBookId" value="@Model.Id" />
 <input type="hidden" id="subBookId" name="subBookId" value="@Model.SubBookId" />
 <div class="row">
-   <div class="small-12 large-12 columns">
-      <fieldset>
-         <legend>New Writer</legend>
-         <div class="row">
-            <div class="small-12 large-6 columns">
-               @Html.DropDownList("writerId", ViewBag.Writers as SelectList)
-            </div>
-            <div class="small-12 large-6 columns">
-               @Html.CheckBox("isTranslator") This is a translator
+   <div class="small-12 large-6 columns">
+      <div class="row">
+         <div class="small-12 columns">
+            <fieldset>
+               <legend>Assign Writer <span style="font-size: small"><a href="@Url.Action("Create", "Writer", null, Request.Url.Scheme)">new writer</a></span></legend>
+               <div class="row">
+                  <div class="small-8 columns">
+                     @Html.DropDownList("writerId", ViewBag.Writers as SelectList)
+                  </div>
+                  <div class="small-4 columns">
+                     <div class="switch">
+                        <input id="isTranslator" name="isTranslator" type="checkbox">
+                        <label for="isTranslator"></label>
+                     </div>
+                     Translator
+                  </div>
+               </div>
+               <div class="row">
+                  <div class="small-12 columns">
+                     <a href="javascript:void(0)" class="button expand" onclick="assignWriter()">Assign 
+                        <span id="writerSaved"><i class="icon-ok-sign"></i></span>
+                     </a>
+                  </div>
+               </div>
+            </fieldset>
+         </div>
+      </div>
+      <div class="row">
+         <div class="small-12 columns">
+            <h4>Current Writers</h4>
+            <div id="writers">
+               @if (Model.Writers.Count > 0) {
+                  foreach (var writer in Model.Writers) {
+                     <div class="row" id="writer_@writer.Id">
+                        <div class="small-1 columns">
+                           <a href="javascript:void(0)" onclick="removeWriter(@Model.SubBookId, @writer.Id) " title="Remove">
+                              <i class="icon-remove-circle" style="color:red;"></i>
+                           </a>
+                        </div>
+                        <div class="small-11 columns">
+                           <a href="@Url.Action("Details", "Writer", new { id = writer.Id }, Request.Url.Scheme)">@writer.Name</a>
+                        </div>
+                     </div>
+                  }
+               } else {
+                  <div class="alert-box info" id="noWriters">No writers have been added to this book.</div>
+               }
             </div>
          </div>
-         <div class="row">
-            <div class="small-6 large-6 columns text-left">
-               <input type="submit" value="Assign" class="button" onclick="assignWriter()" /> <span id="writerSaved"><i class="icon-ok-sign" style="color: green"></i></span>
-            </div>
-            <div class="small-6 large-6 columns text-right">
-               <a href="@Url.Action("Create", "Writer")" class="button success"><i class="icon-plus"></i> add new writer</a>
-            </div>
-         </div>
-         
-      </fieldset>
+      </div>
    </div>
-</div>
-<h4>Current Writers:</h4>
-<div id="writers">
-   @if (Model.Writers.Count > 0) {
-      foreach (var writer in Model.Writers) {
-          <div class="row" id="writer_@writer.Id">
-             <div class="small-2 large-1 columns text-right">
-                <a href="javascript:void(0)" onclick="removeWriter(@Model.SubBookId, @writer.Id) " class="button alert tiny" title="Remove">
-                   <i class="icon-remove"></i>
-                </a>
-             </div>
-             <div class="small-10 large-11 columns">
-                @Html.ActionLink(writer.Name, "Details", "Writer", new {id = writer.Id}, null)
-             </div>
-          </div>
-       }
-   }
-   else {
-     <div class="alert-box info" id="noWriters">No writers have been added to this book.</div>
-   }
+
+   <div class="small-12 large-6 columns">
+      <div class="row">
+         <div class="small-12 columns">
+            <fieldset>
+               <legend>Assign Tag
+                  @if (Request.IsAuthenticated && User.IsInRole ("Creator")) {
+                     var returnUrl = Request.Url != null ? Request.Url.ToString () : string.Empty;
+                     <span style="font-size: small">
+                        <a href="@Url.Action("Create", "Tag", new {returnUrl}, Request.Url.Scheme)">new tag</a>
+                     </span>
+                  }
+               </legend>
+               <div class="row">
+                  <div class="small-12 columns">
+                     @Html.DropDownList("tagId", ViewBag.Tags as SelectList)
+                  </div>
+               </div>
+               <div class="row">
+                  <div class="small-12 columns">
+                     <a href="javascript:void(0)" class="button expand" onclick="tag_add(@Model.SubBookId, 'SubBook')">Assign 
+                        <span id="tagSaved"><i class="icon-ok-sign"></i></span>
+                     </a>
+                  </div>
+               </div>
+            </fieldset>
+         </div>
+      </div>
+      <div class="row">
+         <div class="small-12 columns">
+            <h4>Current Tags</h4>
+            @foreach (var tag in Model.Tags) {
+               var id = tag.ItemId;
+               <div class="row" id="tag_@id">
+                  <div class="small-1 columns">
+                     <a href="javascript:void(0);" onclick="tag_remove(@id, @Model.SubBookId, 'SubBook');" title="Remove tag">
+                        <i class="icon-remove-circle" style="color:red;"></i>
+                     </a>
+                  </div>
+                  <div class="small-11 columns">
+                     @Html.ActionLink(tag.Name, "Details", "Tag", new { id = tag.Id }, null)
+                  </div>
+               </div>
+            }
+         </div>
+      </div>
+   </div>
 </div>
 
 <div class="row">
-   <div class="small-12 large-12 columns">
-      <fieldset>
-         <legend>Add Abbreviation</legend>
-         <div class="row">
-            <div class="large-11 columns">
-               <div class="row collapse">
-                  <div class="small-10 columns">
-                     <input type="text" placeholder="Abbreviation" id="abbreviation" name="abbreviation">
-                     <label for="abbreviation">Add multiple by separating with a semi-colon (;)</label>
-                  </div>
-                  <div class="small-2 columns">
-                     <a href="javascript:void(0)" class="button postfix" onclick="addAbbreviation()">Add</a>
+   <div class="small-12 large-6 columns">
+      <div class="row">
+         <div class="small-12 columns">
+            <fieldset>
+               <legend>Add Abbreviation</legend>
+               <div class="row">
+                  <div class="large-12 columns">
+                     <div class="row collapse">
+                        <div class="small-10 columns">
+                           <input type="text" placeholder="Abbreviation" id="abbreviation" name="abbreviation">
+                           <label for="abbreviation">Add multiple by separating with a semi-colon (;)</label>
+                        </div>
+                        <div class="small-2 columns">
+                           <a href="javascript:void(0)" class="button postfix" onclick="addAbbreviation()">
+                              Add
+                              <span id="abbrevSaved"><i class="icon-ok-sign"></i></span>
+                           </a>
+                        </div>
+                     </div>
                   </div>
                </div>
+            </fieldset>
+         </div>
+      </div>
+      <div class="row">
+         <div class="small-12 columns">
+            <h4>Current Abbreviations</h4>
+            <div id="abbreviations">
+               @if (Model.Abbreviations.Count > 0) {
+                  foreach (var abbreviation in Model.Abbreviations) {
+                     <div class="row" id="abbrev_@abbreviation.Id">
+                        <div class="small-1 columns">
+                           <a href="javascript:void(0)" onclick="removeAbbreviation(@abbreviation.Id)" title="Remove">
+                              <i class="icon-remove-circle" style="color:red;"></i>
+                           </a>
+                        </div>
+                        <div class="small-11 columns">
+                           @abbreviation.Text
+                        </div>
+                     </div>
+                  }
+               } else {
+                  <div class="alert-box info" id="noAbbreviations">No abbreviations have been added for this book.</div>
+               }
             </div>
-            <div class="large-1 columns">
-               <span id="abbrevSaved"><i class="icon-ok-sign" style="color: green"></i></span>
+         </div>
+      </div>
+   </div>
+   <div class="small-12 large-6 columns">
+      <fieldset>
+         <legend>Add Passages</legend>
+         <div class="row">
+            <div class="small-12 large-12 columns">
+               <input type="text" placeholder="Regex to Passages" id="regexToPass" value="(?<chapter>\d+):(?<number>\d+)(?<text>\D+)">
+            </div>
+         </div>
+
+         <div class="row">
+            <div class="small-12 large-12 columns">
+               <textarea id="passText" name="passText" rows="15"></textarea>
+            </div>
+         </div>
+
+         <div class="row">
+            <div class="small-12 large-4 large-offset-4 columns">
+               <a href="javascript:void(0)" class="button small expand" onclick="subBook_createPassages();">Save</a>
             </div>
          </div>
       </fieldset>
    </div>
 </div>
-<h4>Current Abbreviations:</h4>
-<div id="abbreviations">
-   @if (Model.Abbreviations.Count > 0) {
-      foreach (var abbreviation in Model.Abbreviations) {
-         <div class="row" id="abbrev_@abbreviation.Id">
-            <div class="small-2 large-1 columns text-right">
-               <a href="javascript:void(0)" onclick="removeAbbreviation(@abbreviation.Id)" class="button alert tiny" title="Remove">
-                  <i class="icon-remove"></i>
-               </a>
-            </div>
-            <div class="small-10 large-11 columns">
-               @abbreviation.Text
-            </div>
-         </div>
-      }
-   } else {
-      <div class="alert-box info" id="noAbbreviations">No abbreviations have been added for this book.</div>
-   }
+
+<div id="addingModal" class="reveal-modal small" data-reveal>
+   <div class="row">
+      <div class="small-12 columns">
+         <p class="text-center">Adding passages, please wait...</p>
+         <p class="text-center"><img src="~/Content/ajax-loader.gif" alt="Loading..." /></p>
+      </div>
+   </div>
 </div>
 
+@Html.Partial("_Modal")
+
 @section scripts {
-   <script src="~/Scripts/sdw/sdw.subbook.js"></script>
+   @Scripts.Render("~/bundles/sdw.subbookedit")
 }

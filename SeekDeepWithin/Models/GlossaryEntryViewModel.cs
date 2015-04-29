@@ -1,5 +1,7 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using SeekDeepWithin.Controllers;
+using SeekDeepWithin.DataAccess;
 using SeekDeepWithin.Pocos;
 
 namespace SeekDeepWithin.Models
@@ -10,35 +12,55 @@ namespace SeekDeepWithin.Models
       {
          this.Id = entry.Id;
          this.Text = entry.Text;
+         this.Order = entry.Order;
          this.Renderer = renderer;
+         if (entry.Item != null)
+         {
+            if (entry.Item.Term != null)
+            {
+               this.TermId = entry.Item.Term.Id;
+               this.TermName = entry.Item.Term.Name;
+            }
+            else
+            {
+               this.TermId = -1;
+               this.TermName = "Null Term";
+            }
+         }
+         else
+         {
+            this.TermId = -1;
+            this.TermName = "Null Item";
+         }
          this.Headers = new Collection<HeaderFooterViewModel> ();
          this.Footers = new Collection <HeaderFooterViewModel> ();
          this.Links = new Collection <LinkViewModel> ();
          this.Styles = new Collection <StyleViewModel> ();
 
          foreach (var link in entry.Links)
-            this.Links.Add (new LinkViewModel
-            {
-               StartIndex = link.StartIndex,
-               EndIndex = link.EndIndex,
-               Url = link.Link.Url,
-               OpenInNewWindow = link.OpenInNewWindow
-            });
-
+            this.Links.Add (new LinkViewModel (link));
          foreach (var style in entry.Styles)
-            this.Styles.Add (new StyleViewModel
-            {
-               StartIndex = style.StartIndex,
-               EndIndex = style.EndIndex,
-               Start = style.Style.Start,
-               End = style.Style.End
-            });
-
+            this.Styles.Add (new StyleViewModel (style));
          foreach (var header in entry.Headers)
             this.Headers.Add (new HeaderFooterViewModel (header));
          foreach (var footer in entry.Footers)
             this.Footers.Add (new HeaderFooterViewModel (footer));
       }
+
+      /// <summary>
+      /// Gets or Sets the term id.
+      /// </summary>
+      public int TermId { get; set; }
+
+      /// <summary>
+      /// Gets or Sets the term name.
+      /// </summary>
+      public string TermName { get; set; }
+
+      /// <summary>
+      /// Gets or Sets the order.
+      /// </summary>
+      public int Order { get; set; }
 
       /// <summary>
       /// Gets or Sets the id of the entry.
@@ -79,8 +101,16 @@ namespace SeekDeepWithin.Models
       /// Renders the passage.
       /// </summary>
       /// <returns>The html to display for the passage.</returns>
-      public string Render ()
+      public string Render (Uri url)
       {
+         if (this.Text.StartsWith ("|PARSE|"))
+         {
+            var parser = new PassageParser (new SdwDatabase ());
+            parser.Parse(this.Text.Substring(7));
+            return parser.BuildHtmlOutput (url);
+         }
+         if (this.Renderer == null)
+            this.Renderer = new SdwRenderer ();
          return Renderer.Render (this);
       }
    }

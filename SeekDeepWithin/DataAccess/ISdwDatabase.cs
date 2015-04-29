@@ -61,6 +61,11 @@ namespace SeekDeepWithin.DataAccess
       IRepository<Source> Sources { get; }
 
       /// <summary>
+      /// Gets the repository for Glossary Item sources.
+      /// </summary>
+      IRepository<GlossaryItemSource> GlossaryItemSources { get; }
+
+      /// <summary>
       /// Gets the repository for passage entries.
       /// </summary>
       IRepository<PassageEntry> PassageEntries { get; }

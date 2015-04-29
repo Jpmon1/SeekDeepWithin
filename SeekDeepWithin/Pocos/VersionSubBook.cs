@@ -15,6 +15,11 @@ namespace SeekDeepWithin.Pocos
       public bool Hide { get; set; }
 
       /// <summary>
+      /// Gets or Sets an alias for this sub book.
+      /// </summary>
+      public string Alias { get; set; }
+
+      /// <summary>
       /// Gets or Sets the associated version
       /// </summary>
       public virtual Version Version { get; set; }

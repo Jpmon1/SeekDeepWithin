@@ -3,13 +3,7 @@
 @{
     ViewBag.Title = Model.Name;
 }
-<h3>
-   @Model.Name
-   @if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
-      <span style="font-size: small">@Html.ActionLink("add item", "CreateItem", new { termId = Model.Id }) |</span>
-      <span style="font-size: small">@Html.ActionLink("edit term", "EditTerm", new { id = Model.Id })</span>
-   }
-</h3>
+<h3>@Model.Name</h3>
 
 <div class="row">
    <div class="small-12 large-9 columns">
@@ -18,21 +12,23 @@
       }
       @foreach (var item in Model.Items) {
          <div id="item_@item.Id">
-            <div class="panel" style="padding: 3px 10px;">
-               @if (Request.IsAuthenticated && User.IsInRole ("Creator")) {
-                  <small>@Html.ActionLink("add", "Add", new { id = item.Id, termId = Model.Id }) | </small>
-               }
-               @if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
-                  <small>@Html.ActionLink("edit", "Edit", new { id = item.Id, termId = Model.Id }) | </small>
-                  <small>@Html.ActionLink("edit source", "EditSource", "Source", new { id = item.Id, type = "entry", parentId = Model.Id }, null)</small>
-               }
-               @if (!string.IsNullOrWhiteSpace (item.SourceUrl)) {
-                  <a href="@item.SourceUrl" class="right" target="_blank">@item.SourceName</a>
-               }
+            <div class="row">
+               <div class="small-12 large-12 columns">
+                  <div class="alert-box secondary" style="margin-bottom: 0;">
+                     <h6><a href="@Url.Action("Index", "Glossary", new {sourceId=item.SourceId}, Request.Url.Scheme)">@item.SourceName</a></h6>
+                  </div>
+                  <div class="panel" style="border-top: 0;">
+                     @foreach (var entry in item.Entries) {
+                        @Html.Partial("_GlossaryEntry", entry)
+                     }
+                     @if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
+                        <a href="@Url.Action("Edit", "Glossary", new {id = item.Id}, Request.Url.Scheme)" class="button tiny">
+                           <i class="icon-editalt"></i> edit
+                        </a>
+                     }
+                  </div>
+               </div>
             </div>
-            @foreach (var entry in item.Entries) {
-               @Html.Partial("_GlossaryEntry", entry)
-            }
          </div>
       }
    </div>
@@ -44,7 +40,7 @@
                   <li class="title">Tags</li>
                   @foreach(var tag in Model.Tags) {
                      <li class="bullet-item">
-                        @Html.ActionLink(tag.Name, "Details", "Tag", new { id = tag.Id }, null)
+                        <a href="@Url.Action("Details", "Tag", new { id = tag.Id }, Request.Url.Scheme)">@tag.Name</a>
                      </li>
                   }
                </ul>
@@ -65,5 +61,23 @@
             </div>
          </div>
       }
+      <div class="row">
+         <div class="small-12 columns">
+            @if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
+               <a href="@Url.Action("EditTerm", "Glossary", new {id = Model.Id}, Request.Url.Scheme)" class="button expand tiny">
+                  <i class="icon-edit"></i> edit term
+               </a>
+            }
+         </div>
+      </div>
+      <div class="row">
+         <div class="small-12 columns">
+            @if (Request.IsAuthenticated && User.IsInRole ("Creator")) {
+               <a href="@Url.Action("CreateItem", "Glossary", new {termId = Model.Id}, Request.Url.Scheme)" class="button expand tiny success">
+                  <i class="icon-plus"></i> add item
+               </a>
+            }
+         </div>
+      </div>
    </div>
 </div>

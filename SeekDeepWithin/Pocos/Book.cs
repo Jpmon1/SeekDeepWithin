@@ -41,5 +41,10 @@ namespace SeekDeepWithin.Pocos
       /// Gets or Sets the list of tags for this book.
       /// </summary>
        public virtual ICollection<BookTag> Tags { get; set; }
+
+      /// <summary>
+      /// Gets or Set the sub title of the book.
+      /// </summary>
+      public string SubTitle { get; set; }
    }
 }

@@ -1,5 +1,13 @@
-﻿.footer {
-   padding: 0.9375rem 2rem;
+﻿body {
+   font-family: 'Merriweather', Helvetica, Arial, sans-serif;
+}
+
+.button {
+   font-family: 'Merriweather', Helvetica, Arial, sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6, .pricing-table .title {
+   font-family: 'Merriweather', Helvetica, Arial, sans-serif;
 }
 
 .pricing-table .title {
@@ -8,28 +16,200 @@
    color: black;
    padding: 10px;
 }
+
 .pricing-table .bullet-item {
    padding: 5px;
+   line-height: 1.25rem;
 }
 
 .tab-bar {
    background-color: #E7E7E7;
    border: 1px #C7C7C7 solid;
 }
+
 .tab-bar h1, .tab-bar h2, .tab-bar h3, .tab-bar h4, .tab-bar h5, .tab-bar h6 {
    color: black;
    font-weight: normal;
 }
+
 .left-small {
-  border-right: solid 1px #C7C7C7;
-}
-.right-small {
-  border-left: solid 1px #C7C7C7;
+   border-right: solid 1px #C7C7C7;
 }
 
-.autocomplete-suggestions { border: 1px solid #999; background: #FFF; overflow: auto; }
-.autocomplete-suggestion { padding: 2px 5px; white-space: nowrap; overflow: hidden; }
-.autocomplete-selected { background: #F0F0F0; }
-.autocomplete-suggestions strong { font-weight: bold; color: #3399FF; }
-.autocomplete-group { padding: 2px 5px; }
-.autocomplete-group strong { display: block; border-bottom: 1px solid #000; }
+.right-small {
+   border-left: solid 1px #C7C7C7;
+}
+
+a.anchor {
+   display: block;
+   position: relative;
+   top: -150px;
+   visibility: hidden;
+}
+
+.reveal-modal {
+   z-index: 2000;
+}
+
+.autocomplete-suggestions {
+   border: 1px solid #999;
+   background: #FFF;
+   overflow: auto;
+}
+
+.autocomplete-suggestion {
+   padding: 2px 5px;
+   white-space: nowrap;
+   overflow: hidden;
+}
+
+.autocomplete-selected {
+   background: #F0F0F0;
+}
+
+.autocomplete-suggestions strong {
+   font-weight: bold;
+   color: #3399FF;
+}
+
+.autocomplete-group {
+   padding: 2px 5px;
+}
+
+.autocomplete-group strong {
+   display: block;
+   border-bottom: 1px solid #000;
+}
+
+.contents {
+   height: 100%;
+   width: 100%;
+   -ms-overflow-style: -ms-autohiding-scrollbar;
+}
+.contents > * {
+   margin: 0 auto;
+   display: block;
+   padding: 0.5rem;
+}
+.contents div > * {
+   margin: 0 auto;
+   display: block;
+   padding: 0.5rem;
+}
+.contents .subBook {
+   width: auto;
+   margin: auto;
+   color: black;
+   text-align: center;
+   background: #e7e7e7;
+   font-size: medium;
+   border-bottom: 1px solid white;
+}
+.contents div .item {
+   width: auto;
+   margin: auto;
+   float: none;
+   color: black;
+   font-size: small;
+}
+.contents .item {
+   width: auto;
+   margin: auto;
+   float: none;
+   color: black;
+   font-size: small;
+}
+.contents .active {
+   background: #c7c7c7;
+}
+.contents > a:hover {
+   background: #c7c7c7;
+}
+.contents div > a:hover {
+   background: #c7c7c7;
+}
+
+.small-bar {
+   width: 100%;
+   background: #333333;
+}
+.small-bar h1 {
+   line-height: 2.8125rem;
+   font-size: 1.0625rem;
+   margin: 0;
+}
+.small-bar i {
+   line-height: 2.8125rem;
+   font-size: 1.0625rem;
+   margin: 0;
+   color: #FFFFFF;
+   cursor: pointer;
+}
+.small-bar h1 a {
+   font-weight: normal;
+   color: #FFFFFF;
+   display: block;
+   text-align: center;
+   padding: 0 0.9375rem;
+}
+
+.side-menu {
+   height: 100%;
+   width: 100%;
+   background: #333333;
+   -ms-overflow-style: -ms-autohiding-scrollbar;
+}
+.side-menu > * {
+   margin: 0 auto;
+   display: block;
+   padding: 1.0rem;
+}
+.side-menu .item {
+   width: auto;
+   margin: auto;
+   float: none;
+   color: white;
+   font-size: 0.875rem;
+   border-bottom: 1px solid black;
+}
+.side-menu > a:hover {
+   background: #008CBA;
+}
+
+.overlay {
+   position: fixed;
+   background: rgba(0, 0, 0, 0.75);
+   width: 100%;
+   height: 100%;
+   display: none;
+   z-index: 999999;
+   -webkit-transition: all 225ms ease;
+   -moz-transition: all 225ms ease;
+   transition: all 225ms ease;
+   -webkit-animation-duration: 1s;
+   animation-duration: 1s;
+   -webkit-animation-fill-mode: both;
+   animation-fill-mode: both;
+   -webkit-animation-name: fadeIn;
+   animation-name: fadeIn;
+   cursor: pointer;
+}
+.scotch-is-showing .overlay {
+  display: block;
+}
+@-webkit-keyframes fadeIn {
+   0% {
+      opacity: 0;
+   }
+   100% {
+      opacity: 1;
+   }
+}
+@keyframes fadeIn {
+   0% {
+      opacity: 0;
+   }
+   100% {
+      opacity: 1;
+   }
+}

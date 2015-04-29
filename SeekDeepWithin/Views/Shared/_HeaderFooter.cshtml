@@ -1,17 +1,8 @@
-﻿@model SeekDeepWithin.Models.HeaderFooterViewModel
-          
-@{
-   var style = string.Empty;
-   if (Model.IsBold) { style += "font-weight:bold;"; }
-   if (Model.IsItalic) { style += "font-style:italic;"; }
-   if (Model.Type == "footer") { style += "font-size: small;"; }
-   var align = "text-center";
-   if (Model.Justify == 0) { align = "text-left"; }
-   if (Model.Justify == 2) { align = "text-right"; }
-}
-<div class="@align" style="@style">
-   @if (Model.Type == "footer" && Model.Number > 0) {
+﻿@using SeekDeepWithin.Controllers
+@model SeekDeepWithin.Models.HeaderFooterViewModel
+<div>
+   @if (Model.HorF == "footer" && Model.Number > 0) {
       <sup>(@Model.Number)</sup>
    }
-   @Html.Raw(Model.Text)
+   @Html.Raw(HtmlSanitizer.Sanitize (Model.Render()))
 </div>

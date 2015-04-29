@@ -1,8 +1,11 @@
-﻿namespace SeekDeepWithin.Models
+﻿using System;
+
+namespace SeekDeepWithin.Models
 {
    /// <summary>
    /// Enumeration for item types in SDW.
    /// </summary>
+   [Flags]
    public enum ItemType
    {
       Passage,
@@ -11,6 +14,8 @@
       Footer,
       Entry,
       Item,
-      Term
+      Term,
+      SeeAlso,
+      Redirect
    }
 }

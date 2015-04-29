@@ -6,12 +6,12 @@ namespace SeekDeepWithin.Controllers
 {
    public static class HtmlSanitizer
    {
-      private static readonly IDictionary<string, string[]> Whitelist;
-      private static readonly List<string> DeletableNodesXpath = new List<string> ();
+      private static readonly IDictionary<string, string[]> s_Whitelist;
+      private static readonly List<string> s_DeletableNodesXpath = new List<string> ();
 
       static HtmlSanitizer ()
       {
-         Whitelist = new Dictionary<string, string[]> {
+         s_Whitelist = new Dictionary<string, string[]> {
                 { "a", new[] { "href" } },
                 { "strong", null },
                 { "em", null },
@@ -21,15 +21,20 @@ namespace SeekDeepWithin.Controllers
                 { "ul", null},
                 { "ol", null},
                 { "li", null},
-                { "div", new[] { "align" } },
+                { "div", new[] { "align", "class", "style" } },
                 { "strike", null},
-                { "u", null},                
+                { "u", null},
                 { "sub", null},
                 { "sup", null},
-                { "table", null },
-                { "tr", null },
-                { "td", null },
-                { "th", null }
+                { "small", null},
+                { "br", null},
+                { "table", new[] { "align", "class", "style" } },
+                { "tr", new[] { "align", "class", "style" } },
+                { "td", new[] { "align", "class", "style" } },
+                { "th", new[] { "align", "class", "style" } },
+                { "h3", new[] { "align", "class", "style" } },
+                { "h4", new[] { "align", "class", "style" } },
+                { "h5", new[] { "align", "class", "style" } }
                 };
       }
 
@@ -60,13 +65,13 @@ namespace SeekDeepWithin.Controllers
       {
          if (node.NodeType == HtmlNodeType.Element)
          {
-            if (!Whitelist.ContainsKey (node.Name))
+            if (!s_Whitelist.ContainsKey (node.Name))
             {
-               if (!DeletableNodesXpath.Contains (node.Name))
+               if (!s_DeletableNodesXpath.Contains (node.Name))
                {
                   //DeletableNodesXpath.Add(node.Name.Replace("?",""));
                   node.Name = "removeableNode";
-                  DeletableNodesXpath.Add (node.Name);
+                  s_DeletableNodesXpath.Add (node.Name);
                }
                if (node.HasChildNodes)
                {
@@ -81,7 +86,7 @@ namespace SeekDeepWithin.Controllers
                for (int i = node.Attributes.Count - 1; i >= 0; i--)
                {
                   HtmlAttribute currentAttribute = node.Attributes[i];
-                  string[] allowedAttributes = Whitelist[node.Name];
+                  string[] allowedAttributes = s_Whitelist[node.Name];
                   if (allowedAttributes != null)
                   {
                      if (!allowedAttributes.Contains (currentAttribute.Name))
@@ -122,13 +127,13 @@ namespace SeekDeepWithin.Controllers
       private static string CreateXPath ()
       {
          string xPath = string.Empty;
-         for (int i = 0; i < DeletableNodesXpath.Count; i++)
+         for (int i = 0; i < s_DeletableNodesXpath.Count; i++)
          {
-            if (i != DeletableNodesXpath.Count - 1)
+            if (i != s_DeletableNodesXpath.Count - 1)
             {
-               xPath += string.Format ("//{0}|", DeletableNodesXpath[i]);
+               xPath += string.Format ("//{0}|", s_DeletableNodesXpath[i]);
             }
-            else xPath += string.Format ("//{0}", DeletableNodesXpath[i]);
+            else xPath += string.Format ("//{0}", s_DeletableNodesXpath[i]);
          }
          return xPath;
       }

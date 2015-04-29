@@ -33,6 +33,7 @@ namespace SeekDeepWithin.Models
          this.Id = book.Id;
          this.Title = book.Title;
          this.Summary = book.Summary;
+         this.SubTitle = book.SubTitle;
          foreach (var bookTag in book.Tags)
             this.Tags.Add(new TagViewModel { ItemId = bookTag.Id, Name = bookTag.Tag.Name, Id = bookTag.Tag.Id });
          if (copyVersions)
@@ -52,6 +53,11 @@ namespace SeekDeepWithin.Models
       /// </summary>
       [Required]
       public string Title { get; set; }
+
+      /// <summary>
+      /// Gets or Sets a sub title of the book.
+      /// </summary>
+      public string SubTitle { get; set; }
 
       /// <summary>
       /// Gets or Sets a brief summary of the book.

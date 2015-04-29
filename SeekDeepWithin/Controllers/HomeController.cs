@@ -11,6 +11,8 @@ namespace SeekDeepWithin.Controllers
       public ActionResult Index ()
       {
          ViewBag.Message = "Study Spiritual Texts from all over the World.";
+         var controller = new PassageController ();
+         ViewBag.RandomPassage = controller.GetRandomPassage ();
          return View ();
       }
 

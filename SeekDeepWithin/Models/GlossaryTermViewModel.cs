@@ -37,7 +37,7 @@ namespace SeekDeepWithin.Models
          foreach (var item in term.Items)
             this.Items.Add (new GlossaryItemViewModel (item, renderer) { Term = this });
          foreach (var seeAlso in term.SeeAlsos)
-            this.SeeAlsos.Add (new LinkViewModel { Url = seeAlso.Link.Url, Name = seeAlso.Name });
+            this.SeeAlsos.Add (new LinkViewModel (seeAlso) { Name = seeAlso.Name });
       }
 
       /// <summary>

@@ -1,6 +1,5 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using SeekDeepWithin.Controllers;
 using SeekDeepWithin.Pocos;
 
@@ -18,15 +17,19 @@ namespace SeekDeepWithin.Models
          this.m_Entries = new Collection <GlossaryEntryViewModel> ();
       }
 
+      /// <summary>
+      /// Initializes a new glossary item.
+      /// </summary>
       public GlossaryItemViewModel (GlossaryItem item, SdwRenderer renderer)
       {
          this.Id = item.Id;
-         var source = item.Sources.FirstOrDefault ();
          this.m_Entries = new Collection<GlossaryEntryViewModel> ();
-         if (source != null)
+         if (item.Source != null)
          {
-            this.SourceName = source.Source.Name;
-            this.SourceUrl = source.Source.Url;
+            this.SourceId = item.Source.Id;
+            this.SourceName = item.Source.Name;
+            this.SourceUrl = item.Source.Url;
+            this.SourceData = item.Source.Data;
          }
          foreach (var entry in item.Entries)
             this.Entries.Add(new GlossaryEntryViewModel (entry, renderer));
@@ -53,6 +56,16 @@ namespace SeekDeepWithin.Models
       /// </summary>
       [Required]
       public string SourceUrl { get; set; }
+
+      /// <summary>
+      /// Gets the source's id.
+      /// </summary>
+      public int SourceId { get; set; }
+
+      /// <summary>
+      /// Gets or Sets any additional source data.
+      /// </summary>
+      public string SourceData { get; set; }
 
       /// <summary>
       /// Gets the list of entries.

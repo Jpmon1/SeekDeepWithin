@@ -20,6 +20,11 @@ namespace SeekDeepWithin.Pocos
       public virtual Book Book { get; set; }
 
       /// <summary>
+      /// Get or Sets the list of tags.
+      /// </summary>
+      public virtual ICollection<SubBookTag> Tags { get; set; }
+
+      /// <summary>
       /// Gets or Sets the list of writers.
       /// </summary>
       public virtual ICollection<SubBookWriter> Writers { get; set; }

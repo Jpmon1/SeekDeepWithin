@@ -33,13 +33,26 @@ namespace SeekDeepWithin.Controllers
       /// Gets the glossary index page.
       /// </summary>
       /// <returns>The glossary index view.</returns>
-      public ActionResult Index (int? page)
+      public ActionResult Index (int? page, int? sourceId)
       {
          int pageNumber = page ?? 1;
-         return View (this.m_Db.GlossaryTerms
+         if (sourceId.HasValue)
+         {
+            var terms = new Collection <GlossaryTermViewModel> ();
+            var source = this.m_Db.GlossaryItemSources.Get (sourceId.Value);
+            var items = source.GlossaryItems;
+            foreach (var glossaryItem in items)
+            {
+               if (terms.Any (t => t.Id == glossaryItem.Term.Id))
+                  continue;
+               terms.Add (new GlossaryTermViewModel { Id = glossaryItem.Term.Id, Name = glossaryItem.Term.Name });
+            }
+            return View (new GlossaryIndexViewModel{SourceName = source.Name , Terms = terms.OrderBy(t => t.Name).ToPagedList (pageNumber, 75)});
+         }
+         return View (new GlossaryIndexViewModel{Terms =this.m_Db.GlossaryTerms
             .All (q => q.OrderBy (t => t.Name))
             .Select (t => new GlossaryTermViewModel { Id = t.Id, Name = t.Name })
-            .ToPagedList (pageNumber, 75));
+            .ToPagedList (pageNumber, 75)});
       }
 
       /// <summary>
@@ -89,42 +102,35 @@ namespace SeekDeepWithin.Controllers
       {
          var term = this.m_Db.GlossaryTerms.Get (termId);
          if (Request.UrlReferrer != null) TempData["RefUrl"] = Request.UrlReferrer.ToString ();
-         return View (new GlossaryItemViewModel { Term = new GlossaryTermViewModel { Id = termId, Name = term.Name } });
+         ViewBag.Sources = new SelectList (this.m_Db.GlossaryItemSources.All (q => q.OrderBy (s => s.Name)), "Id", "Name");
+         return View (new GlossaryItemViewModel { Term = new GlossaryTermViewModel {Id = termId, Name = term.Name} });
       }
 
       /// <summary>
-      /// Posts a new entry.
+      /// Creates a new glossary item.
       /// </summary>
-      /// <param name="viewModel">Entry data.</param>
+      /// <param name="termId">The item's term id.</param>
+      /// <param name="sourceId">The source id for the item.</param>
       /// <returns>Creation result</returns>
       [HttpPost]
       [ValidateAntiForgeryToken]
       [Authorize (Roles = "Creator")]
-      public ActionResult CreateItem (GlossaryItemViewModel viewModel)
+      public ActionResult CreateItem (int termId, int sourceId)
       {
-         if (ModelState.IsValid)
-         {
-            var term = this.m_Db.GlossaryTerms.Get (viewModel.Term.Id);
-            var source = SourceController.GetSource (viewModel.SourceName, viewModel.SourceUrl, this.m_Db);
-            var item = new GlossaryItem { Term = term };
-            if (item.Sources == null)
-               item.Sources = new Collection<GlossaryItemSource> ();
-            item.Sources.Add (new GlossaryItemSource { GlossaryItem = item, Source = source });
-            this.m_Db.GlossaryItems.Insert (item);
-            this.m_Db.Save ();
-            return RedirectToAction ("Term", new { id = viewModel.Term.Id });
-         }
-         return View (viewModel);
+         var term = this.m_Db.GlossaryTerms.Get (termId);
+         var item = new GlossaryItem { Term = term, Source = this.m_Db.GlossaryItemSources.Get(sourceId) };
+         this.m_Db.GlossaryItems.Insert (item);
+         this.m_Db.Save ();
+         return RedirectToAction ("Term", new { id = termId });
       }
 
       /// <summary>
       /// Gets the add entry view for a glossary item.
       /// </summary>
       /// <param name="id">The id of the glossary item to add entries for.</param>
-      /// <param name="termId">The id of the parent term.</param>
       /// <returns>The add entry view.</returns>
       [Authorize (Roles = "Creator")]
-      public ActionResult Add (int id, int termId)
+      public ActionResult Add (int id)
       {
          if (Request.UrlReferrer != null) TempData["RefUrl"] = Request.UrlReferrer.ToString ();
          var viewModel = new AddItemViewModel { ParentId = id, ItemType = ItemType.Entry };
@@ -133,7 +139,8 @@ namespace SeekDeepWithin.Controllers
             viewModel.Order = glossaryItem.Entries.Max (p => p.Order) + 1;
          else
             viewModel.Order = 1;
-         ViewBag.TermId = termId;
+         viewModel.Title = glossaryItem.Term.Name;
+         ViewBag.TermId = glossaryItem.Term.Id;
          return View (viewModel);
       }
 
@@ -150,6 +157,14 @@ namespace SeekDeepWithin.Controllers
          if (ModelState.IsValid)
          {
             var item = this.m_Db.GlossaryItems.Get (viewModel.ParentId);
+            if (viewModel.IsInsert)
+            {
+               foreach (var entry in item.Entries)
+               {
+                  if (entry.Order >= viewModel.Order)
+                     entry.Order++;
+               }
+            }
             var glossaryEntry = new GlossaryEntry
             {
                Order = viewModel.Order,
@@ -168,15 +183,16 @@ namespace SeekDeepWithin.Controllers
       /// Gets the edit entry view.
       /// </summary>
       /// <param name="id">The id of the entry to edit.</param>
-      /// <param name="termId">The id of the parent term.</param>
       /// <returns>The ecit entry view.</returns>
       [Authorize (Roles = "Editor")]
-      public ActionResult Edit (int id, int termId)
+      public ActionResult Edit (int id)
       {
          if (Request.UrlReferrer != null) TempData["RefUrl"] = Request.UrlReferrer.ToString ();
          var item = this.m_Db.GlossaryItems.Get (id);
-         var term = this.m_Db.GlossaryTerms.Get (termId);
-         return View (new GlossaryItemViewModel (item, new SdwRenderer()) { Term = new GlossaryTermViewModel {Id = term.Id, Name = term.Name}});
+         return View (new GlossaryItemViewModel (item, new SdwRenderer ())
+            {
+               Term = new GlossaryTermViewModel {Id = item.Term.Id, Name = item.Term.Name}
+            });
       }
 
       /// <summary>
@@ -207,18 +223,73 @@ namespace SeekDeepWithin.Controllers
       public ActionResult Term (int id)
       {
          var term = this.m_Db.GlossaryTerms.Get (id);
-         if (term.Items.Count == 1)
-         {
-            var source = term.Items.First ().Sources.FirstOrDefault ();
-            if (source != null && source.Source.Name == "|REDIRECT|")
-            {
-               TempData["RedirectTerm"] = term.Name;
-               TempData["RedirectTermId"] = id;
-               return Redirect (source.Source.Url);
-            }
-         }
          var viewModel = new GlossaryTermViewModel (term);
          return View (viewModel);
+      }
+
+      /// <summary>
+      /// Gets information for the given term.
+      /// </summary>
+      /// <param name="termName">Term name to get information for.</param>
+      /// <returns>Term information.</returns>
+      public ActionResult Get (string termName)
+      {
+         var term = this.m_Db.GlossaryTerms.Get (t => t.Name == termName).FirstOrDefault ();
+         if (term == null)
+         {
+            Response.StatusCode = 500;
+            return Json ("Tag not found.");
+         }
+         return Json (new { id = term.Id, name = term.Name }, JsonRequestBehavior.AllowGet);
+      }
+
+      #region Entries
+
+      /// <summary>
+      /// Performs an edit for the given entry.
+      /// </summary>
+      /// <param name="entryId">The entry to edit.</param>
+      /// <param name="text">The entry text.</param>
+      /// <param name="order">The entry order.</param>
+      /// <returns>Results.</returns>
+      [HttpPost]
+      [ValidateAntiForgeryToken]
+      [Authorize (Roles = "Editor")]
+      public ActionResult UpdateEntry (int entryId, string text, int? order)
+      {
+         var entry = this.m_Db.GlossaryEntries.Get (entryId);
+         if (entry == null)
+         {
+            Response.StatusCode = 500;
+            return Json ("Data is not valid.");
+         }
+         entry.Text = text;
+         if (order != null)
+            entry.Order = order.Value;
+         this.m_Db.Save ();
+         return Json ("Success");
+      }
+
+      /// <summary>
+      /// Deletes the given entry.
+      /// </summary>
+      /// <param name="entryId">The entry to delete.</param>
+      /// <returns>Results.</returns>
+      [HttpPost]
+      [ValidateAntiForgeryToken]
+      [Authorize (Roles = "Creator")]
+      public ActionResult DeleteEntry (int entryId)
+      {
+         if (ModelState.IsValid)
+         {
+            var entry = this.m_Db.GlossaryEntries.Get (entryId);
+            entry.Item.Entries.Remove (entry);
+            this.m_Db.GlossaryEntries.Delete (entry);
+            this.m_Db.Save ();
+            return Json ("Success");
+         }
+         Response.StatusCode = 500;
+         return Json ("Data is not valid.");
       }
 
       /// <summary>
@@ -233,13 +304,13 @@ namespace SeekDeepWithin.Controllers
          var result = new
          {
             entryId = id,
-            order = entry.Order,
             text = entry.Text,
-            headers = entry.Headers.Select (h => new { text = h.Text, id = h.Id }),
-            footers = entry.Footers.Select (f => new { text = f.Text, index = f.Index, id = f.Id })
+            order = entry.Order
          };
          return Json (result, JsonRequestBehavior.AllowGet);
       }
+
+      #endregion
 
       /// <summary>
       /// Gets auto complete items for the given term.

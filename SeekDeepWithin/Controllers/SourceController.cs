@@ -40,6 +40,33 @@ namespace SeekDeepWithin.Controllers
       }
 
       /// <summary>
+      /// Gets the source create view.
+      /// </summary>
+      /// <returns>The source create view.</returns>
+      [Authorize (Roles = "Editor")]
+      public ActionResult Create (int termId)
+      {
+         return View (new SourceViewModel {ParentId = termId});
+      }
+
+      /// <summary>
+      /// Gets the source create view.
+      /// </summary>
+      /// <returns>The source create view.</returns>
+      [HttpPost]
+      [ValidateAntiForgeryToken]
+      [Authorize (Roles = "Editor")]
+      public ActionResult Create (SourceViewModel viewModel)
+      {
+         if (!ModelState.IsValid)
+            return View (viewModel);
+         var source = new GlossaryItemSource {Name = viewModel.Name, Url = viewModel.Url, Data = viewModel.Data};
+         this.m_Db.GlossaryItemSources.Insert(source);
+         this.m_Db.Save();
+         return RedirectToAction ("CreateItem", "Glossary", new { termId = viewModel.ParentId });
+      }
+
+      /// <summary>
       /// Gets the source edit view.
       /// </summary>
       /// <param name="id">Id of source to edit.</param>
@@ -89,13 +116,13 @@ namespace SeekDeepWithin.Controllers
             if (s != null)
                source = s.Source;
          }
-         else if (type == "entry")
+         /*else if (type == "entry")
          {
             var version = this.m_Db.GlossaryItems.Get (id);
             var s = version.Sources.FirstOrDefault ();
             if (s != null)
                source = s.Source;
-         }
+         }*/
 
          return View (new SourceViewModel
          {
@@ -131,9 +158,9 @@ namespace SeekDeepWithin.Controllers
                   version.VersionSources.First ().Source = source;
                   this.m_Db.Save ();
                }
-               return RedirectToAction ("Read", "Chapter", new {id = version.DefaultReadChapter});
+               return RedirectToAction ("Index", "Read", new {id = version.DefaultReadChapter});
             }
-            if (viewModel.Type == "entry")
+            /*if (viewModel.Type == "entry")
             {
                var entry = this.m_Db.GlossaryItems.Get (viewModel.Id);
                if (entry.Sources.Count == 1 && entry.Sources.First ().Source.Id == source.Id)
@@ -146,7 +173,7 @@ namespace SeekDeepWithin.Controllers
                   this.m_Db.Save ();
                }
                return RedirectToAction ("Term", "Glossary", new { id = viewModel.ParentId });
-            }
+            }*/
          }
          return View (viewModel);
       }

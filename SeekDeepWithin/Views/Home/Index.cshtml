@@ -1,5 +1,13 @@
-﻿@{
+﻿@using SeekDeepWithin.Models
+
+@{
    ViewBag.Title = "Welcome";
+   var panelSize = 3;
+   if (Request.IsAuthenticated)
+   {
+      panelSize = 4;
+   }
+   var randomPassage = ViewBag.RandomPassage as PassageViewModel;
 }
 @section featured {
    <div class="panel">
@@ -8,21 +16,15 @@
       </hgroup>
       <p>
          This site is currently under construction, please bear with us until it is fully functional.<br />
-         If you like what we are doing, send us a comment from the @Html.ActionLink("about", "About") page.
+         If you like what we are doing, send us a comment from the 
+         <a href="@Url.Action("About", "Home", null, Request.Url.Scheme)">about</a> page.
       </p>
    </div>
 }
 
-@{
-   var panelSize = 3;
-   if (Request.IsAuthenticated) {
-      panelSize = 4;
-   }
-}
-
 <div class="row text-center">
    <div class="medium-6 large-@panelSize columns">
-      <a href="@Url.Action("Index", "Book")">
+      <a href="@Url.Action("Index", "Book", null, Request.Url.Scheme)">
          <i class="icon-book" style="font-size: xx-large"> </i>
          <h4>Read</h4>
       </a>
@@ -32,7 +34,7 @@
       </p>
    </div>
    <div class="medium-6 large-@panelSize columns">
-      <a href="@Url.Action("Index", "Glossary")">
+      <a href="@Url.Action("Index", "Glossary", null, Request.Url.Scheme)">
          <i class="icon-list" style="font-size: xx-large"> </i>
          <h4>Study</h4>
       </a>
@@ -42,7 +44,7 @@
       </p>
    </div>
    <div class="medium-6 large-@panelSize columns">
-      <a href="@Url.Action("Index", "Search")">
+      <a href="@Url.Action("Index", "Search", null, Request.Url.Scheme)">
          <i class="icon-search" style="font-size: xx-large"> </i>
          <h4>Search</h4>
       </a>
@@ -53,7 +55,7 @@
    </div>
    @if (!Request.IsAuthenticated) {
       <div class="medium-6 large-3 columns">
-         <a href="@Url.Action("Register", "Account")">
+         <a href="@Url.Action("Register", "Account", null, Request.Url.Scheme)">
             <i class="icon-ok-sign" style="font-size: xx-large"> </i>
             <h4>Register</h4>
          </a>
@@ -62,4 +64,26 @@
          </p>
       </div>
    }
+</div>
+<hr/>
+<div class="row">
+   <div class="small-12 medium-6 large-6 columns">
+      <h4>Random Excerpt</h4>
+         @if (randomPassage != null) {
+            <dl>
+               <dt>@randomPassage.Title</dt>
+               <dd>@randomPassage.Render(Request.Url)</dd>
+            </dl>
+            <a href="@Url.Action("Index", "Passage", new { entryId = randomPassage.EntryId }, Request.Url.Scheme)" class="button small expand">View Excerpt</a>
+         } else {
+            <div class="alert-box">None, Sorry!</div>
+         }
+   </div>
+   <div class="small-12 medium-6 large-6 columns">
+      <h4>News</h4>
+      <dl>
+         <dt>March 09, 2015</dt>
+         <dd>Seek Deep Within is up and running!</dd>
+      </dl>
+   </div>
 </div>

@@ -136,5 +136,20 @@ namespace SeekDeepWithin.Controllers
          this.m_Db.Save ();
          return Redirect (refUrl);
       }
+
+      /// <summary>
+      /// Gets auto complete items for the given writer.
+      /// </summary>
+      /// <param name="writer">Writer to get auto complete items for.</param>
+      /// <returns>The list of possible terms for the given item.</returns>
+      public ActionResult AutoComplete (string writer)
+      {
+         var result = new
+         {
+            suggestions = this.m_Db.Writers.Get (w => w.Name.Contains (writer))
+                                           .Select (w => new { value = w.Name, data = w.Id })
+         };
+         return Json (result, JsonRequestBehavior.AllowGet);
+      }
    }
 }

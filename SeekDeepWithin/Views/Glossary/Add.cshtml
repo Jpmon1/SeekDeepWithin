@@ -3,7 +3,7 @@
     ViewBag.Title = "Add Entries";
 }
 
-<h3>Add Entries <small>@Html.ActionLink("view term", "Term", new { id = ViewBag.TermId })</small></h3>
+<h3><small>add entries</small> @Model.Title <small>@Html.ActionLink("view term", "Term", new { id = ViewBag.TermId })</small></h3>
 
 @using (Html.BeginForm (null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" })){
    @Html.AntiForgeryToken()
@@ -56,7 +56,16 @@
       </div>
       <div class="small-12 large-2 large-offset-5 columns">
          <a href="#" onclick="addSingle();" class="button expand small">Add <span id="singleAddCheck"><i class="icon-ok-sign"></i></span></a>
-         
+      </div>
+   </div>
+</div>
+
+<div class="row">
+   <div class="small-12 columns text-center">
+      <label for="isInsert">Insert at the given order</label>
+      <div class="switch">
+         <input type="checkbox" id="isInsert" name="isInsert" />
+         <label for="isInsert"></label>
       </div>
    </div>
 </div>

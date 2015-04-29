@@ -43,11 +43,8 @@ namespace SeekDeepWithin.Models
          var renderer = new SdwRenderer ();
          foreach (var entry in chapter.Passages.OrderBy (pe => pe.Order))
             this.Passages.Add (new PassageViewModel (entry) { Renderer = renderer });
-         if (this.DefaultToParagraph)
-         {
-            foreach (var passageViewModel in this.Passages)
-               passageViewModel.Number = 0;
-         }
+         foreach (var passageViewModel in this.Passages)
+            passageViewModel.DisplayType = DefaultToParagraph ? VerseDisplayType.Paragraph : VerseDisplayType.Number;
       }
 
       /// <summary>

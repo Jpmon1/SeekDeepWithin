@@ -1,4 +1,7 @@
-﻿using System.Web.Mvc;
+﻿using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using DotNetOpenAuth.Messaging;
 using SeekDeepWithin.DataAccess;
 using SeekDeepWithin.Models;
 
@@ -31,6 +34,7 @@ namespace SeekDeepWithin.Controllers
       /// <returns>The search view.</returns>
       public ActionResult Index ()
       {
+         ViewBag.Tags = new SelectList (this.m_Db.Tags.All (q => q.OrderBy (t => t.Name)), "Id", "Name");
          return View ();
       }
 
@@ -38,48 +42,28 @@ namespace SeekDeepWithin.Controllers
       /// Gets the search page.
       /// </summary>
       /// <param name="searchFor">The string to search for.</param>
+      /// <param name="log">True if we want to see the parsing log.</param>
       /// <returns>The search view.</returns>
-      public ActionResult Results (string searchFor)
+      public ActionResult Results (string searchFor, bool? log)
       {
-         var viewModel = new SearchViewModel {Query = searchFor};
+         searchFor = HttpUtility.UrlDecode (searchFor);
+         var viewModel = new SearchViewModel {Query = searchFor, ShowLog = log != null && log.Value};
          var parser = new PassageParser (this.m_Db);
          parser.Parse(searchFor);
          viewModel.ParserLog = parser.Log;
-         foreach (var entry in parser.PassageList)
-         {
-            viewModel.Passages.Add (new PassageViewModel
-            {
-               Text = entry.Passage.Text,
-               Id = entry.Passage.Id,
-               EntryId = entry.Id,
-               Number = entry.Number,
-               ChapterId = entry.Chapter.Id,
-               ChapterName = entry.Chapter.Chapter.Name,
-               SubBookId = entry.Chapter.SubBook.Id,
-               SubBookName = entry.Chapter.SubBook.SubBook.Name,
-               VersionId = entry.Chapter.SubBook.Version.Id,
-               VersionName = entry.Chapter.SubBook.Version.Title
-            });
-         }
+         if (parser.PassageList.Count > 0)
+            viewModel.Passages.AddRange(parser.PassageList);
          var passages = this.m_Db.Passages.Get (p => p.Text.Contains (searchFor));
          foreach (var passage in passages)
          {
-            foreach (var entry in passage.PassageEntries)
-            {
-               viewModel.Passages.Add (new PassageViewModel
-               {
-                  Text = passage.Text,
-                  Id = passage.Id,
-                  EntryId = entry.Id,
-                  Number = entry.Number,
-                  ChapterId = entry.Chapter.Id,
-                  ChapterName = entry.Chapter.Chapter.Name,
-                  SubBookId = entry.Chapter.SubBook.Id,
-                  SubBookName = entry.Chapter.SubBook.SubBook.Name,
-                  VersionId = entry.Chapter.SubBook.Version.Id,
-                  VersionName = entry.Chapter.SubBook.Version.Title
-               });
-            }
+            foreach (var entry in passage.Entries)
+               viewModel.Passages.Add (new PassageViewModel(entry));
+         }
+         var renderer = new SdwRenderer ();
+         var entries = this.m_Db.GlossaryEntries.Get (e => e.Text.Contains (searchFor));
+         foreach (var entry in entries)
+         {
+            viewModel.Entries.Add (new GlossaryEntryViewModel (entry, renderer));
          }
          return View (viewModel);
       }

@@ -30,15 +30,18 @@
             </div>
             <div class="row">
                <div class="large-12 columns">
-                  @Html.CheckBoxFor(m => m.RememberMe)
-                  @Html.LabelFor(m => m.RememberMe)
+                  <label for="RememberMe">Remember Me</label>
+                  <div class="switch">
+                     <input id="RememberMe" name="RememberMe" type="checkbox">
+                     <label for="RememberMe">Remember Me</label>
+                  </div>
                </div>
             </div>
             <input type="submit" value="Log in" class="button" />
+            <p>
+               <a href="@Url.Action("Register", "Account", null, Request.Url.Scheme)">Register</a> if you don't have an account.
+            </p>
          </fieldset>
-          <p>
-              @Html.ActionLink("Register", "Register") if you don't have an account.
-          </p>
       }
    </div>
 

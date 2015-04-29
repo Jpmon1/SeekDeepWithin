@@ -20,13 +20,13 @@ namespace SeekDeepWithin.Pocos
       public virtual GlossaryTerm Term { get; set; }
 
       /// <summary>
+      /// Get or Sets the source of this entry.
+      /// </summary>
+      public virtual GlossaryItemSource Source { get; set; }
+
+      /// <summary>
       /// Gets or Sets the list of entries.
       /// </summary>
       public virtual ICollection<GlossaryEntry> Entries { get; set; }
-
-      /// <summary>
-      /// Get or Sets the source of this entry.
-      /// </summary>
-      public virtual ICollection<GlossaryItemSource> Sources { get; set; }
    }
 }

@@ -8,53 +8,19 @@
    title += " | " + Model.Name;
    ViewBag.Title = "Edit " + title;
 }
-<h3>
-   <small>editing</small> @title
-</h3>
+<ul class="breadcrumbs">
+   <li class="unavailable">editing</li>
+   <li><a href="@Url.Action("Edit", "Version", new {id=Model.SubBook.VersionId}, Request.Url.Scheme)">@Model.SubBook.Version.Title</a></li>
+   <li><a href="@Url.Action("Edit", "SubBook", new {id=Model.SubBookId}, Request.Url.Scheme)">@Model.SubBook.Name</a></li>
+   <li class="current">@Model.Name</li>
+</ul>
 @using (Html.BeginForm (null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" })){
    @Html.AntiForgeryToken()
 }
 
-<div id="modal" class="reveal-modal" data-reveal></div>
 @Html.Hidden("chapterId", Model.Id)
 <input type="hidden" id="FooterIndex" name="FooterIndex" value="-1" />
 <input type="hidden" id="itemType" name="itemType" value="Passage" />
-
-<div class="row">
-   <div class="small-4 large-2 columns">
-      <strong>reading style</strong><span id="saveReadStyleCheck"><i class="icon-ok-sign" style="color: green"></i></span>
-   </div>
-   <div class="small-4 large-2 columns text-right">
-      <div class="switch tiny">
-         <i class="icon-numberlist"></i>
-         <input id="verseRadio" type="radio" name="versePara"@if(!Model.DefaultToParagraph){<text> checked</text>}>
-         <label for="verseRadio"></label>
-      </div>
-   </div>
-   <div class="small-4 large-2 columns text-left">
-      <div class="switch tiny">
-         <i class="icon-align-left"></i>
-         <input id="paraRadio" type="radio" name="versePara"@if(Model.DefaultToParagraph){<text> checked</text>}>
-         <label for="paraRadio"></label>
-      </div>
-   </div>
-   <div class="small-12 large-6 columns text-right">
-      <small>@Html.ActionLink("read", "Read", new { id = Model.Id }, new {@class="button tiny"})</small>
-      @if (Request.IsAuthenticated && User.IsInRole ("Creator")) {
-         <small>@Html.ActionLink("add passages", "Add", new { id = Model.Id }, new {@class="button tiny success"})</small>
-      }
-   </div>
-</div>
-
-<div class="row">
-   <div class="small-12 large-12 columns text-center">
-      <a href="#" onclick="header_CreateChapter();" class="button success tiny">Add Header for Chapter</a>
-   </div>
-</div>
-
-<div id="chapterHeaders">
-   @Html.EditorFor(model => model.Headers)
-</div>
 
 <div class="off-canvas-wrap" data-offcanvas>
    <div class="inner-wrap">
@@ -63,80 +29,142 @@
             <a class="left-off-canvas-toggle" href="#" style="color: black;"><i class="icon-menu"></i></a>
          </section>
 
-         <section class="middle tab-bar-section">
-            <h1 class="title">Passages - <span id="editPassNum"></span> <small>(passage id: <span id="editPassId"></span> entry id: <span id="editEntryId"></span>)</small></h1>
-         </section>
-         
-         <section class="right-small text-center">
-            <a class="right-off-canvas-toggle" href="#" style="color: black;"><i class="icon-menu"></i></a>
+         <section class="middle tab-bar-section" style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis">
+            <h1 class="title">Passage <small>(passage id: <span id="editPassId"></span> entry id: <span id="editEntryId"></span>)</small></h1>
          </section>
       </nav>
 
       <aside class="left-off-canvas-menu">
-         <ul class="off-canvas-list">
+         <ul class="off-canvas-list" id="itemList">
             <li><label>Passages</label></li>
             @foreach (var passage in Model.Passages) {
                var len = passage.Text.Length > 20 ? 20 : passage.Text.Length;
-               <li>
-                  <a href="#" onclick="editEntry(@passage.EntryId)">@passage.Number - @passage.Text.Substring(0, len)...</a>
+               <li id="item_@passage.EntryId">
+                  <a href="javascript:void(0)" onclick="passage_get(@passage.EntryId)"><small>@passage.Number</small> - @passage.Text.Substring(0, len)...</a>
                </li>
             }
-         </ul>
-      </aside>
-      
-      <aside class="right-off-canvas-menu">
-         <ul class="off-canvas-list" id="rightMenu">
-            <li id="headersLabel"><label>Headers</label></li>
-            <li id="addHeaderBtn"><a href="#" onclick="header_CreatePassage();">Add New Header</a></li>
-            <li id="footersLabel"><label>Footers</label></li>
-            <li id="addFooterBtn"><a href="#" onclick="footer_CreatePassage();">Add New Footer</a></li>
-            <li id="endLabel"><label>Seek Deep Within</label></li>
          </ul>
       </aside>
 
       <section class="main-section">
 
-         <div class="row">
-            <div class="small-12 large-12 columns">
-               <textarea cols="10" id="passText" name="passText" rows="6" style="margin-top: 10px;"></textarea>
+         <div class="row" style="margin-top: 10px;">
+            <div class="small-6 medium-3 large-3 columns">
+               <a href="@Url.Action("Index", "Read", new {id=Model.Id}, Request.Url.Scheme)" class="button expand secondary small">
+                  <i class="icon-notebook"></i> Read
+               </a>
+            </div>
+            <div class="small-6 medium-3 large-3 columns">
+               @if (Request.IsAuthenticated && User.IsInRole ("Creator"))
+               {
+                  <a href="@Url.Action("Add", "Chapter", new {id = Model.Id}, Request.Url.Scheme)" class="button expand success small">
+                     <i class="icon-plus"></i> Add Passages
+                  </a>
+               }
+            </div>
+            <div class="small-6 medium-3 large-3 columns text-center">
+               <label for="verseRadio"><i class="icon-numberlist"></i> Verses</label>
+               <div class="switch small">
+                  <input id="verseRadio" type="radio" name="versePara" @if (!Model.DefaultToParagraph) { <text> checked="checked" </text>  }>
+                  <label for="verseRadio"></label>
+               </div>
+            </div>
+            <div class="small-6 medium-3 large-3 columns text-center">
+               <label for="paraRadio"><i class="icon-align-left"></i> Paragraphs</label>
+               <div class="switch small">
+                  <input id="paraRadio" type="radio" name="versePara" @if (Model.DefaultToParagraph) { <text> checked="checked" </text>   }>
+                  <label for="paraRadio"></label>
+               </div>
             </div>
          </div>
 
          <div class="row">
-            <div class="small-12 large-2 columns">
-               <a href="#" class="button tiny" onclick="savePassage();">Save</a>
-               <span id="saveCheck"><i class="icon-ok-sign" style="color: green"></i> Success!</span>
+            <div class="small-12 large-12 columns">
+               <textarea cols="10" id="passText" name="passText" rows="8"></textarea>
             </div>
-            <div class="small-12 large-5 columns">
-               <div class="row collapse prefix-radius">
-                  <div class="small-3 columns">
-                     <span class="prefix">Start</span>
+         </div>
+
+         <div class="row">
+            <div class="small-12 medium-6 large-6 columns">
+               <div class="row collapse">
+                  <div class="small-3 large-2 columns">
+                     <span class="prefix">Number</span>
                   </div>
-                  <div class="small-9 columns">
-                     <input type="number" id="StartIndex" name="StartIndex" readonly />
+                  <div class="small-9 large-10 columns">
+                     <input type="number" id="entryNumber" name="entryNumber" value="0" />
                   </div>
                </div>
             </div>
-            <div class="small-12 large-5 columns">
-               <div class="row collapse prefix-radius">
-                  <div class="small-3 columns">
-                     <span class="prefix">End</span>
+            <div class="small-12 medium-6 large-6 columns">
+               <div class="row collapse">
+                  <div class="small-3 large-2 columns">
+                     <span class="prefix">Order</span>
                   </div>
-                  <div class="small-9 columns">
-                     <input type="number" id="EndIndex" name="EndIndex" readonly />
+                  <div class="small-9 large-10 columns">
+                     <input type="number" id="entryOrder" name="entryOrder" value="0" />
                   </div>
                </div>
             </div>
          </div>
-         
+
          <div class="row">
-            <div class="small-12 large-6 columns">
-               <h4>New Link</h4>
-               @Html.Partial("_LinkForm", new SeekDeepWithin.Models.EditLinkViewModel { Type = "Passage" })
+            <div class="small-6 large-3 large-offset-2 columns">
+               <a href="javascript:void(0)" class="button expand small" onclick="passage_update();">
+                  <i class="icon-savetodrive"></i> Save
+               </a>
             </div>
-            <div class="small-12 large-6 columns">
-               <h4>New Style</h4>
-               @Html.Partial("_StyleView")
+            <div class="small-6 large-3 large-offset-2 columns">
+               <a href="javascript:void(0)" class="button alert expand small" onclick="passage_check_delete();">
+                  <i class="icon-remove-circle"></i> Delete
+               </a>
+            </div>
+            <div class="small-12 large-2 columns"></div>
+         </div>
+
+         <div class="row">
+            <div class="small-6 pagination-centered columns">
+               <ul class="pagination" role="menubar" aria-label="Pagination" style="width: 100%">
+                  <li class="arrow">
+                     <a href="javascript:void(0)" onclick="passage_previous();">&laquo; Previous Item</a>
+                  </li>
+               </ul>
+            </div>
+            <div class="small-6 pagination-centered columns">
+               <ul class="pagination" role="menubar" aria-label="Pagination" style="width: 100%">
+                  <li class="arrow">
+                     <a href="javascript:void(0)" onclick="passage_next();">Next Item &raquo;</a>
+                  </li>
+               </ul>
+            </div>
+         </div>
+
+         <hr/>
+
+         <div class="row">
+            <div class="small-6 medium-3 large-3 columns">
+               <a href="#" class="button expand small" id="btnEditLinks"><i class="icon-link"></i> Edit Links</a>
+            </div>
+            <div class="small-6 medium-3 large-3 columns">
+               <a href="#" class="button expand small" id="btnEditStyles"><i class="icon-paintroll"></i> Edit Styles</a>
+            </div>
+            <div class="small-6 medium-3 large-3 columns">
+               <a href="#" class="button expand small" id="btnEditHeaders"><i class="icon-notificationbottom"></i> Edit Headers</a>
+            </div>
+            <div class="small-6 medium-3 large-3 columns">
+               <a href="#" class="button expand small" id="btnEditFooters"><i class="icon-notificationtop"></i> Edit Footers</a>
+            </div>
+         </div>
+
+         <div class="row">
+            <div class="small-6 columns">
+               <a href="@Url.Action("Edit", "Header", new{id=Model.Id, type="Chapter"})" class="button expand small">
+                  <i class="icon-editalt"></i> Edit Chapter Headers
+               </a>
+            </div>
+            <div class="small-6 columns">
+               <a href="@Url.Action("Edit", "Footer", new{id=Model.Id, type="Chapter"})" class="button expand small">
+                  <i class="icon-editalt"></i> Edit Chapter Footers
+               </a>
             </div>
          </div>
 
@@ -147,25 +175,31 @@
    </div>
 </div>
 
-
-<div class="row">
-   <div class="small-12 large-12 columns text-center">
-      <a href="#" onclick="footer_CreateChapter();" class="button success tiny">Add Footer for Chapter</a>
+<div id="deleteModal" class="reveal-modal small" data-reveal>
+   <div class="row">
+      <div class="small-12 column">
+         <p class="text-center">Are you certain you want to delete this passage?</p>
+      </div>
    </div>
+   <div class="row">
+      <div class="small-6 column text-center">
+         <a href="javascript:void(0)" class="button alert" onclick="passage_delete()">Delete</a>
+      </div>
+      <div class="small-6 column text-center">
+         <a href="javascript:void(0)" class="button secondary" onclick="$('#deleteModal').foundation('reveal', 'close');">Cancel</a>
+      </div>
+   </div>
+   <a class="close-reveal-modal">&#215;</a>
 </div>
 
-<div id="chapterFooters">
-   @Html.EditorFor(model => model.Footers)
-</div>
+@Html.Partial("_Modal")
 
 @section Scripts {
-   @Scripts.Render("~/bundles/jqueryval")
-   @Scripts.Render("~/bundles/jqueryui")
    @Scripts.Render("~/bundles/sdw.editchapter")
    @if (Model.Passages.Count > 0) {
       <script type="text/javascript">
          $(document).ready(function() {
-            editEntry(@Model.Passages.First().EntryId);
+            passage_get(@Model.Passages.First().EntryId);
          });
       </script>
    }

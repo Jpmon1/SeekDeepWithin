@@ -33,177 +33,210 @@ namespace SeekDeepWithin.Controllers
       /// <summary>
       /// Gets the view to create a new footer for the given entry.
       /// </summary>
-      /// <param name="itemId">Id of entry to create footer for.</param>
+      /// <param name="id">Id of the footer to edit.</param>
       /// <param name="type">The type the footer is for.</param>
-      /// <param name="index">The index for the footer.</param>
-      /// <returns>The partial footer create view.</returns>
-      public ActionResult Create (int itemId, string type, int index)
+      /// <returns>The partial footer edit view.</returns>
+      public ActionResult Edit (int id, string type)
       {
-         return PartialView (new HeaderFooterViewModel { ItemId = itemId, Index = index, For = type });
-      }
-
-      /// <summary>
-      /// Creates a footer for a passage.
-      /// </summary>
-      /// <param name="viewModel">View model with footer information.</param>
-      /// <returns>Result</returns>
-      [HttpPost]
-      [ValidateAntiForgeryToken]
-      [Authorize (Roles = "Editor")]
-      public ActionResult CreatePassage (HeaderFooterViewModel viewModel)
-      {
-         if (ModelState.IsValid)
+         var viewModel = new HeaderFooterEditViewModel
          {
-            var entry = this.m_Db.PassageEntries.Get (viewModel.ItemId);
-            var pFooter = new PassageFooter
-            {
-               Passage = entry,
-               Text = viewModel.Text,
-               Index = viewModel.Index,
-               Justify = viewModel.Justify,
-               IsBold = viewModel.IsBold,
-               IsItalic = viewModel.IsItalic
-            };
-            entry.Footers.Add (pFooter);
-            this.m_Db.Save ();
-            return Json (new { message = "success", type = "passage", id = pFooter.Id, text = viewModel.Text });
-         }
-         Response.StatusCode = 500;
-         return Json ("Data is not valid.");
-      }
-
-      /// <summary>
-      /// Creates a footer for a glossary entry.
-      /// </summary>
-      /// <param name="viewModel">View model with footer information.</param>
-      /// <returns>Result</returns>
-      [HttpPost]
-      [ValidateAntiForgeryToken]
-      [Authorize (Roles = "Editor")]
-      public ActionResult CreateEntry (HeaderFooterViewModel viewModel)
-      {
-         if (ModelState.IsValid)
+            ItemType = type,
+            ItemId = id,
+            NextEntryId = -1,
+            PreviousEntryId = -1
+         };
+         if (type.ToLower () == "passage")
          {
-            var entry = this.m_Db.GlossaryEntries.Get (viewModel.ItemId);
-            var entryFooter = new GlossaryEntryFooter
-            {
-               Entry = entry,
-               Text = viewModel.Text,
-               Index = viewModel.Index,
-               Justify = viewModel.Justify,
-               IsBold = viewModel.IsBold,
-               IsItalic = viewModel.IsItalic
-            };
-            entry.Footers.Add (entryFooter);
-            this.m_Db.Save ();
-            return Json (new { message = "success", type = "passage", id = entryFooter.Id, text = viewModel.Text });
+            var passage = this.m_Db.PassageEntries.Get (id);
+            var title = passage.Chapter.SubBook.Version.Title + " | ";
+            if (!passage.Chapter.SubBook.Hide)
+               title += passage.Chapter.SubBook.SubBook.Name + " | ";
+            if (!passage.Chapter.Hide)
+               title += passage.Chapter.Chapter.Name + ":";
+            title += passage.Number;
+            viewModel.Title = title;
+            viewModel.ItemText = passage.Passage.Text;
+            viewModel.ParentId = passage.Chapter.Id;
+            foreach (var footer in passage.Footers)
+               viewModel.Items.Add (new HeaderFooterViewModel (footer));
+            var prev = passage.Chapter.Passages.FirstOrDefault (p => p.Order == (passage.Order - 1));
+            if (prev != null) viewModel.PreviousEntryId = prev.Id;
+            var next = passage.Chapter.Passages.FirstOrDefault (p => p.Order == (passage.Order + 1));
+            if (next != null) viewModel.NextEntryId = next.Id;
          }
-         Response.StatusCode = 500;
-         return Json ("Data is not valid.");
+         else if (type.ToLower () == "entry")
+         {
+            var entry = this.m_Db.GlossaryEntries.Get (id);
+            viewModel.Title = entry.Item.Term.Name;
+            viewModel.ParentId = entry.Item.Id;
+            viewModel.ItemText = entry.Text;
+            foreach (var footer in entry.Footers)
+               viewModel.Items.Add (new HeaderFooterViewModel (footer));
+            var prev = entry.Item.Entries.FirstOrDefault (e => e.Order == (entry.Order - 1));
+            if (prev != null) viewModel.PreviousEntryId = prev.Id;
+            var next = entry.Item.Entries.FirstOrDefault (e => e.Order == (entry.Order + 1));
+            if (next != null) viewModel.NextEntryId = next.Id;
+         }
+         else if (type.ToLower () == "chapter")
+         {
+            var chapter = this.m_Db.SubBookChapters.Get (id);
+            var title = chapter.SubBook.Version.Title + " | ";
+            if (!chapter.SubBook.Hide)
+               title += chapter.SubBook.SubBook.Name + " | ";
+            if (!chapter.Hide)
+               title += chapter.Chapter.Name;
+            viewModel.Title = title;
+            viewModel.ParentId = id;
+            foreach (var footer in chapter.Footers)
+               viewModel.Items.Add(new HeaderFooterViewModel (footer));
+         }
+         return View (viewModel);
       }
 
       /// <summary>
-      /// Creates a footer for a chapter.
+      /// Creates a footer.
       /// </summary>
-      /// <param name="viewModel">View model with footer information.</param>
+      /// <param name="viewModel">The veiw model with data.</param>
       /// <returns>Result</returns>
       [HttpPost]
       [ValidateAntiForgeryToken]
       [Authorize (Roles = "Editor")]
-      public ActionResult CreateChapter (HeaderFooterViewModel viewModel)
+      public ActionResult Create (HeaderFooterViewModel viewModel)
       {
-         if (ModelState.IsValid)
+         IFooter footer = null;
+         if (viewModel.ItemType.ToLower () == "chapter")
          {
             var chapter = this.m_Db.SubBookChapters.Get (viewModel.ItemId);
-            var chFooter = new ChapterFooter
-            {
-               Chapter = chapter,
-               Text = viewModel.Text,
-               Justify = viewModel.Justify,
-               IsBold = viewModel.IsBold,
-               IsItalic = viewModel.IsItalic
-            };
-            chapter.Footers.Add (chFooter);
+            footer = new ChapterFooter();
+            chapter.Footers.Add((ChapterFooter)footer);
+         }
+         if (viewModel.ItemType.ToLower () == "passage")
+         {
+            var passage = this.m_Db.PassageEntries.Get (viewModel.ItemId);
+            footer = new PassageFooter();
+            passage.Footers.Add ((PassageFooter)footer);
+         }
+         if (viewModel.ItemType.ToLower () == "entry")
+         {
+            var entry = this.m_Db.GlossaryEntries.Get (viewModel.ItemId);
+            footer = new GlossaryEntryFooter();
+            entry.Footers.Add ((GlossaryEntryFooter)footer);
+         }
+         if (footer != null)
+         {
+            footer.Text = viewModel.Text;
+            footer.Index = viewModel.Index;
             this.m_Db.Save ();
-            return PartialView ("EditorTemplates/ChapterFooterViewModel", new ChapterFooterViewModel (chFooter) {ItemId = viewModel.ItemId});
+            return Json (new {id=footer.Id, index=footer.Index});
          }
          Response.StatusCode = 500;
          return Json ("Invalid data.");
       }
 
       /// <summary>
-      /// Gets the view to create a new footer for the given entry.
+      /// Updates a footer.
       /// </summary>
-      /// <param name="id">Id of the footer to edit.</param>
-      /// <param name="type">The type the footer is for.</param>
-      /// <returns>The partial footer edit view.</returns>
-      public ActionResult Edit (int id, string type)
-      {
-         IFooter footer;
-         if (type == "chapter")
-            footer = this.m_Db.ChapterFooters.Get (id);
-         else
-            footer = this.m_Db.PassageFooters.Get (id);
-         return PartialView (new HeaderFooterViewModel (footer) { For = type, });
-      }
-
-      /// <summary>
-      /// Edits a footer for a passage.
-      /// </summary>
-      /// <param name="viewModel">View model with footer information.</param>
+      /// <param name="viewModel">The veiw model with data.</param>
       /// <returns>Result</returns>
       [HttpPost]
       [ValidateAntiForgeryToken]
       [Authorize (Roles = "Editor")]
-      public ActionResult Edit (HeaderFooterViewModel viewModel)
+      public ActionResult Update (HeaderFooterViewModel viewModel)
       {
-         if (ModelState.IsValid)
+         IFooter footer = null;
+         if (viewModel.ItemType.ToLower () == "chapter")
          {
-            IFooter footer;
-            if (viewModel.For == "chapter")
-               footer = this.m_Db.ChapterFooters.Get (viewModel.Id);
-            else
-               footer = this.m_Db.PassageFooters.Get (viewModel.Id);
-            this.m_Db.SetValues (footer, viewModel);
-            this.m_Db.Save ();
-            return Json (new { message = "success", type = viewModel.For, id = footer.Id, text = viewModel.Text });
+            var chapter = this.m_Db.SubBookChapters.Get (viewModel.ItemId);
+            footer = chapter.Footers.FirstOrDefault (f => f.Id == viewModel.Id);
          }
-         Response.StatusCode = 500;
-         return Json ("Data is not valid.");
+         if (viewModel.ItemType.ToLower () == "passage")
+         {
+            var passage = this.m_Db.PassageEntries.Get (viewModel.ItemId);
+            footer = passage.Footers.FirstOrDefault (f => f.Id == viewModel.Id);
+         }
+         if (viewModel.ItemType.ToLower () == "entry")
+         {
+            var entry = this.m_Db.GlossaryEntries.Get (viewModel.ItemId);
+            footer = entry.Footers.FirstOrDefault (f => f.Id == viewModel.Id);
+         }
+         if (footer != null)
+            footer.Text = viewModel.Text;
+         this.m_Db.Save ();
+         return Json ("Success");
       }
 
       /// <summary>
-      /// Deletes a footer from a chapter.
+      /// Deletes a footer.
       /// </summary>
       /// <param name="id">The id of the footer to delete.</param>
       /// <param name="itemId">Id of the footer's parent to delete from.</param>
-      /// <param name="type">The type the footer is for.</param>
+      /// <param name="itemType">The type the footer is for.</param>
       /// <returns>Result</returns>
       [HttpPost]
       [ValidateAntiForgeryToken]
-      [Authorize (Roles = "Deleter")]
-      public ActionResult Delete (int id, int itemId, string type)
+      [Authorize (Roles = "Editor")]
+      public ActionResult Delete (int id, int itemId, string itemType)
       {
-         if (type == "chapter")
+         if (itemType.ToLower () == "chapter")
          {
             var chapter = this.m_Db.SubBookChapters.Get (itemId);
             var footer = chapter.Footers.FirstOrDefault (f => f.Id == id);
             chapter.Footers.Remove (footer);
-            this.m_Db.ChapterFooters.Delete (id);
             this.m_Db.Save ();
             return Json ("Success");
          }
-         if (type == "passage")
+         if (itemType.ToLower () == "passage")
          {
             var passage = this.m_Db.PassageEntries.Get (itemId);
             var footer = passage.Footers.FirstOrDefault (f => f.Id == id);
             passage.Footers.Remove (footer);
-            this.m_Db.PassageFooters.Delete (id);
+            this.m_Db.Save ();
+            return Json ("Success");
+         }
+         if (itemType.ToLower () == "entry")
+         {
+            var entry = this.m_Db.GlossaryEntries.Get (itemId);
+            var footer = entry.Footers.FirstOrDefault (f => f.Id == id);
+            entry.Footers.Remove (footer);
             this.m_Db.Save ();
             return Json ("Success");
          }
          Response.StatusCode = 500;
          return Json ("Invalid Data.");
+      }
+
+      /// <summary>
+      /// Gets a footer.
+      /// </summary>
+      /// <param name="id">The id of the footer to get.</param>
+      /// <param name="itemId">Id of the footer's parent.</param>
+      /// <param name="itemType">The type the footer is for.</param>
+      /// <returns>Result</returns>
+      public ActionResult Get (int id, int itemId, string itemType)
+      {
+         if (itemType.ToLower () == "chapter")
+         {
+            var chapter = this.m_Db.SubBookChapters.Get (itemId);
+            var footer = chapter.Footers.FirstOrDefault (f => f.Id == id);
+            if (footer != null)
+               return Json (new {text = footer.Text}, JsonRequestBehavior.AllowGet);
+         }
+         if (itemType.ToLower () == "passage")
+         {
+            var passage = this.m_Db.PassageEntries.Get (itemId);
+            var footer = passage.Footers.FirstOrDefault (f => f.Id == id);
+            if (footer != null)
+               return Json (new {text = footer.Text}, JsonRequestBehavior.AllowGet);
+         }
+         if (itemType.ToLower () == "entry")
+         {
+            var entry = this.m_Db.GlossaryEntries.Get (itemId);
+            var footer = entry.Footers.FirstOrDefault (f => f.Id == id);
+            if (footer != null)
+               return Json (new {text = footer.Text}, JsonRequestBehavior.AllowGet);
+         }
+         Response.StatusCode = 500;
+         return Json ("Invalid Data.", JsonRequestBehavior.AllowGet);
       }
    }
 }

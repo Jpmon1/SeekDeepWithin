@@ -33,174 +33,212 @@ namespace SeekDeepWithin.Controllers
       /// <summary>
       /// Gets the view to create a new header for the given entry.
       /// </summary>
-      /// <param name="itemId">The id of the item the header is for.</param>
-      /// <param name="type">The type of header to create.</param>
-      /// <returns>The partial header create view.</returns>
-      public ActionResult Create (int itemId, string type)
-      {
-         return PartialView (new HeaderFooterViewModel { ItemId = itemId, For = type });
-      }
-
-      /// <summary>
-      /// Creates a header for a passage.
-      /// </summary>
-      /// <param name="viewModel">View model with header information.</param>
-      /// <returns>Result</returns>
-      [HttpPost]
-      [ValidateAntiForgeryToken]
-      [Authorize (Roles = "Editor")]
-      public ActionResult CreatePassage (HeaderFooterViewModel viewModel)
-      {
-         if (ModelState.IsValid)
-         {
-            var entry = this.m_Db.PassageEntries.Get (viewModel.ItemId);
-            var pHeader = new PassageHeader
-            {
-               Passage = entry,
-               Text = viewModel.Text,
-               Justify = viewModel.Justify,
-               IsBold = viewModel.IsBold,
-               IsItalic = viewModel.IsItalic
-            };
-            entry.Headers.Add (pHeader);
-            this.m_Db.Save ();
-            return Json (new { message = "success", type = "passage", id = pHeader.Id, text = viewModel.Text });
-         }
-         Response.StatusCode = 500;
-         return Json ("Data is not valid.");
-      }
-
-      /// <summary>
-      /// Creates a header for a chapter.
-      /// </summary>
-      /// <param name="viewModel">View model with header information.</param>
-      /// <returns>Result</returns>
-      [HttpPost]
-      [ValidateAntiForgeryToken]
-      [Authorize (Roles = "Editor")]
-      public ActionResult CreateChapter (HeaderFooterViewModel viewModel)
-      {
-         if (ModelState.IsValid)
-         {
-            var chapter = this.m_Db.SubBookChapters.Get (viewModel.ItemId);
-            var chHeader = new ChapterHeader
-            {
-               Chapter = chapter,
-               Text = viewModel.Text,
-               Justify = viewModel.Justify,
-               IsBold = viewModel.IsBold,
-               IsItalic = viewModel.IsItalic
-            };
-            chapter.Headers.Add (chHeader);
-            this.m_Db.Save ();
-            return PartialView ("EditorTemplates/ChapterHeaderViewModel", new ChapterHeaderViewModel (chHeader) { ItemId = viewModel.ItemId });
-         }
-         Response.StatusCode = 500;
-         return Json ("Data is not valid.");
-      }
-
-      /// <summary>
-      /// Creates a header for a glossary entry.
-      /// </summary>
-      /// <param name="viewModel">View model with header information.</param>
-      /// <returns>Result</returns>
-      [HttpPost]
-      [ValidateAntiForgeryToken]
-      [Authorize (Roles = "Editor")]
-      public ActionResult CreateEntry (HeaderFooterViewModel viewModel)
-      {
-         if (ModelState.IsValid)
-         {
-            var glossaryEntry = this.m_Db.GlossaryEntries.Get (viewModel.ItemId);
-            var entryHeader = new GlossaryEntryHeader
-            {
-               Entry = glossaryEntry,
-               Text = viewModel.Text,
-               Justify = viewModel.Justify,
-               IsBold = viewModel.IsBold,
-               IsItalic = viewModel.IsItalic
-            };
-            glossaryEntry.Headers.Add (entryHeader);
-            this.m_Db.Save ();
-            return Json (new { message = "success", type = "entry", id = entryHeader.Id, text = viewModel.Text });
-         }
-         Response.StatusCode = 500;
-         return Json ("Data is not valid.");
-      }
-
-      /// <summary>
-      /// Gets the view to create a new header for the given entry.
-      /// </summary>
-      /// <param name="id">The id of the header to edit.</param>
-      /// <param name="type">The type of header to create.</param>
+      /// <param name="id">Id of the header to edit.</param>
+      /// <param name="type">The type the header is for.</param>
       /// <returns>The partial header edit view.</returns>
       public ActionResult Edit (int id, string type)
       {
-         IHeader header;
-         if (type == "chapter")
-            header = this.m_Db.ChapterHeaders.Get (id);
-         else
-            header = this.m_Db.PassageHeaders.Get (id);
-         return PartialView (new HeaderFooterViewModel (header) { For = type });
+         var viewModel = new HeaderFooterEditViewModel
+         {
+            ItemType = type,
+            ItemId = id,
+            ItemText = string.Empty,
+            NextEntryId = -1,
+            PreviousEntryId = -1
+         };
+         if (type.ToLower () == "passage")
+         {
+            var passage = this.m_Db.PassageEntries.Get (id);
+            var title = passage.Chapter.SubBook.Version.Title + " | ";
+            if (!passage.Chapter.SubBook.Hide)
+               title += passage.Chapter.SubBook.SubBook.Name + " | ";
+            if (!passage.Chapter.Hide)
+               title += passage.Chapter.Chapter.Name + ":";
+            title += passage.Number;
+            viewModel.Title = title;
+            viewModel.ParentId = passage.Chapter.Id;
+            viewModel.ItemText = passage.Passage.Text;
+            foreach (var header in passage.Headers)
+               viewModel.Items.Add (new HeaderFooterViewModel (header));
+            var prev = passage.Chapter.Passages.FirstOrDefault (p => p.Order == (passage.Order - 1));
+            if (prev != null) viewModel.PreviousEntryId = prev.Id;
+            var next = passage.Chapter.Passages.FirstOrDefault (p => p.Order == (passage.Order + 1));
+            if (next != null) viewModel.NextEntryId = next.Id;
+         }
+         else if (type.ToLower () == "entry")
+         {
+            var entry = this.m_Db.GlossaryEntries.Get (id);
+            viewModel.Title = entry.Item.Term.Name;
+            viewModel.ParentId = entry.Item.Id;
+            viewModel.ItemText = entry.Text;
+            foreach (var header in entry.Headers)
+               viewModel.Items.Add (new HeaderFooterViewModel (header));
+            var prev = entry.Item.Entries.FirstOrDefault (e => e.Order == (entry.Order - 1));
+            if (prev != null) viewModel.PreviousEntryId = prev.Id;
+            var next = entry.Item.Entries.FirstOrDefault (e => e.Order == (entry.Order + 1));
+            if (next != null) viewModel.NextEntryId = next.Id;
+         }
+         else if (type.ToLower () == "chapter")
+         {
+            var chapter = this.m_Db.SubBookChapters.Get (id);
+            var title = chapter.SubBook.Version.Title + " | ";
+            if (!chapter.SubBook.Hide)
+               title += chapter.SubBook.SubBook.Name + " | ";
+            if (!chapter.Hide)
+               title += chapter.Chapter.Name;
+            viewModel.Title = title;
+            viewModel.ParentId = id;
+            foreach (var header in chapter.Headers)
+               viewModel.Items.Add (new HeaderFooterViewModel (header));
+         }
+         return View (viewModel);
       }
 
       /// <summary>
-      /// Edits a header for a passage.
+      /// Creates a header.
       /// </summary>
-      /// <param name="viewModel">View model with header information.</param>
+      /// <param name="viewModel">The veiw model with data.</param>
       /// <returns>Result</returns>
       [HttpPost]
       [ValidateAntiForgeryToken]
       [Authorize (Roles = "Editor")]
-      public ActionResult Edit (HeaderFooterViewModel viewModel)
+      public ActionResult Create (HeaderFooterViewModel viewModel)
       {
-         if (ModelState.IsValid)
+         IHeader header = null;
+         if (viewModel.ItemType.ToLower () == "chapter")
          {
-            IHeader header;
-            if (viewModel.For == "chapter")
-               header = this.m_Db.ChapterHeaders.Get (viewModel.Id);
-            else
-               header = this.m_Db.PassageHeaders.Get (viewModel.Id);
-            this.m_Db.SetValues (header, viewModel);
+            var chapter = this.m_Db.SubBookChapters.Get (viewModel.ItemId);
+            header = new ChapterHeader();
+            chapter.Headers.Add((ChapterHeader)header);
+         }
+         if (viewModel.ItemType.ToLower () == "passage")
+         {
+            var passage = this.m_Db.PassageEntries.Get (viewModel.ItemId);
+            header = new PassageHeader();
+            passage.Headers.Add ((PassageHeader)header);
+         }
+         if (viewModel.ItemType.ToLower () == "entry")
+         {
+            var entry = this.m_Db.GlossaryEntries.Get (viewModel.ItemId);
+            header = new GlossaryEntryHeader();
+            entry.Headers.Add ((GlossaryEntryHeader)header);
+         }
+         if (header != null)
+         {
+            header.Text = viewModel.Text;
             this.m_Db.Save ();
-            return Json (new { message = "success", type = viewModel.For, id = header.Id, text = viewModel.Text });
+            return Json (new { id = header.Id });
          }
          Response.StatusCode = 500;
-         return Json ("Data is not valid.");
+         return Json ("Invalid data.");
       }
 
       /// <summary>
-      /// Deletes a header from a chapter.
+      /// Updates a header.
       /// </summary>
-      /// <param name="id">The id of the header to delete.</param>
-      /// <param name="itemId">Id of the header's parent to delete from.</param>
-      /// <param name="type">The type the header is for.</param>
+      /// <param name="viewModel">The veiw model with data.</param>
       /// <returns>Result</returns>
       [HttpPost]
       [ValidateAntiForgeryToken]
-      [Authorize (Roles = "Deleter")]
-      public ActionResult Delete (int id, int itemId, string type)
+      [Authorize (Roles = "Editor")]
+      public ActionResult Update (HeaderFooterViewModel viewModel)
       {
-         if (type == "chapter")
+         IHeader header = null;
+         if (viewModel.ItemType.ToLower () == "chapter")
+         {
+            var chapter = this.m_Db.SubBookChapters.Get (viewModel.ItemId);
+            header = chapter.Headers.FirstOrDefault (f => f.Id == viewModel.Id);
+         }
+         if (viewModel.ItemType.ToLower () == "passage")
+         {
+            var passage = this.m_Db.PassageEntries.Get (viewModel.ItemId);
+            header = passage.Headers.FirstOrDefault (f => f.Id == viewModel.Id);
+         }
+         if (viewModel.ItemType.ToLower () == "entry")
+         {
+            var entry = this.m_Db.GlossaryEntries.Get (viewModel.ItemId);
+            header = entry.Headers.FirstOrDefault (f => f.Id == viewModel.Id);
+         }
+         if (header != null)
+         {
+            header.Text = viewModel.Text;
+         }
+         this.m_Db.Save ();
+         return Json ("Success");
+      }
+
+      /// <summary>
+      /// Deletes a header.
+      /// </summary>
+      /// <param name="id">The id of the header to delete.</param>
+      /// <param name="itemId">Id of the header's parent to delete from.</param>
+      /// <param name="itemType">The type the header is for.</param>
+      /// <returns>Result</returns>
+      [HttpPost]
+      [ValidateAntiForgeryToken]
+      [Authorize (Roles = "Editor")]
+      public ActionResult Delete (int id, int itemId, string itemType)
+      {
+         if (itemType.ToLower () == "chapter")
          {
             var chapter = this.m_Db.SubBookChapters.Get (itemId);
             var header = chapter.Headers.FirstOrDefault (f => f.Id == id);
             chapter.Headers.Remove (header);
-            this.m_Db.ChapterHeaders.Delete (id);
             this.m_Db.Save ();
             return Json ("Success");
          }
-         if (type == "passage")
+         if (itemType.ToLower () == "passage")
          {
             var passage = this.m_Db.PassageEntries.Get (itemId);
             var header = passage.Headers.FirstOrDefault (f => f.Id == id);
             passage.Headers.Remove (header);
-            this.m_Db.PassageHeaders.Delete (id);
+            this.m_Db.Save ();
+            return Json ("Success");
+         }
+         if (itemType.ToLower () == "entry")
+         {
+            var entry = this.m_Db.GlossaryEntries.Get (itemId);
+            var header = entry.Headers.FirstOrDefault (f => f.Id == id);
+            entry.Headers.Remove (header);
             this.m_Db.Save ();
             return Json ("Success");
          }
          Response.StatusCode = 500;
          return Json ("Invalid Data.");
+      }
+
+      /// <summary>
+      /// Gets a header.
+      /// </summary>
+      /// <param name="id">The id of the header to get.</param>
+      /// <param name="itemId">Id of the header's parent.</param>
+      /// <param name="itemType">The type the header is for.</param>
+      /// <returns>Result</returns>
+      public ActionResult Get (int id, int itemId, string itemType)
+      {
+         if (itemType.ToLower () == "chapter")
+         {
+            var chapter = this.m_Db.SubBookChapters.Get (itemId);
+            var header = chapter.Headers.FirstOrDefault (f => f.Id == id);
+            if (header != null)
+               return Json (new {text = header.Text}, JsonRequestBehavior.AllowGet);
+         }
+         if (itemType.ToLower () == "passage")
+         {
+            var passage = this.m_Db.PassageEntries.Get (itemId);
+            var header = passage.Headers.FirstOrDefault (f => f.Id == id);
+            if (header != null)
+               return Json (new {text = header.Text}, JsonRequestBehavior.AllowGet);
+         }
+         if (itemType.ToLower () == "entry")
+         {
+            var entry = this.m_Db.GlossaryEntries.Get (itemId);
+            var header = entry.Headers.FirstOrDefault (f => f.Id == id);
+            if (header != null)
+               return Json (new {text = header.Text}, JsonRequestBehavior.AllowGet);
+         }
+         Response.StatusCode = 500;
+         return Json ("Invalid Data.", JsonRequestBehavior.AllowGet);
       }
    }
 }

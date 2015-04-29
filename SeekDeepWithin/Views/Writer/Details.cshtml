@@ -25,8 +25,7 @@
          <li class="title">Books Written</li>
          @foreach (var subBook in Model.Written) {
             <li class="bullet-item">
-               @Html.ActionLink(subBook.Name == "default" ? subBook.Version.Title : subBook.Name,
-                  "Read", "Chapter", new { id = subBook.Version.DefaultReadChapter }, null)
+               <a href="@Url.Action("Index", "Read", new { id = subBook.Version.DefaultReadChapter }, Request.Url.Scheme)">@subBook.Name</a>
             </li>
          }
       </ul>

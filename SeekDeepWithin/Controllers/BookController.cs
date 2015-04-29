@@ -72,7 +72,7 @@ namespace SeekDeepWithin.Controllers
                ViewBag.ErrorMessage = "A book with that title already exists, maybe you need to add a version?";
                return View (viewModel);
             }
-            this.m_Db.Books.Insert (new Book { Summary = viewModel.Summary, Title = viewModel.Title });
+            this.m_Db.Books.Insert (new Book { Summary = viewModel.Summary, Title = viewModel.Title, SubTitle = viewModel.SubTitle });
             this.m_Db.Save ();
             return RedirectToAction ("Index");
          }

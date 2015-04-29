@@ -1,5 +1,7 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using SeekDeepWithin.Controllers;
+using SeekDeepWithin.DataAccess;
 using SeekDeepWithin.Pocos;
 
 namespace SeekDeepWithin.Models
@@ -16,12 +18,14 @@ namespace SeekDeepWithin.Models
          this.Headers = new Collection <HeaderFooterViewModel> ();
          this.Footers = new Collection <HeaderFooterViewModel> ();
       }
+
       /// <summary>
       /// Initializes a new passage view model.
       /// </summary>
       /// <param name="entry">The passage entry to copy data from.</param>
       public PassageViewModel (PassageEntry entry)
       {
+         if (entry == null) return;
          this.EntryId = entry.Id;
          this.Id = entry.Passage.Id;
          this.Number = entry.Number;
@@ -33,37 +37,49 @@ namespace SeekDeepWithin.Models
          this.VersionId = entry.Chapter.SubBook.Version.Id;
          this.VersionName = entry.Chapter.SubBook.Version.Title;
 
+         var title = this.VersionName + " | ";
+         if (!entry.Chapter.SubBook.Hide)
+            title += this.SubBookName + " | ";
+         if (!entry.Chapter.Hide)
+            title += this.ChapterName + ":";
+         title += this.Number;
+         this.Title = title;
+
          this.Links = new Collection<LinkViewModel> ();
          this.Styles = new Collection<StyleViewModel> ();
          this.Headers = new Collection<HeaderFooterViewModel> ();
          this.Footers = new Collection<HeaderFooterViewModel> ();
 
-         foreach (var link in entry.Passage.PassageLinks)
-         {
-            this.Links.Add (new LinkViewModel
-            {
-               StartIndex = link.StartIndex,
-               EndIndex = link.EndIndex,
-               Url = link.Link.Url,
-               OpenInNewWindow = link.OpenInNewWindow
-            });
-         }
-
+         foreach (var link in entry.Passage.Links)
+            this.Links.Add (new LinkViewModel (link));
          foreach (var style in entry.Styles)
-         {
-            this.Styles.Add (new StyleViewModel
-            {
-               StartIndex = style.StartIndex,
-               EndIndex = style.EndIndex,
-               Start = style.Style.Start,
-               End = style.Style.End
-            });
-         }
-
+            this.Styles.Add (new StyleViewModel (style));
          foreach (var header in entry.Headers)
             this.Headers.Add (new HeaderFooterViewModel (header));
          foreach (var footer in entry.Footers)
             this.Footers.Add (new HeaderFooterViewModel (footer));
+      }
+
+      /// <summary>
+      /// Gets or Sets how to display this verse.
+      /// </summary>
+      public VerseDisplayType DisplayType { get; set; }
+
+      /// <summary>
+      /// Gets or Sets the title of the page.
+      /// </summary>
+      public string Title { get; set; }
+
+      /// <summary>
+      /// Gets the title without the verse number.
+      /// </summary>
+      /// <returns></returns>
+      public string GetTitleNoVerse ()
+      {
+         var titleSplit = this.Title.Split(':');
+         if (titleSplit.Length > 1)
+            return titleSplit [0];
+         return Title;
       }
 
       /// <summary>
@@ -144,9 +160,18 @@ namespace SeekDeepWithin.Models
       /// <summary>
       /// Renders the passage.
       /// </summary>
+      /// <param name="url"></param>
       /// <returns>The html to display for the passage.</returns>
-      public string Render ()
+      public string Render (Uri url)
       {
+         if (this.Text.StartsWith ("|PARSE|"))
+         {
+            var parser = new PassageParser (new SdwDatabase ());
+            parser.Parse (this.Text.Substring (7));
+            return parser.BuildHtmlOutput (url);
+         }
+         if (this.Renderer == null)
+            this.Renderer = new SdwRenderer ();
          return Renderer.Render (this);
       }
    }

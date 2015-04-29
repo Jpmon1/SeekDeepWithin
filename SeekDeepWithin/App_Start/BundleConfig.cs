@@ -11,11 +11,10 @@ namespace SeekDeepWithin
          bundles.Add (new ScriptBundle ("~/bundles/jquery").Include (
             "~/Scripts/jquery-1.11.2.js",
             "~/Scripts/jquery.cookie.js",
+            "~/Scripts/fastclick.js",
             "~/Scripts/foundation/foundation.js",
-            "~/Scripts/foundation/foundation.*"));
-
-         bundles.Add (new ScriptBundle ("~/bundles/jqueryui").Include (
-            "~/Scripts/jquery-ui-{version}.js"));
+            "~/Scripts/foundation/foundation.*",
+            "~/Scripts/scotchPanels.js"));
 
          bundles.Add (new ScriptBundle ("~/bundles/jqueryval").Include (
             "~/Scripts/jquery.unobtrusive-ajax.js",
@@ -28,20 +27,14 @@ namespace SeekDeepWithin
 
          bundles.Add (new ScriptBundle ("~/bundles/sdw.editchapter").Include ("~/Scripts/jquery.autocomplete.js",
             "~/Scripts/sdw/selection.js",
-            "~/Scripts/sdw/sdw.editchapter.js",
-            "~/Scripts/sdw/sdw.footer.js",
-            "~/Scripts/sdw/sdw.header.js",
-            "~/Scripts/sdw/sdw.style.js",
-            "~/Scripts/sdw/sdw.link.js",
+            "~/Scripts/sdw/sdw.chapter.js",
+            "~/Scripts/jquery.nouislider.all.js",
             "~/Scripts/sdw/sdw.passage.js"));
 
-         bundles.Add (new ScriptBundle ("~/bundles/sdw.editglossaryitem").Include ("~/Scripts/jquery.autocomplete.js",
+         bundles.Add (new ScriptBundle ("~/bundles/sdw.editglossary").Include ("~/Scripts/jquery.autocomplete.js",
             "~/Scripts/sdw/selection.js",
-            "~/Scripts/sdw/sdw.glossaryitem.js",
-            "~/Scripts/sdw/sdw.footer.js",
-            "~/Scripts/sdw/sdw.header.js",
-            "~/Scripts/sdw/sdw.style.js",
-            "~/Scripts/sdw/sdw.link.js"));
+            "~/Scripts/jquery.nouislider.all.js",
+            "~/Scripts/sdw/sdw.glossary.js"));
 
          bundles.Add (new ScriptBundle ("~/bundles/sdw.editTerm").Include ("~/Scripts/jquery.autocomplete.js",
             "~/Scripts/sdw/sdw.link.js",
@@ -54,16 +47,40 @@ namespace SeekDeepWithin
             "~/Scripts/sdw/sdw.convert.js"));
 
          bundles.Add (new ScriptBundle ("~/bundles/sdw.contentsedit").Include ("~/Scripts/jstree.js",
-            "~/Scripts/sdw/sdw.contentsedit.js"));
-
-         bundles.Add (new ScriptBundle ("~/bundles/sdw.read").Include ("~/Scripts/jstree.js",
+            "~/Scripts/sdw/sdw.contentsedit.js",
             "~/Scripts/sdw/sdw.read.js"));
 
+         bundles.Add (new ScriptBundle ("~/bundles/sdw.read").Include ("~/Scripts/sdw/sdw.read.js"));
+
+         bundles.Add (new ScriptBundle ("~/bundles/sdw.search").Include ("~/Scripts/sdw/sdw.search.js"));
+
+         bundles.Add (new ScriptBundle ("~/bundles/sdw.versionedit").Include ("~/Scripts/sdw/sdw.version.js"));
+
+         bundles.Add (new ScriptBundle ("~/bundles/sdw.subbookedit").Include ("~/Scripts/sdw/sdw.subbook.js",
+            "~/Scripts/sdw/sdw.tag.js"));
+
+         bundles.Add (new ScriptBundle ("~/bundles/sdw.styleedit").Include ("~/Scripts/jquery.nouislider.all.js",
+            "~/Scripts/sdw/sdw.select.js",
+            "~/Scripts/sdw/sdw.style.js"));
+
+         bundles.Add (new ScriptBundle ("~/bundles/sdw.footeredit").Include ("~/Scripts/jquery.nouislider.all.js",
+            "~/Scripts/sdw/sdw.select.js",
+            "~/Scripts/sdw/sdw.footer.js"));
+
+         bundles.Add (new ScriptBundle ("~/bundles/sdw.headeredit").Include ("~/Scripts/sdw/sdw.header.js"));
+
+         bundles.Add (new ScriptBundle ("~/bundles/sdw.linkedit").Include ("~/Scripts/jquery.autocomplete.js",
+            "~/Scripts/jquery.nouislider.all.js",
+            "~/Scripts/sdw/sdw.select.js",
+            "~/Scripts/sdw/sdw.link.js"));
+
          bundles.Add (new StyleBundle ("~/Content/css").Include ("~/Content/normalize.css",
-            "~/Content/jquery-ui.css",
             "~/Content/foundation.css",
             "~/Content/whhg.css",
             "~/Content/sdw.default.css"));
+
+         bundles.Add (new StyleBundle ("~/Content/css/slider").Include ("~/Content/jquery.nouislider.css",
+            "~/Content/jquery.nouislider.pips.css"));
 
          bundles.Add (new StyleBundle ("~/Content/themes/base/css").Include (
             "~/Content/themes/base/jquery.ui.core.css",

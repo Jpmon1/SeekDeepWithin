@@ -5,7 +5,12 @@
     ViewBag.Title = Model.Title;
 }
 
-<h3>@Model.Title</h3>
+<h3>
+   @Model.Title
+   @if (!string.IsNullOrWhiteSpace (Model.SubTitle)) {
+      <small>@Model.SubTitle</small>
+   }
+</h3>
 
 <div class="row">
    <div class="small-12 large-12 columns">
@@ -19,9 +24,16 @@
          @if (Model.Versions.Count > 0) {
             foreach (var version in Model.Versions) {
                <li class="bullet-item">
-                  @Html.ActionLink(version.Title, "Read", "Chapter", new { id = version.DefaultReadChapter }, null)
+                  <a href="@Url.Action("Index", "Read", new { id = version.DefaultReadChapter }, Request.Url.Scheme)">
+                     @version.Title
+                  </a>
                   @if (!string.IsNullOrEmpty (version.Abbreviation)) {
                      <small>(@version.Abbreviation)</small>
+                  }
+                  @if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
+                     <a href="@Url.Action("Edit", "Version", new { id = version.Id }, Request.Url.Scheme)" title="Edit Version">
+                        <i class="icon-editalt"></i>
+                     </a>
                   }
                </li>
             }
@@ -36,7 +48,11 @@
          <li class="title">Tags</li>
          @if (Model.Tags.Count > 0) {
             foreach (var tag in Model.Tags) {
-               <li class="bullet-item">@Html.ActionLink(tag.Name, "Details", "Tag", new {id=tag.Id}, null)</li>
+               <li class="bullet-item">
+                  <a href="@Url.Action("Details", "Tag", new {id=tag.Id}, Request.Url.Scheme)">
+                     @tag.Name
+                  </a>
+               </li>
             }
          }
          else {
@@ -45,3 +61,20 @@
       </ul>
    </div>
 </div>
+@if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
+   <div class="row">
+      <div class="small-6 medium-3 large-3 columns">
+         <a href="@Url.Action("Edit", "Book", new {id=Model.Id}, Request.Url.Scheme)" class="button secondary expand tiny">
+            <i class="icon-edit"></i> Edit
+         </a>
+      </div>
+      @if (Request.IsAuthenticated && User.IsInRole ("Creator")) {
+         <div class="small-6 medium-3 large-3 columns">
+            <a href="@Url.Action("Create", "Version", new {bookId=Model.Id}, Request.Url.Scheme)" class="button success expand tiny">
+               <i class="icon-plus"></i> Add Version
+            </a>
+         </div>
+         <div class="small-12 medium-6 large-6 columns"></div>
+      }
+   </div>
+}

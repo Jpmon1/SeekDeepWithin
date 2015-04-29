@@ -3,7 +3,7 @@
    /// <summary>
    /// Represents a style found in a passage.
    /// </summary>
-   public class PassageStyle : IDbTable
+   public class PassageStyle : IDbTable, IStyle
    {
       /// <summary>
       /// Gets the id of the item.

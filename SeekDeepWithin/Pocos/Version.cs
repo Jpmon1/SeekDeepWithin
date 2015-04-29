@@ -60,7 +60,7 @@ namespace SeekDeepWithin.Pocos
       /// <summary>
       /// Gets or Sets the list of writers for this version.
       /// </summary>
-      public virtual ICollection<VersionWriter> Translators { get; set; }
+      public virtual ICollection<VersionWriter> Writers { get; set; }
 
       /// <summary>
       /// Gets or Sets the source of this version.

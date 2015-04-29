@@ -1,33 +1,42 @@
 Comments
 Advanced search
-Next/previous chapter
+List glossary terms by source
 Filter books/terms by tags, etc.
-Edit number and order of passage and chapter
-Sub book tags (i.e. New/Old Testament)
-Delete
-   Contents
-   Styles --> Edit also
-   Links --> Edit also
-   Headers
-   Footers
+Edit number and order of chapter
+Search with tag filter
 Notes
+Images...
+Treasury of Scripture Knowledge (References)
+Links/Styles in footers/headers
+Show TOC on large screens
+Read - View paragraph and numbers.
 View Search as List/Tree
 View books a list
 Facebook/twitter/email share
 Adiminstration Page
 Bookmarks
 Favorites
+Sub book alias
 User preferences
    View footers at end or after verse
    if editor show edit item
+   Highlight alternating rows
+Sub book details should show different versions of sub book.
 Glossary Entry voting
 Book on amazon links
 Read multiple books
 Search while reading
+Search headers/footers.
 Definitions (Glossary entry ballons)
 Google/Facebook login
-Regex adding/converter
-Random Verse
+Random Verse - Change to Daily
+Daily devotionals
+Android/iOS app
 Help
 Api
 News/Updates
+Convert all action links to url.action with absolute uri
+Remove duplication between glossary entries and reading passages.
+Add tags and authors to terms with the same name.
+Remove chapter/read
+Remove glossary/term, create term controller
