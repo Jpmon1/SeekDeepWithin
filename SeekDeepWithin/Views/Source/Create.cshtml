@@ -1,0 +1,36 @@
+﻿@model SeekDeepWithin.Models.SourceViewModel
+@{
+    ViewBag.Title = "Create Glossary Source";
+}
+
+<h3><small>new</small> Glossary Source</h3>
+
+@using (Html.BeginForm ()) {
+   @Html.AntiForgeryToken()
+
+   <fieldset>
+      <legend>Source Information</legend>
+      
+      <input type="hidden" name="ParentId" id="ParentId" value="@Model.ParentId"/>
+      <div class="row">
+         <div class="small-12 columns">
+            @Html.LabelFor(model => model.Name)
+            @Html.EditorFor(model => model.Name)
+         </div>
+      </div>
+      <div class="row">
+         <div class="small-12 columns">
+            @Html.LabelFor(model => model.Url)
+            @Html.EditorFor(model => model.Url)
+         </div>
+      </div>
+      <div class="row">
+         <div class="small-12 columns">
+            @Html.LabelFor(model => model.Data)
+            @Html.TextAreaFor(model => model.Data, 3, 10, null)
+         </div>
+      </div>
+
+      <input type="submit" value="Add" class="button" />
+   </fieldset>
+}

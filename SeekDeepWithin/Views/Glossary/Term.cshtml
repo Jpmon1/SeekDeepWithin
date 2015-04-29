@@ -14,19 +14,21 @@
          <div id="item_@item.Id">
             <div class="row">
                <div class="small-12 large-12 columns">
-                  <div class="alert-box secondary">
-                     @if (!string.IsNullOrWhiteSpace (item.SourceUrl)) {
-                        <a href="@item.SourceUrl" target="_blank">@item.SourceName</a>
+                  <div class="alert-box secondary" style="margin-bottom: 0;">
+                     <h6><a href="@Url.Action("Index", "Glossary", new {sourceId=item.SourceId}, Request.Url.Scheme)">@item.SourceName</a></h6>
+                  </div>
+                  <div class="panel" style="border-top: 0;">
+                     @foreach (var entry in item.Entries) {
+                        @Html.Partial("_GlossaryEntry", entry)
                      }
                      @if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
-                        <small><a href="@Url.Action("Edit", "Glossary", new {id = item.Id}, Request.Url.Scheme)">[edit]</a></small>
+                        <a href="@Url.Action("Edit", "Glossary", new {id = item.Id}, Request.Url.Scheme)" class="button tiny">
+                           <i class="icon-editalt"></i> edit
+                        </a>
                      }
                   </div>
                </div>
             </div>
-            @foreach (var entry in item.Entries) {
-               @Html.Partial("_GlossaryEntry", entry)
-            }
          </div>
       }
    </div>

@@ -6,7 +6,7 @@
    font-family: 'Merriweather', Helvetica, Arial, sans-serif;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1, h2, h3, h4, h5, h6, .pricing-table .title {
    font-family: 'Merriweather', Helvetica, Arial, sans-serif;
 }
 
@@ -87,23 +87,22 @@ a.anchor {
    -ms-overflow-style: -ms-autohiding-scrollbar;
 }
 .contents > * {
-   text-align: center;
    margin: 0 auto;
    display: block;
-   padding: 0.25rem;
+   padding: 0.5rem;
 }
 .contents div > * {
-   text-align: center;
    margin: 0 auto;
    display: block;
-   padding: 0.25rem;
+   padding: 0.5rem;
 }
 .contents .subBook {
    width: auto;
    margin: auto;
    color: black;
+   text-align: center;
    background: #e7e7e7;
-   font-size: larger;
+   font-size: medium;
    border-bottom: 1px solid white;
 }
 .contents div .item {
@@ -131,7 +130,8 @@ a.anchor {
 }
 
 .small-bar {
-  background: #333333;
+   width: 100%;
+   background: #333333;
 }
 .small-bar h1 {
    line-height: 2.8125rem;

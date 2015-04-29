@@ -6,7 +6,8 @@
       Model.SubBook.VersionId, Model.SubBook.Id, Model.Id);
    var title = Model.SubBook.Version.Title;
    if (!Model.SubBook.Hide) {
-      title += " | " + Model.SubBook.Name;
+      title += " | ";
+      title += string.IsNullOrEmpty (Model.SubBook.Alias) ? Model.SubBook.Name : Model.SubBook.Alias;
    }
    if (!Model.Hide) {
       title += " | " + Model.Name;
@@ -19,7 +20,14 @@
       <div class="alert-box secondary text-center" style="padding-top: 0.5rem;padding-bottom: 0.5rem">
          <a href="@Url.Action("Index", "Read", new { id = @Model.SubBook.Version.DefaultReadChapter }, Request.Url.Scheme)">@Model.SubBook.Version.Title</a>
          @if (!Model.SubBook.Hide) {
-            <text> | </text><a href="@Url.Action("About", "SubBook", new { id = @Model.SubBook.Id }, Request.Url.Scheme)">@Model.SubBook.Name</a>
+            <text> | </text>
+            <a href="@Url.Action("About", "SubBook", new { id = @Model.SubBook.Id }, Request.Url.Scheme)">
+               @if (string.IsNullOrEmpty (Model.SubBook.Alias)) {
+                  <text>@Model.SubBook.Name</text>
+               } else {
+                  <text>@Model.SubBook.Alias</text>
+               }
+            </a>
          }
          @if (!Model.Hide) {
             <text> | @Model.Name</text>
@@ -30,7 +38,7 @@
 
 <div id="readingRow">
    <div class="row">
-      <div class="small-12 medium-9 large-9 columns">
+      <div class="small-12 medium-9 large-9 columns" id="readingArea">
          @Html.DisplayFor(model => model.Headers)
          @foreach (var passage in Model.Passages) {
             @Html.Partial("_Passage", passage)
@@ -58,8 +66,17 @@
             </div>
          </div>
       </div>
-      <div id="contentPanel" class="small-12 medium-3 large-3 columns hide-for-small-only">
-         @Html.DisplayFor(c => contents)
+      <div class="small-12 medium-3 large-3 columns hide-for-small-only">
+         <ul class="pricing-table">
+            <li class="title">Contents</li>
+            <li>
+               <div id="contentPanel" style="overflow: auto;">
+                  @*<h5 class="text-center">Contents</h5>
+                  <hr />*@
+                  @Html.DisplayFor(c => contents)
+               </div>
+            </li>
+         </ul>
       </div>
    </div>
                

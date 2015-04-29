@@ -6,7 +6,7 @@
       <div class="contents">
          @foreach (var subBook in Model.SubBooks) {
             if (!subBook.Hide) {
-               <a href="javascript:void(0);" class="item subBook" onclick="showContents(@subBook.Id)">
+               <a href="javascript:void(0);" class="subBook" onclick="showContents(@subBook.Id)">
                   @subBook.Name
                </a>
                @(subBook.Id != Model.CurrentSubBook

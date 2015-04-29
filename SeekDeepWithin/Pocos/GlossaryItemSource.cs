@@ -1,4 +1,6 @@
-﻿namespace SeekDeepWithin.Pocos
+﻿using System.Collections.Generic;
+
+namespace SeekDeepWithin.Pocos
 {
    /// <summary>
    /// Represents a source for a glossary entry.
@@ -11,13 +13,23 @@
       public int Id { get; set; }
 
       /// <summary>
-      /// Gets or Sets the version.
+      /// Gets or Sets the name of the source.
       /// </summary>
-      public virtual GlossaryItem GlossaryItem { get; set; }
+      public string Name { get; set; }
 
       /// <summary>
-      /// Gets or Sets the source.
+      /// Gets or Sets a url link for the source.
       /// </summary>
-      public virtual Source Source { get; set; }
+      public string Url { get; set; }
+
+      /// <summary>
+      /// Gets or Sets any data for the source.
+      /// </summary>
+      public string Data { get; set; }
+
+      /// <summary>
+      /// Gets or Sets the version.
+      /// </summary>
+      public virtual ICollection<GlossaryItem> GlossaryItems { get; set; }
    }
 }

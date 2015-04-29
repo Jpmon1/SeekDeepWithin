@@ -47,19 +47,6 @@
 <div class="row" style="margin-top: 1.125rem">
    <div class="small-12 medium-6 large-6 columns">
       <fieldset>
-         <legend>Current Headers</legend>
-         <ul class="side-nav" id="headerList">
-            @foreach (var header in Model.Items) {
-               var len = header.Text.Length > 45 ? 45 : header.Text.Length;
-               <li class="bullet-item" id="item_@header.Id">
-                  <a href="javascript:void(0)" onclick="header_edit(@header.Id)">@header.Text.Substring(0, len)</a>
-               </li>
-            }
-         </ul>
-      </fieldset>
-   </div>
-   <div class="small-12 medium-6 large-6 columns">
-      <fieldset>
          <legend id="headerLegend">New Header</legend>
          <div class="row">
             <div class="small-12 large-12 columns">
@@ -98,6 +85,19 @@
                </a>
             </div>
          </div>
+      </fieldset>
+   </div>
+   <div class="small-12 medium-6 large-6 columns">
+      <fieldset>
+         <legend>Current Headers</legend>
+         <ul class="side-nav" id="headerList">
+            @foreach (var header in Model.Items) {
+               var len = header.Text.Length > 45 ? 45 : header.Text.Length;
+               <li class="bullet-item" id="item_@header.Id">
+                  <a href="javascript:void(0)" onclick="header_edit(@header.Id)">@header.Text.Substring(0, len)</a>
+               </li>
+            }
+         </ul>
       </fieldset>
    </div>
 </div>

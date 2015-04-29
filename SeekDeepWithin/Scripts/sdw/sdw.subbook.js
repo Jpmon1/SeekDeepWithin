@@ -20,9 +20,14 @@ function subBook_createPassages() {
    }).done(function () {
       $('#passText').val('');
       $('#addingModal').foundation('reveal', 'close');
-      alert('Passages added successfully!');
+
+      $('#modalClose').show();
+      $('#modalText').text('Passages added successfully!');
+      $('#modal').foundation('reveal', 'open');
    }).fail(function (d) {
-      alert(d.responseText);
+      $('#modalClose').show();
+      $('#modalText').text(d.responseText);
+      $('#modal').foundation('reveal', 'open');
    });
 }
 
@@ -49,7 +54,9 @@ function assignWriter() {
          setTimeout(function () { $('#writerSaved').hide(100); }, 2000);
       });
    }).fail(function (d) {
-      alert(d.responseText);
+      $('#modalClose').show();
+      $('#modalText').text(d.responseText);
+      $('#modal').foundation('reveal', 'open');
    });
 }
 
@@ -67,7 +74,9 @@ function removeWriter(subBookId, writerId) {
    }).done(function () {
       $('#writer_' + writerId).remove();
    }).fail(function (d) {
-      alert(d.responseText);
+      $('#modalClose').show();
+      $('#modalText').text(d.responseText);
+      $('#modal').foundation('reveal', 'open');
    });
 }
 
@@ -104,7 +113,9 @@ function postAbbreviations(abbreviations, token) {
          abbreviations.splice(0, 1);
          postAbbreviations(abbreviations, token);
       }).fail(function (d) {
-         alert(d.responseText);
+         $('#modalClose').show();
+         $('#modalText').text(d.responseText);
+         $('#modal').foundation('reveal', 'open');
       });
    }
 }
@@ -122,6 +133,8 @@ function removeAbbreviation(id) {
    }).done(function () {
       $('#abbrev_' + id).remove();
    }).fail(function (d) {
-      alert(d.responseText);
+      $('#modalClose').show();
+      $('#modalText').text(d.responseText);
+      $('#modal').foundation('reveal', 'open');
    });
 }

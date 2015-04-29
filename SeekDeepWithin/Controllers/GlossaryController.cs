@@ -33,13 +33,26 @@ namespace SeekDeepWithin.Controllers
       /// Gets the glossary index page.
       /// </summary>
       /// <returns>The glossary index view.</returns>
-      public ActionResult Index (int? page)
+      public ActionResult Index (int? page, int? sourceId)
       {
          int pageNumber = page ?? 1;
-         return View (this.m_Db.GlossaryTerms
+         if (sourceId.HasValue)
+         {
+            var terms = new Collection <GlossaryTermViewModel> ();
+            var source = this.m_Db.GlossaryItemSources.Get (sourceId.Value);
+            var items = source.GlossaryItems;
+            foreach (var glossaryItem in items)
+            {
+               if (terms.Any (t => t.Id == glossaryItem.Term.Id))
+                  continue;
+               terms.Add (new GlossaryTermViewModel { Id = glossaryItem.Term.Id, Name = glossaryItem.Term.Name });
+            }
+            return View (new GlossaryIndexViewModel{SourceName = source.Name , Terms = terms.OrderBy(t => t.Name).ToPagedList (pageNumber, 75)});
+         }
+         return View (new GlossaryIndexViewModel{Terms =this.m_Db.GlossaryTerms
             .All (q => q.OrderBy (t => t.Name))
             .Select (t => new GlossaryTermViewModel { Id = t.Id, Name = t.Name })
-            .ToPagedList (pageNumber, 75));
+            .ToPagedList (pageNumber, 75)});
       }
 
       /// <summary>
@@ -89,6 +102,7 @@ namespace SeekDeepWithin.Controllers
       {
          var term = this.m_Db.GlossaryTerms.Get (termId);
          if (Request.UrlReferrer != null) TempData["RefUrl"] = Request.UrlReferrer.ToString ();
+         ViewBag.Sources = new SelectList (this.m_Db.GlossaryItemSources.All (q => q.OrderBy (s => s.Name)), "Id", "Name");
          return View (new GlossaryItemViewModel { Term = new GlossaryTermViewModel {Id = termId, Name = term.Name} });
       }
 
@@ -96,20 +110,15 @@ namespace SeekDeepWithin.Controllers
       /// Creates a new glossary item.
       /// </summary>
       /// <param name="termId">The item's term id.</param>
-      /// <param name="sourceName">The item's term id.</param>
-      /// <param name="sourceUrl">The item's term id.</param>
+      /// <param name="sourceId">The source id for the item.</param>
       /// <returns>Creation result</returns>
       [HttpPost]
       [ValidateAntiForgeryToken]
       [Authorize (Roles = "Creator")]
-      public ActionResult CreateItem (int termId, string sourceName, string sourceUrl)
+      public ActionResult CreateItem (int termId, int sourceId)
       {
          var term = this.m_Db.GlossaryTerms.Get (termId);
-         var source = SourceController.GetSource (sourceName, sourceUrl, this.m_Db);
-         var item = new GlossaryItem { Term = term };
-         if (item.Sources == null)
-            item.Sources = new Collection<GlossaryItemSource> ();
-         item.Sources.Add (new GlossaryItemSource { GlossaryItem = item, Source = source });
+         var item = new GlossaryItem { Term = term, Source = this.m_Db.GlossaryItemSources.Get(sourceId) };
          this.m_Db.GlossaryItems.Insert (item);
          this.m_Db.Save ();
          return RedirectToAction ("Term", new { id = termId });

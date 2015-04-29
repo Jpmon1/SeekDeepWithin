@@ -1,5 +1,5 @@
 ﻿$(document).ready(function () {
-   $('#smallLeftMenuSelector').show();
+   $('#smallLeftMenuIcon').show();
    $('#leftMenu').data('loc', 'on');
    var scotchPanel = $('#smallLeftMenu').scotchPanel({
       containerSelector: 'body',
@@ -32,6 +32,7 @@ function resizeReadMenu(scotchPanel) {
          $('#smallLeftMenuContent').append(contents);
          contents.data('loc', 'off');
       }
+      $('#smallLeftMenuContent').css({ 'height': $('body').height() });
    } else {
       if (loc === 'off') {
          scotchPanel.close();
@@ -39,6 +40,7 @@ function resizeReadMenu(scotchPanel) {
          $('#contentPanel').append(contents);
          contents.data('loc', 'on');
       }
+      $('#contentPanel').css({ 'height': $('#readingArea').height() });
    }
 }
 

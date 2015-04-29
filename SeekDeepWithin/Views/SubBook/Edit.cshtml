@@ -4,7 +4,7 @@
     ViewBag.Title = "Editing " + Model.Name;
 }
 
-<h3><small>editing</small> @Model.Name</h3>
+<h3><small>editing</small> @Model.Name @if(!string.IsNullOrEmpty(Model.Alias)){<small>@Model.Alias</small>}</h3>
 @using (Html.BeginForm (null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" })){
    @Html.AntiForgeryToken()
 }
@@ -193,6 +193,8 @@
       </div>
    </div>
 </div>
+
+@Html.Partial("_Modal")
 
 @section scripts {
    @Scripts.Render("~/bundles/sdw.subbookedit")

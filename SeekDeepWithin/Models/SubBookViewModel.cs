@@ -26,6 +26,7 @@ namespace SeekDeepWithin.Models
       {
          this.Id = subBook.Id;
          this.Hide = subBook.Hide;
+         this.Alias = subBook.Alias;
          this.Name = subBook.SubBook.Name;
          this.SubBookId = subBook.SubBook.Id;
          this.VersionId = subBook.Version.Id;
@@ -46,6 +47,11 @@ namespace SeekDeepWithin.Models
             });
          }
       }
+
+      /// <summary>
+      /// Gets or Sets the alias of the sub book.
+      /// </summary>
+      public string Alias { get; set; }
 
       /// <summary>
       /// Gets or Sets the id of this sub book.

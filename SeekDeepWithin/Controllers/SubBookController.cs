@@ -343,6 +343,21 @@ namespace SeekDeepWithin.Controllers
       }
 
       /// <summary>
+      /// Creates an alias for a given sub book.
+      /// </summary>
+      /// <returns></returns>
+      [HttpPost]
+      [ValidateAntiForgeryToken]
+      [Authorize (Roles = "Editor")]
+      public ActionResult SetAlias (int id, string alias)
+      {
+         var subBook = this.m_Db.VersionSubBooks.Get (id);
+         subBook.Alias = alias;
+         this.m_Db.Save ();
+         return Json ("success");
+      }
+
+      /// <summary>
       /// Gets auto complete items.
       /// </summary>
       /// <param name="name">Name to get auto complete items for.</param>

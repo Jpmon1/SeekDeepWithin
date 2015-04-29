@@ -29,7 +29,9 @@
          });
          createToc();
       }).fail(function (d) {
-         alert(d.responseText);
+         $('#modalClose').show();
+         $('#modalText').text(d.responseText);
+         $('#modal').foundation('reveal', 'open');
       });
    });
 
@@ -61,8 +63,10 @@
          }).done(function(d) {
             node.data = { id: d.id, hide: false, itemId: d.itemId };
             createToc();
-         }).fail(function(d) {
-            alert(d.responseText);
+         }).fail(function (d) {
+            $('#modalClose').show();
+            $('#modalText').text(d.responseText);
+            $('#modal').foundation('reveal', 'open');
          });
       } else {
          $.ajax({
@@ -76,11 +80,16 @@
          }).done(function () {
             createToc();
          }).fail(function (d) {
-            alert(d.responseText);
+            $('#modalClose').show();
+            $('#modalText').text(d.responseText);
+            $('#modal').foundation('reveal', 'open');
          });
       }
    }).on("select_node.jstree", function (e, data) {
       var node = data.node;
+      var ref = data.instance;
+      var type = ref.get_type(node.id);
+      contents_toggleButtons(type);
       if (data.node.id === 'root') {
          $('#hideSwitch').prop("checked", true);
          return;
@@ -122,6 +131,31 @@
       ]
    });
 });
+
+function contents_toggleButtons(type) {
+   if (type == 'subbook') {
+      $('#btnEdit').show();
+      $('#btnDelete').show();
+      $('#btnRename').show();
+      $('#btnSetAlias').show();
+      $('#btnAddChapter').show();
+      $('#btnDefaultRead').hide();
+   } else if (type == 'chapter') {
+      $('#btnEdit').show();
+      $('#btnDelete').show();
+      $('#btnRename').show();
+      $('#btnSetAlias').hide();
+      $('#btnAddChapter').show();
+      $('#btnDefaultRead').show();
+   } else {
+      $('#btnEdit').hide();
+      $('#btnDelete').hide();
+      $('#btnRename').hide();
+      $('#btnSetAlias').hide();
+      $('#btnAddChapter').hide();
+      $('#btnDefaultRead').hide();
+   }
+}
 
 function createToc() {
    $('#modalClose').hide();
@@ -264,10 +298,14 @@ function setDefaultChapter() {
          $('#modal').foundation('reveal', 'open');
          setTimeout(function () { $('#modal').foundation('reveal', 'close'); }, 700);
       }).fail(function (d) {
-         alert(d.responseText);
+         $('#modalClose').show();
+         $('#modalText').text(d.responseText);
+         $('#modal').foundation('reveal', 'open');
       });
    } else {
-      alert('Only chapters can be set as default to read.');
+      $('#modalClose').show();
+      $('#modalText').text('Only chapters can be set as default to read.');
+      $('#modal').foundation('reveal', 'open');
    }
 }
 
@@ -303,7 +341,9 @@ function showAddList() {
    sel = sel[0];
    var type = ref.get_type(sel);
    if (type == 'chapter') {
-      alert('You cannot add a new list of items to a chapter.');
+      $('#modalClose').show();
+      $('#modalText').text('You cannot add a new list of items to a chapter.');
+      $('#modal').foundation('reveal', 'open');
       return;
    }
    $('#addListModal').foundation('reveal', 'open');
@@ -376,7 +416,9 @@ function createContents(type, items, parent, ref) {
             items.splice(0, 1);
             createContents(type, items, parent, ref);
          }).fail(function (d) {
-            alert(d.responseText);
+            $('#modalClose').show();
+            $('#modalText').text(d.responseText);
+            $('#modal').foundation('reveal', 'open');
          });
       }
    } else {
@@ -385,4 +427,39 @@ function createContents(type, items, parent, ref) {
       $('#addRangeEnd').val('');
       createToc();
    }
+}
+
+function contents_showAlias() {
+   $('#aliasModal').foundation('reveal', 'open');
+}
+
+function contents_createAlias() {
+   var ref = $('#contentTree').jstree(true);
+   var sel = ref.get_selected();
+   if (!sel.length) { return; }
+   sel = sel[0];
+   if (sel === 'root') { return; }
+   //var type = ref.get_type(sel);
+   var node = ref.get_node(sel);
+   var form = $('#__AjaxAntiForgeryForm');
+   var token = $('input[name="__RequestVerificationToken"]', form).val();
+   $.ajax({
+      type: 'POST',
+      url: '/SubBook/SetAlias/',
+      data: {
+         __RequestVerificationToken: token,
+         id: node.data.id,
+         alias: $('#sbAlias').val()
+      }
+   }).done(function () {
+      ref.set_text(node, $('#sbAlias').val());
+      $('#sbAlias').val('');
+      $('#aliasModal').foundation('reveal', 'close');
+      createToc();
+   }).fail(function (d) {
+      $('#aliasModal').foundation('reveal', 'close');
+      $('#modalClose').show();
+      $('#modalText').text(d.responseText);
+      $('#modal').foundation('reveal', 'open');
+   });
 }

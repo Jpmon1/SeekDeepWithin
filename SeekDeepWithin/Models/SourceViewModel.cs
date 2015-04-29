@@ -24,9 +24,14 @@ namespace SeekDeepWithin.Models
       /// <summary>
       /// Gets or Sets the url for the source.
       /// </summary>
-      [Required]
       [Display (Name = "Source Url")]
       public string Url { get; set; }
+
+      /// <summary>
+      /// Gets or Sets any additional data for the source.
+      /// </summary>
+      [Display (Name = "Additional Information")]
+      public string Data { get; set; }
 
       /// <summary>
       /// Gets or Sets the parent id, if needed.

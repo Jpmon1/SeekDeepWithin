@@ -31,7 +31,8 @@ namespace SeekDeepWithin.Tests.Mocks
       private IRepository<SubBookWriter> m_SubBookWriters;
       private IRepository<VersionWriter> m_VersionWriters;
       private IRepository <VersionSubBook> m_VersionSubBooks;
-      private IRepository <SubBookChapter> m_SubBookChapters;
+      private IRepository<SubBookChapter> m_SubBookChapters;
+      private IRepository<GlossaryItemSource> m_GlossaryItemSources;
 
       /// <summary>
       /// Gets the repository for books.
@@ -47,6 +48,14 @@ namespace SeekDeepWithin.Tests.Mocks
       public IRepository<Abbreviation> Abbreviations
       {
          get { return this.m_Abbreviations ?? (this.m_Abbreviations = new MockRepository<Abbreviation> ()); }
+      }
+
+      /// <summary>
+      /// Gets the repository for glossary item sources.
+      /// </summary>
+      public IRepository<GlossaryItemSource> GlossaryItemSources
+      {
+         get { return this.m_GlossaryItemSources ?? (this.m_GlossaryItemSources = new MockRepository<GlossaryItemSource> ()); }
       }
 
       /// <summary>

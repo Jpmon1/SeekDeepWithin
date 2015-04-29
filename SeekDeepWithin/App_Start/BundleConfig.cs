@@ -11,12 +11,10 @@ namespace SeekDeepWithin
          bundles.Add (new ScriptBundle ("~/bundles/jquery").Include (
             "~/Scripts/jquery-1.11.2.js",
             "~/Scripts/jquery.cookie.js",
+            "~/Scripts/fastclick.js",
             "~/Scripts/foundation/foundation.js",
             "~/Scripts/foundation/foundation.*",
             "~/Scripts/scotchPanels.js"));
-
-         bundles.Add (new ScriptBundle ("~/bundles/jqueryui").Include (
-            "~/Scripts/jquery-ui-{version}.js"));
 
          bundles.Add (new ScriptBundle ("~/bundles/jqueryval").Include (
             "~/Scripts/jquery.unobtrusive-ajax.js",

@@ -34,6 +34,29 @@
    <a class="close-reveal-modal">&#215;</a>
 </div>
 
+<div id="aliasModal" class="reveal-modal small" data-reveal>
+   <div class="row">
+      <div class="small-12 column">
+         <p class="text-center">This will name the selected sub book differently for this version.</p>
+      </div>
+   </div>
+   <div class="row">
+      <div class="small-12 column">
+         <label for="sbAlias">Alias</label>
+         <input type="text" id="sbAlias" name="sbAlias"/>
+      </div>
+   </div>
+   <div class="row">
+      <div class="small-6 column text-center">
+         <a href="javascript:void(0)" class="button" onclick="contents_createAlias()"><i class="icon-savetodrive"></i> Save</a>
+      </div>
+      <div class="small-6 column text-center">
+         <a href="javascript:void(0)" class="button secondary" onclick="$('#aliasModal').foundation('reveal', 'close');">Cancel</a>
+      </div>
+   </div>
+   <a class="close-reveal-modal">&#215;</a>
+</div>
+
 <div id="renameModal" class="reveal-modal small" data-reveal>
    <div class="row">
       <div class="small-12 column">
@@ -122,7 +145,7 @@
 
 @Html.Partial("_Modal")
 
-<br />
+<h3>Edit Contents</h3>
 <div class="row">
    <div class="small-12 medium-9 large-9 columns">
       @{
@@ -133,14 +156,15 @@
    <div id="contentPanel" class="small-12 medium-3 large-3 columns hide-for-small-only">
       <div id="leftMenu">
          <div class="side-menu">
-            <a class="item" href="javascript:void(0)" onclick="createSubBook();"><i class="icon-createfile"></i> Add Sub Book</a>
-            <a class="item" href="javascript:void(0)" onclick="createChapter();"><i class="icon-createfile"></i> Add Chapter</a>
-            <a class="item" href="javascript:void(0)" onclick="showAddList();"><i class="icon-createfile"></i> Add List</a>
-            <a class="item" href="javascript:void(0)" onclick="deleteItem();"><i class="icon-remove-circle"></i> Delete</a>
-            <a class="item" href="javascript:void(0)" onclick="renameItem();"><i class="icon-edit"></i> Rename</a>
-            <a class="item" href="javascript:void(0)" onclick="setDefaultChapter();"><i class="icon-bookmark"></i> Set as Default Chapter</a>
-            <a class="item" href="javascript:void(0)" onclick="collapseAll();">Collapse All</a>
-            <a class="item" href="javascript:void(0)" onclick="editItem();">Edit</a>
+            <a class="item" id="btnAddSubBook" href="javascript:void(0)" onclick="createSubBook();"><i class="icon-createfile"></i> Add Sub Book</a>
+            <a class="item" id="btnAddChapter" href="javascript:void(0)" onclick="createChapter();"><i class="icon-createfile"></i> Add Chapter</a>
+            <a class="item" id="btnAddList" href="javascript:void(0)" onclick="showAddList();"><i class="icon-createfile"></i> Add List</a>
+            <a class="item" id="btnDelete" href="javascript:void(0)" onclick="deleteItem();"><i class="icon-remove-circle"></i> Delete</a>
+            <a class="item" id="btnSetAlias" href="javascript:void(0)" onclick="contents_showAlias();"><i class="icon-edit"></i> Set Alias</a>
+            <a class="item" id="btnRename" href="javascript:void(0)" onclick="renameItem();"><i class="icon-edit"></i> Rename</a>
+            <a class="item" id="btnDefaultRead" href="javascript:void(0)" onclick="setDefaultChapter();"><i class="icon-bookmark"></i> Set as Default Chapter</a>
+            <a class="item" id="btnCollapse" href="javascript:void(0)" onclick="collapseAll();"><i class="icon-calcminus"></i> Collapse All</a>
+            <a class="item" id="btnEdit" href="javascript:void(0)" onclick="editItem();"><i class="icon-editalt"></i> Edit</a>
             <div class="switch" class="item">
                <i class="icon-eye-close" style="color: white"></i>
                <input id="hideSwitch" type="checkbox">

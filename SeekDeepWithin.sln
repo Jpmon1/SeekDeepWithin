@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeekDeepWithin", "SeekDeepW
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeekDeepWithin.Tests", "SeekDeepWithin.Tests\SeekDeepWithin.Tests.csproj", "{F826DD19-EC87-477B-B7B5-6F75B6B36D8B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChangeWorldwide", "..\ChangeWorldwide\ChangeWorldwide\ChangeWorldwide.csproj", "{F7AA9B2C-AC5B-4473-9BB4-4C66E46FF060}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,10 +21,6 @@ Global
 		{F826DD19-EC87-477B-B7B5-6F75B6B36D8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F826DD19-EC87-477B-B7B5-6F75B6B36D8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F826DD19-EC87-477B-B7B5-6F75B6B36D8B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F7AA9B2C-AC5B-4473-9BB4-4C66E46FF060}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F7AA9B2C-AC5B-4473-9BB4-4C66E46FF060}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F7AA9B2C-AC5B-4473-9BB4-4C66E46FF060}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F7AA9B2C-AC5B-4473-9BB4-4C66E46FF060}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

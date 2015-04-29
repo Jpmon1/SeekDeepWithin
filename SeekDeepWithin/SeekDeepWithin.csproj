@@ -253,6 +253,7 @@
     <Compile Include="Models\EditStyleViewModel.cs" />
     <Compile Include="Models\ErrorViewModel.cs" />
     <Compile Include="Models\GlossaryEntryViewModel.cs" />
+    <Compile Include="Models\GlossaryIndexViewModel.cs" />
     <Compile Include="Models\GlossaryItemViewModel.cs" />
     <Compile Include="Models\GlossaryTermViewModel.cs" />
     <Compile Include="Models\HeaderFooterEditViewModel.cs" />
@@ -624,6 +625,7 @@
     <Content Include="Views\Style\Edit.cshtml" />
     <Content Include="Views\Shared\_Modal.cshtml" />
     <Content Include="Views\Read\Index.cshtml" />
+    <Content Include="Views\Source\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

@@ -5,7 +5,7 @@
     ViewBag.Title = "About " + Model.Name;
 }
 
-<h3><small>about</small> @Model.Name 
+<h3><small>about</small> @Model.Name @if(!string.IsNullOrEmpty(Model.Alias)){<small>@Model.Alias</small>}
    @if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
       <small><a href="@Url.Action("Edit", "SubBook", new {id = Model.Id}, Request.Url.Scheme)">edit</a></small>
    }
