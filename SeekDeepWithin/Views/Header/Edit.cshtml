@@ -13,7 +13,7 @@
 <div class="row">
    <div class="small-6 medium-3 large-3 columns">
       @if (Model.ItemType == "Entry") {
-         <a href="@Url.Action("Edit", "Glossary", new {id = Model.ParentId}, Request.Url.Scheme)" class="button secondary expand small">
+         <a href="@Url.Action("Edit", "GlossaryItem", new {id = Model.ParentId}, Request.Url.Scheme)" class="button secondary expand small">
             <i class="icon-editalt"></i> Edit Item
          </a>
       } else {

@@ -46,6 +46,14 @@ namespace SeekDeepWithin.Controllers
       [Authorize (Roles = "Editor")]
       public ActionResult Create (int termId)
       {
+         // This is just clean up, if we have blank sources, delete them from the database.
+         var sources = this.m_Db.GlossaryItemSources.All ();
+         foreach (var source in sources)
+         {
+            if (source.Name == null && source.Url == null && source.Data == null)
+               this.m_Db.GlossaryItemSources.Delete(source);
+         }
+         this.m_Db.Save ();
          return View (new SourceViewModel {ParentId = termId});
       }
 
@@ -63,7 +71,7 @@ namespace SeekDeepWithin.Controllers
          var source = new GlossaryItemSource {Name = viewModel.Name, Url = viewModel.Url, Data = viewModel.Data};
          this.m_Db.GlossaryItemSources.Insert(source);
          this.m_Db.Save();
-         return RedirectToAction ("CreateItem", "Glossary", new { termId = viewModel.ParentId });
+         return RedirectToAction ("Create", "GlossaryItem", new { termId = viewModel.ParentId });
       }
 
       /// <summary>

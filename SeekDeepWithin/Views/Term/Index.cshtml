@@ -22,7 +22,7 @@
                         @Html.Partial("_GlossaryEntry", entry)
                      }
                      @if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
-                        <a href="@Url.Action("Edit", "Glossary", new {id = item.Id}, Request.Url.Scheme)" class="button tiny">
+                        <a href="@Url.Action("Edit", "GlossaryItem", new {id = item.Id}, Request.Url.Scheme)" class="button tiny">
                            <i class="icon-editalt"></i> edit
                         </a>
                      }
@@ -64,7 +64,7 @@
       <div class="row">
          <div class="small-12 columns">
             @if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
-               <a href="@Url.Action("EditTerm", "Glossary", new {id = Model.Id}, Request.Url.Scheme)" class="button expand tiny">
+               <a href="@Url.Action("Edit", "Term", new {id = Model.Id}, Request.Url.Scheme)" class="button expand tiny">
                   <i class="icon-edit"></i> edit term
                </a>
             }
@@ -73,7 +73,7 @@
       <div class="row">
          <div class="small-12 columns">
             @if (Request.IsAuthenticated && User.IsInRole ("Creator")) {
-               <a href="@Url.Action("CreateItem", "Glossary", new {termId = Model.Id}, Request.Url.Scheme)" class="button expand tiny success">
+               <a href="@Url.Action("Create", "GlossaryItem", new {termId = Model.Id}, Request.Url.Scheme)" class="button expand tiny success">
                   <i class="icon-plus"></i> add item
                </a>
             }

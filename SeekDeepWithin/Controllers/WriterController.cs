@@ -35,7 +35,7 @@ namespace SeekDeepWithin.Controllers
       public ActionResult Index (int? page)
       {
          var pageNumber = page ?? 1;
-         return View (this.m_Db.Writers.All ()
+         return View (this.m_Db.Writers.All (q => q.OrderBy (w => w.Name))
             .Select (a => new AuthorViewModel { Id = a.Id, Name = a.Name })
             .ToPagedList(pageNumber, 75));
       }

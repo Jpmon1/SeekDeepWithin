@@ -209,7 +209,9 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\ExtensionMethods.cs" />
+    <Compile Include="Controllers\GlossaryItemController.cs" />
     <Compile Include="Controllers\ReadController.cs" />
+    <Compile Include="Controllers\TermController.cs" />
     <Compile Include="Controllers\WriterController.cs" />
     <Compile Include="Controllers\BookController.cs" />
     <Compile Include="Controllers\DbHelper.cs" />
@@ -590,15 +592,11 @@
     <Content Include="Views\Writer\Create.cshtml" />
     <Content Include="Views\SubBook\AssignWriter.cshtml" />
     <Content Include="Views\Admin\Index.cshtml" />
-    <Content Include="Views\Glossary\CreateTerm.cshtml" />
-    <Content Include="Views\Chapter\Read.cshtml" />
-    <Content Include="Views\Glossary\Term.cshtml" />
     <Content Include="Views\Version\Create.cshtml" />
-    <Content Include="Views\Glossary\CreateItem.cshtml" />
     <Content Include="Views\Tag\Index.cshtml" />
     <Content Include="Views\Tag\Create.cshtml" />
     <Content Include="Views\Source\Index.cshtml" />
-    <Content Include="Views\Glossary\Edit.cshtml" />
+    <Content Include="Views\GlossaryItem\Edit.cshtml" />
     <Content Include="Views\Version\EditSource.cshtml" />
     <Content Include="Views\Source\EditSource.cshtml" />
     <Content Include="Views\Source\Edit.cshtml" />
@@ -616,7 +614,6 @@
     <Content Include="Views\Shared\_GlossaryEntry.cshtml" />
     <Content Include="Views\Glossary\Add.cshtml" />
     <Content Include="Views\Tag\Details.cshtml" />
-    <Content Include="Views\Glossary\EditTerm.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\VersionContents.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\VersionContents.cshtml" />
     <Content Include="Views\SubBook\Edit.cshtml" />
@@ -626,6 +623,10 @@
     <Content Include="Views\Shared\_Modal.cshtml" />
     <Content Include="Views\Read\Index.cshtml" />
     <Content Include="Views\Source\Create.cshtml" />
+    <Content Include="Views\Term\Index.cshtml" />
+    <Content Include="Views\Term\Create.cshtml" />
+    <Content Include="Views\GlossaryItem\Create.cshtml" />
+    <Content Include="Views\Term\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

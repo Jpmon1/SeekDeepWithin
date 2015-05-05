@@ -12,7 +12,7 @@
          <li class="title">Books with this tag:</li>
          @if (Model.Books.Count > 0) {
             foreach (var book in Model.Books) {
-               <li class="bullet-item">@Html.ActionLink(book.Value, "Details", "Book", new {id=book.Key}, null)</li>
+               <li class="bullet-item"><a href="@Url.Action("Details", "Book", new {id=book.Key}, Request.Url.Scheme)">@book.Value</a></li>
             }
          }
          else {
@@ -28,7 +28,7 @@
          <li class="title">Terms with this tag:</li>
          @if (Model.Terms.Count > 0) {
             foreach (var term in Model.Terms) {
-               <li class="bullet-item">@Html.ActionLink(term.Value, "Term", "Glossary", new {id=term.Key}, null)</li>
+               <li class="bullet-item"><a href="@Url.Action("Index", "Term", new {id=term.Key}, Request.Url.Scheme)">@term.Value</a></li>
             }
          }
          else {

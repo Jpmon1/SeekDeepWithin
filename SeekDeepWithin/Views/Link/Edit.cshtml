@@ -130,7 +130,9 @@
                               <input type="hidden" id="selTermId" name="selTermId" />
                            </div>
                         </div>
-                        <div class="alert-box info"><a href="@Url.Action("CreateTerm", "Glossary", null, Request.Url.Scheme)">create a new term</a></div>
+                        <div class="alert-box info">
+                           <a href="@Url.Action("Create", "Term", null, Request.Url.Scheme)">create a new term</a>
+                        </div>
                      </div>
                   </div>
                </div>
@@ -300,12 +302,12 @@
             </a>
          }
          else if (Model.ItemType == "Entry") {
-            <a href="@Url.Action("Edit", "Glossary", new {id = Model.ParentId}, Request.Url.Scheme)" class="button secondary expand" id="btnEditFooters">
+            <a href="@Url.Action("Edit", "GlossaryItem", new {id = Model.ParentId}, Request.Url.Scheme)" class="button secondary expand" id="btnEditFooters">
                <i class="icon-editalt"></i> Edit Item
             </a>
          }
          else if (Model.ItemType == "SeeAlso") {
-            <a href="@Url.Action("EditTerm", "Glossary", new {id = Model.ParentId}, Request.Url.Scheme)" class="button secondary expand" id="btnEditFooters">
+            <a href="@Url.Action("Edit", "Term", new {id = Model.ParentId}, Request.Url.Scheme)" class="button secondary expand" id="btnEditFooters">
                <i class="icon-editalt"></i> Edit Term
             </a>
          }

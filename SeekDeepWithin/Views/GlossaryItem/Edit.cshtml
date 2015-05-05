@@ -17,7 +17,7 @@
 
 <div class="row">
    <div class="small-12 columns text-right">
-      <a href="@Url.Action("Term", "Glossary", new {id=Model.Term.Id}, Request.Url.Scheme)" class="button tiny secondary">
+      <a href="@Url.Action("Index", "Term", new {id=Model.Term.Id}, Request.Url.Scheme)" class="button tiny secondary">
          <i class="icon-preview"></i> view term
       </a>
       @if (Request.IsAuthenticated && User.IsInRole ("Creator")) {
@@ -35,7 +35,9 @@
    <div class="inner-wrap">
       <nav class="tab-bar">
          <section class="left-small text-center">
-            <a class="left-off-canvas-toggle" href="#" style="color: black;"><i class="icon-menu"></i></a>
+            <a class="left-off-canvas-toggle" href="#" style="color: black;">
+               <i class="icon-menu"></i>
+            </a>
          </section>
 
          <section class="middle tab-bar-section">
@@ -108,6 +110,23 @@
             </div>
          </div>
 
+         <hr />
+         
+         <div class="row">
+            <div class="small-12 columns">
+               <div class="row collapse">
+                  <div class="small-9 columns">
+                     @Html.DropDownList("sourceId", ViewBag.Sources as SelectList)
+                  </div>
+                  <div class="small-3 columns">
+                     <button class="button success postfix" onclick="glossary_setSource(@Model.Id);">
+                        <i class="icon-savetodrive"></i> Save
+                     </button>
+                  </div>
+               </div>
+            </div>
+         </div>
+         
          <hr />
 
          <div class="row">

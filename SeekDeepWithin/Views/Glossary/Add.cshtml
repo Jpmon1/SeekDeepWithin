@@ -3,7 +3,11 @@
     ViewBag.Title = "Add Entries";
 }
 
-<h3><small>add entries</small> @Model.Title <small>@Html.ActionLink("view term", "Term", new { id = ViewBag.TermId })</small></h3>
+<h3><small>add entries</small> @Model.Title 
+   <small>
+      <a href="@Url.Action("Index", "Term", new { id = ViewBag.TermId }, Request.Url.Scheme)">view term</a>
+   </small>
+</h3>
 
 @using (Html.BeginForm (null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" })){
    @Html.AntiForgeryToken()

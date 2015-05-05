@@ -12,7 +12,7 @@ $(document).ready(function () {
    $('#updateLinkCheck').hide();
 
    $('#linkGlossary').autocomplete({
-      serviceUrl: '/Glossary/AutoComplete',
+      serviceUrl: '/Term/AutoComplete',
       paramName: 'term',
       onSelect: function (suggestion) {
          $('#selTermId').val(suggestion.data);
@@ -178,7 +178,7 @@ function link_createGlossary() {
    if (termId == '') {
       alert('Select a term to link to first.');
    } else {
-      var linkUrl = window.location.protocol + "//" + window.location.host + "/Glossary/Term/" + termId;
+      var linkUrl = window.location.protocol + "//" + window.location.host + "/Term/" + termId;
       link_post('create', linkUrl, function (d) {
          link_render();
          $('#linkTerm').val('');

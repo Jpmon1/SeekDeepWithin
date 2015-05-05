@@ -10,9 +10,21 @@ namespace SeekDeepWithin
          routes.IgnoreRoute ("{resource}.axd/{*pathInfo}");
 
          routes.MapRoute (
-             name: "Read",
-             url: "Read/{id}",
-             defaults: new { controller = "Read", action = "Index", id = UrlParameter.Optional }
+             "Read",
+             "Read/{id}",
+             new { controller = "Read", action = "Index", id = UrlParameter.Optional },
+             new { id = @"\d+" }
+         );
+         routes.MapRoute (
+             "Term",
+             "Term/{id}",
+             new { controller = "Term", action = "Index", id = UrlParameter.Optional },
+             new { id = @"\d+" }
+         );
+         routes.MapRoute (
+             name: "TermAction",
+             url: "Term/{action}/{id}",
+             defaults: new { controller = "Term", action = "Index", id = UrlParameter.Optional }
          );
          routes.MapRoute (
              name: "Default",

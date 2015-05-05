@@ -21,7 +21,7 @@ function addMultiple(i) {
          addMultiple(parseInt(i) + 1);
       });
    } else {
-      window.location = '/Glossary/Term/' + $('#TermId').val();
+      window.location = '/Term/' + $('#TermId').val();
    }
 }
 

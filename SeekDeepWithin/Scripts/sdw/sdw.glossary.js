@@ -72,6 +72,29 @@ function entry_delete() {
    });
 }
 
+function glossary_setSource(id) {
+   $('#modalClose').hide();
+   $('#modalText').text('Saving Source, please wait...');
+   $('#modal').foundation('reveal', 'open');
+   var form = $('#__AjaxAntiForgeryForm');
+   var token = $('input[name="__RequestVerificationToken"]', form).val();
+   $.ajax({
+      type: 'POST',
+      url: '/GlossaryItem/SetSource/',
+      data: {
+         id: id,
+         sourceId: $('#sourceId').val(),
+         __RequestVerificationToken: token
+      }
+   }).done(function () {
+      $('#modalText').text('Success!');
+      setTimeout(function () { $('#modal').foundation('reveal', 'close'); }, 700);
+   }).fail(function (data) {
+      $('#modalClose').show();
+      $('#modalText').text('An error occured - ' + data.responseText);
+   });
+}
+
 function entry_next() {
    var entryId = $('#editEntryId').text();
    var item = $('#item_' + entryId);

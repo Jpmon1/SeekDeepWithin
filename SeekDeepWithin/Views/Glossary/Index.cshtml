@@ -12,7 +12,9 @@
    @if (string.IsNullOrWhiteSpace (Model.SourceName)) {
       <text>Glossary</text>
       if (Request.IsAuthenticated && User.IsInRole ("Creator")) {
-         <span style="font-size: small">@Html.ActionLink("new term", "CreateTerm")</span>
+         <span style="font-size: small">
+            <a href="@Url.Action("Create", "Term", null, Request.Url.Scheme)">new term</a>
+         </span>
       }
    } else {
       <text>@Model.SourceName</text>
@@ -31,7 +33,7 @@
                         startChar = item.Name [0];
                         <li class="title">@Char.ToUpper(startChar)</li>
                      }
-                     <li class="bullet-item">@Html.ActionLink(item.Name, "Term", new {id = item.Id})</li>
+                     <li class="bullet-item"><a href="@Url.Action("Index", "Term", new {id = item.Id}, Request.Url.Scheme)">@item.Name</a></li>
                   }
                   Html.Raw ("</ul>");
                   start += perColumn;

@@ -237,7 +237,7 @@
                <i class="icon-editalt"></i> Edit Chapter
             </a>
          } else if (Model.ItemType == "Entry") {
-            <a href="@Url.Action("Edit", "Glossary", new {id = Model.ParentId}, Request.Url.Scheme)" class="button secondary expand" id="btnEditFooters">
+            <a href="@Url.Action("Edit", "GlossaryItem", new {id = Model.ParentId}, Request.Url.Scheme)" class="button secondary expand" id="btnEditFooters">
                <i class="icon-editalt"></i> Edit Item
             </a>
          }

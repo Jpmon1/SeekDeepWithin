@@ -34,7 +34,7 @@ function addMultiple(i) {
          addMultiple(parseInt(i) + 1);
       });
    } else {
-      window.location = '/Read/Index/' + $('#ParentId').val();
+      window.location = '/Read/' + $('#ParentId').val();
    }
 }
 
