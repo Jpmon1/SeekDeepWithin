@@ -1,11 +1,11 @@
 Comments
 Advanced search
-List glossary terms by source
 Filter books/terms by tags, etc.
 Edit number and order of chapter
 Search with tag filter
 Notes
 Images...
+Save books to PDF/XPS/TXT/DOC
 View sources from glossary instead of having to go to the item and then select the source.
 Treasury of Scripture Knowledge (References)
 Links/Styles in footers/headers
