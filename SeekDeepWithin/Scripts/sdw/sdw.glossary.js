@@ -1,4 +1,33 @@
-﻿
+﻿$(document).ready(function() {
+   $('#smallLeftMenuIcon').show();
+   $('#leftMenu').data('loc', 'on');
+   $(window).resize(function () {
+      glossary_resize();
+   });
+   glossary_resize();
+});
+
+function glossary_resize() {
+   var contents = $('#leftMenu');
+   var loc = contents.data('loc');
+   if (Foundation.utils.is_small_only()) {
+      if (loc === 'on') {
+         contents.remove();
+         $('#panel_left').html(contents);
+         contents.data('loc', 'off');
+      }
+   } else {
+      if (loc === 'off') {
+         contents.remove();
+         panels_hideLeft();
+         panels_hideOverlay();
+         $('#contentPanel').append(contents);
+         contents.data('loc', 'on');
+      }
+      $('#contentPanel').css({ 'height': $('#workArea').height() });
+   }
+}
+
 function entry_get(id) {
    $.ajax({
       type: 'GET',
@@ -11,6 +40,18 @@ function entry_get(id) {
       $('#btnEditStyles').attr('href', '/Style/EditEntry?id=' + data.entryId);
       $('#btnEditHeaders').attr('href', '/Header/Edit?id=' + data.entryId + "&type=Entry");
       $('#btnEditFooters').attr('href', '/Footer/Edit?id=' + data.entryId + "&type=Entry");
+      var item = $('#item_' + document.prevEntryId);
+      if (item.length > 0) {
+         item.removeClass('active');
+      }
+      item = $('#item_' + data.entryId);
+      if (item.length > 0) {
+         item.addClass('active');
+         //$("#contentPanel").scrollTop(item.position().top - 40);
+      }
+      panels_hideLeft();
+      panels_hideOverlay();
+      document.prevEntryId = data.entryId;
    }).fail(function (data) {
       $('#modalClose').show();
       $('#modal').foundation('reveal', 'open');

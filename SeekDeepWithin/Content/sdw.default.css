@@ -1,13 +1,10 @@
-﻿body {
+﻿body, .button, h1, h2, h3, h4, h5, h6, .pricing-table .title {
    font-family: 'Merriweather', Helvetica, Arial, sans-serif;
 }
-
-.button {
-   font-family: 'Merriweather', Helvetica, Arial, sans-serif;
-}
-
-h1, h2, h3, h4, h5, h6, .pricing-table .title {
-   font-family: 'Merriweather', Helvetica, Arial, sans-serif;
+@media only screen and (max-width: 40em) {
+   body{ margin-top: 65px;}
+   .contents > * {padding: 1.25rem;}
+   .contents div > * {padding: 1.25rem;}
 }
 
 .pricing-table .title {
@@ -39,6 +36,9 @@ h1, h2, h3, h4, h5, h6, .pricing-table .title {
 .right-small {
    border-left: solid 1px #C7C7C7;
 }
+
+.mLeft {margin-left: 1.125rem;}
+.mRight {margin-right: 1.125rem;}
 
 a.anchor {
    display: block;
@@ -129,8 +129,16 @@ a.anchor {
    background: #c7c7c7;
 }
 
+.small-bar-container {
+   top: 0;
+   left: 0;
+   width: 100%;
+   z-index: 3000;
+   position: fixed;
+}
 .small-bar {
    width: 100%;
+   z-index: 3001;
    background: #333333;
 }
 .small-bar h1 {
@@ -172,17 +180,18 @@ a.anchor {
    font-size: 0.875rem;
    border-bottom: 1px solid black;
 }
-.side-menu > a:hover {
-   background: #008CBA;
-}
+.side-menu > a:hover {background: #008CBA;}
 
-.overlay {
+.panels_overlay {
    position: fixed;
+   background: #000000;
    background: rgba(0, 0, 0, 0.75);
    width: 100%;
    height: 100%;
    display: none;
    z-index: 999999;
+   top: 0;
+   left: 0;
    -webkit-transition: all 225ms ease;
    -moz-transition: all 225ms ease;
    transition: all 225ms ease;
@@ -194,22 +203,46 @@ a.anchor {
    animation-name: fadeIn;
    cursor: pointer;
 }
-.scotch-is-showing .overlay {
-  display: block;
-}
+.panels_overlay.panels-open {display: block;}
 @-webkit-keyframes fadeIn {
-   0% {
-      opacity: 0;
-   }
-   100% {
-      opacity: 1;
-   }
+   0% {opacity: 0;}
+   100% {opacity: 1;}
 }
 @keyframes fadeIn {
-   0% {
-      opacity: 0;
-   }
-   100% {
-      opacity: 1;
-   }
+   0% {opacity: 0;}
+   100% {opacity: 1;}
+}
+
+/* General styles for all menus */
+.cbp-spmenu{background: white;position: fixed;}
+/* Orientation-dependent styles for the content of the menu */
+.cbp-spmenu-vertical { top: 0;width: 240px;height: 100%;z-index: 4000;overflow: auto; }
+.cbp-spmenu-horizontal {width: 100%;height: 150px;left: 0;z-index: 4000;overflow: hidden;}
+/* Vertical menu that slides from the left or right */
+.cbp-spmenu-left {left: -240px;}
+.cbp-spmenu-right {right: -240px;}
+.cbp-spmenu-left.panels-open {left: 0;}
+.cbp-spmenu-right.panels-open {right: 0;}
+/* Horizontal menu that slides from the top or bottom */
+.cbp-spmenu-top {top: -150px;}
+.cbp-spmenu-bottom {bottom: -150px;}
+.cbp-spmenu-top.panels-open {top: 0;}
+.cbp-spmenu-bottom.panels-open {bottom: 0;}
+/* Push classes applied to the body */
+.cbp-spmenu-push {overflow-x: hidden;position: relative;left: 0;}
+.cbp-spmenu-push-toright {left: 240px;}
+.cbp-spmenu-push-toleft {left: -240px;}
+/* Transitions */
+.cbp-spmenu, .panels_overlay, .cbp-spmenu-push {-webkit-transition: all 0.3s ease;-moz-transition: all 0.3s ease;transition: all 0.3s ease;}
+/* Example media queries */
+@media screen and (max-width: 55.1875em){
+   .cbp-spmenu-horizontal {font-size: 75%;height: 110px;}
+   .cbp-spmenu-top {top: -110px;}
+   .cbp-spmenu-bottom {bottom: -110px;}
+}
+@media screen and (max-height: 26.375em){
+   .cbp-spmenu-vertical {font-size: 90%;width: 190px;}
+   .cbp-spmenu-left,.cbp-spmenu-push-toleft {left: -190px;}
+   .cbp-spmenu-right {right: -190px;}
+   .cbp-spmenu-push-toright {left: 190px;}
 }

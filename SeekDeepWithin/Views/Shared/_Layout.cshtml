@@ -12,159 +12,125 @@
       @RenderSection("styles", false)
       @Styles.Render("~/Content/css")
       @Scripts.Render("~/bundles/modernizr")
-      <link href='http://fonts.googleapis.com/css?family=Merriweather:400italic,400,900,300italic,300,700,700italic,900italic' rel='stylesheet' type='text/css'>
+      <link href="http://fonts.googleapis.com/css?family=Merriweather:400italic,400,900,300italic,300,700,700italic,900italic" rel="stylesheet" type="text/css">
    </head>
-   <body>
+<body class="cbp-spmenu-push">
 
-      <nav class="top-bar show-for-medium-up" data-topbar role="navigation" id="siteNavBar">
-         <ul class="title-area">
-            <li class="name">
-               <h1><a href="@Url.Action("Index", "Home", null, Request.Url.Scheme)">Seek Deep Within</a></h1>
+   <div class="cbp-spmenu cbp-spmenu-vertical cbp-spmenu-left" id="panel_left">
+   </div>
+   <div class="cbp-spmenu cbp-spmenu-vertical cbp-spmenu-right" id="panel_right">
+      <div class="contents">
+         <a class="item" href="@Url.Action("Index", "Book", null, Request.Url.Scheme)"><i class="icon-book mRight"></i> Books</a>
+         <a class="item" href="@Url.Action("Index", "Glossary", null, Request.Url.Scheme)"><i class="icon-list mRight"></i> Glossary</a>
+         <a class="item" href="@Url.Action("Index", "Search", null, Request.Url.Scheme)"><i class="icon-search mRight"></i> Search</a>
+         <a class="item" href="@Url.Action("Index", "Writer", null, Request.Url.Scheme)"><i class="icon-user mRight"></i> Writers</a>
+         <a class="item" href="@Url.Action("Index", "Tag", null, Request.Url.Scheme)"><i class="icon-tags mRight"></i> Tags</a>
+         <a class="item" href="@Url.Action("About", "Home", null, Request.Url.Scheme)"><i class="icon-question-sign mRight"></i> About</a>
+         @if (Request.IsAuthenticated)
+         {
+            <a class="item" href="javascript:document.getElementById('logoutForm').submit()"><i class="icon-exit"></i> Log out</a>
+            <a class="item" href="@Url.Action("Manage", "Account", null, Request.Url.Scheme)">Welcome @User.Identity.Name!</a>
+         }
+         else
+         {
+            var returnUrl = Request.Url != null ? Request.Url.ToString () : string.Empty;
+            <a class="item" href="@Url.Action("Register", "Account", null, Request.Url.Scheme)"><i class="icon-ok-sign mRight"></i> Register</a>
+            <a class="item" href="@Url.Action("Login", "Account", new { returnUrl }, Request.Url.Scheme)"><i class="icon-enter mRight"></i> Log in</a>
+         }
+      </div>
+   </div>
+   <div class="cbp-spmenu cbp-spmenu-horizontal cbp-spmenu-top" id="panel_top">
+   </div>
+   <div class="cbp-spmenu cbp-spmenu-horizontal cbp-spmenu-bottom" id="panel_bottom">
+   </div>
+
+   <nav class="top-bar show-for-medium-up" data-topbar role="navigation" id="siteNavBar">
+      <ul class="title-area">
+         <li class="name">
+            <h1><a href="@Url.Action("Index", "Home", null, Request.Url.Scheme)">Seek Deep Within</a></h1>
+         </li>
+         <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
+         <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
+      </ul>
+
+      <section class="top-bar-section">
+         <!-- Right Nav Section -->
+         <ul class="right">
+            <li><a href="@Url.Action("Index", "Book", null, Request.Url.Scheme)"><i class="icon-book"></i> Books</a></li>
+            <li><a href="@Url.Action("Index", "Glossary", null, Request.Url.Scheme)"><i class="icon-list"></i> Glossary</a></li>
+            <li><a href="@Url.Action("Index", "Search", null, Request.Url.Scheme)"><i class="icon-search"></i> Search</a></li>
+            <li class="has-dropdown">
+               <a href="#"><i class="icon-addtolist"></i> More...</a>
+               <ul class="dropdown">
+                  <li><a href="@Url.Action("Index", "Writer", null, Request.Url.Scheme)"><i class="icon-user"></i> Writers</a></li>
+                  <li><a href="@Url.Action("Index", "Tag", null, Request.Url.Scheme)"><i class="icon-tags"></i> Tags</a></li>
+                  <li><a href="@Url.Action("About", "Home", null, Request.Url.Scheme)"><i class="icon-question-sign"></i> About</a></li>
+                  @if (Request.IsAuthenticated) {
+                  <li><a href="javascript:document.getElementById('logoutForm').submit()"><i class="icon-exit"></i> Log out</a></li>
+                  }
+               </ul>
             </li>
-            <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
-            <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
          </ul>
 
-         <section class="top-bar-section">
-            <!-- Right Nav Section -->
-            <ul class="right">
-               <li><a href="@Url.Action("Index", "Book", null, Request.Url.Scheme)"><i class="icon-book"></i> Books</a></li>
-               <li><a href="@Url.Action("Index", "Glossary", null, Request.Url.Scheme)"><i class="icon-list"></i> Glossary</a></li>
-               <li><a href="@Url.Action("Index", "Search", null, Request.Url.Scheme)"><i class="icon-search"></i> Search</a></li>
-               <li class="has-dropdown">
-                  <a href="#"><i class="icon-addtolist"></i> More...</a>
-                  <ul class="dropdown">
-                     <li><a href="@Url.Action("Index", "Writer", null, Request.Url.Scheme)"><i class="icon-user"></i> Writers</a></li>
-                     <li><a href="@Url.Action("Index", "Tag", null, Request.Url.Scheme)"><i class="icon-tags"></i> Tags</a></li>
-                     <li><a href="@Url.Action("About", "Home", null, Request.Url.Scheme)"><i class="icon-question-sign"></i> About</a></li>
-                     @if (Request.IsAuthenticated) {
-                        <li><a href="javascript:document.getElementById('logoutForm').submit()"><i class="icon-exit"></i> Log out</a></li>
-                     }
-                  </ul>
-               </li>
-            </ul>
-
-            <!-- Left Nav Section -->
-            <ul class="left">
-               @if (Request.IsAuthenticated) {
-                  <li><a href="@Url.Action("Manage", "Account", null, Request.Url.Scheme)">Welcome @User.Identity.Name!</a></li>
-               } else {
-                  var returnUrl = Request.Url != null ? Request.Url.ToString () : string.Empty;
-                  <li><a href="@Url.Action("Register", "Account", null, Request.Url.Scheme)"><i class="icon-ok-sign"></i> Register</a></li>
-                  <li><a href="@Url.Action("Login", "Account", new { returnUrl }, Request.Url.Scheme)"><i class="icon-enter"></i> Log in</a></li>
-               }
-            </ul>
-         </section>
-      </nav>
-      
-      <span class="overlay"></span>
-      
-      <div class="show-for-small-only">
-         <table class="small-bar" id="smallMenuBar">
-            <tr>
-               <td class="toggle-left-panel" style="width: 40px;">
-                  <i class="icon-menu" style="display: none;" id="smallLeftMenuIcon"></i>
-               </td>
-               <td>
-                  <h1><a href="@Url.Action("Index", "Home", null, Request.Url.Scheme)">Seek Deep Within</a></h1>
-               </td>
-               <td class="toggle-right-panel" style="width: 40px;">
-                  <i class="icon-menu"></i>
-               </td>
-            </tr>
-         </table>
-      </div>
-
-      <div class="row">
-         <div class="small-12 large-12 columns">
-            @RenderSection("featured", required: false)
-            <section class="content-wrapper main-content clear-fix">
-               @RenderBody()
-            </section>
-         </div>
-      </div>
-
-      @if (Request.IsAuthenticated) {
-         <!-- LOG OUT FORM-->
-         <div style="display: none;">
-            @using (Html.BeginForm ("LogOff", "Account", FormMethod.Post, new {id = "logoutForm"})) {
-               @Html.AntiForgeryToken()
+         <!-- Left Nav Section -->
+         <ul class="left">
+            @if (Request.IsAuthenticated) {
+            <li><a href="@Url.Action("Manage", "Account", null, Request.Url.Scheme)">Welcome @User.Identity.Name!</a></li>
+            } else {
+               var returnUrl = Request.Url != null ? Request.Url.ToString() : string.Empty;
+            <li><a href="@Url.Action("Register", "Account", null, Request.Url.Scheme)"><i class="icon-ok-sign"></i> Register</a></li>
+            <li><a href="@Url.Action("Login", "Account", new { returnUrl }, Request.Url.Scheme)"><i class="icon-enter"></i> Log in</a></li>
             }
-         </div>
-      }
-      
-      <!-- FOOTER -->
-      <hr />
-      <div class="row">
-         <div class="large-6 columns">
-            <p>&copy; @DateTime.Now.Year - Seek Deep Within</p>
-         </div>
-      </div>
+         </ul>
+      </section>
+   </nav>
 
-      <div id="smallLeftMenu" style="display: none;">
-         <div class="small-bar row" style="border-bottom: 1px solid black">
-            <div class="small-12 columns">
-               <h1><a href="javascript:void(0);" class="toggle-left-panel">Close</a></h1>
-            </div>
-         </div>
-         <div id="smallLeftMenuContent">
+   <span class="panels_overlay"></span>
 
-         </div>
-      </div>
+   <div class="show-for-small-only small-bar-container">
+      <table class="small-bar" id="smallMenuBar">
+         <tr>
+            <td style="width: 40px;" onclick="panels_showLeft();">
+               <i class="icon-menu" style="display: none;" id="smallLeftMenuIcon"></i>
+            </td>
+            <td>
+               <h1><a href="@Url.Action("Index", "Home", null, Request.Url.Scheme)">Seek Deep Within</a></h1>
+            </td>
+            <td style="width: 40px;" onclick="panels_showRight();">
+               <i class="icon-menu"></i>
+            </td>
+         </tr>
+      </table>
+   </div>
 
-      <div id="smallRightMenu" style="background: #333333;display: none;">
-         <div class="small-bar row" style="border-bottom: 1px solid black">
-            <div class="small-12 columns">
-               <h1><a href="javascript:void(0);" class="toggle-right-panel">Close</a></h1>
-            </div>
-         </div>
-         <div id="smallRightMenuContent">
-            <div class="side-menu">
-               <a class="item" href="@Url.Action("Index", "Book", null, Request.Url.Scheme)"><i class="icon-book"></i> Books</a>
-               <a class="item" href="@Url.Action("Index", "Glossary", null, Request.Url.Scheme)"><i class="icon-list"></i> Glossary</a>
-               <a class="item" href="@Url.Action("Index", "Search", null, Request.Url.Scheme)"><i class="icon-search"></i> Search</a>
-               <a class="item" href="@Url.Action("Index", "Writer", null, Request.Url.Scheme)"><i class="icon-user"></i> Writers</a>
-               <a class="item" href="@Url.Action("Index", "Tag", null, Request.Url.Scheme)"><i class="icon-tags"></i> Tags</a>
-               <a class="item" href="@Url.Action("About", "Home", null, Request.Url.Scheme)"><i class="icon-question-sign"></i> About</a>
-               @if (Request.IsAuthenticated)
-               {
-                  <a class="item" href="javascript:document.getElementById('logoutForm').submit()"><i class="icon-exit"></i> Log out</a>
-                  <a class="item" href="@Url.Action("Manage", "Account", null, Request.Url.Scheme)">Welcome @User.Identity.Name!</a>
-               }
-               else
-               {
-                  var returnUrl = Request.Url != null ? Request.Url.ToString () : string.Empty;
-                  <a class="item" href="@Url.Action("Register", "Account", null, Request.Url.Scheme)"><i class="icon-ok-sign"></i> Register</a>
-                  <a class="item" href="@Url.Action("Login", "Account", new { returnUrl }, Request.Url.Scheme)"><i class="icon-enter"></i> Log in</a>
+   <div class="row">
+      <div class="small-12 large-12 columns">
+         @RenderSection("featured", false)
+         @RenderBody()
+         @if (Request.IsAuthenticated) {
+               <!-- LOG OUT FORM-->
+            <div style="display: none;">
+               @using (Html.BeginForm ("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" })) {
+                  @Html.AntiForgeryToken()
                }
             </div>
-         </div>
+         }
       </div>
+   </div>
 
-      @Scripts.Render("~/bundles/jquery")
-      @RenderSection("scripts", required: false)
-      <script>
-         $(document).foundation({
-            offcanvas: {
-               open_method: 'overlap_single',
-               close_on_click: true
-            }
-         });
-         var scotchPanel = $('#smallRightMenu').scotchPanel({
-            containerSelector: 'body',
-            direction: 'right',
-            duration: 200,
-            transition: 'ease-out',
-            distanceX: '250px',
-            clickSelector: '.toggle-right-panel',
-            enableEscapeKey: true
-         });
-         document.leftMenu = scotchPanel;
-         $('.overlay').click(function () {
-            // CLOSE ONLY
-            scotchPanel.close();
-         });
-         $('#smallRightMenu').show();
-      </script>
-   </body>
+   <!-- FOOTER -->
+   <hr />
+   <div class="row">
+      <div class="large-6 columns">
+         <p>&copy; @DateTime.Now.Year - Seek Deep Within</p>
+      </div>
+   </div>
+
+   @Scripts.Render("~/bundles/jquery")
+   @RenderSection("scripts", false)
+   <script>
+      $(document).foundation();
+   </script>
+</body>
+
 </html>

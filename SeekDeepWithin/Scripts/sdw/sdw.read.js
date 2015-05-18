@@ -1,42 +1,26 @@
 ﻿$(document).ready(function () {
    $('#smallLeftMenuIcon').show();
    $('#leftMenu').data('loc', 'on');
-   var scotchPanel = $('#smallLeftMenu').scotchPanel({
-      containerSelector: 'body',
-      direction: 'left',
-      duration: 300,
-      transition: 'ease-out',
-      distanceX: '250px',
-      forceMinHeight: true,
-      clickSelector: '.toggle-left-panel',
-      enableEscapeKey: true
-   });
-   document.rightMenu = scotchPanel;
-   $('#smallLeftMenu').show();
    $(window).resize(function () {
-      resizeReadMenu(scotchPanel);
+      resizeReadMenu();
    });
-   resizeReadMenu(scotchPanel);
-   $('.overlay').click(function () {
-      // CLOSE ONLY
-      scotchPanel.close();
-   });
+   resizeReadMenu();
 });
 
-function resizeReadMenu(scotchPanel) {
+function resizeReadMenu() {
    var contents = $('#leftMenu');
    var loc = contents.data('loc');
    if (Foundation.utils.is_small_only()) {
       if (loc === 'on') {
          contents.remove();
-         $('#smallLeftMenuContent').append(contents);
+         $('#panel_left').html(contents);
          contents.data('loc', 'off');
       }
-      $('#smallLeftMenuContent').css({ 'height': $('body').height() });
    } else {
       if (loc === 'off') {
-         scotchPanel.close();
          contents.remove();
+         panels_hideLeft();
+         panels_hideOverlay();
          $('#contentPanel').append(contents);
          contents.data('loc', 'on');
       }

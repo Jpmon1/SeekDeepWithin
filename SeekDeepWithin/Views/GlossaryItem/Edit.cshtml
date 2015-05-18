@@ -3,10 +3,6 @@
 @{
    ViewBag.Title = "Edit Item - " + Model.Term.Name;
 }
-<h3>
-   <small>editing item for</small> @Model.Term.Name
-</h3>
-
 @using (Html.BeginForm (null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" })){
    @Html.AntiForgeryToken()
 }
@@ -16,138 +12,128 @@
 <input type="hidden" id="itemType" name="itemType" value="Entry" />
 
 <div class="row">
-   <div class="small-12 columns text-right">
-      <a href="@Url.Action("Index", "Term", new {id=Model.Term.Id}, Request.Url.Scheme)" class="button tiny secondary">
-         <i class="icon-preview"></i> view term
-      </a>
-      @if (Request.IsAuthenticated && User.IsInRole ("Creator")) {
-         <a href="@Url.Action("Add", "Glossary", new {id=Model.Id}, Request.Url.Scheme)" class="button tiny success">
-            <i class="icon-plus"></i> add entries
-         </a>
-      }
-      <a href="@Url.Action("EditSource", "Source", new {id = Model.Id, type = "entry", parentId = Model.Term.Id}, Request.Url.Scheme)" class="button tiny secondary">
-         <i class="icon-editalt"></i> edit source
-      </a>
-   </div>
-</div>
+   <div class="small-12 medium-9 large-9 columns" id="workArea">
 
-<div class="off-canvas-wrap" data-offcanvas>
-   <div class="inner-wrap">
-      <nav class="tab-bar">
-         <section class="left-small text-center">
-            <a class="left-off-canvas-toggle" href="#" style="color: black;">
-               <i class="icon-menu"></i>
+      <div class="panel">
+         <h3>
+            <small>editing item for</small>
+            <a href="@Url.Action("Index", "Term", new {id=Model.Term.Id}, Request.Url.Scheme)">@Model.Term.Name</a>
+            <small>(editing entry id: <span id="editEntryId"></span>)</small>
+         </h3>
+      </div>
+
+      <div class="row">
+         <div class="small-12 large-12 columns">
+            <textarea cols="10" id="entryText" name="entryText" rows="6"></textarea>
+         </div>
+      </div>
+
+      <div class="row">
+         <div class="small-12 large-6 columns">
+            <div class="row collapse">
+               <div class="small-3 large-2 columns">
+                  <span class="prefix">Order</span>
+               </div>
+               <div class="small-9 large-10 columns">
+                  <input type="number" id="entryOrder" name="entryOrder" value="0" />
+               </div>
+            </div>
+         </div>
+         <div class="small-12 large-6 columns"></div>
+      </div>
+
+      <div class="row">
+         <div class="small-6 large-3 large-offset-2 columns">
+            <a href="javascript:void(0)" class="button expand" onclick="entry_update();">
+               <i class="icon-savetodrive"></i> Save
             </a>
-         </section>
+         </div>
+         <div class="small-6 large-3 large-offset-2 columns">
+            <a href="javascript:void(0)" class="button alert expand" onclick="entry_delete();">
+               <i class="icon-remove-circle"></i> Delete
+            </a>
+         </div>
+         <div class="small-12 large-2 columns"></div>
+      </div>
 
-         <section class="middle tab-bar-section">
-            <h1 class="title">Entries <small>(editing entry id: <span id="editEntryId"></span>)</small></h1>
-         </section>
-      </nav>
-
-      <aside class="left-off-canvas-menu">
-         <ul class="off-canvas-list">
-            <li><label>Entries</label></li>
-            @foreach (var entry in Model.Entries) {
-               var len = entry.Text.Length > 25 ? 25 : entry.Text.Length;
-               <li id="item_@entry.Id">
-                  <a href="#" onclick="entry_get(@entry.Id)"><small>@entry.Order</small> - @entry.Text.Substring(0, len)...</a>
+      <div class="row">
+         <div class="small-6 pagination-centered columns">
+            <ul class="pagination" role="menubar" aria-label="Pagination" style="width: 100%">
+               <li class="arrow">
+                  <a href="javascript:void(0)" onclick="entry_previous();">&laquo; Previous Item</a>
                </li>
+            </ul>
+         </div>
+         <div class="small-6 pagination-centered columns">
+            <ul class="pagination" role="menubar" aria-label="Pagination" style="width: 100%">
+               <li class="arrow">
+                  <a href="javascript:void(0)" onclick="entry_next();">Next Item &raquo;</a>
+               </li>
+            </ul>
+         </div>
+      </div>
+
+      <hr />
+
+      <div class="row">
+         <div class="small-12 columns">
+            <div class="row collapse">
+               <div class="small-9 columns">
+                  @Html.DropDownList("sourceId", ViewBag.Sources as SelectList)
+               </div>
+               <div class="small-3 columns">
+                  <button class="button success postfix" onclick="glossary_setSource(@Model.Id);">
+                     <i class="icon-savetodrive"></i> Save
+                  </button>
+               </div>
+            </div>
+         </div>
+      </div>
+
+      <hr />
+
+      <div class="row">
+         <div class="small-6 medium-3 large-3 columns">
+            <a href="#" class="button expand" id="btnEditLinks"><i class="icon-link"></i> Edit Links</a>
+         </div>
+         <div class="small-6 medium-3 large-3 columns">
+            <a href="#" class="button expand" id="btnEditStyles"><i class="icon-paintroll"></i> Edit Styles</a>
+         </div>
+         <div class="small-6 medium-3 large-3 columns">
+            <a href="#" class="button expand" id="btnEditHeaders"><i class="icon-notificationbottom"></i> Edit Headers</a>
+         </div>
+         <div class="small-6 medium-3 large-3 columns">
+            <a href="#" class="button expand" id="btnEditFooters"><i class="icon-notificationtop"></i> Edit Footers</a>
+         </div>
+      </div>
+      <div class="row">
+         <div class="small-12 columns">
+            @if (Request.IsAuthenticated && User.IsInRole ("Creator")){
+               <a href="@Url.Action("Add", "Glossary", new {id=Model.Id}, Request.Url.Scheme)" class="button success expand">
+                  <i class="icon-plus"></i> add entries
+               </a>
             }
-         </ul>
-      </aside>
-
-      <section class="main-section">
-
-         <div class="row">
-            <div class="small-12 large-12 columns">
-               <textarea cols="10" id="entryText" name="entryText" rows="6" style="margin-top: 10px;"></textarea>
-            </div>
          </div>
-
-         <div class="row">
-            <div class="small-12 large-6 columns">
-               <div class="row collapse">
-                  <div class="small-3 large-2 columns">
-                     <span class="prefix">Order</span>
-                  </div>
-                  <div class="small-9 large-10 columns">
-                     <input type="number" id="entryOrder" name="entryOrder" value="0" />
+      </div>
+   </div>
+   <div class="small-12 medium-3 large-3 columns hide-for-small-only">
+      <ul class="pricing-table">
+         <li class="title">Entries</li>
+         <li>
+            <div id="contentPanel" style="overflow: auto;">
+               <div id="leftMenu">
+                  <div class="contents">
+                     @foreach (var entry in Model.Entries) {
+                        var len = entry.Text.Length > 20 ? 20 : entry.Text.Length;
+                        <a id="item_@entry.Id" href="javascript:void(0)" onclick="entry_get(@entry.Id)" class="item">
+                           <small>@entry.Order</small> - @entry.Text.Substring(0, len)...
+                        </a>
+                     }
                   </div>
                </div>
             </div>
-            <div class="small-12 large-6 columns"></div>
-         </div>
-
-         <div class="row">
-            <div class="small-6 large-3 large-offset-2 columns">
-               <a href="javascript:void(0)" class="button expand" onclick="entry_update();">
-                  <i class="icon-savetodrive"></i> Save
-               </a>
-            </div>
-            <div class="small-6 large-3 large-offset-2 columns">
-               <a href="javascript:void(0)" class="button alert expand" onclick="entry_delete();">
-                  <i class="icon-remove-circle"></i> Delete
-               </a>
-            </div>
-            <div class="small-12 large-2 columns"></div>
-         </div>
-
-         <div class="row">
-            <div class="small-6 pagination-centered columns">
-               <ul class="pagination" role="menubar" aria-label="Pagination" style="width: 100%">
-                  <li class="arrow">
-                     <a href="javascript:void(0)" onclick="entry_previous();">&laquo; Previous Item</a>
-                  </li>
-               </ul>
-            </div>
-            <div class="small-6 pagination-centered columns">
-               <ul class="pagination" role="menubar" aria-label="Pagination" style="width: 100%">
-                  <li class="arrow">
-                     <a href="javascript:void(0)" onclick="entry_next();">Next Item &raquo;</a>
-                  </li>
-               </ul>
-            </div>
-         </div>
-
-         <hr />
-         
-         <div class="row">
-            <div class="small-12 columns">
-               <div class="row collapse">
-                  <div class="small-9 columns">
-                     @Html.DropDownList("sourceId", ViewBag.Sources as SelectList)
-                  </div>
-                  <div class="small-3 columns">
-                     <button class="button success postfix" onclick="glossary_setSource(@Model.Id);">
-                        <i class="icon-savetodrive"></i> Save
-                     </button>
-                  </div>
-               </div>
-            </div>
-         </div>
-         
-         <hr />
-
-         <div class="row">
-            <div class="small-6 medium-3 large-3 columns">
-               <a href="#" class="button expand" id="btnEditLinks"><i class="icon-link"></i> Edit Links</a>
-            </div>
-            <div class="small-6 medium-3 large-3 columns">
-               <a href="#" class="button expand" id="btnEditStyles"><i class="icon-paintroll"></i> Edit Styles</a>
-            </div>
-            <div class="small-6 medium-3 large-3 columns">
-               <a href="#" class="button expand" id="btnEditHeaders"><i class="icon-notificationbottom"></i> Edit Headers</a>
-            </div>
-            <div class="small-6 medium-3 large-3 columns">
-               <a href="#" class="button expand" id="btnEditFooters"><i class="icon-notificationtop"></i> Edit Footers</a>
-            </div>
-         </div>
-
-      </section>
-
-      <a class="exit-off-canvas"></a>
-
+         </li>
+      </ul>
    </div>
 </div>
 
@@ -157,6 +143,7 @@
    @Scripts.Render("~/bundles/sdw.editglossary")
    @if (Model.Entries.Count > 0) {
       <script type="text/javascript">
+         document.prevEntryId = -1;
          $(document).ready(function() {
             entry_get(@Model.Entries.First().Id);
          });

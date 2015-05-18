@@ -22,156 +22,147 @@
 <input type="hidden" id="FooterIndex" name="FooterIndex" value="-1" />
 <input type="hidden" id="itemType" name="itemType" value="Passage" />
 
-<div class="off-canvas-wrap" data-offcanvas>
-   <div class="inner-wrap">
-      <nav class="tab-bar">
-         <section class="left-small text-center">
-            <a class="left-off-canvas-toggle" href="#" style="color: black;"><i class="icon-menu"></i></a>
-         </section>
-
-         <section class="middle tab-bar-section" style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis">
-            <h1 class="title">Passage <small>(passage id: <span id="editPassId"></span> entry id: <span id="editEntryId"></span>)</small></h1>
-         </section>
-      </nav>
-
-      <aside class="left-off-canvas-menu">
-         <ul class="off-canvas-list" id="itemList">
-            <li><label>Passages</label></li>
-            @foreach (var passage in Model.Passages) {
-               var len = passage.Text.Length > 20 ? 20 : passage.Text.Length;
-               <li id="item_@passage.EntryId">
-                  <a href="javascript:void(0)" onclick="passage_get(@passage.EntryId)"><small>@passage.Number</small> - @passage.Text.Substring(0, len)...</a>
-               </li>
+<div class="row">
+   <div class="small-12 medium-9 large-9 columns" id="workArea">
+      <div class="panel">Passage <small>(passage id: <span id="editPassId"></span> entry id: <span id="editEntryId"></span>)</small></div>
+      <div class="row" style="margin-top: 10px;">
+         <div class="small-6 medium-3 large-3 columns">
+            <a href="@Url.Action("Index", "Read", new {id=Model.Id}, Request.Url.Scheme)" class="button expand secondary small">
+               <i class="icon-notebook"></i> Read
+            </a>
+         </div>
+         <div class="small-6 medium-3 large-3 columns">
+            @if (Request.IsAuthenticated && User.IsInRole ("Creator"))
+            {
+               <a href="@Url.Action("Add", "Chapter", new {id = Model.Id}, Request.Url.Scheme)" class="button expand success small">
+                  <i class="icon-plus"></i> Add Passages
+               </a>
             }
-         </ul>
-      </aside>
-
-      <section class="main-section">
-
-         <div class="row" style="margin-top: 10px;">
-            <div class="small-6 medium-3 large-3 columns">
-               <a href="@Url.Action("Index", "Read", new {id=Model.Id}, Request.Url.Scheme)" class="button expand secondary small">
-                  <i class="icon-notebook"></i> Read
-               </a>
-            </div>
-            <div class="small-6 medium-3 large-3 columns">
-               @if (Request.IsAuthenticated && User.IsInRole ("Creator"))
-               {
-                  <a href="@Url.Action("Add", "Chapter", new {id = Model.Id}, Request.Url.Scheme)" class="button expand success small">
-                     <i class="icon-plus"></i> Add Passages
-                  </a>
-               }
-            </div>
-            <div class="small-6 medium-3 large-3 columns text-center">
-               <label for="verseRadio"><i class="icon-numberlist"></i> Verses</label>
-               <div class="switch small">
-                  <input id="verseRadio" type="radio" name="versePara" @if (!Model.DefaultToParagraph) { <text> checked="checked" </text>  }>
-                  <label for="verseRadio"></label>
-               </div>
-            </div>
-            <div class="small-6 medium-3 large-3 columns text-center">
-               <label for="paraRadio"><i class="icon-align-left"></i> Paragraphs</label>
-               <div class="switch small">
-                  <input id="paraRadio" type="radio" name="versePara" @if (Model.DefaultToParagraph) { <text> checked="checked" </text>   }>
-                  <label for="paraRadio"></label>
-               </div>
+         </div>
+         <div class="small-6 medium-3 large-3 columns text-center">
+            <label for="verseRadio"><i class="icon-numberlist"></i> Verses</label>
+            <div class="switch small">
+               <input id="verseRadio" type="radio" name="versePara" @if (!Model.DefaultToParagraph) { <text> checked="checked" </text>   }>
+               <label for="verseRadio"></label>
             </div>
          </div>
-
-         <div class="row">
-            <div class="small-12 large-12 columns">
-               <textarea cols="10" id="passText" name="passText" rows="8"></textarea>
+         <div class="small-6 medium-3 large-3 columns text-center">
+            <label for="paraRadio"><i class="icon-align-left"></i> Paragraphs</label>
+            <div class="switch small">
+               <input id="paraRadio" type="radio" name="versePara" @if (Model.DefaultToParagraph) { <text> checked="checked" </text>    }>
+               <label for="paraRadio"></label>
             </div>
          </div>
+      </div>
 
-         <div class="row">
-            <div class="small-12 medium-6 large-6 columns">
-               <div class="row collapse">
-                  <div class="small-3 large-2 columns">
-                     <span class="prefix">Number</span>
-                  </div>
-                  <div class="small-9 large-10 columns">
-                     <input type="number" id="entryNumber" name="entryNumber" value="0" />
-                  </div>
+      <div class="row">
+         <div class="small-12 large-12 columns">
+            <textarea cols="10" id="passText" name="passText" rows="8"></textarea>
+         </div>
+      </div>
+
+      <div class="row">
+         <div class="small-12 medium-6 large-6 columns">
+            <div class="row collapse">
+               <div class="small-3 large-2 columns">
+                  <span class="prefix">Number</span>
                </div>
-            </div>
-            <div class="small-12 medium-6 large-6 columns">
-               <div class="row collapse">
-                  <div class="small-3 large-2 columns">
-                     <span class="prefix">Order</span>
-                  </div>
-                  <div class="small-9 large-10 columns">
-                     <input type="number" id="entryOrder" name="entryOrder" value="0" />
-                  </div>
+               <div class="small-9 large-10 columns">
+                  <input type="number" id="entryNumber" name="entryNumber" value="0" />
                </div>
             </div>
          </div>
-
-         <div class="row">
-            <div class="small-6 large-3 large-offset-2 columns">
-               <a href="javascript:void(0)" class="button expand small" onclick="passage_update();">
-                  <i class="icon-savetodrive"></i> Save
-               </a>
-            </div>
-            <div class="small-6 large-3 large-offset-2 columns">
-               <a href="javascript:void(0)" class="button alert expand small" onclick="passage_check_delete();">
-                  <i class="icon-remove-circle"></i> Delete
-               </a>
-            </div>
-            <div class="small-12 large-2 columns"></div>
-         </div>
-
-         <div class="row">
-            <div class="small-6 pagination-centered columns">
-               <ul class="pagination" role="menubar" aria-label="Pagination" style="width: 100%">
-                  <li class="arrow">
-                     <a href="javascript:void(0)" onclick="passage_previous();">&laquo; Previous Item</a>
-                  </li>
-               </ul>
-            </div>
-            <div class="small-6 pagination-centered columns">
-               <ul class="pagination" role="menubar" aria-label="Pagination" style="width: 100%">
-                  <li class="arrow">
-                     <a href="javascript:void(0)" onclick="passage_next();">Next Item &raquo;</a>
-                  </li>
-               </ul>
+         <div class="small-12 medium-6 large-6 columns">
+            <div class="row collapse">
+               <div class="small-3 large-2 columns">
+                  <span class="prefix">Order</span>
+               </div>
+               <div class="small-9 large-10 columns">
+                  <input type="number" id="entryOrder" name="entryOrder" value="0" />
+               </div>
             </div>
          </div>
+      </div>
 
-         <hr/>
-
-         <div class="row">
-            <div class="small-6 medium-3 large-3 columns">
-               <a href="#" class="button expand small" id="btnEditLinks"><i class="icon-link"></i> Edit Links</a>
-            </div>
-            <div class="small-6 medium-3 large-3 columns">
-               <a href="#" class="button expand small" id="btnEditStyles"><i class="icon-paintroll"></i> Edit Styles</a>
-            </div>
-            <div class="small-6 medium-3 large-3 columns">
-               <a href="#" class="button expand small" id="btnEditHeaders"><i class="icon-notificationbottom"></i> Edit Headers</a>
-            </div>
-            <div class="small-6 medium-3 large-3 columns">
-               <a href="#" class="button expand small" id="btnEditFooters"><i class="icon-notificationtop"></i> Edit Footers</a>
-            </div>
+      <div class="row">
+         <div class="small-6 large-3 large-offset-2 columns">
+            <a href="javascript:void(0)" class="button expand small" onclick="passage_update();">
+               <i class="icon-savetodrive"></i> Save
+            </a>
          </div>
-
-         <div class="row">
-            <div class="small-6 columns">
-               <a href="@Url.Action("Edit", "Header", new{id=Model.Id, type="Chapter"})" class="button expand small">
-                  <i class="icon-editalt"></i> Edit Chapter Headers
-               </a>
-            </div>
-            <div class="small-6 columns">
-               <a href="@Url.Action("Edit", "Footer", new{id=Model.Id, type="Chapter"})" class="button expand small">
-                  <i class="icon-editalt"></i> Edit Chapter Footers
-               </a>
-            </div>
+         <div class="small-6 large-3 large-offset-2 columns">
+            <a href="javascript:void(0)" class="button alert expand small" onclick="passage_check_delete();">
+               <i class="icon-remove-circle"></i> Delete
+            </a>
          </div>
+         <div class="small-12 large-2 columns"></div>
+      </div>
 
-      </section>
+      <div class="row">
+         <div class="small-6 pagination-centered columns">
+            <ul class="pagination" role="menubar" aria-label="Pagination" style="width: 100%">
+               <li class="arrow">
+                  <a href="javascript:void(0)" onclick="passage_previous();">&laquo; Previous Item</a>
+               </li>
+            </ul>
+         </div>
+         <div class="small-6 pagination-centered columns">
+            <ul class="pagination" role="menubar" aria-label="Pagination" style="width: 100%">
+               <li class="arrow">
+                  <a href="javascript:void(0)" onclick="passage_next();">Next Item &raquo;</a>
+               </li>
+            </ul>
+         </div>
+      </div>
 
-      <a class="exit-off-canvas"></a>
+      <hr />
 
+      <div class="row">
+         <div class="small-6 medium-3 large-3 columns">
+            <a href="#" class="button expand small" id="btnEditLinks"><i class="icon-link"></i> Edit Links</a>
+         </div>
+         <div class="small-6 medium-3 large-3 columns">
+            <a href="#" class="button expand small" id="btnEditStyles"><i class="icon-paintroll"></i> Edit Styles</a>
+         </div>
+         <div class="small-6 medium-3 large-3 columns">
+            <a href="#" class="button expand small" id="btnEditHeaders"><i class="icon-notificationbottom"></i> Edit Headers</a>
+         </div>
+         <div class="small-6 medium-3 large-3 columns">
+            <a href="#" class="button expand small" id="btnEditFooters"><i class="icon-notificationtop"></i> Edit Footers</a>
+         </div>
+      </div>
+
+      <div class="row">
+         <div class="small-6 columns">
+            <a href="@Url.Action("Edit", "Header", new{id=Model.Id, type="Chapter"})" class="button expand small">
+               <i class="icon-editalt"></i> Edit Chapter Headers
+            </a>
+         </div>
+         <div class="small-6 columns">
+            <a href="@Url.Action("Edit", "Footer", new{id=Model.Id, type="Chapter"})" class="button expand small">
+               <i class="icon-editalt"></i> Edit Chapter Footers
+            </a>
+         </div>
+      </div>
+   </div>
+   <div class="small-12 medium-3 large-3 columns hide-for-small-only">
+      <ul class="pricing-table">
+         <li class="title">Passages</li>
+         <li>
+            <div id="contentPanel" style="overflow: auto;">
+               <div id="leftMenu">
+                  <div class="contents">
+                     @foreach (var passage in Model.Passages) {
+                        var len = passage.Text.Length > 20 ? 20 : passage.Text.Length;
+                        <a href="javascript:void(0)" onclick="passage_get(@passage.EntryId)" id="item_@passage.EntryId" class="item">
+                           <small>@passage.Number</small> - @passage.Text.Substring(0, len)...
+                        </a>
+                     }
+                  </div>
+               </div>
+            </div>
+         </li>
+      </ul>
    </div>
 </div>
 
@@ -198,6 +189,7 @@
    @Scripts.Render("~/bundles/sdw.editchapter")
    @if (Model.Passages.Count > 0) {
       <script type="text/javascript">
+         document.prevEntryId = -1;
          $(document).ready(function() {
             passage_get(@Model.Passages.First().EntryId);
          });

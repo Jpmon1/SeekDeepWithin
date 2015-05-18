@@ -77,6 +77,18 @@ function passage_get(id) {
       $('#btnEditStyles').attr('href', '/Style/EditPassage?id=' + data.entryId);
       $('#btnEditHeaders').attr('href', '/Header/Edit?id=' + data.entryId + "&type=Passage");
       $('#btnEditFooters').attr('href', '/Footer/Edit?id=' + data.entryId + "&type=Passage");
+      var item = $('#item_' + document.prevEntryId);
+      if (item.length > 0) {
+         item.removeClass('active');
+      }
+      item = $('#item_' + data.entryId);
+      if (item.length > 0) {
+         item.addClass('active');
+         //$("#contentPanel").scrollTop(item.position().top - 40);
+      }
+      panels_hideLeft();
+      panels_hideOverlay();
+      document.prevEntryId = data.entryId;
    }).fail(function (data) {
       $('#modalClose').show();
       $('#modal').foundation('reveal', 'open');
