@@ -7,22 +7,21 @@ namespace SeekDeepWithin.Models
    /// </summary>
    public class SearchViewModel
    {
-      private readonly Collection<PassageViewModel> m_Passages;
-      private readonly Collection<GlossaryEntryViewModel> m_Entries;
+      private readonly Collection <SearchResult> m_Results;
 
       /// <summary>
       /// Initializes a new search view model.
       /// </summary>
-      public SearchViewModel ()
+      public SearchViewModel (SearchQueryViewModel query)
       {
-         this.m_Passages = new Collection<PassageViewModel> ();
-         this.m_Entries = new Collection<GlossaryEntryViewModel> ();
+         this.Query = query;
+         this.m_Results = new Collection <SearchResult> ();
       }
 
       /// <summary>
-      /// Gets or Sets the query searched for.
+      /// Gets the query searched for.
       /// </summary>
-      public string Query { get; set; }
+      public SearchQueryViewModel Query { get; private set; }
 
       /// <summary>
       /// Gets or Sets the parser log.
@@ -30,23 +29,13 @@ namespace SeekDeepWithin.Models
       public string ParserLog { get; set; }
 
       /// <summary>
-      /// Gets or Sets if the parsing log should be shown.
-      /// </summary>
-      public bool ShowLog { get; set; }
-
-      /// <summary>
       /// Gets the number of matches.
       /// </summary>
-      public int NumMatches { get { return this.m_Entries.Count + this.m_Passages.Count; } }
+      public int NumMatches { get { return this.m_Results.Count; } }
 
       /// <summary>
-      /// Gets the collection of passages.
+      /// Gets the collection of results.
       /// </summary>
-      public Collection<PassageViewModel> Passages { get { return this.m_Passages; } }
-
-      /// <summary>
-      /// Gets the collection of glossary entries.
-      /// </summary>
-      public Collection<GlossaryEntryViewModel> Entries { get { return this.m_Entries; } }
+      public Collection<SearchResult> Results { get { return this.m_Results; } }
    }
 }

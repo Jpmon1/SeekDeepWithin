@@ -104,6 +104,7 @@ namespace SeekDeepWithin.Controllers
             this.m_Db.GlossaryEntries.Insert (glossaryEntry);
             item.Entries.Add (glossaryEntry);
             this.m_Db.Save ();
+            Search.AddOrUpdateIndex (glossaryEntry, SearchType.Glossary);
             return Json ("Success");
          }
          Response.StatusCode = 500;
@@ -158,6 +159,7 @@ namespace SeekDeepWithin.Controllers
          if (order != null)
             entry.Order = order.Value;
          this.m_Db.Save ();
+         Search.AddOrUpdateIndex (entry, SearchType.Glossary);
          return Json ("Success");
       }
 
@@ -177,6 +179,7 @@ namespace SeekDeepWithin.Controllers
             entry.Item.Entries.Remove (entry);
             this.m_Db.GlossaryEntries.Delete (entry);
             this.m_Db.Save ();
+            Search.Clear (entry.Id, SearchType.Glossary);
             return Json ("Success");
          }
          Response.StatusCode = 500;

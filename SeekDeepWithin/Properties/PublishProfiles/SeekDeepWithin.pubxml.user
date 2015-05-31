@@ -14,13 +14,13 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>10/19/2014 06:18:05</publishTime>
     </File>
     <File Include="bin/App_global.asax.compiled">
-      <publishTime>05/05/2015 13:23:07</publishTime>
+      <publishTime>05/18/2015 13:53:56</publishTime>
     </File>
     <File Include="bin/App_global.asax.dll">
-      <publishTime>05/05/2015 13:23:07</publishTime>
+      <publishTime>05/18/2015 13:53:56</publishTime>
     </File>
     <File Include="bin/App_global.asax.pdb">
-      <publishTime>05/05/2015 13:23:07</publishTime>
+      <publishTime>05/18/2015 13:53:56</publishTime>
     </File>
     <File Include="bin/DataAnnotationsExtensions.dll">
       <publishTime>01/15/2015 10:05:51</publishTime>
@@ -140,7 +140,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>10/19/2014 06:18:02</publishTime>
     </File>
     <File Include="bin/SeekDeepWithin.dll">
-      <publishTime>05/05/2015 13:22:58</publishTime>
+      <publishTime>05/18/2015 13:53:46</publishTime>
     </File>
     <File Include="bin/SeekDeepWithin.Domain.dll">
       <publishTime>12/11/2014 10:43:19</publishTime>
@@ -320,7 +320,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>12/18/2014 08:19:27</publishTime>
     </File>
     <File Include="Content/sdw.default.css">
-      <publishTime>04/29/2015 06:40:08</publishTime>
+      <publishTime>05/18/2015 13:53:05</publishTime>
     </File>
     <File Include="Content/Site.css">
       <publishTime>12/18/2014 08:19:27</publishTime>
@@ -590,10 +590,13 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>01/15/2015 10:05:52</publishTime>
     </File>
     <File Include="PrecompiledApp.config">
-      <publishTime>05/05/2015 13:23:04</publishTime>
+      <publishTime>05/18/2015 13:53:53</publishTime>
     </File>
     <File Include="README.md">
       <publishTime>12/18/2014 08:28:50</publishTime>
+    </File>
+    <File Include="Scripts/classie.js">
+      <publishTime>05/18/2015 13:53:05</publishTime>
     </File>
     <File Include="Scripts/fastclick.js">
       <publishTime>12/18/2014 08:19:27</publishTime>
@@ -604,11 +607,17 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="Scripts/foundation.accordion.js">
       <publishTime>04/29/2015 06:40:09</publishTime>
     </File>
+    <File Include="Scripts/foundation.alert.js">
+      <publishTime>05/18/2015 13:53:05</publishTime>
+    </File>
     <File Include="Scripts/foundation.clearing.js">
       <publishTime>04/29/2015 06:40:09</publishTime>
     </File>
     <File Include="Scripts/foundation.dropdown.js">
       <publishTime>04/29/2015 06:40:09</publishTime>
+    </File>
+    <File Include="Scripts/foundation.interchange.js">
+      <publishTime>05/18/2015 13:53:05</publishTime>
     </File>
     <File Include="Scripts/foundation.joyride.js">
       <publishTime>04/29/2015 06:40:09</publishTime>
@@ -619,6 +628,9 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="Scripts/foundation.min.js">
       <publishTime>12/18/2014 08:19:27</publishTime>
     </File>
+    <File Include="Scripts/foundation.offcanvas.js">
+      <publishTime>05/18/2015 13:53:05</publishTime>
+    </File>
     <File Include="Scripts/foundation.orbit.js">
       <publishTime>04/29/2015 06:40:09</publishTime>
     </File>
@@ -627,6 +639,9 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     </File>
     <File Include="Scripts/foundation.tab.js">
       <publishTime>04/29/2015 06:40:09</publishTime>
+    </File>
+    <File Include="Scripts/foundation.tooltip.js">
+      <publishTime>05/18/2015 13:53:05</publishTime>
     </File>
     <File Include="Scripts/foundation/foundation.abide.js">
       <publishTime>12/18/2014 08:19:27</publishTime>
@@ -712,6 +727,12 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="Scripts/jquery.nouislider.all.js">
       <publishTime>04/29/2015 06:40:09</publishTime>
     </File>
+    <File Include="Scripts/jquery.qtip.js">
+      <publishTime>05/18/2015 13:53:05</publishTime>
+    </File>
+    <File Include="Scripts/jquery.qtip.min.js">
+      <publishTime>05/18/2015 13:53:05</publishTime>
+    </File>
     <File Include="Scripts/jquery.sticky-kit.js">
       <publishTime>04/29/2015 06:40:09</publishTime>
     </File>
@@ -779,7 +800,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>02/20/2015 17:33:54</publishTime>
     </File>
     <File Include="Scripts/sdw/sdw.chapter.js">
-      <publishTime>04/29/2015 06:40:09</publishTime>
+      <publishTime>05/18/2015 13:53:05</publishTime>
     </File>
     <File Include="Scripts/sdw/sdw.contentsedit.js">
       <publishTime>04/29/2015 06:40:09</publishTime>
@@ -794,7 +815,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>04/29/2015 06:40:09</publishTime>
     </File>
     <File Include="Scripts/sdw/sdw.glossary.js">
-      <publishTime>05/05/2015 13:22:15</publishTime>
+      <publishTime>05/18/2015 13:53:05</publishTime>
     </File>
     <File Include="Scripts/sdw/sdw.glossaryitem.js">
       <publishTime>03/23/2015 07:26:23</publishTime>
@@ -805,11 +826,14 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="Scripts/sdw/sdw.link.js">
       <publishTime>05/05/2015 13:22:15</publishTime>
     </File>
+    <File Include="Scripts/sdw/sdw.panels.js">
+      <publishTime>05/18/2015 13:53:05</publishTime>
+    </File>
     <File Include="Scripts/sdw/sdw.passage.js">
-      <publishTime>04/29/2015 06:40:09</publishTime>
+      <publishTime>05/18/2015 13:53:05</publishTime>
     </File>
     <File Include="Scripts/sdw/sdw.read.js">
-      <publishTime>04/29/2015 06:40:09</publishTime>
+      <publishTime>05/18/2015 13:53:05</publishTime>
     </File>
     <File Include="Scripts/sdw/sdw.search.js">
       <publishTime>04/29/2015 06:40:09</publishTime>
@@ -836,7 +860,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>12/18/2014 08:19:27</publishTime>
     </File>
     <File Include="ToDo.txt">
-      <publishTime>05/05/2015 13:22:15</publishTime>
+      <publishTime>05/05/2015 13:36:07</publishTime>
     </File>
     <File Include="Views/Account/ExternalLoginConfirmation.cshtml">
       <publishTime>12/18/2014 08:19:27</publishTime>
@@ -905,7 +929,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>12/02/2014 07:58:48</publishTime>
     </File>
     <File Include="Views/Chapter/Edit.cshtml">
-      <publishTime>04/29/2015 06:40:09</publishTime>
+      <publishTime>05/18/2015 13:53:05</publishTime>
     </File>
     <File Include="Views/Chapter/Read.cshtml">
       <publishTime>04/29/2015 06:40:09</publishTime>
@@ -950,7 +974,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/05/2015 13:22:15</publishTime>
     </File>
     <File Include="Views/GlossaryItem/Edit.cshtml">
-      <publishTime>05/05/2015 13:22:15</publishTime>
+      <publishTime>05/18/2015 13:53:05</publishTime>
     </File>
     <File Include="Views/Header/Create.cshtml">
       <publishTime>03/11/2015 09:28:07</publishTime>
@@ -980,7 +1004,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>04/29/2015 06:40:09</publishTime>
     </File>
     <File Include="Views/Read/Index.cshtml">
-      <publishTime>04/29/2015 06:40:09</publishTime>
+      <publishTime>05/18/2015 13:53:05</publishTime>
     </File>
     <File Include="Views/Roles/Assign.cshtml">
       <publishTime>12/18/2014 08:19:27</publishTime>
@@ -1034,7 +1058,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>03/11/2015 08:03:12</publishTime>
     </File>
     <File Include="Views/Shared/_Layout.cshtml">
-      <publishTime>04/29/2015 06:40:09</publishTime>
+      <publishTime>05/18/2015 13:53:05</publishTime>
     </File>
     <File Include="Views/Shared/_LinkForm.cshtml">
       <publishTime>03/09/2015 12:52:26</publishTime>

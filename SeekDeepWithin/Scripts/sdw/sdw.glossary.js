@@ -1,9 +1,10 @@
 ﻿$(document).ready(function() {
    $('#smallLeftMenuIcon').show();
    $('#leftMenu').data('loc', 'on');
-   $(window).resize(function () {
+   var debouncedScroll = debounce(function () {
       glossary_resize();
-   });
+   }, 100);
+   $(window).resize(debouncedScroll);
    glossary_resize();
 });
 

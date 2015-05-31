@@ -1,0 +1,62 @@
+﻿@using SeekDeepWithin.Models
+@model SeekDeepWithin.Models.SearchViewModel
+
+<h3><small>search results</small> @Model.Query.QDecoded <small>found @Model.Results.Count matches</small></h3>
+
+@if (Request.IsAuthenticated && User.IsInRole ("Administrator") && Model.Query.ShowLog) {
+   <div class="row">
+      <div class="small-12 columns">
+         <h4>Parser Log:</h4>
+         <ul>
+            @Html.Raw(Model.ParserLog)
+         </ul>
+      </div>
+   </div>
+}
+@{
+   var totalSpan = 12;
+   var lastType = SearchType.All;
+}
+@foreach (var result in Model.Results) {
+   if (totalSpan == 12) {
+      @Html.Raw("<div class=\"row\" data-equalizer>")
+   }
+   if (result.Type != lastType) {
+      lastType = result.Type;
+      if (totalSpan > 0) {
+         <div class="small-12 medium-@totalSpan large-@totalSpan columns">&nbsp;</div>
+         @Html.Raw("</div>")
+      }
+      totalSpan = 12;
+      <div class="panel"><h5>@result.Type.ToString()</h5></div>
+      @Html.Raw("<div class=\"row\" data-equalizer>")
+   }
+   var span = 3;
+   if (!string.IsNullOrWhiteSpace (result.Description) && result.Description.Length > 300) {
+      span = Convert.ToInt32 ((result.Description.Length / 300) + 1) * 3;
+      if (span > totalSpan) {
+         span = totalSpan;
+      }
+   }
+   <div class="small-12 medium-@span large-@span columns">
+      <ul class="pricing-table" data-equalizer-watch>
+         <li class="description">
+            @Html.Raw(result.Title)
+         </li>
+         @if (!string.IsNullOrWhiteSpace (result.Description)) {
+            <li class="bullet-item" style="border-bottom: 0">
+               @Html.Raw(result.Description)
+            </li>
+         }
+      </ul>
+   </div>
+   totalSpan -= span;
+   if (totalSpan == 0) {
+      @Html.Raw("</div>")
+      totalSpan = 12;
+   }
+}
+@if (totalSpan > 0) {
+   <div class="small-12 medium-@totalSpan large-@totalSpan columns">&nbsp;</div>
+   @Html.Raw("</div>")
+}

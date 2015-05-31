@@ -108,29 +108,29 @@ namespace SeekDeepWithin.Controllers
          if (viewModel.ItemType.ToLower () == "chapter")
          {
             var chapter = this.m_Db.SubBookChapters.Get (viewModel.ItemId);
-            header = new ChapterHeader();
-            chapter.Headers.Add((ChapterHeader)header);
+            header = new ChapterHeader {Text = viewModel.Text};
+            chapter.Headers.Add ((ChapterHeader)header);
+            this.m_Db.Save ();
          }
          if (viewModel.ItemType.ToLower () == "passage")
          {
             var passage = this.m_Db.PassageEntries.Get (viewModel.ItemId);
-            header = new PassageHeader();
+            header = new PassageHeader { Text = viewModel.Text };
             passage.Headers.Add ((PassageHeader)header);
+            this.m_Db.Save ();
+            Search.AddOrUpdateIndex (passage, SearchType.Passage);
          }
          if (viewModel.ItemType.ToLower () == "entry")
          {
             var entry = this.m_Db.GlossaryEntries.Get (viewModel.ItemId);
-            header = new GlossaryEntryHeader();
+            header = new GlossaryEntryHeader { Text = viewModel.Text };
             entry.Headers.Add ((GlossaryEntryHeader)header);
+            this.m_Db.Save();
+            Search.AddOrUpdateIndex(entry, SearchType.Glossary);
          }
          if (header != null)
-         {
-            header.Text = viewModel.Text;
-            this.m_Db.Save ();
             return Json (new { id = header.Id });
-         }
-         Response.StatusCode = 500;
-         return Json ("Invalid data.");
+         return Fail ("Invalid data.");
       }
 
       /// <summary>
@@ -143,28 +143,45 @@ namespace SeekDeepWithin.Controllers
       [Authorize (Roles = "Editor")]
       public ActionResult Update (HeaderFooterViewModel viewModel)
       {
-         IHeader header = null;
+         IHeader header;
          if (viewModel.ItemType.ToLower () == "chapter")
          {
             var chapter = this.m_Db.SubBookChapters.Get (viewModel.ItemId);
             header = chapter.Headers.FirstOrDefault (f => f.Id == viewModel.Id);
+            if (header == null) return Fail ("Unable to determine header");
+            header.Text = viewModel.Text;
+            this.m_Db.Save ();
          }
-         if (viewModel.ItemType.ToLower () == "passage")
+         else if (viewModel.ItemType.ToLower () == "passage")
          {
             var passage = this.m_Db.PassageEntries.Get (viewModel.ItemId);
             header = passage.Headers.FirstOrDefault (f => f.Id == viewModel.Id);
+            if (header == null) return Fail ("Unable to determine header");
+            header.Text = viewModel.Text;
+            this.m_Db.Save ();
+            Search.AddOrUpdateIndex (passage, SearchType.Passage);
          }
-         if (viewModel.ItemType.ToLower () == "entry")
+         else if (viewModel.ItemType.ToLower () == "entry")
          {
             var entry = this.m_Db.GlossaryEntries.Get (viewModel.ItemId);
             header = entry.Headers.FirstOrDefault (f => f.Id == viewModel.Id);
-         }
-         if (header != null)
-         {
+            if (header == null) return Fail ("Unable to determine header");
             header.Text = viewModel.Text;
+            this.m_Db.Save ();
+            Search.AddOrUpdateIndex (entry, SearchType.Glossary);
          }
-         this.m_Db.Save ();
          return Json ("Success");
+      }
+
+      /// <summary>
+      /// Returns a failed JSON response with the given message.
+      /// </summary>
+      /// <param name="message">Message to return.</param>
+      /// <returns>JSON response.</returns>
+      public ActionResult Fail (string message = "Error")
+      {
+         Response.StatusCode = 500;
+         return Json (message);
       }
 
       /// <summary>
@@ -193,6 +210,7 @@ namespace SeekDeepWithin.Controllers
             var header = passage.Headers.FirstOrDefault (f => f.Id == id);
             passage.Headers.Remove (header);
             this.m_Db.Save ();
+            Search.AddOrUpdateIndex (passage, SearchType.Passage);
             return Json ("Success");
          }
          if (itemType.ToLower () == "entry")
@@ -201,6 +219,7 @@ namespace SeekDeepWithin.Controllers
             var header = entry.Headers.FirstOrDefault (f => f.Id == id);
             entry.Headers.Remove (header);
             this.m_Db.Save ();
+            Search.AddOrUpdateIndex (entry, SearchType.Glossary);
             return Json ("Success");
          }
          Response.StatusCode = 500;

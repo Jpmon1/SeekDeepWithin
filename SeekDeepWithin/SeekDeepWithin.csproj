@@ -45,6 +45,12 @@
     <Reference Include="HtmlAgilityPack">
       <HintPath>..\packages\HtmlAgilityPack.1.4.9\lib\Net40\HtmlAgilityPack.dll</HintPath>
     </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="Lucene.Net">
+      <HintPath>..\packages\Lucene.Net.3.0.3\lib\NET40\Lucene.Net.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="PagedList">
       <HintPath>..\packages\PagedList.1.17.0.0\lib\net40\PagedList.dll</HintPath>
@@ -211,6 +217,7 @@
     <Compile Include="Controllers\ExtensionMethods.cs" />
     <Compile Include="Controllers\GlossaryItemController.cs" />
     <Compile Include="Controllers\ReadController.cs" />
+    <Compile Include="Controllers\Search.cs" />
     <Compile Include="Controllers\TermController.cs" />
     <Compile Include="Controllers\WriterController.cs" />
     <Compile Include="Controllers\BookController.cs" />
@@ -269,6 +276,9 @@
     <Compile Include="Models\PassageHeaderViewModel.cs" />
     <Compile Include="Models\PassageViewModel.cs" />
     <Compile Include="Models\RegisterViewModel.cs" />
+    <Compile Include="Models\SearchQueryViewModel.cs" />
+    <Compile Include="Models\SearchResult.cs" />
+    <Compile Include="Models\SearchType.cs" />
     <Compile Include="Models\SearchViewModel.cs" />
     <Compile Include="Models\SourceViewModel.cs" />
     <Compile Include="Models\StyleEditViewModel.cs" />
@@ -349,6 +359,7 @@
   <ItemGroup>
     <Content Include="App_Data\SeekDeepWithin.DataAccess.SdwDbContext.mdf" />
     <Content Include="Content\ajax-loader.gif" />
+    <Content Include="Content\ajax-loader_2.gif" />
     <Content Include="Content\BurntOrange.png" />
     <Content Include="Content\Colors1.png" />
     <Content Include="Content\Colors2.png" />
@@ -515,6 +526,7 @@
     <Content Include="Scripts\sdw\sdw.addentries.js" />
     <Content Include="Scripts\sdw\sdw.addpassages.js" />
     <Content Include="Scripts\sdw\sdw.addstyle.js" />
+    <Content Include="Scripts\sdw\sdw.common.js" />
     <Content Include="Scripts\sdw\sdw.contentsedit.js" />
     <Content Include="Scripts\sdw\sdw.convert.js" />
     <Content Include="Scripts\sdw\sdw.chapter.js" />
@@ -591,7 +603,7 @@
     <Content Include="Views\Error\Index.cshtml" />
     <Content Include="Views\Search\Index.cshtml" />
     <Content Include="Views\Glossary\Index.cshtml" />
-    <Content Include="Views\Search\Results.cshtml" />
+    <Content Include="Views\Search\Query.cshtml" />
     <Content Include="Views\Writer\Index.cshtml" />
     <Content Include="Views\Writer\Create.cshtml" />
     <Content Include="Views\SubBook\AssignWriter.cshtml" />
@@ -631,6 +643,7 @@
     <Content Include="Views\Term\Create.cshtml" />
     <Content Include="Views\GlossaryItem\Create.cshtml" />
     <Content Include="Views\Term\Edit.cshtml" />
+    <Content Include="Views\Search\IndexData.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

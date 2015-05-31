@@ -48,11 +48,14 @@ namespace SeekDeepWithin
 
          bundles.Add (new ScriptBundle ("~/bundles/sdw.contentsedit").Include ("~/Scripts/jstree.js",
             "~/Scripts/sdw/sdw.contentsedit.js",
+            "~/Scripts/sdw/sdw.common.js",
             "~/Scripts/sdw/sdw.read.js"));
 
-         bundles.Add (new ScriptBundle ("~/bundles/sdw.read").Include ("~/Scripts/sdw/sdw.read.js"));
+         bundles.Add (new ScriptBundle ("~/bundles/sdw.read").Include ("~/Scripts/sdw/sdw.read.js",
+            "~/Scripts/sdw/sdw.common.js"));
 
-         bundles.Add (new ScriptBundle ("~/bundles/sdw.search").Include ("~/Scripts/sdw/sdw.search.js"));
+         bundles.Add (new ScriptBundle ("~/bundles/sdw.search").Include ("~/Scripts/sdw/sdw.search.js",
+            "~/Scripts/sdw/sdw.common.js"));
 
          bundles.Add (new ScriptBundle ("~/bundles/sdw.versionedit").Include ("~/Scripts/sdw/sdw.version.js"));
 

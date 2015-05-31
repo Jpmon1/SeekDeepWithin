@@ -14,7 +14,7 @@ namespace SeekDeepWithin.DataAccess
       private string m_LastBook = "";
       private readonly ISdwDatabase m_Db;
       private readonly StringBuilder m_Log = new StringBuilder();
-      private readonly List<PassageViewModel> m_PassageList = new List<PassageViewModel> ();
+      private readonly List<PassageEntry> m_PassageList = new List<PassageEntry> ();
 
       /// <summary>
       /// Initializes a new passage parser.
@@ -27,7 +27,7 @@ namespace SeekDeepWithin.DataAccess
       /// <summary>
       /// Gets or Sets the list of parsed passages.
       /// </summary>
-      public List<PassageViewModel> PassageList { get { return this.m_PassageList; } }
+      public List<PassageEntry> PassageList { get { return this.m_PassageList; } }
 
       public string Log { get; private set; }
 
@@ -217,17 +217,17 @@ namespace SeekDeepWithin.DataAccess
                for (int a = 0; a < chaps.Count; a++)
                {
                   if (passages.Count == 0)
-                     this.PassageList.AddRange (chaps[a].Passages.Select(pe => new PassageViewModel(pe)));
+                     this.PassageList.AddRange (chaps[a].Passages);
                   else
                   {
                      if (a + 1 == chaps.Count)
                      {
-                        this.PassageList.AddRange ((from passageEntry in chaps[a].Passages
-                                                    where passages.Contains (passageEntry.Number)
-                                                    select new PassageViewModel (passageEntry)));
+                        this.PassageList.AddRange (from passageEntry in chaps[a].Passages
+                                                   where passages.Contains (passageEntry.Number)
+                                                   select passageEntry);
                      }
                      else
-                        this.PassageList.AddRange (chaps[a].Passages.Select (pe => new PassageViewModel (pe)));
+                        this.PassageList.AddRange (chaps[a].Passages);
                   }
                }
             }
@@ -246,15 +246,15 @@ namespace SeekDeepWithin.DataAccess
          html.AppendLine("<div class=\"panel passageParseTable\">");
          var lastChapter = -1;
          var host = url == null ? string.Empty : url.AbsoluteUri.Replace (url.AbsolutePath, "");
-         foreach (var passage in this.PassageList)
+         foreach (var passage in this.PassageList.Select(p => new PassageViewModel(p)))
          {
             passage.Renderer = renderer;
             if (passage.ChapterId != lastChapter)
             {
                html.AppendLine ("<div class=\"row\">");
                html.AppendLine ("<div class=\"small-12 columns\">");
-               html.AppendFormat ("<a href=\"{0}/Chapter/Read/{1}\">", host, passage.ChapterId);
-               html.AppendLine (passage.GetTitleNoVerse ());
+               html.AppendFormat ("<a href=\"{0}/Read/{1}\">", host, passage.ChapterId);
+               html.AppendLine (passage.GetTitleNoVerse());
                html.AppendLine ("</a>");
                html.AppendLine ("</div>");
                html.AppendLine ("</div>");

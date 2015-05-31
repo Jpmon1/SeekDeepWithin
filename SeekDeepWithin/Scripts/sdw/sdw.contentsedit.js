@@ -201,14 +201,14 @@ function createToc() {
 }
 
 function collapseAll() {
-   document.rightMenu.close();
+   panels_hideRight();
    var ref = $('#contentTree').jstree(true);
    var root = ref.get_node('root');
    ref.close_all(root);
 }
 
 function createSubBook() {
-   document.rightMenu.close();
+   panels_hideAll();
    var ref = $('#contentTree').jstree(true);
    var root = ref.get_node('root');
    var sel = ref.create_node(root, { 'type': 'subbook', 'text': 'new' });
@@ -218,7 +218,7 @@ function createSubBook() {
 }
 
 function createChapter() {
-   document.rightMenu.close();
+   panels_hideAll();
    var ref = $('#contentTree').jstree(true);
    var sel = ref.get_selected();
    if (!sel.length) { return; }
@@ -248,7 +248,7 @@ function editItem() {
 }
 
 function renameItem() {
-   document.rightMenu.close();
+   panels_hideAll();
    var ref = $('#contentTree').jstree(true);
    var sel = ref.get_selected();
    if (!sel.length) { return; }
@@ -310,7 +310,7 @@ function setDefaultChapter() {
 }
 
 function deleteItem() {
-   document.rightMenu.close();
+   panels_hideAll();
    var ref = $('#contentTree').jstree(true);
    var sel = ref.get_selected();
    if (!sel.length) { return; }
@@ -334,7 +334,7 @@ function okToDelete() {
 }
 
 function showAddList() {
-   document.rightMenu.close();
+   panels_hideAll();
    var ref = $('#contentTree').jstree(true);
    var sel = ref.get_selected();
    if (!sel.length) { return; }

@@ -73,8 +73,10 @@ namespace SeekDeepWithin.Controllers
                ViewBag.ErrorMessage = "A tag with that name already exists.";
                return View (viewModel);
             }
-            this.m_Db.Tags.Insert (new Tag {Name = viewModel.Name});
+            var tag = new Tag {Name = viewModel.Name};
+            this.m_Db.Tags.Insert (tag);
             this.m_Db.Save ();
+            Search.AddOrUpdateIndex (tag, SearchType.Tag);
             if (!string.IsNullOrWhiteSpace (returnUrl))
                return Redirect (returnUrl);
             this.RedirectToAction ("Index");

@@ -6,14 +6,16 @@
    body = $('body');
 
 $(document).ready(function() {
-   panel_overlay.click(function() {
-      panels_hideTop();
-      panels_hideLeft();
-      panels_hideRight();
-      panels_hideBottom();
-      panels_hideOverlay();
-   });
+   panel_overlay.click(panels_hideAll);
 });
+
+function panels_hideAll() {
+   panels_hideTop();
+   panels_hideLeft();
+   panels_hideRight();
+   panels_hideBottom();
+   panels_hideOverlay();
+}
 
 function panels_showLeft() {
    panels_showOverlay();

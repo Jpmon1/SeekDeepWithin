@@ -72,8 +72,10 @@ namespace SeekDeepWithin.Controllers
                ViewBag.ErrorMessage = "A book with that title already exists, maybe you need to add a version?";
                return View (viewModel);
             }
-            this.m_Db.Books.Insert (new Book { Summary = viewModel.Summary, Title = viewModel.Title, SubTitle = viewModel.SubTitle });
+            var book = new Book {Summary = viewModel.Summary, Title = viewModel.Title, SubTitle = viewModel.SubTitle};
+            this.m_Db.Books.Insert (book);
             this.m_Db.Save ();
+            Search.AddOrUpdateIndex (book, SearchType.Book);
             return RedirectToAction ("Index");
          }
          return View (viewModel);
@@ -116,6 +118,7 @@ namespace SeekDeepWithin.Controllers
             var book = this.m_Db.Books.Get (bookViewModel.Id);
             this.m_Db.SetValues (book, bookViewModel);
             this.m_Db.Save ();
+            Search.AddOrUpdateIndex (book, SearchType.Book);
             return RedirectToAction ("Index");
          }
          return View (bookViewModel);
@@ -142,6 +145,7 @@ namespace SeekDeepWithin.Controllers
          var tag = this.m_Db.Tags.Get (tagId);
          book.Tags.Add (new BookTag { Book = book, Tag = tag});
          this.m_Db.Save ();
+         Search.AddOrUpdateIndex (book, SearchType.Book);
          return Json ("success");
       }
 
@@ -170,6 +174,7 @@ namespace SeekDeepWithin.Controllers
          }
          book.Tags.Remove (bookTag);
          this.m_Db.Save ();
+         Search.AddOrUpdateIndex (book, SearchType.Book);
          return Json ("success");
       }
 

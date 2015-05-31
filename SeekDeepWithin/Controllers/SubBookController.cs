@@ -287,6 +287,7 @@ namespace SeekDeepWithin.Controllers
             startOrder++;
             startNumber++;
          }
+         Search.Optimize(SearchType.Passage);
          return Json ("success", JsonRequestBehavior.AllowGet);
       }
 

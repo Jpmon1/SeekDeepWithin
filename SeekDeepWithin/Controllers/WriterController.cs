@@ -93,9 +93,10 @@ namespace SeekDeepWithin.Controllers
       {
          if (ModelState.IsValid)
          {
-            var author = this.m_Db.Writers.Get (viewModel.Id);
-            this.m_Db.SetValues (author, viewModel);
+            var writer = this.m_Db.Writers.Get (viewModel.Id);
+            this.m_Db.SetValues (writer, viewModel);
             this.m_Db.Save ();
+            Search.AddOrUpdateIndex (writer, SearchType.Writer);
             if (TempData.ContainsKey ("RefUrl"))
             {
                TempData.Remove ("RefUrl");
@@ -132,8 +133,10 @@ namespace SeekDeepWithin.Controllers
             ViewBag.ErrorMessage = "A writer with that name already exists.";
             return View (viewModel);
          }
-         this.m_Db.Writers.Insert (new Writer { Name = viewModel.Name, About = viewModel.About });
+         var writer = new Writer {Name = viewModel.Name, About = viewModel.About};
+         this.m_Db.Writers.Insert (writer);
          this.m_Db.Save ();
+         Search.AddOrUpdateIndex (writer, SearchType.Writer);
          return Redirect (refUrl);
       }
 

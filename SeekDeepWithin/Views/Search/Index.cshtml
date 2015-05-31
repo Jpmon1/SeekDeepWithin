@@ -1,15 +1,148 @@
 ﻿@{
     ViewBag.Title = "Search";
 }
+
 <h3><i class="icon-search"></i> Search</h3>
-@using (Html.BeginForm("Results", "Search")) {
-   <fieldset>
-      <legend>Search</legend>
+<fieldset>
+   <legend>Options</legend>
       
-      <div class="row">
-         <div class="small-12 columns"></div>
-         @Html.TextBox("searchFor")
+   <div class="row">
+      <div class="small-12 medium-8 large-8 columns">
+         <input type="text" placeholder="Search For..." id="txtSearch" name="txtSearch">
       </div>
-      <input type="submit" value="Search" class="button" />
-   </fieldset>
+      <div class="small-8 medium-2 large-2 columns">
+         <select id="searchType">
+            <option value="0" selected="selected">Any Word</option>
+            <option value="1">All Words</option>
+            <option value="2">Phrase</option>
+            <option value="3">Custom</option>
+         </select>
+      </div>
+      <div class="small-4 medium-2 large-2 columns">
+         <div class="switch-new">
+            <input id="chkExact" class="cmn-toggle cmn-toggle-yes-no" type="checkbox">
+            <label for="chkExact" data-on="Exact" data-off="Partial"></label>
+         </div>
+      </div>
+   </div>
+
+   <div class="row">
+      <div class="small-6 medium-3 large-3 columns text-center">
+         <label for="doPassages">Books</label>
+         <div class="switch-new">
+            <input id="doPassages" class="cmn-toggle cmn-toggle-yes-no" type="checkbox" checked="checked">
+            <label for="doPassages" data-on="Search" data-off="Ignore"></label>
+         </div>
+      </div>
+      <div class="small-6 medium-3 large-3 columns text-center">
+         <label for="doGlossary">Glossary</label>
+         <div class="switch-new">
+            <input id="doGlossary" class="cmn-toggle cmn-toggle-yes-no" type="checkbox" checked="checked">
+            <label for="doGlossary" data-on="Search" data-off="Ignore"></label>
+         </div>
+      </div>
+      <div class="small-6 medium-3 large-3 columns text-center">
+         <label for="doTags">Tags</label>
+         <div class="switch-new">
+            <input id="doTags" class="cmn-toggle cmn-toggle-yes-no" type="checkbox">
+            <label for="doTags" data-on="Search" data-off="Ignore"></label>
+         </div>
+      </div>
+      <div class="small-6 medium-3 large-3 columns text-center">
+         <label for="doWriters">Writers</label>
+         <div class="switch-new">
+            <input id="doWriters" class="cmn-toggle cmn-toggle-yes-no" type="checkbox">
+            <label for="doWriters" data-on="Search" data-off="Ignore"></label>
+         </div>
+      </div>
+   </div>
+
+   @*<div class="row">
+      <div class="small-12 columns">
+         <a href="javascript:void(0)" onclick="search_adv();">advanced search...</a>
+      </div>
+   </div>
+   
+   <div id="advSearch" style="display: none;">
+      <div class="row" id="passageFilter">
+         <div class="small-12 columns">
+            <fieldset>
+               <legend>Book Filters</legend>
+               <div class="row">
+                  <div class="small-6 medium-3 large-3 columns text-center">
+                     <label for="doPassHeaders">Search in Headers</label>
+                     <div class="switch">
+                        <input id="doPassHeaders" type="checkbox">
+                        <label for="doPassHeaders"></label>
+                     </div>
+                  </div>
+                  <div class="small-6 medium-3 large-3 columns text-center">
+                     <label for="doPassFooters">Search in Footers</label>
+                     <div class="switch">
+                        <input id="doPassFooters" type="checkbox">
+                        <label for="doPassFooters"></label>
+                     </div>
+                  </div>
+                  <div class="small-6 medium-3 large-3 columns text-center">
+                     <a href="javascript:void(0)" onclick="search_addPassFilter();" class="button small success">
+                        <i class="icon-plus"></i> add filter
+                     </a>
+                  </div>
+                  <div class="small-6 medium-3 large-3 columns text-center"></div>
+               </div>
+               <div id="passFilters">
+
+               </div>
+            </fieldset>
+         </div>
+      </div>
+
+      <div class="row" id="glossaryFilter">
+         <div class="small-12 columns">
+            <fieldset>
+               <legend>Glossary Filters</legend>
+               <div class="row">
+                  <div class="small-6 medium-3 large-3 columns text-center">
+                     <label for="doGlossHeaders">Search in Headers</label>
+                     <div class="switch">
+                        <input id="doGlossHeaders" type="checkbox">
+                        <label for="doGlossHeaders"></label>
+                     </div>
+                  </div>
+                  <div class="small-6 medium-3 large-3 columns text-center">
+                     <label for="doGlossFooters">Search in Footers</label>
+                     <div class="switch">
+                        <input id="doGlossFooters" type="checkbox">
+                        <label for="doGlossFooters"></label>
+                     </div>
+                  </div>
+                  <div class="small-6 medium-3 large-3 columns text-center">
+                     <a href="javascript:void(0)" onclick="search_addGlossFilter();" class="button small success">
+                        <i class="icon-plus"></i> add filter
+                     </a>
+                  </div>
+                  <div class="small-6 medium-3 large-3 columns text-center"></div>
+               </div>
+               <div id="glossFilters">
+                  
+               </div>
+            </fieldset>
+         </div>
+      </div>
+   </div>*@
+
+   <div class="row">
+      <div class="small-12 medium-4 large-4 medium-offset-4 large-offset-4 columns">
+         <a href="javascript:void(0)" class="button expand" onclick="search_search();">Search</a>
+      </div>
+   </div>
+</fieldset>
+
+<div id="searchResults">
+</div>
+
+@Html.Partial("_Modal")
+
+@section scripts {
+   @Scripts.Render("~/bundles/sdw.search")
 }

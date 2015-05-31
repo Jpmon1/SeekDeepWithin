@@ -76,6 +76,7 @@ namespace SeekDeepWithin.Controllers
             this.m_Db.Passages.Insert (passageEntry.Passage);
             chapter.Passages.Add (passageEntry);
             this.m_Db.Save ();
+            Search.AddOrUpdateIndex (passageEntry, SearchType.Passage);
             return Json ("Success");
          }
          Response.StatusCode = 500;
@@ -107,6 +108,7 @@ namespace SeekDeepWithin.Controllers
          if (number != null)
             passage.Number = number.Value;
          this.m_Db.Save ();
+         Search.AddOrUpdateIndex (passage, SearchType.Passage);
          return Json ("Success");
       }
 
@@ -128,7 +130,8 @@ namespace SeekDeepWithin.Controllers
             {
                this.m_Db.Passages.Delete(passage.Passage);
             }
-            this.m_Db.Save();
+            this.m_Db.Save ();
+            Search.Clear (passage.Id, SearchType.Passage);
             return Json ("Success");
          }
          Response.StatusCode = 500;
