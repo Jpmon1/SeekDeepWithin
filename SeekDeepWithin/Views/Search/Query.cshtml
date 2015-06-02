@@ -53,12 +53,11 @@
       var pages = Convert.ToInt32 (Model.TotalHits / 25) + 1;
       var endPage = pages;
       var method = "search_" + Model.SearchType;
-      if (pages > 12)
-      {
-         if (Model.Query.Page > 6)
-         {
+      if (pages > 12) {
+         if (Model.Query.Page > 6) {
             startPage = Model.Query.Page - 5;
          }
+         endPage = Math.Min(pages, startPage + 11);
       }
       <div class="pagination dark">
          @if (startPage != 1) {
