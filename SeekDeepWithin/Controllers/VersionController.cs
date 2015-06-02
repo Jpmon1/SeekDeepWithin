@@ -62,6 +62,30 @@ namespace SeekDeepWithin.Controllers
       }
 
       /// <summary>
+      /// Updates the sub book orders.
+      /// </summary>
+      /// <param name="id">The id of the version to edit.</param>
+      /// <param name="start">The index to start at.</param>
+      /// <returns>The edit contents page.</returns>
+      [HttpPost]
+      [ValidateAntiForgeryToken]
+      [Authorize (Roles = "Administrator")]
+      public ActionResult UpdateSubBookOrder (int id, int? start)
+      {
+         var order = start == null ? 0 : start.Value;
+         var version = this.m_Db.Versions.Get (id);
+         var contents = new VersionContents (version.Title, version.Contents, id, -1, -1);
+         foreach (var subBookContent in contents.SubBooks)
+         {
+            var subBook = this.m_Db.VersionSubBooks.Get (subBookContent.Id);
+            subBook.Order = order;
+            order++;
+         }
+         this.m_Db.Save ();
+         return Json ("Success");
+      }
+
+      /// <summary>
       /// Gets the edit version page.
       /// </summary>
       /// <param name="id">The id of the version to edit.</param>

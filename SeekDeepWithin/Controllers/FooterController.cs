@@ -3,6 +3,7 @@ using System.Web.Mvc;
 using SeekDeepWithin.DataAccess;
 using SeekDeepWithin.Pocos;
 using SeekDeepWithin.Models;
+using SeekDeepWithin.SdwSearch;
 
 namespace SeekDeepWithin.Controllers
 {
@@ -117,7 +118,7 @@ namespace SeekDeepWithin.Controllers
             footer = new PassageFooter { Text = viewModel.Text, Index = viewModel.Index };
             passage.Footers.Add ((PassageFooter)footer);
             this.m_Db.Save ();
-            Search.AddOrUpdateIndex (passage, SearchType.Passage);
+            PassageSearch.AddOrUpdateIndex (passage);
          }
          else if (viewModel.ItemType.ToLower () == "entry")
          {
@@ -125,7 +126,7 @@ namespace SeekDeepWithin.Controllers
             footer = new GlossaryEntryFooter { Text = viewModel.Text, Index = viewModel.Index };
             entry.Footers.Add ((GlossaryEntryFooter)footer);
             this.m_Db.Save ();
-            Search.AddOrUpdateIndex (entry, SearchType.Glossary);
+            GlossarySearch.AddOrUpdateIndex (entry);
          }
          if (footer != null)
             return Json (new {id=footer.Id, index=footer.Index});
@@ -207,7 +208,7 @@ namespace SeekDeepWithin.Controllers
             var footer = passage.Footers.FirstOrDefault (f => f.Id == id);
             passage.Footers.Remove (footer);
             this.m_Db.Save ();
-            Search.AddOrUpdateIndex (passage, SearchType.Passage);
+            PassageSearch.AddOrUpdateIndex (passage);
             return Json ("Success");
          }
          if (itemType.ToLower () == "entry")
@@ -216,7 +217,7 @@ namespace SeekDeepWithin.Controllers
             var footer = entry.Footers.FirstOrDefault (f => f.Id == id);
             entry.Footers.Remove (footer);
             this.m_Db.Save ();
-            Search.AddOrUpdateIndex (entry, SearchType.Glossary);
+            GlossarySearch.AddOrUpdateIndex (entry);
             return Json ("Success");
          }
          Response.StatusCode = 500;

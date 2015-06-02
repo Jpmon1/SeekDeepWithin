@@ -7,41 +7,141 @@
    $('#doGlossary').change(function () { $('#glossaryFilter').toggle(); });
    $('#txtSearch').keypress(function(e) {
       if (e.which == 13) {
-         search_search();
+         search_Parse(true);
       }
    });
    $('#txtSearch').focus();
 });
 
-function search_search() {
-   /*$('#modalClose').hide();
-   $('#modalText').text('Searching, please wait...');
-   $('#modal').foundation('reveal', 'open');*/
-   $('#searchResults').html('<div class="text-center"><img src="Content/ajax-loader_2.gif"/></div>');
-   $.ajax({
-      type: 'POST',
-      url: '/Search/Query/',
-      data: {
-         query: encodeURIComponent($('#txtSearch').val()),
-         doPassages: $('#doPassages').prop('checked'),
-         doGlossary: $('#doGlossary').prop('checked'),
-         doTags: $('#doTags').prop('checked'),
-         doWriters: $('#doWriters').prop('checked'),
-         searchType: $('#searchType').val(),
-         exact:$('#chkExact').prop('checked'),
-         doGlossHeaders: $('#doGlossHeaders').prop('checked'),
-         doGlossFooters: $('#doGlossFooters').prop('checked'),
-         doPassHeaders: $('#doPassHeaders').prop('checked'),
-         doPassFooters: $('#doPassFooters').prop('checked')
-      }
-   }).done(function (data) {
-      $('#advSearch').hide();
-      $('#searchResults').html(data);
-      /*$('#modal').foundation('reveal', 'close');*/
-      $(document).foundation('equalizer', 'reflow');
-   }).fail(function (data) {
-      $('#searchResults').html('<div class="text-center"><h3><i class="icon-erroralt" style="color:darkred;"></i><small>' + data.responseText + '</small></h3></div>');
-   });
+function search_Parse(keepOn, page) {
+   var doPassages = $('#doPassages').prop('checked');
+   if (doPassages) {
+      $('#searchLoader').show();
+      $.ajax({
+         type: 'POST',
+         url: '/Search/Parse/',
+         data: search_getData(page)
+      }).done(function(data) {
+         $('#parseResults').html(data);
+         $(document).foundation('equalizer', 'reflow');
+         if (keepOn) {
+            search_Book(keepOn);
+         } else {
+            $('#searchLoader').hide();
+         }
+      }).fail(function(data) {
+         $('#searchLoader').hide();
+         $('#parseResults').html('<div class="text-center"><h3><i class="icon-erroralt" style="color:darkred;"></i><small>' + data.responseText + '</small></h3></div>');
+      });
+   } else if (keepOn) {
+      search_Term(keepOn);
+   }
+}
+
+function search_Book(keepOn, page) {
+   var doPassages = $('#doPassages').prop('checked');
+   if (doPassages) {
+      $('#searchLoader').show();
+      $.ajax({
+         type: 'POST',
+         url: '/Search/Books/',
+         data: search_getData(page)
+      }).done(function (data) {
+         $('#bookResults').html(data);
+         $(document).foundation('equalizer', 'reflow');
+         if (keepOn) {
+            search_Passage(keepOn);
+         } else {
+            $('#searchLoader').hide();
+         }
+      }).fail(function (data) {
+         $('#searchLoader').hide();
+         $('#parseResults').html('<div class="text-center"><h3><i class="icon-erroralt" style="color:darkred;"></i><small>' + data.responseText + '</small></h3></div>');
+      });
+   } else if (keepOn) {
+      search_Term(keepOn);
+   }
+}
+
+function search_Passage(keepOn, page) {
+   var doPassages = $('#doPassages').prop('checked');
+   if (doPassages) {
+      $('#searchLoader').show();
+      $.ajax({
+         type: 'POST',
+         url: '/Search/Passages/',
+         data: search_getData(page)
+      }).done(function (data) {
+         $('#passageResults').html(data);
+         $(document).foundation('equalizer', 'reflow');
+         if (keepOn) {
+            search_Term(keepOn);
+         } else {
+            $('#searchLoader').hide();
+         }
+      }).fail(function (data) {
+         $('#searchLoader').hide();
+         $('#parseResults').html('<div class="text-center"><h3><i class="icon-erroralt" style="color:darkred;"></i><small>' + data.responseText + '</small></h3></div>');
+      });
+   } else if (keepOn) {
+      search_Term(keepOn);
+   }
+}
+
+function search_Term(keepOn, page) {
+   var doGlossary = $('#doGlossary').prop('checked');
+   if (doGlossary) {
+      $('#searchLoader').show();
+      $.ajax({
+         type: 'POST',
+         url: '/Search/Terms/',
+         data: search_getData(page)
+      }).done(function (data) {
+         $('#termResults').html(data);
+         $(document).foundation('equalizer', 'reflow');
+         if (keepOn) {
+            search_Glossary();
+         } else {
+            $('#searchLoader').hide();
+         }
+      }).fail(function (data) {
+         $('#searchLoader').hide();
+         $('#parseResults').html('<div class="text-center"><h3><i class="icon-erroralt" style="color:darkred;"></i><small>' + data.responseText + '</small></h3></div>');
+      });
+   }
+}
+
+function search_Glossary(page) {
+   var doGlossary = $('#doGlossary').prop('checked');
+   if (doGlossary) {
+      $('#searchLoader').show();
+      $.ajax({
+         type: 'POST',
+         url: '/Search/Glossary/',
+         data: search_getData(page)
+      }).done(function (data) {
+         $('#glossaryResults').html(data);
+         $(document).foundation('equalizer', 'reflow');
+         $('#searchLoader').hide();
+      }).fail(function (data) {
+         $('#searchLoader').hide();
+         $('#parseResults').html('<div class="text-center"><h3><i class="icon-erroralt" style="color:darkred;"></i><small>' + data.responseText + '</small></h3></div>');
+      });
+   }
+}
+
+function search_getData(page) {
+   if (page == null) {
+      page = 1;
+   }
+   return {
+      query: encodeURIComponent($('#txtSearch').val()),
+      searchType: $('#searchType').val(),
+      page: page,
+      exact: $('#chkExact').prop('checked'),
+      doHeaders: $('#doHeaders').prop('checked'),
+      doFooters: $('#doFooters').prop('checked')
+   }
 }
 
 function search_adv() {

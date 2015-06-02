@@ -5,6 +5,7 @@ using PagedList;
 using SeekDeepWithin.DataAccess;
 using SeekDeepWithin.Pocos;
 using SeekDeepWithin.Models;
+using SeekDeepWithin.SdwSearch;
 
 namespace SeekDeepWithin.Controllers
 {
@@ -104,7 +105,7 @@ namespace SeekDeepWithin.Controllers
             this.m_Db.GlossaryEntries.Insert (glossaryEntry);
             item.Entries.Add (glossaryEntry);
             this.m_Db.Save ();
-            Search.AddOrUpdateIndex (glossaryEntry, SearchType.Glossary);
+            GlossarySearch.AddOrUpdateIndex (glossaryEntry);
             return Json ("Success");
          }
          Response.StatusCode = 500;
@@ -159,7 +160,7 @@ namespace SeekDeepWithin.Controllers
          if (order != null)
             entry.Order = order.Value;
          this.m_Db.Save ();
-         Search.AddOrUpdateIndex (entry, SearchType.Glossary);
+         GlossarySearch.AddOrUpdateIndex (entry);
          return Json ("Success");
       }
 
@@ -179,7 +180,7 @@ namespace SeekDeepWithin.Controllers
             entry.Item.Entries.Remove (entry);
             this.m_Db.GlossaryEntries.Delete (entry);
             this.m_Db.Save ();
-            Search.Clear (entry.Id, SearchType.Glossary);
+            GlossarySearch.Delete (entry.Id);
             return Json ("Success");
          }
          Response.StatusCode = 500;

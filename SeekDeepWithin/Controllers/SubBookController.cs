@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using SeekDeepWithin.DataAccess;
 using SeekDeepWithin.Pocos;
 using SeekDeepWithin.Models;
+using SeekDeepWithin.SdwSearch;
 
 namespace SeekDeepWithin.Controllers
 {
@@ -52,8 +53,9 @@ namespace SeekDeepWithin.Controllers
       public ActionResult Create (SubBookViewModel viewModel)
       {
          var version = this.m_Db.Versions.Get (viewModel.VersionId);
+         var maxOrder = (version.SubBooks.Count > 0 ? version.SubBooks.Max (c => c.Order) : 0) + 1;
          var subBook = DbHelper.GetSubBook (this.m_Db, viewModel.Name, viewModel.BookId);
-         var vSubBook = new VersionSubBook {Version = version, SubBook = subBook};
+         var vSubBook = new VersionSubBook {Version = version, SubBook = subBook, Order = maxOrder};
          version.SubBooks.Add (vSubBook);
          this.m_Db.Save ();
          this.AddAbbreviation (subBook.Id, viewModel.Name);
@@ -287,7 +289,7 @@ namespace SeekDeepWithin.Controllers
             startOrder++;
             startNumber++;
          }
-         Search.Optimize(SearchType.Passage);
+         PassageSearch.Optimize ();
          return Json ("success", JsonRequestBehavior.AllowGet);
       }
 

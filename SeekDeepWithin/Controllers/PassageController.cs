@@ -4,6 +4,7 @@ using System.Web.Mvc;
 using SeekDeepWithin.DataAccess;
 using SeekDeepWithin.Pocos;
 using SeekDeepWithin.Models;
+using SeekDeepWithin.SdwSearch;
 
 namespace SeekDeepWithin.Controllers
 {
@@ -76,7 +77,7 @@ namespace SeekDeepWithin.Controllers
             this.m_Db.Passages.Insert (passageEntry.Passage);
             chapter.Passages.Add (passageEntry);
             this.m_Db.Save ();
-            Search.AddOrUpdateIndex (passageEntry, SearchType.Passage);
+            PassageSearch.AddOrUpdateIndex (passageEntry);
             return Json ("Success");
          }
          Response.StatusCode = 500;
@@ -108,7 +109,7 @@ namespace SeekDeepWithin.Controllers
          if (number != null)
             passage.Number = number.Value;
          this.m_Db.Save ();
-         Search.AddOrUpdateIndex (passage, SearchType.Passage);
+         PassageSearch.AddOrUpdateIndex (passage);
          return Json ("Success");
       }
 
@@ -131,7 +132,7 @@ namespace SeekDeepWithin.Controllers
                this.m_Db.Passages.Delete(passage.Passage);
             }
             this.m_Db.Save ();
-            Search.Clear (passage.Id, SearchType.Passage);
+            PassageSearch.Delete (passage.Id);
             return Json ("Success");
          }
          Response.StatusCode = 500;

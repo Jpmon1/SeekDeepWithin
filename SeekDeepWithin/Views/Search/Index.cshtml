@@ -1,4 +1,5 @@
-﻿@{
+﻿@using System.Activities.Statements
+@{
     ViewBag.Title = "Search";
 }
 
@@ -42,17 +43,17 @@
          </div>
       </div>
       <div class="small-6 medium-3 large-3 columns text-center">
-         <label for="doTags">Tags</label>
+         <label for="doHeaders">Headers</label>
          <div class="switch-new">
-            <input id="doTags" class="cmn-toggle cmn-toggle-yes-no" type="checkbox">
-            <label for="doTags" data-on="Search" data-off="Ignore"></label>
+            <input id="doHeaders" class="cmn-toggle cmn-toggle-yes-no" type="checkbox" checked="checked">
+            <label for="doHeaders" data-on="Search" data-off="Ignore"></label>
          </div>
       </div>
       <div class="small-6 medium-3 large-3 columns text-center">
-         <label for="doWriters">Writers</label>
+         <label for="doFooters">Footers</label>
          <div class="switch-new">
-            <input id="doWriters" class="cmn-toggle cmn-toggle-yes-no" type="checkbox">
-            <label for="doWriters" data-on="Search" data-off="Ignore"></label>
+            <input id="doFooters" class="cmn-toggle cmn-toggle-yes-no" type="checkbox" checked="checked">
+            <label for="doFooters" data-on="Search" data-off="Ignore"></label>
          </div>
       </div>
    </div>
@@ -133,12 +134,25 @@
 
    <div class="row">
       <div class="small-12 medium-4 large-4 medium-offset-4 large-offset-4 columns">
-         <a href="javascript:void(0)" class="button expand" onclick="search_search();">Search</a>
+         <a href="javascript:void(0)" class="button expand" onclick="search_Parse(true);">Search</a>
       </div>
+      @if(Request.IsAuthenticated && User.IsInRole("Administrator")){
+      <div class="small-12 medium-4 large-4 columns">
+         <a href="@Url.Action("IndexData", "Search", null, Request.Url.Scheme)" class="button secondary expand">Index Data</a>
+      </div>
+      }
    </div>
 </fieldset>
 
 <div id="searchResults">
+   <div class="text-center">
+      <img src="~/Content/ajax-loader_2.gif" alt="Searching, please wait..." id="searchLoader" style="display: none;" />
+   </div>
+   <div id="parseResults"></div>
+   <div id="bookResults"></div>
+   <div id="passageResults"></div>
+   <div id="termResults"></div>
+   <div id="glossaryResults"></div>
 </div>
 
 @Html.Partial("_Modal")

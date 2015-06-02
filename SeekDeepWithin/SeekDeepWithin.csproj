@@ -214,10 +214,14 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="SdwSearch\BookSearch.cs" />
     <Compile Include="Controllers\ExtensionMethods.cs" />
     <Compile Include="Controllers\GlossaryItemController.cs" />
     <Compile Include="Controllers\ReadController.cs" />
-    <Compile Include="Controllers\Search.cs" />
+    <Compile Include="SdwSearch\ChapterSearch.cs" />
+    <Compile Include="SdwSearch\GlossarySearch.cs" />
+    <Compile Include="SdwSearch\PassageSearch.cs" />
+    <Compile Include="SdwSearch\SearchCommon.cs" />
     <Compile Include="Controllers\TermController.cs" />
     <Compile Include="Controllers\WriterController.cs" />
     <Compile Include="Controllers\BookController.cs" />
@@ -279,7 +283,7 @@
     <Compile Include="Models\SearchQueryViewModel.cs" />
     <Compile Include="Models\SearchResult.cs" />
     <Compile Include="Models\SearchType.cs" />
-    <Compile Include="Models\SearchViewModel.cs" />
+    <Compile Include="Models\SearchResultsViewModel.cs" />
     <Compile Include="Models\SourceViewModel.cs" />
     <Compile Include="Models\StyleEditViewModel.cs" />
     <Compile Include="Models\StyleViewModel.cs" />
@@ -350,6 +354,8 @@
     <Compile Include="Pocos\VersionSubBook.cs" />
     <Compile Include="Pocos\SubBookWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SdwSearch\SubBookSearch.cs" />
+    <Compile Include="SdwSearch\TermSearch.cs" />
     <Compile Include="Views\Book\Index.generated.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -532,6 +538,7 @@
     <Content Include="Scripts\sdw\sdw.chapter.js" />
     <Content Include="Scripts\sdw\sdw.footer.js" />
     <Content Include="Scripts\sdw\sdw.header.js" />
+    <Content Include="Scripts\sdw\sdw.index.js" />
     <Content Include="Scripts\sdw\sdw.link.js" />
     <Content Include="Scripts\sdw\sdw.panels.js" />
     <Content Include="Scripts\sdw\sdw.passage.js" />

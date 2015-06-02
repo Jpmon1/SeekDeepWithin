@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Web.Mvc;
 using SeekDeepWithin.DataAccess;
 using SeekDeepWithin.Models;
+using SeekDeepWithin.SdwSearch;
 
 namespace SeekDeepWithin.Controllers
 {
@@ -37,64 +39,219 @@ namespace SeekDeepWithin.Controllers
          return View ();
       }
 
+      /// <summary>
+      /// Optimizes indexed data.
+      /// </summary>
+      /// <param name="type">The type to optimize, null if all.</param>
+      /// <returns>Result</returns>
+      [HttpPost]
+      [ValidateAntiForgeryToken]
       [Authorize (Roles = "Administrator")]
-      public ActionResult OptimizeIndexData (string type)
+      public ActionResult OptimizeIndex (string type)
       {
-         Search.Optimize (Search.GetSearchType (type));
-         return View ("IndexData");
+         try
+         {
+            type = type == null ? string.Empty : type.ToLower ();
+            if (string.IsNullOrEmpty (type) || type == "book")
+               BookSearch.Optimize();
+            if (string.IsNullOrEmpty (type) || type == "passage")
+               PassageSearch.Optimize ();
+            if (string.IsNullOrEmpty (type) || type == "term")
+               TermSearch.Optimize ();
+            if (string.IsNullOrEmpty (type) || type == "glossary")
+               GlossarySearch.Optimize ();
+            return Json ("success");
+         }
+         catch (Exception ex)
+         {
+            return this.Fail (ex.Message);
+         }
       }
 
+      /// <summary>
+      /// Deletes indexed data.
+      /// </summary>
+      /// <param name="type">The type to delete, null if all.</param>
+      /// <returns>Result</returns>
+      [HttpPost]
+      [ValidateAntiForgeryToken]
       [Authorize (Roles = "Administrator")]
-      public ActionResult ClearIndexedData (string type)
+      public ActionResult DeleteIndex (string type)
       {
-         Search.Clear (Search.GetSearchType (type));
-         return View ("IndexData");
+         try
+         {
+            type = type == null ? string.Empty : type.ToLower ();
+            if (string.IsNullOrEmpty (type) || type == "book")
+               BookSearch.Clear ();
+            if (string.IsNullOrEmpty (type) || type == "passage")
+               PassageSearch.Clear ();
+            if (string.IsNullOrEmpty (type) || type == "term")
+               TermSearch.Clear ();
+            if (string.IsNullOrEmpty (type) || type == "glossary")
+               GlossarySearch.Clear ();
+            return Json ("success");
+         }
+         catch (Exception ex)
+         {
+            return this.Fail (ex.Message);
+         }
       }
 
       /// <summary>
       /// Adds index data to search.
       /// </summary>
       /// <param name="type">The type to add, null if adding all.</param>
-      /// <returns></returns>
+      /// <param name="start">The begging number of object to index.</param>
+      /// <param name="length">The number of objects to index.</param>
+      /// <returns>Result</returns>
+      [HttpPost]
+      [ValidateAntiForgeryToken]
       [Authorize (Roles = "Administrator")]
-      public ActionResult IndexData (string type)
+      public ActionResult CreateIndex (string type, int? start, int? length)
       {
          try
          {
-            var searchType = Search.GetSearchType (type);
-            if (searchType == SearchType.All || searchType == SearchType.Book)
-               Search.AddOrUpdateIndex (this.m_Db.Books.All (), SearchType.Book);
-            if (searchType == SearchType.All || searchType == SearchType.Version)
-               Search.AddOrUpdateIndex (this.m_Db.Versions.All (), SearchType.Version);
-            if (searchType == SearchType.All || searchType == SearchType.SubBook)
-               Search.AddOrUpdateIndex (this.m_Db.VersionSubBooks.All (), SearchType.SubBook);
-            if (searchType == SearchType.All || searchType == SearchType.Chapter)
-               Search.AddOrUpdateIndex (this.m_Db.Chapters.All (), SearchType.Chapter);
-            if (searchType == SearchType.All || searchType == SearchType.Passage)
-               Search.AddOrUpdateIndex (this.m_Db.PassageEntries.All (), SearchType.Passage);
-            if (searchType == SearchType.All || searchType == SearchType.Term)
-               Search.AddOrUpdateIndex (this.m_Db.GlossaryTerms.All (), SearchType.Term);
-            if (searchType == SearchType.All || searchType == SearchType.Glossary)
-               Search.AddOrUpdateIndex (this.m_Db.GlossaryEntries.All (), SearchType.Glossary);
-            if (searchType == SearchType.All || searchType == SearchType.Writer)
-               Search.AddOrUpdateIndex (this.m_Db.Writers.All (), SearchType.Writer);
-            if (searchType == SearchType.All || searchType == SearchType.Tag)
-               Search.AddOrUpdateIndex (this.m_Db.Tags.All (), SearchType.Tag);
-            Search.Optimize (searchType);
+            if (string.IsNullOrEmpty (type))
+               this.Fail ("Invalid search type.");
+            int num = 0;
+            type = type == null ? string.Empty : type.ToLower ();
+            if (type == "book")
+            {
+               num = this.m_Db.Books.All ().Count ();
+               if (start != null && start.Value != -1)
+               {
+                  if (length != null && length.Value != -1)
+                  {
+                     BookSearch.AddOrUpdateIndex (this.m_Db.Books.All ()
+                        .Skip (start.Value)
+                        .Take (length.Value));
+                  }
+                  else
+                  {
+                     BookSearch.AddOrUpdateIndex (this.m_Db.Books.All ()
+                        .Skip (start.Value));
+                  }
+               }
+               else
+               {
+                  BookSearch.AddOrUpdateIndex (this.m_Db.Books.All ());
+               }
+               BookSearch.Optimize ();
+            }
+            else if (type == "passage")
+            {
+               num = this.m_Db.PassageEntries.All ().Count ();
+               if (start != null && start.Value != -1)
+               {
+                  if (length != null && length.Value != -1)
+                  {
+                     PassageSearch.AddOrUpdateIndex (this.m_Db.PassageEntries.All ()
+                        .OrderBy (p => p.Chapter.SubBook.Version.Book.Title)
+                        .ThenBy (p => p.Chapter.SubBook.Version.Title)
+                        .ThenBy (p => p.Chapter.SubBook.Order)
+                        .ThenBy (p => p.Chapter.Order)
+                        .ThenBy (p => p.Number)
+                        .Skip (start.Value)
+                        .Take (length.Value));
+                  }
+                  else
+                  {
+                     PassageSearch.AddOrUpdateIndex (this.m_Db.PassageEntries.All ()
+                        .OrderBy (p => p.Chapter.SubBook.Version.Book.Title)
+                        .ThenBy (p => p.Chapter.SubBook.Version.Title)
+                        .ThenBy (p => p.Chapter.SubBook.SubBook.Name)
+                        .ThenBy (p => p.Chapter.Order)
+                        .ThenBy (p => p.Number)
+                        .Skip (start.Value));
+                  }
+               }
+               else
+               {
+                  PassageSearch.AddOrUpdateIndex (this.m_Db.PassageEntries.All ()
+                     .OrderBy (p => p.Chapter.SubBook.Version.Book.Title)
+                     .ThenBy (p => p.Chapter.SubBook.Version.Title)
+                     .ThenBy (p => p.Chapter.Order)
+                     .ThenBy (p => p.Chapter.Chapter.Name)
+                     .ThenBy (p => p.Number));
+               }
+               PassageSearch.Optimize ();
+            }
+            else if (type == "term")
+            {
+               num = this.m_Db.GlossaryTerms.All ().Count ();
+               if (start != null && start.Value != -1)
+               {
+                  if (length != null && length.Value != -1)
+                  {
+                     TermSearch.AddOrUpdateIndex (this.m_Db.GlossaryTerms.All ()
+                        .Skip (start.Value)
+                        .Take (length.Value));
+                  }
+                  else
+                  {
+                     TermSearch.AddOrUpdateIndex (this.m_Db.GlossaryTerms.All ()
+                        .Skip (start.Value));
+                  }
+               }
+               else
+               {
+                  TermSearch.AddOrUpdateIndex (this.m_Db.GlossaryTerms.All ());
+               }
+               TermSearch.Optimize ();
+            }
+            else if (type == "glossary")
+            {
+               num = this.m_Db.GlossaryEntries.All ().Count ();
+               if (start != null && start.Value != -1)
+               {
+                  if (length != null && length.Value != -1)
+                  {
+                     GlossarySearch.AddOrUpdateIndex (this.m_Db.GlossaryEntries.All ()
+                        .OrderBy (e => e.Item.Term.Name)
+                        .ThenBy (e => e.Order)
+                        .Skip (start.Value)
+                        .Take (length.Value));
+                  }
+                  else
+                  {
+                     GlossarySearch.AddOrUpdateIndex (this.m_Db.GlossaryEntries.All ()
+                        .OrderBy (e => e.Item.Term.Name)
+                        .ThenBy (e => e.Order)
+                        .Skip (start.Value));
+                  }
+               }
+               else
+               {
+                  GlossarySearch.AddOrUpdateIndex (this.m_Db.GlossaryEntries.All ()
+                     .OrderBy (e => e.Item.Term.Name)
+                     .ThenBy (e => e.Order));
+               }
+               GlossarySearch.Optimize ();
+            }
+            return Json (new {message="success", count=num});
          }
          catch (Exception ex)
          {
-            ViewBag.Error = ex.Message;
+            return this.Fail (ex.Message);
          }
+      }
+
+      /// <summary>
+      /// Adds index data to search.
+      /// </summary>
+      /// <returns>Index data view.</returns>
+      [Authorize (Roles = "Administrator")]
+      public ActionResult IndexData ()
+      {
          return View ();
       }
 
       /// <summary>
-      /// Gets the search page.
+      /// Attempts to parse the given query.
       /// </summary>
-      /// <param name="search">The string to search for.</param>
-      /// <returns>The search view.</returns>
-      public ActionResult Query (SearchQueryViewModel search)
+      /// <param name="search">Search query.</param>
+      /// <returns>The results.</returns>
+      public ActionResult Parse (SearchQueryViewModel search)
       {
          if (string.IsNullOrWhiteSpace (search.Query))
          {
@@ -102,146 +259,115 @@ namespace SeekDeepWithin.Controllers
             return Json ("Please specify a query for searching.");
          }
 
-         search.BuildQuery ();
          var parser = new PassageParser (this.m_Db);
-         parser.Parse(search.Query);
-         var viewModel = new SearchViewModel (search) { ParserLog = parser.Log };
-         foreach (var passage in parser.PassageList)
+         parser.Parse (search.QDecoded);
+         var results = new SearchResultsViewModel (search)
          {
-            viewModel.Results.Add (new SearchResult
+            ParserLog = parser.Log,
+            Title = "Passages",
+            SearchType = SearchType.Parse,
+            TotalHits = parser.PassageList.Count
+         };
+         if (parser.PassageList.Count > 0)
+         {
+            foreach (var passage in parser.PassageList)
             {
-               Id = passage.Id,
-               Type = SearchType.Passage,
-               Title = passage.GetTitle (Request.Url),
-               Description = passage.Passage.Text
-            });
+               results.Add (new SearchResult
+               {
+                  Id = passage.Id.ToString (CultureInfo.InvariantCulture),
+                  Title = passage.GetTitle (Request.Url),
+                  Description = passage.Passage.Text
+               });
+            }
+         }
+         return PartialView ("Query", results);
+      }
+
+      /// <summary>
+      /// Searches books for the query.
+      /// </summary>
+      /// <param name="search">Search query.</param>
+      /// <returns>The results.</returns>
+      public ActionResult Books (SearchQueryViewModel search)
+      {
+         if (string.IsNullOrWhiteSpace (search.Query))
+         {
+            Response.StatusCode = 500;
+            return Json ("Please specify a query for searching.");
          }
 
-         var results = Search.Query (search);
          var host = Request.Url == null ? string.Empty : Request.Url.AbsoluteUri.Replace (Request.Url.AbsolutePath, "");
-         foreach (var result in results)
+         var results = new SearchResultsViewModel (search);
+         BookSearch.Query (search, results, host);
+         return PartialView ("Query", results);
+      }
+
+      /// <summary>
+      /// Searches passages for the query.
+      /// </summary>
+      /// <param name="search">Search query.</param>
+      /// <returns>The results.</returns>
+      public ActionResult Passages (SearchQueryViewModel search)
+      {
+         if (string.IsNullOrWhiteSpace (search.Query))
          {
-            var ids = result.Value;
-            if (result.Key == SearchType.Passage)
-            {
-               var passages = this.m_Db.PassageEntries.Get (p => ids.Contains (p.Id));
-               foreach (var passage in passages)
-               {
-                  viewModel.Results.Add (new SearchResult
-                  {
-                     Id = passage.Id,
-                     Type = result.Key,
-                     Title = passage.GetTitle (Request.Url),
-                     Description = passage.Passage.Text.Highlight (search)
-                  });
-               }
-            }
-            else if (result.Key == SearchType.Book)
-            {
-               var books = this.m_Db.Books.Get (b => ids.Contains (b.Id));
-               foreach (var book in books)
-               {
-                  var res = new SearchResult
-                  {
-                     Id = book.Id,
-                     Type = SearchType.Book,
-                     Title = string.Format ("<a href=\"{0}/Book/Details/{1}\">{2}</a>", host, book.Id, book.Title.Highlight(search))
-                  };
-                  if (!viewModel.Results.Contains (res))
-                     viewModel.Results.Add (res);
-               }
-            }
-            else if (result.Key == SearchType.Version)
-            {
-               var versions = this.m_Db.Versions.Get (v => ids.Contains (v.Id));
-               foreach (var book in versions.Select (v => v.Book))
-               {
-                  var res = new SearchResult
-                  {
-                     Id = book.Id,
-                     Type = SearchType.Book,
-                     Title = string.Format ("<a href=\"{0}/Book/Details/{1}\">{2}</a>", host, book.Id, book.Title.Highlight(search))
-                  };
-                  if (!viewModel.Results.Contains (res))
-                     viewModel.Results.Add (res);
-               }
-            }
-            /*else if (result.Key == SearchType.SubBook)
-            {
-               var subBooks = this.m_Db.VersionSubBooks.Get (vs => ids.Contains (vs.Id) && !vs.Hide);
-               foreach (var subBook in subBooks)
-               {
-                  viewModel.Results.Add (new SearchResult { Type = SearchType.Book, Title = subBook.Version.Title });
-               }
-            }*/
-            else if (result.Key == SearchType.Chapter)
-            {
-               var chapters = this.m_Db.Chapters.Get (c => ids.Contains (c.Id));
-               foreach (var chapter in chapters)
-               {
-                  viewModel.Results.Add (new SearchResult
-                  {
-                     Id = chapter.Id,
-                     Type = SearchType.Book,
-                     Title = chapter.Name.Highlight(search)
-                  });
-               }
-            }
-            else if (result.Key == SearchType.Term)
-            {
-               var terms = this.m_Db.GlossaryTerms.Get (t => ids.Contains (t.Id));
-               foreach (var term in terms)
-               {
-                  viewModel.Results.Add (new SearchResult
-                  {
-                     Id = term.Id,
-                     Type = result.Key,
-                     Title = string.Format ("<a href=\"{0}/Term/{1}\">{2}</a>", host, term.Id, term.Name.Highlight(search))
-                  });
-               }
-            }
-            else if (result.Key == SearchType.Glossary)
-            {
-               var entries = this.m_Db.GlossaryEntries.Get (e => ids.Contains (e.Id));
-               foreach (var entry in entries)
-               {
-                  viewModel.Results.Add (new SearchResult
-                  {
-                     Id = entry.Id,
-                     Type = result.Key,
-                     Title = string.Format ("<a href=\"{0}/Term/{1}\">{2}</a>", host, entry.Item.Term.Id, entry.Item.Term.Name.Highlight (search)),
-                     Description = entry.Text.Highlight(search)
-                  });
-               }
-            }
-            else if (result.Key == SearchType.Writer)
-            {
-               var writers = this.m_Db.Writers.Get (w => ids.Contains (w.Id));
-               foreach (var writer in writers)
-               {
-                  viewModel.Results.Add (new SearchResult
-                  {
-                     Id = writer.Id,
-                     Type = result.Key,
-                     Title = string.Format ("<a href=\"{0}/Writer/Details/{1}\">{2}</a>", host, writer.Id, writer.Name.Highlight(search))
-                  });
-               }
-            }
-            else if (result.Key == SearchType.Tag)
-            {
-               var tags = this.m_Db.Tags.Get (t => ids.Contains (t.Id));
-               foreach (var tag in tags)
-               {
-                  viewModel.Results.Add (new SearchResult
-                  {
-                     Id = tag.Id,
-                     Type = result.Key,
-                     Title = string.Format ("<a href=\"{0}/Tag/Details/{1}\">{2}</a>", host, tag.Id, tag.Name.Highlight(search))
-                  });
-               }
-            }
+            Response.StatusCode = 500;
+            return Json ("Please specify a query for searching.");
          }
-         return PartialView (viewModel);
+
+         var host = Request.Url == null ? string.Empty : Request.Url.AbsoluteUri.Replace (Request.Url.AbsolutePath, "");
+         var results = new SearchResultsViewModel (search) { ShowEmpty = true };
+         PassageSearch.Query (search, results, host);
+         return PartialView ("Query", results);
+      }
+
+      /// <summary>
+      /// Searches terms for the query.
+      /// </summary>
+      /// <param name="search">Search query.</param>
+      /// <returns>The results.</returns>
+      public ActionResult Terms (SearchQueryViewModel search)
+      {
+         if (string.IsNullOrWhiteSpace (search.Query))
+         {
+            Response.StatusCode = 500;
+            return Json ("Please specify a query for searching.");
+         }
+
+         var host = Request.Url == null ? string.Empty : Request.Url.AbsoluteUri.Replace (Request.Url.AbsolutePath, "");
+         var results = new SearchResultsViewModel (search);
+         TermSearch.Query (search, results, host);
+         return PartialView ("Query", results);
+      }
+
+      /// <summary>
+      /// Searches the glossary for the query.
+      /// </summary>
+      /// <param name="search">Search query.</param>
+      /// <returns>The results.</returns>
+      public ActionResult Glossary (SearchQueryViewModel search)
+      {
+         if (string.IsNullOrWhiteSpace (search.Query))
+         {
+            Response.StatusCode = 500;
+            return Json ("Please specify a query for searching.");
+         }
+
+         var host = Request.Url == null ? string.Empty : Request.Url.AbsoluteUri.Replace (Request.Url.AbsolutePath, "");
+         var results = new SearchResultsViewModel (search) { ShowEmpty = true };
+         GlossarySearch.Query (search, results, host);
+         return PartialView ("Query", results);
+      }
+
+      /// <summary>
+      /// Returns a failed JSON response with the given message.
+      /// </summary>
+      /// <param name="message">Message to return.</param>
+      /// <returns>JSON response.</returns>
+      public ActionResult Fail (string message = "Error")
+      {
+         Response.StatusCode = 500;
+         return Json (message);
       }
    }
 }

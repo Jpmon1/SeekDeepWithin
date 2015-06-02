@@ -49,18 +49,31 @@
                </div>
             </div>
             <div class="row">
-               <div class="small-12 large-4 columns">
+               <div class="small-12 columns">
                   <input type="submit" value="Save" class="button expand" />
                </div>
-               <div class="small-6 large-4 columns">
+            </div>
+            <div class="row">
+               <div class="small-6 columns">
                   <a href="javascript:void(0)" onclick="version_default()" class="button expand">
                      Set as Default <i id="saveCheck" class="icon-ok-sign" style="display: none;"></i>
                   </a>
                </div>
-               <div class="small-6 large-4 columns">
+               <div class="small-6 columns">
                   <a href="@Url.Action("EditSource", "Source", new {id=Model.Id, type="version"}, Request.Url.Scheme)" class="button expand secondary">
                      Edit Source
                   </a>
+               </div>
+            </div>
+            <div class="row">
+               <div class="small-6 columns">
+                  <a href="javascript:void(0)" class="button expand secondary" onclick="version_subBookOrder();">
+                     Update SubBook Order <i id="orderCheck" class="icon-ok-sign" style="display: none;"></i>
+                  </a>
+               </div>
+               <div class="small-6 columns">
+                  <label for="startOrder">Start Order</label>
+                  <input type="number" id="startOrder" name="startOrder" value="0" />
                </div>
             </div>
          </fieldset>
@@ -113,7 +126,7 @@
       </fieldset>
    </div>
 </div>
-
+@Html.Partial("_Modal")
 
 @section Scripts {
    @Scripts.Render("~/bundles/jqueryval")

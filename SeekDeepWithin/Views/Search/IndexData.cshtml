@@ -1,14 +1,97 @@
 ﻿@{
-    ViewBag.Title = "IndexData";
+   ViewBag.Title = "Index Maintenance";
 }
 
-<h3>IndexData</h3>
+<h3>Index Maintenance</h3>
+@using (Html.BeginForm (null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" })){
+   @Html.AntiForgeryToken()
+}
 
-<div class="panel">
-   @if (ViewBag.Error != null) {
-      <span style="color: darkred;">@ViewBag.Error</span>
-   }
-   <p>
-      Complete!
-   </p>
+<div class="row">
+   <div class="small-12 medium-6 large-6 columns">
+      <fieldset>
+         <legend>Create Index</legend>
+         <div class="row">
+            <div class="small-8 columns">
+               <select id="selCreateIndex">
+                  <option value="book" selected="selected">Books</option>
+                  <option value="passage">Passages</option>
+                  <option value="term">Terms</option>
+                  <option value="glossary">Glossary</option>
+               </select>
+            </div>
+            <div class="small-4 columns">
+               <a href="javascript:void(0)" onclick="index_create();" class="button expand">
+                  Create
+               </a>
+            </div>
+         </div>
+         <div class="row">
+            <div class="small-12 columns"><span id="totalCount"></span></div>
+         </div>
+         <div class="row">
+            <div class="small-6 columns">
+               <label for="startIndex">Starting Index of Items:</label>
+               <input type="number" id="startIndex" name="startIndex" value="-1"/>
+            </div>
+            <div class="small-6 columns">
+               <label for="lengthIndex">Number of Items to Index:</label>
+               <input type="number" id="lengthIndex" name="lengthIndex" value="-1" />
+            </div>
+         </div>
+      </fieldset>
+   </div>
+   <div class="small-12 medium-6 large-6 columns">
+      <fieldset>
+         <legend>Optimize Index</legend>
+         <div class="row">
+            <div class="small-8 columns">
+               <select id="selOptIndex">
+                  <option value="" selected="selected">All</option>
+                  <option value="book">Books</option>
+                  <option value="passage">Passages</option>
+                  <option value="term">Terms</option>
+                  <option value="glossary">Glossary</option>
+               </select>
+            </div>
+            <div class="small-4 columns">
+               <a href="javascript:void(0)" onclick="index_optimize()" class="button success expand">
+                  Optimize
+               </a>
+            </div>
+         </div>
+      </fieldset>
+   </div>
 </div>
+<div class="row">
+   <div class="small-12 medium-6 large-6 columns">
+      <fieldset>
+         <legend>Delete Index</legend>
+         <div class="row">
+            <div class="small-8 columns">
+               <select id="selDelIndex">
+                  <option value="" selected="selected">All</option>
+                  <option value="book">Books</option>
+                  <option value="passage">Passages</option>
+                  <option value="term">Terms</option>
+                  <option value="glossary">Glossary</option>
+               </select>
+            </div>
+            <div class="small-4 columns">
+               <a href="javascript:void(0)" onclick="index_delete();" class="button alert expand">
+                  Delete
+               </a>
+            </div>
+         </div>
+      </fieldset>
+   </div>
+   <div class="small-12 medium-6 large-6 columns">
+
+   </div>
+</div>
+
+@Html.Partial("_Modal")
+
+@section Scripts {
+   @Scripts.Render("~/bundles/sdw.index")
+}

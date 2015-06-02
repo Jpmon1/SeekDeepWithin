@@ -13,6 +13,7 @@ View Search as List/Tree
 View books a list
 Facebook/twitter/email share
 Adiminstration Page
+View for Roles
 Bookmarks
 Favorites
 Sub book alias

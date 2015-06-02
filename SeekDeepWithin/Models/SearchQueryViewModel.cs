@@ -1,5 +1,4 @@
 ﻿using System.Web;
-using SeekDeepWithin.Controllers;
 
 namespace SeekDeepWithin.Models
 {
@@ -16,19 +15,13 @@ namespace SeekDeepWithin.Models
       /// </summary>
       public SearchQueryViewModel ()
       {
-         this.DoGlossary = true;
-         this.DoPassages = true;
+         this.PageSize = 25;
       }
 
       /// <summary>
       /// Gets or Sets the query to search for.
       /// </summary>
       public string Query { get; set; }
-
-      /// <summary>
-      /// Gets the lucene query to search for.
-      /// </summary>
-      public string Q { get; private set; }
 
       /// <summary>
       /// Gets the url decoded query to search for.
@@ -42,6 +35,16 @@ namespace SeekDeepWithin.Models
             return this.m_Decoded;
          }
       }
+
+      /// <summary>
+      /// Gets or Sets the requested page to display.
+      /// </summary>
+      public int Page { get; set; }
+
+      /// <summary>
+      /// Gets or Sets the requested page to display.
+      /// </summary>
+      public int PageSize { get; set; }
 
       /// <summary>
       /// Gets or Sets the search type.
@@ -63,80 +66,23 @@ namespace SeekDeepWithin.Models
       public bool Exact { get; set; }
 
       /// <summary>
-      /// Gets or Sets if we are searching passages.
-      /// </summary>
-      public bool DoPassages { get; set; }
-
-      /// <summary>
-      /// Gets or Sets if we are searching the glossary.
-      /// </summary>
-      public bool DoGlossary { get; set; }
-
-      /// <summary>
-      /// Gets or Sets if we are searching tags.
-      /// </summary>
-      public bool DoTags { get; set; }
-
-      /// <summary>
       /// Gets or Sets if we are searching writers.
       /// </summary>
       public bool DoWriters { get; set; }
 
       /// <summary>
-      /// Gets or Sets if we are searching in passage headers.
+      /// Gets or Sets if we are searching in headers.
       /// </summary>
-      public bool DoPassHeaders { get; set; }
+      public bool DoHeaders { get; set; }
 
       /// <summary>
-      /// Gets or Sets if we are searching in passage footers.
+      /// Gets or Sets if we are searching in footers.
       /// </summary>
-      public bool DoPassFooters { get; set; }
+      public bool DoFooters { get; set; }
 
       /// <summary>
-      /// Gets or Sets if we are searching in glossary headers.
+      /// Gets or Sets the filter to use.
       /// </summary>
-      public bool DoGlossHeaders { get; set; }
-
-      /// <summary>
-      /// Gets or Sets if we are searching in glossary footers.
-      /// </summary>
-      public bool DoGlossFooters { get; set; }
-
-      /// <summary>
-      /// Gets or Sets the filter to use on books.
-      /// </summary>
-      public string BookFilter { get; set; }
-
-      /// <summary>
-      /// Gets or Sets the filter to use on the glossary.
-      /// </summary>
-      public string GlossaryFilter { get; set; }
-
-      /// <summary>
-      /// Builds the query to send to lucene.
-      /// </summary>
-      public void BuildQuery ()
-      {
-         if (this.SearchType == 0 || this.SearchType == 1)
-         {
-            var query = string.Empty;
-            var words = this.QDecoded.GetWords ();
-            foreach (var word in words)
-            {
-               if (!string.IsNullOrEmpty (query))
-                  query += SearchType == 0 ? " OR " : " AND ";
-               query += this.Exact ? word : word + "*";
-            }
-            this.Q = query;
-         }
-         else if (this.SearchType == 2)
-         {
-            this.Q = "\"" + this.QDecoded + "\"";
-         }
-         else
-         {
-            this.Q = this.QDecoded;
-         }
-      }
+      public string Filter { get; set; }
    }
 }

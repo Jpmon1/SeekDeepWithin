@@ -14,6 +14,7 @@
       Term,
       Glossary,
       Writer,
-      Tag
+      Tag,
+      Parse
    }
 }

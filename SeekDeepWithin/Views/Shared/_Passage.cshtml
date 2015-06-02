@@ -32,7 +32,7 @@
       }
    </div>
 }
-<div class="row" id="pass_@id"
+<div class="row" id="pass_@(id)"
      @if (Model.DisplayType == VerseDisplayType.Paragraph && Model.Footers.Count == 0) {
         @Html.Raw("style=\"padding-bottom: 0.9375rem\"")
      } else if (Model.DisplayType == VerseDisplayType.Number && Model.Footers.Count == 0) {

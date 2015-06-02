@@ -1,7 +1,4 @@
-﻿@using SeekDeepWithin.Models
-@model SeekDeepWithin.Models.SearchViewModel
-
-<h3><small>search results</small> @Model.Query.QDecoded <small>found @Model.Results.Count matches</small></h3>
+﻿@model SeekDeepWithin.Models.SearchResultsViewModel
 
 @if (Request.IsAuthenticated && User.IsInRole ("Administrator") && Model.Query.ShowLog) {
    <div class="row">
@@ -13,50 +10,72 @@
       </div>
    </div>
 }
-@{
+@if (Model.Results.Count > 0) {
    var totalSpan = 12;
-   var lastType = SearchType.All;
-}
-@foreach (var result in Model.Results) {
-   if (totalSpan == 12) {
-      @Html.Raw("<div class=\"row\" data-equalizer>")
-   }
-   if (result.Type != lastType) {
-      lastType = result.Type;
-      if (totalSpan > 0) {
-         <div class="small-12 medium-@totalSpan large-@totalSpan columns">&nbsp;</div>
-         @Html.Raw("</div>")
-      }
-      totalSpan = 12;
-      <div class="panel"><h5>@result.Type.ToString()</h5></div>
-      @Html.Raw("<div class=\"row\" data-equalizer>")
-   }
-   var span = 3;
-   if (!string.IsNullOrWhiteSpace (result.Description) && result.Description.Length > 300) {
-      span = Convert.ToInt32 ((result.Description.Length / 300) + 1) * 3;
-      if (span > totalSpan) {
-         span = totalSpan;
-      }
-   }
-   <div class="small-12 medium-@span large-@span columns">
-      <ul class="pricing-table" data-equalizer-watch>
-         <li class="description">
-            @Html.Raw(result.Title)
-         </li>
-         @if (!string.IsNullOrWhiteSpace (result.Description)) {
-            <li class="bullet-item" style="border-bottom: 0">
-               @Html.Raw(result.Description)
-            </li>
-         }
-      </ul>
+   <div class="panel">
+      <h5>@(Model.Title) <small>@(string.Format ("{0} - {1} of {2}", Model.Start, Model.End, Model.TotalHits))</small></h5>
    </div>
-   totalSpan -= span;
-   if (totalSpan == 0) {
-      @Html.Raw("</div>")
-      totalSpan = 12;
+   @Html.Raw("<div class=\"row\" data-equalizer>")
+   foreach (var result in Model.Results) {
+      if (totalSpan == 0) {
+         @Html.Raw("</div>")
+         @Html.Raw("<div class=\"row\" data-equalizer>")
+         totalSpan = 12;
+      }
+      var span = 3;
+      if (!string.IsNullOrWhiteSpace (result.Description) && result.Description.Length > 300) {
+         span = Convert.ToInt32 ((result.Description.Length / 300) + 1) * 3;
+         if (span > totalSpan) {
+            span = totalSpan;
+         }
+      }
+      <div class="small-12 medium-@(span) large-@(span) columns">
+         <ul class="pricing-table" data-equalizer-watch>
+            <li class="description">
+               @Html.Raw(result.Title)
+            </li>
+            @if (!string.IsNullOrWhiteSpace (result.Description)) {
+               <li class="bullet-item" style="border-bottom: 0">
+                  @Html.Raw(result.Description)
+               </li>
+            }
+         </ul>
+      </div>
+      totalSpan -= span;
    }
-}
-@if (totalSpan > 0) {
-   <div class="small-12 medium-@totalSpan large-@totalSpan columns">&nbsp;</div>
+   if (totalSpan > 0) {
+      <div class="small-12 medium-@(totalSpan) large-@(totalSpan) columns">&nbsp;</div>
+   }
    @Html.Raw("</div>")
+   if (Model.TotalHits > Model.Results.Count)
+   {
+      var startPage = 1;
+      var pages = Convert.ToInt32 (Model.TotalHits / 25) + 1;
+      var endPage = pages;
+      var method = "search_" + Model.SearchType;
+      if (pages > 12)
+      {
+         if (Model.Query.Page > 6)
+         {
+            startPage = Model.Query.Page - 5;
+         }
+      }
+      <div class="pagination dark">
+         @if (startPage != 1) {
+            <a href="javascript:void(0)" class="page dark" onclick="@(method)(false, @(startPage - 1))">&larr;</a>
+         }
+         @for (int a = startPage; a <= endPage; a++) {
+            if (a == Model.Query.Page) {
+               <span class="page dark active">@(a)</span>
+            } else {
+               <a href="javascript:void(0)" class="page dark" onclick="@(method)(false, @(a))">@(a)</a>
+            }
+         }
+         @if (endPage < pages) {
+            <a href="javascript:void(0)" class="page dark" onclick="@(method)(false, @(endPage + 1))">&rarr;</a>
+         }
+      </div>
+   }
+} else if (Model.ShowEmpty) {
+   <div class="alert-box info">No @(Model.Title) found matching '@(Model.Query.QDecoded)'</div>
 }

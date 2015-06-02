@@ -51,6 +51,8 @@ namespace SeekDeepWithin
             "~/Scripts/sdw/sdw.common.js",
             "~/Scripts/sdw/sdw.read.js"));
 
+         bundles.Add (new ScriptBundle ("~/bundles/sdw.index").Include ("~/Scripts/sdw/sdw.index.js"));
+
          bundles.Add (new ScriptBundle ("~/bundles/sdw.read").Include ("~/Scripts/sdw/sdw.read.js",
             "~/Scripts/sdw/sdw.common.js"));
 

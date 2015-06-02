@@ -16,7 +16,32 @@ function version_default() {
       });
       createToc();
    }).fail(function (d) {
-      alert(d.responseText);
+      $('#modalClose').show();
+      $('#modalText').text(d.responseText);
+      $('#modal').foundation('reveal', 'open');
+   });
+}
+
+function version_subBookOrder() {
+   var form = $('#__AjaxAntiForgeryForm');
+   var token = $('input[name="__RequestVerificationToken"]', form).val();
+   $.ajax({
+      type: 'POST',
+      url: '/Version/UpdateSubBookOrder/',
+      data: {
+         __RequestVerificationToken: token,
+         id: $('#Id').val(),
+         start: $('#startOrder').val()
+      }
+   }).done(function () {
+      $('#orderCheck').show(200, function () {
+         setTimeout(function () { $('#saveCheck').hide(100); }, 2000);
+      });
+      createToc();
+   }).fail(function (d) {
+      $('#modalClose').show();
+      $('#modalText').text(d.responseText);
+      $('#modal').foundation('reveal', 'open');
    });
 }
 
@@ -44,7 +69,9 @@ function version_assignWriter() {
          setTimeout(function () { $('#writerSaved').hide(100); }, 2000);
       });
    }).fail(function (d) {
-      alert(d.responseText);
+      $('#modalClose').show();
+      $('#modalText').text(d.responseText);
+      $('#modal').foundation('reveal', 'open');
    });
 }
 
@@ -62,6 +89,8 @@ function version_removeWriter(versionId, writerId) {
    }).done(function () {
       $('#writer_' + writerId).remove();
    }).fail(function (d) {
-      alert(d.responseText);
+      $('#modalClose').show();
+      $('#modalText').text(d.responseText);
+      $('#modal').foundation('reveal', 'open');
    });
 }

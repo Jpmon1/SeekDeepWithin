@@ -3,6 +3,7 @@ using System.Web.Mvc;
 using SeekDeepWithin.DataAccess;
 using SeekDeepWithin.Pocos;
 using SeekDeepWithin.Models;
+using SeekDeepWithin.SdwSearch;
 
 namespace SeekDeepWithin.Controllers
 {
@@ -118,7 +119,7 @@ namespace SeekDeepWithin.Controllers
             header = new PassageHeader { Text = viewModel.Text };
             passage.Headers.Add ((PassageHeader)header);
             this.m_Db.Save ();
-            Search.AddOrUpdateIndex (passage, SearchType.Passage);
+            PassageSearch.AddOrUpdateIndex (passage);
          }
          if (viewModel.ItemType.ToLower () == "entry")
          {
@@ -126,7 +127,7 @@ namespace SeekDeepWithin.Controllers
             header = new GlossaryEntryHeader { Text = viewModel.Text };
             entry.Headers.Add ((GlossaryEntryHeader)header);
             this.m_Db.Save();
-            Search.AddOrUpdateIndex(entry, SearchType.Glossary);
+            GlossarySearch.AddOrUpdateIndex(entry);
          }
          if (header != null)
             return Json (new { id = header.Id });
@@ -159,7 +160,7 @@ namespace SeekDeepWithin.Controllers
             if (header == null) return Fail ("Unable to determine header");
             header.Text = viewModel.Text;
             this.m_Db.Save ();
-            Search.AddOrUpdateIndex (passage, SearchType.Passage);
+            PassageSearch.AddOrUpdateIndex (passage);
          }
          else if (viewModel.ItemType.ToLower () == "entry")
          {
@@ -168,7 +169,7 @@ namespace SeekDeepWithin.Controllers
             if (header == null) return Fail ("Unable to determine header");
             header.Text = viewModel.Text;
             this.m_Db.Save ();
-            Search.AddOrUpdateIndex (entry, SearchType.Glossary);
+            GlossarySearch.AddOrUpdateIndex (entry);
          }
          return Json ("Success");
       }
@@ -210,7 +211,7 @@ namespace SeekDeepWithin.Controllers
             var header = passage.Headers.FirstOrDefault (f => f.Id == id);
             passage.Headers.Remove (header);
             this.m_Db.Save ();
-            Search.AddOrUpdateIndex (passage, SearchType.Passage);
+            PassageSearch.AddOrUpdateIndex (passage);
             return Json ("Success");
          }
          if (itemType.ToLower () == "entry")
@@ -219,7 +220,7 @@ namespace SeekDeepWithin.Controllers
             var header = entry.Headers.FirstOrDefault (f => f.Id == id);
             entry.Headers.Remove (header);
             this.m_Db.Save ();
-            Search.AddOrUpdateIndex (entry, SearchType.Glossary);
+            GlossarySearch.AddOrUpdateIndex (entry);
             return Json ("Success");
          }
          Response.StatusCode = 500;
