@@ -9,30 +9,21 @@ namespace SeekDeepWithin.Tests.Mocks
    public class MockDatabase : ISdwDatabase
    {
       private IRepository <Book> m_Books;
-      private IRepository<Writer> m_Writers;
       private IRepository<Version> m_Versions;
-      private IRepository<SubBook> m_SubBooks;
       private IRepository<Chapter> m_Chapters;
       private IRepository<Passage> m_Passages;
       private IRepository<Link> m_Links;
-      private IRepository<Tag> m_Tags;
       private IRepository<Style> m_Styles;
-      private IRepository<Source> m_Sources;
       private IRepository<AmazonItem> m_AmazonItems;
-      private IRepository<ChapterHeader> m_ChapterHeaders;
-      private IRepository<ChapterFooter> m_ChapterFooters;
-      private IRepository<PassageHeader> m_PassageHeaders;
-      private IRepository<PassageFooter> m_PassageFooters;
       private IRepository<PassageEntry> m_PassageEntries;
-      private IRepository<GlossaryTerm> m_GlossaryTerms;
-      private IRepository<GlossaryItem> m_GlossaryItems;
-      private IRepository<GlossaryEntry> m_GlossaryEntries;
-      private IRepository<Abbreviation> m_Abbreviations;
-      private IRepository<SubBookWriter> m_SubBookWriters;
+      private IRepository<Term> m_GlossaryTerms;
+      private IRepository<TermItem> m_GlossaryItems;
+      private IRepository<TermItemEntry> m_GlossaryEntries;
+      private IRepository<TermWriter> m_SubBookWriters;
       private IRepository<VersionWriter> m_VersionWriters;
       private IRepository <VersionSubBook> m_VersionSubBooks;
       private IRepository<SubBookChapter> m_SubBookChapters;
-      private IRepository<GlossaryItemSource> m_GlossaryItemSources;
+      private IRepository<TermItemSource> m_GlossaryItemSources;
 
       /// <summary>
       /// Gets the repository for books.
@@ -43,27 +34,19 @@ namespace SeekDeepWithin.Tests.Mocks
       }
 
       /// <summary>
-      /// Gets the repository for abbreviations.
-      /// </summary>
-      public IRepository<Abbreviation> Abbreviations
-      {
-         get { return this.m_Abbreviations ?? (this.m_Abbreviations = new MockRepository<Abbreviation> ()); }
-      }
-
-      /// <summary>
       /// Gets the repository for glossary item sources.
       /// </summary>
-      public IRepository<GlossaryItemSource> GlossaryItemSources
+      public IRepository<TermItemSource> TermItemSources
       {
-         get { return this.m_GlossaryItemSources ?? (this.m_GlossaryItemSources = new MockRepository<GlossaryItemSource> ()); }
+         get { return this.m_GlossaryItemSources ?? (this.m_GlossaryItemSources = new MockRepository<TermItemSource> ()); }
       }
 
       /// <summary>
       /// Gets the repository for sub book writers.
       /// </summary>
-      public IRepository<SubBookWriter> SubBookWriters
+      public IRepository<TermWriter> SubBookWriters
       {
-         get { return this.m_SubBookWriters ?? (this.m_SubBookWriters = new MockRepository<SubBookWriter> ()); }
+         get { return this.m_SubBookWriters ?? (this.m_SubBookWriters = new MockRepository<TermWriter> ()); }
       }
 
       /// <summary>
@@ -83,14 +66,6 @@ namespace SeekDeepWithin.Tests.Mocks
       }
 
       /// <summary>
-      /// Gets the repository for authors.
-      /// </summary>
-      public IRepository <Writer> Writers
-      {
-         get { return m_Writers ?? (this.m_Writers = new MockRepository <Writer> ()); }
-      }
-
-      /// <summary>
       /// Gets the repository for versions.
       /// </summary>
       public IRepository<Version> Versions
@@ -104,14 +79,6 @@ namespace SeekDeepWithin.Tests.Mocks
       public IRepository <VersionSubBook> VersionSubBooks
       {
          get { return m_VersionSubBooks ?? (m_VersionSubBooks = new MockRepository <VersionSubBook> ()); }
-      }
-
-      /// <summary>
-      /// Gets the repository for sub books.
-      /// </summary>
-      public IRepository<SubBook> SubBooks
-      {
-         get { return this.m_SubBooks ?? (this.m_SubBooks = new MockRepository<SubBook> ()); }
       }
 
       /// <summary>
@@ -147,59 +114,11 @@ namespace SeekDeepWithin.Tests.Mocks
       }
 
       /// <summary>
-      /// Gets the repository for tags.
-      /// </summary>
-      public IRepository<Tag> Tags
-      {
-         get { return this.m_Tags ?? (this.m_Tags = new MockRepository<Tag> ()); }
-      }
-
-      /// <summary>
       /// Gets the repository for styles.
       /// </summary>
       public IRepository<Style> Styles
       {
          get { return this.m_Styles ?? (this.m_Styles = new MockRepository<Style> ()); }
-      }
-
-      /// <summary>
-      /// Gets the repository for sources.
-      /// </summary>
-      public IRepository<Source> Sources
-      {
-         get { return this.m_Sources ?? (this.m_Sources = new MockRepository<Source> ()); }
-      }
-
-      /// <summary>
-      /// Gets the repository for Chapter headers.
-      /// </summary>
-      public IRepository<ChapterHeader> ChapterHeaders
-      {
-         get { return this.m_ChapterHeaders ?? (this.m_ChapterHeaders = new MockRepository<ChapterHeader> ()); }
-      }
-
-      /// <summary>
-      /// Gets the repository for Chapter footers.
-      /// </summary>
-      public IRepository<ChapterFooter> ChapterFooters
-      {
-         get { return this.m_ChapterFooters ?? (this.m_ChapterFooters = new MockRepository<ChapterFooter> ()); }
-      }
-
-      /// <summary>
-      /// Gets the repository for Passage headers.
-      /// </summary>
-      public IRepository<PassageHeader> PassageHeaders
-      {
-         get { return this.m_PassageHeaders ?? (this.m_PassageHeaders = new MockRepository<PassageHeader> ()); }
-      }
-
-      /// <summary>
-      /// Gets the repository for Passage footers.
-      /// </summary>
-      public IRepository<PassageFooter> PassageFooters
-      {
-         get { return this.m_PassageFooters ?? (this.m_PassageFooters = new MockRepository<PassageFooter> ()); }
       }
 
       /// <summary>
@@ -213,25 +132,25 @@ namespace SeekDeepWithin.Tests.Mocks
       /// <summary>
       /// Gets the repository for glossary terms.
       /// </summary>
-      public IRepository<GlossaryTerm> GlossaryTerms
+      public IRepository<Term> Terms
       {
-         get { return this.m_GlossaryTerms ?? (this.m_GlossaryTerms = new MockRepository<GlossaryTerm> ()); }
+         get { return this.m_GlossaryTerms ?? (this.m_GlossaryTerms = new MockRepository<Term> ()); }
       }
 
       /// <summary>
       /// Gets the repository for glossary items.
       /// </summary>
-      public IRepository<GlossaryItem> GlossaryItems
+      public IRepository<TermItem> TermItems
       {
-         get { return this.m_GlossaryItems ?? (this.m_GlossaryItems = new MockRepository<GlossaryItem> ()); }
+         get { return this.m_GlossaryItems ?? (this.m_GlossaryItems = new MockRepository<TermItem> ()); }
       }
 
       /// <summary>
       /// Gets the repository for glossary entries.
       /// </summary>
-      public IRepository<GlossaryEntry> GlossaryEntries
+      public IRepository<TermItemEntry> TermItemEntries
       {
-         get { return this.m_GlossaryEntries ?? (this.m_GlossaryEntries = new MockRepository<GlossaryEntry> ()); }
+         get { return this.m_GlossaryEntries ?? (this.m_GlossaryEntries = new MockRepository<TermItemEntry> ()); }
       }
 
       /// <summary>

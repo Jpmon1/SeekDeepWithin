@@ -23,9 +23,6 @@ namespace SeekDeepWithin.Tests.Controllers
       public void TestInitialize ()
       {
          this.m_MockDb = new MockDatabase ();
-         this.m_MockDb.Writers.Insert (new Writer { Id = 0, Name = "Auth0" });
-         this.m_MockDb.Writers.Insert (new Writer { Id = 1, Name = "Auth1" });
-         this.m_MockDb.Writers.Insert (new Writer { Id = 2, Name = "Auth2" });
          this.m_MockDb.Books.Insert (new Book
          {
             Id = 0,
@@ -69,11 +66,10 @@ namespace SeekDeepWithin.Tests.Controllers
       /// Tests the create post page.
       /// </summary>
       [TestMethod]
-      public void TestCreatePost ()
+      public void TestCreate ()
       {
          var controller = new BookController (this.m_MockDb);
-         var viewModel = new BookViewModel { Id = 1, Title = "A book", Summary = "Nothing" };
-         var result = controller.Create (viewModel) as RedirectToRouteResult;
+         var result = controller.Create ("Book Title", "", "Summary", 0) as JsonResult;
          Assert.AreEqual (2, this.m_MockDb.Books.All ().Count);
          Assert.IsNotNull (result);
       }
@@ -82,16 +78,11 @@ namespace SeekDeepWithin.Tests.Controllers
       /// Tests the create post page when given information is bad.
       /// </summary>
       [TestMethod]
-      public void TestCreatePostFail ()
+      public void TestCreateNoTitle ()
       {
          var controller = new BookController (this.m_MockDb);
-         controller.ModelState.AddModelError ("test", "test");
-         var viewModel = new BookViewModel ();
-         var result = controller.Create (viewModel) as ViewResult;
+         var result = controller.Create ("", "", "", -1) as JsonResult;
          Assert.IsNotNull (result);
-         var book = result.Model as BookViewModel;
-         Assert.IsNotNull (book);
-         Assert.AreEqual (viewModel, book);
       }
    }
 }

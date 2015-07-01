@@ -1,9 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Web.Mvc;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SeekDeepWithin.Controllers;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SeekDeepWithin.Pocos;
-using SeekDeepWithin.Models;
 using SeekDeepWithin.Tests.Mocks;
 
 namespace SeekDeepWithin.Tests.Controllers
@@ -23,7 +19,6 @@ namespace SeekDeepWithin.Tests.Controllers
       public void TestInitialize ()
       {
          this.m_MockDb = new MockDatabase ();
-         this.m_MockDb.Writers.Insert (new Writer { Id = 0, Name = "Auth0" });
          this.m_MockDb.Books.Insert (new Book
          {
             Id = 0,
