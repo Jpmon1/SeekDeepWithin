@@ -8,26 +8,18 @@ using SeekDeepWithin.SdwSearch;
 
 namespace SeekDeepWithin.Controllers
 {
-   public class SearchController : Controller
+   public class SearchController : SdwController
    {
-      private readonly ISdwDatabase m_Db;
-
       /// <summary>
       /// Initializes a new controller.
       /// </summary>
-      public SearchController ()
-      {
-         this.m_Db = new SdwDatabase ();
-      }
+      public SearchController () : base (new SdwDatabase()) { }
 
       /// <summary>
       /// Initializes a new controller with the given db info.
       /// </summary>
       /// <param name="db">Database object.</param>
-      public SearchController (ISdwDatabase db)
-      {
-         this.m_Db = db;
-      }
+      public SearchController (ISdwDatabase db) : base (db) { }
 
       /// <summary>
       /// Gets the search index page.
@@ -35,7 +27,6 @@ namespace SeekDeepWithin.Controllers
       /// <returns>The search view.</returns>
       public ActionResult Index ()
       {
-         ViewBag.Tags = new SelectList (this.m_Db.Tags.All (q => q.OrderBy (t => t.Name)), "Id", "Name");
          return View ();
       }
 
@@ -117,35 +108,35 @@ namespace SeekDeepWithin.Controllers
             type = type == null ? string.Empty : type.ToLower ();
             if (type == "book")
             {
-               num = this.m_Db.Books.All ().Count ();
+               num = this.Database.Books.All ().Count ();
                if (start != null && start.Value != -1)
                {
                   if (length != null && length.Value != -1)
                   {
-                     BookSearch.AddOrUpdateIndex (this.m_Db.Books.All ()
+                     BookSearch.AddOrUpdateIndex (this.Database.Books.All ()
                         .Skip (start.Value)
                         .Take (length.Value));
                   }
                   else
                   {
-                     BookSearch.AddOrUpdateIndex (this.m_Db.Books.All ()
+                     BookSearch.AddOrUpdateIndex (this.Database.Books.All ()
                         .Skip (start.Value));
                   }
                }
                else
                {
-                  BookSearch.AddOrUpdateIndex (this.m_Db.Books.All ());
+                  BookSearch.AddOrUpdateIndex (this.Database.Books.All ());
                }
                BookSearch.Optimize ();
             }
             else if (type == "passage")
             {
-               num = this.m_Db.PassageEntries.All ().Count ();
+               num = this.Database.PassageEntries.All ().Count ();
                if (start != null && start.Value != -1)
                {
                   if (length != null && length.Value != -1)
                   {
-                     PassageSearch.AddOrUpdateIndex (this.m_Db.PassageEntries.All ()
+                     PassageSearch.AddOrUpdateIndex (this.Database.PassageEntries.All ()
                         .OrderBy (p => p.Chapter.SubBook.Version.Book.Title)
                         .ThenBy (p => p.Chapter.SubBook.Version.Title)
                         .ThenBy (p => p.Chapter.SubBook.Order)
@@ -156,10 +147,10 @@ namespace SeekDeepWithin.Controllers
                   }
                   else
                   {
-                     PassageSearch.AddOrUpdateIndex (this.m_Db.PassageEntries.All ()
+                     PassageSearch.AddOrUpdateIndex (this.Database.PassageEntries.All ()
                         .OrderBy (p => p.Chapter.SubBook.Version.Book.Title)
                         .ThenBy (p => p.Chapter.SubBook.Version.Title)
-                        .ThenBy (p => p.Chapter.SubBook.SubBook.Name)
+                        .ThenBy (p => p.Chapter.SubBook.Term.Name)
                         .ThenBy (p => p.Chapter.Order)
                         .ThenBy (p => p.Number)
                         .Skip (start.Value));
@@ -167,7 +158,7 @@ namespace SeekDeepWithin.Controllers
                }
                else
                {
-                  PassageSearch.AddOrUpdateIndex (this.m_Db.PassageEntries.All ()
+                  PassageSearch.AddOrUpdateIndex (this.Database.PassageEntries.All ()
                      .OrderBy (p => p.Chapter.SubBook.Version.Book.Title)
                      .ThenBy (p => p.Chapter.SubBook.Version.Title)
                      .ThenBy (p => p.Chapter.Order)
@@ -178,35 +169,35 @@ namespace SeekDeepWithin.Controllers
             }
             else if (type == "term")
             {
-               num = this.m_Db.GlossaryTerms.All ().Count ();
+               num = this.Database.Terms.All ().Count ();
                if (start != null && start.Value != -1)
                {
                   if (length != null && length.Value != -1)
                   {
-                     TermSearch.AddOrUpdateIndex (this.m_Db.GlossaryTerms.All ()
+                     TermSearch.AddOrUpdateIndex (this.Database.Terms.All ()
                         .Skip (start.Value)
                         .Take (length.Value));
                   }
                   else
                   {
-                     TermSearch.AddOrUpdateIndex (this.m_Db.GlossaryTerms.All ()
+                     TermSearch.AddOrUpdateIndex (this.Database.Terms.All ()
                         .Skip (start.Value));
                   }
                }
                else
                {
-                  TermSearch.AddOrUpdateIndex (this.m_Db.GlossaryTerms.All ());
+                  TermSearch.AddOrUpdateIndex (this.Database.Terms.All ());
                }
                TermSearch.Optimize ();
             }
             else if (type == "glossary")
             {
-               num = this.m_Db.GlossaryEntries.All ().Count ();
+               num = this.Database.TermItemEntries.All ().Count ();
                if (start != null && start.Value != -1)
                {
                   if (length != null && length.Value != -1)
                   {
-                     GlossarySearch.AddOrUpdateIndex (this.m_Db.GlossaryEntries.All ()
+                     GlossarySearch.AddOrUpdateIndex (this.Database.TermItemEntries.All ()
                         .OrderBy (e => e.Item.Term.Name)
                         .ThenBy (e => e.Order)
                         .Skip (start.Value)
@@ -214,7 +205,7 @@ namespace SeekDeepWithin.Controllers
                   }
                   else
                   {
-                     GlossarySearch.AddOrUpdateIndex (this.m_Db.GlossaryEntries.All ()
+                     GlossarySearch.AddOrUpdateIndex (this.Database.TermItemEntries.All ()
                         .OrderBy (e => e.Item.Term.Name)
                         .ThenBy (e => e.Order)
                         .Skip (start.Value));
@@ -222,7 +213,7 @@ namespace SeekDeepWithin.Controllers
                }
                else
                {
-                  GlossarySearch.AddOrUpdateIndex (this.m_Db.GlossaryEntries.All ()
+                  GlossarySearch.AddOrUpdateIndex (this.Database.TermItemEntries.All ()
                      .OrderBy (e => e.Item.Term.Name)
                      .ThenBy (e => e.Order));
                }
@@ -259,7 +250,7 @@ namespace SeekDeepWithin.Controllers
             return Json ("Please specify a query for searching.");
          }
 
-         var parser = new PassageParser (this.m_Db);
+         var parser = new PassageParser (this.Database);
          parser.Parse (search.QDecoded);
          var results = new SearchResultsViewModel (search)
          {
@@ -270,12 +261,14 @@ namespace SeekDeepWithin.Controllers
          };
          if (parser.PassageList.Count > 0)
          {
+            var host = Request.Url == null ?  string.Empty : Request.Url.AbsoluteUri.Replace (Request.Url.AbsolutePath, "");
             foreach (var passage in parser.PassageList)
             {
                results.Add (new SearchResult
                {
                   Id = passage.Id.ToString (CultureInfo.InvariantCulture),
-                  Title = passage.GetTitle (Request.Url),
+                  Title = passage.GetTitle (),
+                  Url = string.Format ("{0}/Read/{1}#num_{2}", host, passage.Chapter.Id, passage.Number),
                   Description = passage.Passage.Text
                });
             }
@@ -357,17 +350,6 @@ namespace SeekDeepWithin.Controllers
          var results = new SearchResultsViewModel (search) { ShowEmpty = true };
          GlossarySearch.Query (search, results, host);
          return PartialView ("Query", results);
-      }
-
-      /// <summary>
-      /// Returns a failed JSON response with the given message.
-      /// </summary>
-      /// <param name="message">Message to return.</param>
-      /// <returns>JSON response.</returns>
-      public ActionResult Fail (string message = "Error")
-      {
-         Response.StatusCode = 500;
-         return Json (message);
       }
    }
 }

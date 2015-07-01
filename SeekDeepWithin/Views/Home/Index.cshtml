@@ -8,23 +8,26 @@
       panelSize = 4;
    }
    var randomPassage = ViewBag.RandomPassage as PassageViewModel;
+   var urlScheme = Request.Url == null ? string.Empty : Request.Url.Scheme;
 }
 @section featured {
    <div class="panel">
-      <hgroup class="title">
-         <h1>@ViewBag.Title. <span style="font-size: large">@ViewBag.Message</span></h1>
-      </hgroup>
-      <p>
-         This site is currently under construction, please bear with us until it is fully functional.<br />
-         If you like what we are doing, send us a comment from the 
-         <a href="@Url.Action("About", "Home", null, Request.Url.Scheme)">about</a> page.
-      </p>
+      <div class="row">
+         <div class="small-12 columns">
+            <h1>@ViewBag.Title, <span style="font-size: large">study spiritual texts from all over the world</span></h1>
+            <p>
+               This site is currently under construction, please bear with us until it is fully functional.<br />
+               If you like what we are doing, send us a comment from the
+               <a href="@Url.Action("About", "Home", null, urlScheme)">about</a> page.
+            </p>
+         </div>
+      </div>
    </div>
 }
 
-<div class="row text-center">
+<div class="row tCenter">
    <div class="medium-6 large-@panelSize columns">
-      <a href="@Url.Action("Index", "Book", null, Request.Url.Scheme)">
+      <a href="@Url.Action("Index", "Book", null, urlScheme)">
          <i class="icon-book" style="font-size: xx-large"> </i>
          <h4>Read</h4>
       </a>
@@ -34,7 +37,7 @@
       </p>
    </div>
    <div class="medium-6 large-@panelSize columns">
-      <a href="@Url.Action("Index", "Glossary", null, Request.Url.Scheme)">
+      <a href="@Url.Action("Index", "Glossary", null, urlScheme)">
          <i class="icon-list" style="font-size: xx-large"> </i>
          <h4>Study</h4>
       </a>
@@ -44,7 +47,7 @@
       </p>
    </div>
    <div class="medium-6 large-@panelSize columns">
-      <a href="@Url.Action("Index", "Search", null, Request.Url.Scheme)">
+      <a href="@Url.Action("Index", "Search", null, urlScheme)">
          <i class="icon-search" style="font-size: xx-large"> </i>
          <h4>Search</h4>
       </a>
@@ -55,7 +58,7 @@
    </div>
    @if (!Request.IsAuthenticated) {
       <div class="medium-6 large-3 columns">
-         <a href="@Url.Action("Register", "Account", null, Request.Url.Scheme)">
+         <a href="@Url.Action("Register", "Account", null, urlScheme)">
             <i class="icon-ok-sign" style="font-size: xx-large"> </i>
             <h4>Register</h4>
          </a>
@@ -74,7 +77,9 @@
                <dt>@randomPassage.Title</dt>
                <dd>@randomPassage.Render(Request.Url)</dd>
             </dl>
-            <a href="@Url.Action("Index", "Passage", new { entryId = randomPassage.EntryId }, Request.Url.Scheme)" class="button small expand">View Excerpt</a>
+            <a href="@Url.Action("Index", "Passage", new { entryId = randomPassage.EntryId }, urlScheme)" class="sdw-button reg expand">
+               View Excerpt
+            </a>
          } else {
             <div class="alert-box">None, Sorry!</div>
          }

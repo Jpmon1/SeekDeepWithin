@@ -1,41 +1,9 @@
-﻿
-$(document).ready(function () {
-   $('#tabGlossary').show();
-   $('#tabRead').hide();
-   $('#tabSearch').hide();
-   $('#tabTag').hide();
-   $('#tabWriter').hide();
-   $('#tabExternal').hide();
-   $('#rowUpdate').hide();
-   $('#rowOpenLink').hide();
-   $('#createLinkCheck').hide();
-   $('#updateLinkCheck').hide();
-
-   $('#linkGlossary').autocomplete({
+﻿function link_setup() {
+   $('#linkTerm').autocomplete({
       serviceUrl: '/Term/AutoComplete',
       paramName: 'term',
       onSelect: function (suggestion) {
          $('#selTermId').val(suggestion.data);
-         if ($('#itemType').val() == 'SeeAlso') {
-            $('#linkName').val(suggestion.value);
-         }
-      }
-   });
-   $('#linkTag').autocomplete({
-      serviceUrl: '/Tag/AutoComplete',
-      paramName: 'tag',
-      onSelect: function (suggestion) {
-         $('#selTagId').val(suggestion.data);
-         if ($('#itemType').val() == 'SeeAlso') {
-            $('#linkName').val(suggestion.value);
-         }
-      }
-   });
-   $('#linkWriter').autocomplete({
-      serviceUrl: '/Writer/AutoComplete',
-      paramName: 'writer',
-      onSelect: function (suggestion) {
-         $('#selWriterId').val(suggestion.data);
       }
    });
    $('#linkBook').autocomplete({
@@ -130,46 +98,33 @@ $(document).ready(function () {
 
    $('#linkTypeCombo').change(function () {
       var selected = $("#linkTypeCombo").val();
-      $('#tabGlossary').hide();
-      $('#tabRead').hide();
-      $('#tabSearch').hide();
-      $('#tabTag').hide();
-      $('#tabExternal').hide();
-      $('#tabWriter').hide();
-      $('#rowAnchor').show();
+      $('#termArea').hide();
+      $('#readArea').hide();
+      $('#otherArea').hide();
+      $('#anchorArea').show();
       $('#linkNewWindow').prop('checked', false);
-      if (selected == 0) {
-         $('#tabGlossary').show();
-      } else if (selected == 1) {
-         $('#tabRead').show();
+      if (selected == 1) {
+         $('#termArea').show();
       } else if (selected == 2) {
-         $('#tabSearch').show();
-      } else if (selected == 3) {
-         $('#tabTag').show();
-      } else if (selected == 5) {
-         $('#tabWriter').show();
+         $('#readArea').show();
       } else {
-         $('#tabExternal').show();
-         $('#rowAnchor').hide();
+         $('#otherArea').show();
+         $('#anchorArea').hide();
          $('#linkNewWindow').prop('checked', true);
       }
    });
-});
+}
 
 function link_create() {
    var selected = $("#linkTypeCombo").val();
-   if (selected == 0) {
+   if (selected == 1) {
       link_createGlossary();
-   } else if (selected == 1) {
-      link_createRead();
    } else if (selected == 2) {
-      link_createSearch();
+      link_createRead();
    } else if (selected == 3) {
-      link_createTag();
-   } else if (selected == 5) {
-      link_createWriter();
+      link_createSearch();
    } else {
-      link_createExternal();
+      link_post($('#linkOther').val());
    }
 }
 
@@ -179,50 +134,9 @@ function link_createGlossary() {
       alert('Select a term to link to first.');
    } else {
       var linkUrl = window.location.protocol + "//" + window.location.host + "/Term/" + termId;
-      link_post('create', linkUrl, function (d) {
-         link_render();
+      link_post(linkUrl, function () {
          $('#linkTerm').val('');
          $('#selTermId').val('');
-         $('#createLinkCheck').show(200, function () {
-            setTimeout(function () { $('#createLinkCheck').hide(100); }, 2000);
-         });
-         link_add(d.id, d.startIndex, d.endIndex, d.linkUrl);
-      });
-   }
-}
-
-function link_createTag() {
-   var tagId = $('#selTagId').val();
-   if (tagId == '') {
-      alert('Select a tag to link to first.');
-   } else {
-      var linkUrl = window.location.protocol + "//" + window.location.host + "/Tag/Details/" + tagId;
-      link_post('create', linkUrl, function (d) {
-         link_render();
-         $('#linkTag').val('');
-         $('#selTagId').val('');
-         $('#createLinkCheck').show(200, function () {
-            setTimeout(function () { $('#createLinkCheck').hide(100); }, 2000);
-         });
-         link_add(d.id, d.startIndex, d.endIndex, d.linkUrl);
-      });
-   }
-}
-
-function link_createWriter() {
-   var tagId = $('#selWriterId').val();
-   if (tagId == '') {
-      alert('Select a writer to link to first.');
-   } else {
-      var linkUrl = window.location.protocol + "//" + window.location.host + "/Writer/Details/" + tagId;
-      link_post('create', linkUrl, function (d) {
-         link_render();
-         $('#linkWriter').val('');
-         $('#selWriterId').val('');
-         $('#createLinkCheck').show(200, function () {
-            setTimeout(function () { $('#createLinkCheck').hide(100); }, 2000);
-         });
-         link_add(d.id, d.startIndex, d.endIndex, linkUrl);
       });
    }
 }
@@ -233,163 +147,95 @@ function link_createRead() {
       alert('Select a chapter to link to first.');
    } else {
       var linkUrl = window.location.protocol + "//" + window.location.host + "/Read/" + chapterId;
-      link_post('create', linkUrl, function (d) {
-         link_render();
+      link_post(linkUrl, function () {
          $('#linkChapter').val('');
          $('#selChapterId').val('');
-         $('#createLinkCheck').show(200, function () {
-            setTimeout(function () { $('#createLinkCheck').hide(100); }, 2000);
-         });
-         link_add(d.id, d.startIndex, d.endIndex, d.linkUrl);
       });
    }
 }
 
 function link_createSearch() {
-   var searchFor = $('#linkSearch').val();
+   var searchFor = $('#linkOther').val();
    if (searchFor == '') {
       alert('Specify the search first.');
    } else {
       var linkUrl = window.location.protocol + "//" + window.location.host +
          "/Search/Results?searchFor=" + encodeURIComponent(searchFor);
-      link_post('create', linkUrl, function (d) {
-         link_render();
-         $('#linkSearch').val('');
-         $('#createLinkCheck').show(200, function () {
-            setTimeout(function () { $('#createLinkCheck').hide(100); }, 2000);
-         });
-         link_add(d.id, d.startIndex, d.endIndex, d.linkUrl);
+      link_post(linkUrl, function () {
+         $('#linkOther').val('');
       });
    }
 }
 
-function link_createExternal() {
-   link_post('create', $('#linkExternal').val(), function (d) {
-      link_render();
-      $('#createLinkCheck').show(200, function () {
-         setTimeout(function () { $('#createLinkCheck').hide(100); }, 2000);
-      });
-      link_add(d.id, d.startIndex, d.endIndex, d.linkUrl);
+function link_post(linkUrl, done) {
+   var anchor = $('#linkAnchor').val();
+   if (anchor.length > 0) {
+      linkUrl += '#' + anchor;
+   }
+   sdw_post('/Link/Create' + $('#editItemType').val(), {
+      footerId: $('#editItemFooterId').val(),
+      itemId: $('#editItemId').val(),
+      startIndex: $('#startIndex').val(),
+      endIndex: $('#endIndex').val(),
+      linkUrl: linkUrl,
+      openInNewWindow: $('#linkNewWindow').prop('checked')
+   }, 'Creating Link, please wait...', function (d) {
+      $('#currentLinks').append('<a href="javascript:void(0)" class="sdw-button white small expand" onclick="link_edit(' + d.id +
+         ')" id="link_' + d.id + '">Start: ' + d.startIndex + ' End: ' + d.endIndex + ' (' + d.linkUrl + ')</a>');
+      link_new();
+      if (done !== undefined) {
+         done(d);
+      }
+   });
+}
+
+function link_edit(id) {
+   $.ajax({
+      url: '/Link/Get' + $('#editItemType').val(),
+      data: {
+         id: id,
+         itemId: $('#editItemId').val(),
+         footerId: $('#editItemFooterId').val()
+      }
+   }).done(function(data) {
+      $('#linkCreate').hide();
+      $('#linkUpdate').show();
+      $('#linkEditId').val(id);
+      $('#linkNewWindow').prop('checked', data.openInNewWindow);
+      $('#linkOpen').attr('href', data.url);
+      select_word(data.startIndex, data.endIndex);
    });
 }
 
 function link_update() {
-   link_post('update', '', function () {
-      $('#updateLinkCheck').show(200, function () {
-         setTimeout(function () { $('#updateLinkCheck').hide(100); }, 2000);
-      });
-      link_render();
-      link_add($('#editId').val(), $('#startIndex').val(), $('#endIndex').val(), '');
+   sdw_post('/Link/Update' + $('#editItemType').val(), {
+      id: $('#linkEditId').val(),
+      footerId: $('#editItemFooterId').val(),
+      itemId: $('#editItemId').val(),
+      startIndex: $('#startIndex').val(),
+      endIndex: $('#endIndex').val(),
+      openInNewWindow: $('#linkNewWindow').prop('checked')
+   }, 'Updating Link, please wait...', function (d) {
+      $('#link_' + d.id).text('Start: ' + d.startIndex + ' End: ' + d.endIndex +
+         ' (' + d.linkUrl + ')');
+      link_new();
    });
-}
-
-function link_add(id, start, end, url) {
-   if ($('#listItem_' + id).length > 0) {
-      if (url === '') {
-         var split = $('#listItem_' + id).text().split(' ');
-         url = split[split.length - 1].replace('(', '').replace(')', '');
-      }
-      $('#listItem_' + id).remove();
-   }
-   $('#linkList').append('<li id="listItem_' + id + '" class="bullet-item"><a href="javascript:void(0)" onclick="link_edit(' + id +
-      ')">Start: ' + start + ' End: ' + end + ' (' + url + ')</a></li>');
-}
-
-function link_post(action, linkUrl, done) {
-   var startIndex = $('#startIndex').val();
-   var endIndex = $('#endIndex').val();
-   var anchor = $('#linkAnchor').val();
-   if (anchor.length > 0)
-      linkUrl = linkUrl + '#' + anchor;
-   if (startIndex != '' && endIndex != '') {
-      var form = $('#__AjaxAntiForgeryForm');
-      var token = $('input[name="__RequestVerificationToken"]', form).val();
-      $.ajax({
-         type: 'POST',
-         url: '/Link/' + action + '/',
-         data: {
-            __RequestVerificationToken: token,
-            startIndex: startIndex,
-            endIndex: endIndex,
-            linkId: $('#editId').val(),
-            itemId: $('#itemId').val(),
-            itemType: $('#itemType').val(),
-            openInNewWindow: $('#linkNewWindow').prop('checked'),
-            linkUrl: linkUrl,
-            linkName: $('#linkName').val(),
-            parentId: $('#parentId').val()
-         }
-      }).done(done).fail(function(data) {
-         alert(data.responseText);
-      });
-   } else {
-      alert('Please select where in the text you would like the link.');
-   }
 }
 
 function link_delete() {
-   var form = $('#__AjaxAntiForgeryForm');
-   var token = $('input[name="__RequestVerificationToken"]', form).val();
-   $.ajax({
-      type: 'POST',
-      url: '/Link/Delete/',
-      data: {
-         __RequestVerificationToken: token,
-         id: $('#editId').val(),
-         itemId: $('#itemId').val(),
-         itemType: $('#itemType').val(),
-         parentId: $('#parentId').val()
-      }
-   }).done(function () {
-      var id = $('#editId').val();
-      $('#listItem_' + id).remove();
+   sdw_post('/Link/Delete' + $('#editItemType').val(), {
+      id: $('#linkEditId').val(),
+      footerId: $('#editItemFooterId').val(),
+      itemId: $('#editItemId').val(),
+   }, 'Deleting Link, please wait...', function () {
+      var id = $('#linkEditId').val();
+      $('#link_' + id).remove();
       link_new();
-      link_render();
-   }).fail(function (data) {
-      alert(data.responseText);
-   });
-}
-
-function link_edit(itemId) {
-   $.ajax({
-      url: '/Link/Get/',
-      data: {
-         itemId: $('#itemId').val(),
-         id: itemId,
-         itemType: $('#itemType').val(),
-         parentId: $('#parentId').val()
-      }
-   }).done(function (data) {
-      $('#rowCreate').hide();
-      $('#rowUpdate').show();
-      $('#rowOpenLink').show();
-      $('#editId').val(itemId);
-      $('#linkEditArea').hide();
-      $('#openLinkArea').html('<a href="' + data.url + '" target="_blank" class="button small expand">Open Link</a>');
-      select_word(data.startIndex, data.endIndex);
-   }).fail(function (data) {
-      alert(data.responseText);
-   });
-}
-
-function link_render() {
-   $.ajax({
-      url: '/Link/Render/',
-      data: {
-         itemId: $('#itemId').val(),
-         itemType: $('#itemType').val(),
-         parentId: $('#parentId').val()
-      }
-   }).done(function (data) {
-      $('#renderedText').html(data.html);
-      $('#generatedHtml').text(data.html);
    });
 }
 
 function link_new() {
-   $('#rowCreate').show();
-   $('#rowUpdate').hide();
-   $('#rowOpenLink').hide();
-   $('#linkEditArea').show();
-   $('#linkTypeCombo').val(0);
+   $('#linkCreate').show();
+   $('#linkUpdate').hide();
+   $('#linkEditId').val('');
 }

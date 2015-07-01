@@ -1,222 +1,121 @@
-﻿
+﻿function style_setup() {
+   $('#styleList').change(function () {
+      var selected = $("#styleList").val();
+      if (selected == 0) {
+         $('#styleStart').val('');
+         $('#styleEnd').val('');
+      } else if (selected == 1) {
+         $('#styleStart').val('<strong>');
+         $('#styleEnd').val('</strong>');
+      } else if (selected == 2) {
+         $('#styleStart').val('<em>');
+         $('#styleEnd').val('</em>');
+      } else if (selected == 3) {
+         $('#styleStart').val('<blockquote>');
+         $('#styleEnd').val('</blockquote>');
+      } else if (selected == 4) {
+         $('#styleStart').val('<ul>');
+         $('#styleEnd').val('</ul>');
+      } else if (selected == 5) {
+         $('#styleStart').val('<ol>');
+         $('#styleEnd').val('</ol>');
+      } else if (selected == 6) {
+         $('#styleStart').val('<li>');
+         $('#styleEnd').val('</li>');
+      } else if (selected == 7) {
+         $('#styleStart').val('<small>');
+         $('#styleEnd').val('</small>');
+      } else if (selected == 8) {
+         $('#styleStart').val('<div>');
+         $('#styleEnd').val('</div>');
+      } else if (selected == 9) {
+         $('#styleStart').val('<div class="tCenter">');
+         $('#styleEnd').val('</div>');
+      } else if (selected == 10) {
+         $('#styleStart').val('<div class="tRight">');
+         $('#styleEnd').val('</div>');
+      } else if (selected == 11) {
+         $('#styleStart').val('<h5 class="text-center" style="font-weight:bold;">');
+         $('#styleEnd').val('</h5>');
+      } else if (selected == 12) {
+         $('#styleStart').val('<div class="text-center" style="font-weight:bold;font-style:italic;">');
+         $('#styleEnd').val('</div>');
+      } else if (selected == 13) {
+         $('#styleStart').val('<div class="text-center" style="font-size:smaller;margin:0.825rem">');
+         $('#styleEnd').val('</div>');
+      }
+   });
+}
+
 function style_create() {
-   style_post('create', function (d) {
-      $('#styleStart').val('');
-      $('#styleEnd').val('');
-      style_render();
-      $('#modalText').text('Success!');
-      setTimeout(function () { $('#modal').foundation('reveal', 'close'); }, 700);
-      $('#styleList').append('<li id="listItem_' + d.id + '" class="bullet-item"><a href="javascript:void(0)" onclick="style_edit(' + d.id +
-         ')">Start: ' + d.startIndex + ' End: ' + d.endIndex + '</a></li>');
+   sdw_post('/Style/Create' + $('#editItemType').val(), {
+      footerId: $('#editItemFooterId').val(),
+      itemId: $('#editItemId').val(),
+      startStyle: encodeURIComponent($('#styleStart').val()),
+      endStyle: encodeURIComponent($('#styleEnd').val()),
+      startIndex: $('#startIndex').val(),
+      endIndex: $('#endIndex').val(),
+      spansMultiple: $('#styleSpan').prop('checked')
+   }, 'Creating Style, please wait...', function (d) {
+      style_new();
+      $('#currentStyles').append('<a href="javascript:void(0)" class="sdw-button white small expand" onclick="style_edit(' + d.id +
+         ')" id="style_' + d.id + '">Start: ' + d.startIndex + ' End: ' + d.endIndex + '</a>');
+   });
+}
+
+function style_edit(id) {
+   $.ajax({
+      url: '/Style/Get' + $('#editItemType').val(),
+      data: {
+         id: id,
+         itemId: $('#editItemId').val(),
+         footerId: $('#editItemFooterId').val()
+      }
+   }).done(function (data) {
+      $('#styleList').val(0);
+      $('#styleCreate').hide();
+      $('#styleUpdate').show();
+      $('#styleEditId').val(data.id);
+      $('#styleStart').val(data.start);
+      $('#styleEnd').val(data.end);
+      select_word(data.startIndex, data.endIndex);
    });
 }
 
 function style_update() {
-   style_post('update', function () {
-      $('#modalText').text('Success!');
-      setTimeout(function () { $('#modal').foundation('reveal', 'close'); }, 700);
-      style_render();
-      $('#listItem_' + $('#editId').val()).remove();
-      $('#styleList').append('<li class="bullet-item" id="listItem_' + $('#editId').val() +
-         '"><a href="javascript:void(0)" onclick="style_edit(' + $('#editId').val() +
-         ')">Start: ' + $('#startIndex').val() + ' (' + escapeHtml($('#styleStart').val()) + ') End: ' +
-         $('#endIndex').val() + ' (' + escapeHtml($('#styleEnd').val()) + ')</li>');
-      $('#styleStart').val('');
-      $('#styleEnd').val('');
+   sdw_post('/Style/Update' + $('#editItemType').val(), {
+      id: $('#styleEditId').val(),
+      footerId: $('#editItemFooterId').val(),
+      itemId: $('#editItemId').val(),
+      startStyle: encodeURIComponent($('#styleStart').val()),
+      endStyle: encodeURIComponent($('#styleEnd').val()),
+      startIndex: $('#startIndex').val(),
+      endIndex: $('#endIndex').val(),
+      spansMultiple: $('#styleSpan').prop('checked')
+
+   }, 'Updating Style, please wait...', function () {
+      $('#style_' + $('#styleEditId').val()).text('Start: ' + $('#startIndex').val() + ' (' +
+         escapeHtml($('#styleStart').val()) + ') End: ' + $('#endIndex').val() + ' (' + escapeHtml($('#styleEnd').val()) + ')');
+      style_new();
    });
-}
-
-function escapeHtml(str) {
-   var div = document.createElement('div');
-   div.appendChild(document.createTextNode(str));
-   return div.innerHTML;
-};
-
-function style_post(action, done) {
-   $('#modalClose').hide();
-   $('#modalText').text('Saving Style, please wait...');
-   $('#modal').foundation('reveal', 'open');
-   var startIndex = $('#startIndex').val();
-   var endIndex = $('#endIndex').val();
-   if (startIndex != '' && endIndex != '') {
-      var type = $('#itemType').val();
-      $.ajax({
-         type: 'POST',
-         url: '/Style/' + action + type + '/',
-         data: style_get_data(type)
-      }).done(done).fail(function (data) {
-         $('#modalClose').show();
-         $('#modalText').text(data.responseText);
-         $('#modal').foundation('reveal', 'open');
-      });
-   } else {
-      $('#modalClose').show();
-      $('#modalText').text('Please select where in the text you would like the style.');
-   }
-}
-
-function style_get_data(type) {
-   var form = $('#__AjaxAntiForgeryForm');
-   var token = $('input[name="__RequestVerificationToken"]', form).val();
-   var startIndex = $('#startIndex').val();
-   var endIndex = $('#endIndex').val();
-   if (type.indexOf("Footer") != -1 || type.indexOf("Header") != -1) {
-      return {
-         __RequestVerificationToken: token,
-         startIndex: startIndex,
-         endIndex: endIndex,
-         id: $('#itemId').val(),
-         spansMultiple: false,
-         startStyle: encodeURIComponent($('#styleStart').val()),
-         endStyle: encodeURIComponent($('#styleEnd').val()),
-         parentId: $('#parentId').val()
-      }
-   } else {
-      return {
-         __RequestVerificationToken: token,
-         startIndex: startIndex,
-         endIndex: endIndex,
-         id: $('#editId').val(),
-         spansMultiple: $('#multiSpan').prop('checked'),
-         startStyle: encodeURIComponent($('#styleStart').val()),
-         endStyle: encodeURIComponent($('#styleEnd').val()),
-         parentId: $('#itemId').val()
-      }
-   }
 }
 
 function style_delete() {
-   $('#modalClose').hide();
-   $('#modalText').text('Deleting Style, please wait...');
-   $('#modal').foundation('reveal', 'open');
-   var type = $('#itemType').val();
-   var form = $('#__AjaxAntiForgeryForm');
-   var token = $('input[name="__RequestVerificationToken"]', form).val();
-   $.ajax({
-      type: 'POST',
-      url: '/Style/Delete' + type + '/',
-      data: {
-         __RequestVerificationToken: token,
-         id: $('#editId').val(),
-         itemId: $('#itemId').val(),
-         parentId: $('#parentId').val()
-      }
-   }).done(function () {
-      var id = $('#editId').val();
-      $('#listItem_' + id).remove();
-      setTimeout(function () { $('#modal').foundation('reveal', 'close'); }, 700);
+   sdw_post('/Style/Delete' + $('#editItemType').val(), {
+      id: $('#styleEditId').val(),
+      footerId: $('#editItemFooterId').val(),
+      itemId: $('#editItemId').val(),
+   }, 'Deleting Style, please wait...', function () {
+      var id = $('#styleEditId').val();
+      $('#style_' + id).remove();
       style_new();
-      style_render();
-   }).fail(function (data) {
-      $('#modalClose').show();
-      $('#modalText').text(data.responseText);
-      $('#modal').foundation('reveal', 'open');
-   });
-}
-
-function style_edit(itemId) {
-   $.ajax({
-      url: '/Style/Get/',
-      data: {
-         itemId: $('#itemId').val(),
-         id: itemId,
-         itemType: $('#itemType').val(),
-         parentId: $('#parentId').val()
-      }
-   }).done(function (data) {
-      $('#rowCreate').hide();
-      $('#rowUpdate').show();
-      $('#editId').val(itemId);
-      $('#styleStart').val(data.start);
-      $('#styleEnd').val(data.end);
-      select_word(data.startIndex, data.endIndex);
-   }).fail(function (data) {
-      alert(data.responseText);
-   });
-}
-
-function style_render() {
-   $.ajax({
-      url: '/Style/Render/',
-      data: {
-         itemId: $('#itemId').val(),
-         itemType: $('#itemType').val(),
-         parentId: $('#parentId').val()
-      }
-   }).done(function(data) {
-      $('#renderedText').html(data.html);
-      $('#generatedHtml').text(data.html);
    });
 }
 
 function style_new() {
-   $('#rowCreate').show();
-   $('#rowUpdate').hide();
+   $('#styleList').val(0);
+   $('#styleCreate').show();
+   $('#styleUpdate').hide();
    $('#styleStart').val('');
    $('#styleEnd').val('');
-}
-
-function style_bold() {
-   $('#styleStart').val('<strong>');
-   $('#styleEnd').val('</strong>');
-}
-
-function style_italic() {
-   $('#styleStart').val('<em>');
-   $('#styleEnd').val('</em>');
-}
-
-function style_blockQuote() {
-   $('#styleStart').val('<blockquote style="color:black">');
-   $('#styleEnd').val('</blockquote>');
-}
-
-function style_list() {
-   $('#styleStart').val('<ul>');
-   $('#styleEnd').val('</ul>');
-}
-
-function style_div() {
-   $('#styleStart').val('<div>');
-   $('#styleEnd').val('</div>');
-}
-
-function style_orderedList() {
-   $('#styleStart').val('<ol>');
-   $('#styleEnd').val('</ol>');
-}
-
-function style_listItem() {
-   $('#styleStart').val('<li>');
-   $('#styleEnd').val('</li>');
-}
-
-function style_small() {
-   $('#styleStart').val('<small>');
-   $('#styleEnd').val('</small>');
-}
-
-function style_center() {
-   $('#styleStart').val('<div class="text-center">');
-   $('#styleEnd').val('</div>');
-}
-
-function style_right() {
-   $('#styleStart').val('<div class="text-right">');
-   $('#styleEnd').val('</div>');
-}
-
-function style_heading() {
-   $('#styleStart').val('<h5 class="text-center" style="font-weight:bold;">');
-   $('#styleEnd').val('</h5>');
-}
-
-function style_subheading() {
-   $('#styleStart').val('<div class="text-center" style="font-weight:bold;font-style:italic;">');
-   $('#styleEnd').val('</div>');
-}
-
-function style_headingsum() {
-   $('#styleStart').val('<div class="text-center" style="font-size:smaller;margin:0.825rem">');
-   $('#styleEnd').val('</div>');
 }

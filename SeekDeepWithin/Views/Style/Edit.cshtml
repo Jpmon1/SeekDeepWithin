@@ -7,8 +7,15 @@
 @section styles {
    @Styles.Render("~/Content/css/slider")
 }
-
-<h3><small>style edit</small> @Model.Title</h3>
+@section featured {
+   <div class="panel">
+      <div class="row">
+         <div class="small-12 columns">
+            <h3><small>style edit</small> @Model.Title</h3>
+         </div>
+      </div>
+   </div>
+}
 @using (Html.BeginForm (null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" })){
    @Html.AntiForgeryToken()
 }
@@ -57,7 +64,7 @@
          <li class="title">Current Styles</li>
          @foreach (var style in Model.Styles) {
             <li id="listItem_@style.ItemId" class="bullet-item">
-               <a href="javascript:void(0)" onclick="style_edit(@style.ItemId)">
+               <a href="javascript:void(0)" onclick="style_edit(@style.Id)">
                   Start: @style.StartIndex (@style.Start) End: @style.EndIndex (@style.End)
                </a>
             </li>
@@ -172,7 +179,7 @@
       </div>
       
       <div class="row"@if (Model.ItemType.Contains ("Header") || Model.ItemType.Contains ("Footer")) {<text>style="display: none;"</text>}>
-         <div class="small-12 columns text-center">
+         <div class="small-12 columns tCenter">
             <label for="multiSpan">This style spans across multiple entries</label>
             <div class="switch">
                <input type="checkbox" id="multiSpan" name="multiSpan" />
@@ -237,7 +244,7 @@
                <i class="icon-editalt"></i> Edit Chapter
             </a>
          } else if (Model.ItemType == "Entry") {
-            <a href="@Url.Action("Edit", "GlossaryItem", new {id = Model.ParentId}, Request.Url.Scheme)" class="button secondary expand" id="btnEditFooters">
+            <a href="@Url.Action("Edit", "TermItem", new {id = Model.ParentId}, Request.Url.Scheme)" class="button secondary expand" id="btnEditFooters">
                <i class="icon-editalt"></i> Edit Item
             </a>
          }

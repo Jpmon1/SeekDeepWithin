@@ -5,7 +5,15 @@
 @section styles {
    @Styles.Render("~/Content/css/slider")
 }
-<h3><small>footer edit</small> @Model.Title</h3>
+@section featured {
+   <div class="panel">
+      <div class="row">
+         <div class="small-12 columns">
+            <h3><small>footer edit</small> @Model.Title</h3>
+         </div>
+      </div>
+   </div>
+}
 
 @using (Html.BeginForm (null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" })) {
    @Html.AntiForgeryToken()
@@ -126,7 +134,7 @@
 <div class="row">
    <div class="small-6 medium-3 large-3 columns">
       @if (Model.ItemType == "Entry") {
-         <a href="@Url.Action("Edit", "GlossaryItem", new {id = Model.ParentId}, Request.Url.Scheme)" class="button secondary expand">
+         <a href="@Url.Action("Edit", "TermItem", new {id = Model.ParentId}, Request.Url.Scheme)" class="button secondary expand">
             <i class="icon-editalt"></i> Edit Item
          </a>
       } else {

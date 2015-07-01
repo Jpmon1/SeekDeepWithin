@@ -1,9 +1,10 @@
-﻿@using SeekDeepWithin.Models
+﻿@using SeekDeepWithin.Controllers
+@using SeekDeepWithin.Models
 @model SeekDeepWithin.Models.ChapterViewModel
-
 @{
+   var scheme = Request.Url == null ? string.Empty : Request.Url.Scheme;
    var contents = new VersionContents (Model.SubBook.Version.Title, Model.SubBook.Version.Contents, 
-      Model.SubBook.VersionId, Model.SubBook.Id, Model.Id);
+      Model.SubBook.Version.Id, Model.SubBook.Id, Model.Id);
    var title = Model.SubBook.Version.Title;
    if (!Model.SubBook.Hide) {
       title += " | ";
@@ -14,14 +15,13 @@
    }
    ViewBag.Title = title;
 }
-
-<div class="row">
-   <div class="small-12 columns">
-      <div class="alert-box secondary text-center" style="padding-top: 0.5rem;padding-bottom: 0.5rem">
-         <a href="@Url.Action("Index", "Read", new { id = @Model.SubBook.Version.DefaultReadChapter }, Request.Url.Scheme)">@Model.SubBook.Version.Title</a>
+@section featured {
+   <div class="panel tCenter">
+      <h5 class="">
+         <a href="@Url.Action("Index", "Term", new { id = @Model.SubBook.Version.Term.Id }, scheme)">@(Model.SubBook.Version.Title)</a>
          @if (!Model.SubBook.Hide) {
             <text> | </text>
-            <a href="@Url.Action("About", "SubBook", new { id = @Model.SubBook.Id }, Request.Url.Scheme)">
+            <a href="@Url.Action("Index", "Term", new { id = @Model.SubBook.Term.Id }, scheme)">
                @if (string.IsNullOrEmpty (Model.SubBook.Alias)) {
                   <text>@Model.SubBook.Name</text>
                } else {
@@ -32,79 +32,80 @@
          @if (!Model.Hide) {
             <text> | @Model.Name</text>
          }
-      </div>
+         @if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
+            <span style="float: right">
+               <a href="@Url.Action("Edit", "Chapter", new {id = Model.Id}, scheme)" class="sdw-button alt tiny">
+                  Edit Chapter
+               </a>
+            </span>
+         }
+      </h5>
    </div>
-</div>
-
+}
+<input type="hidden" id="chapterId" value="@(Model.Id)"/>
 <div id="readingRow">
    <div class="row">
-      <div class="small-12 medium-9 large-9 columns" id="readingArea">
-         @Html.DisplayFor(model => model.Headers)
+      <div class="small-12 medium-8 large-8 columns" id="readingArea">
+         @if (Model.Header != null) {
+            <div class="row">
+               <div class="small-12 large-12 columns">
+                  @(Html.Raw(HtmlSanitizer.Sanitize (Model.Header.Render())))
+               </div>
+            </div>
+         }
          @foreach (var passage in Model.Passages) {
             @Html.Partial("_Passage", passage)
          }
-         @if (Model.Footers.Count > 0) {
+         @if (Model.Footer != null) {
             <br/>
-            <div class="alert-box secondary">
-               @Html.DisplayFor(model => model.Footers)
+            <div class="footer-box">
+               @(Html.Raw(HtmlSanitizer.Sanitize (Model.Footer.Render())))
             </div>
          }
          <div class="row">
-            <div class="small-6 pagination-centered columns">
-               @if (contents.PreviousChapter != -1) {
-                  <ul class="pagination" role="menubar" aria-label="Pagination" style="width: 100%">
-                     <li class="arrow"><a href="@Url.Action("Index", "Read", new { id = contents.PreviousChapter }, Request.Url.Scheme)">&laquo; Previous Chapter</a></li>
-                  </ul>
-               }
-            </div>
-            <div class="small-6 pagination-centered columns">
-               @if (contents.NextChapter != -1) {
-                  <ul class="pagination" role="menubar" aria-label="Pagination" style="width: 100%">
-                     <li class="arrow"><a href="@Url.Action("Index", "Read", new { id = contents.NextChapter }, Request.Url.Scheme)">Next Chapter &raquo;</a></li>
-                  </ul>
-               }
+            <div class="small-12 columns">
+               <div class="pagination">
+                  <div class="row">
+                     <div class="small-6 columns">
+                        @if (contents.PreviousChapter != -1) {
+                           <a href="@Url.Action("Index", "Read", new { id = contents.PreviousChapter }, scheme)" class="page">
+                              &laquo; Previous Chapter
+                           </a>
+                        }
+                     </div>
+                     <div class="small-6 columns">
+                        @if (contents.NextChapter != -1) {
+                           <a href="@Url.Action("Index", "Read", new { id = contents.NextChapter }, scheme)" class="page" style="float: right">
+                              Next Chapter &raquo;
+                           </a>
+                        }
+                     </div>
+                  </div>
+               </div>
             </div>
          </div>
       </div>
-      <div class="small-12 medium-3 large-3 columns hide-for-small-only">
-         <ul class="pricing-table">
-            <li class="title">Contents</li>
-            <li>
-               <div id="contentPanel" style="overflow: auto;">
-                  @Html.DisplayFor(c => contents)
-               </div>
-            </li>
-         </ul>
+      <div class="small-12 medium-4 large-4 columns hide-for-small-only" id="contentContainer">
+         <div class="sdw-panel" style="overflow: auto;" id="contents">
+            <div class="title">Contents</div>
+            <div>
+               @(Html.DisplayFor(c => contents))
+            </div>
+         </div>
       </div>
    </div>
-               
-   <div class="row">
-      <div class="small-6 columns">
-         @if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
-            <a href="@Url.Action("Edit", "Chapter", new {id = Model.Id}, Request.Url.Scheme)" class="button secondary small expand">Edit Chapter</a>
-         }
-      </div>
-      <div class="small-6 columns">
-         @if (Request.IsAuthenticated && User.IsInRole ("Creator")) {
-            <a href="@Url.Action("Contents", "Version", new {id = Model.SubBook.VersionId}, Request.Url.Scheme)" class="button secondary small expand">Edit Contents</a>
-         }
-      </div>
-   </div>
-
-   <div class="panel" style="padding: 3px 10px;" id="readBottomPanel">
+   <div class="footer-box" id="readBottomPanel">
       <div class="row">
          <div class="small-6 large-6 columns text-left">
-            <small>
-               source:
-               @if (!string.IsNullOrWhiteSpace (Model.SubBook.Version.SourceUrl)) {
-                  <a href="@Model.SubBook.Version.SourceUrl" target="_blank">@Model.SubBook.Version.SourceName</a>
-               } else {
-                  @Html.Raw("unknown")
-               }
-            </small>
+            source:
+            @if (!string.IsNullOrWhiteSpace (Model.SubBook.Version.SourceUrl)) {
+               <a href="@(Model.SubBook.Version.SourceUrl)" target="_blank">@(Model.SubBook.Version.SourceName)</a>
+            } else {
+               @Html.Raw("unknown")
+            }
          </div>
          <div class="small-6 large-6 columns text-right">
-            @{
+            @*@{
                var writers = Model.SubBook.Writers.Where (w => !w.IsTranslator).ToList ();
                writers.AddRange (Model.SubBook.Version.Writers.Where(w => !w.IsTranslator));
                if (writers.Count > 0) {
@@ -121,7 +122,7 @@
                      <a href="@Url.Action("Details", "Writer", new { id = writer.Id }, Request.Url.Scheme)">@writer.Name</a>
                   }
                }
-            }
+            }*@
          </div>
       </div>
    </div>

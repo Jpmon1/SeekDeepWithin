@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
@@ -10,7 +9,7 @@ using Lucene.Net.Search;
 using Lucene.Net.Store;
 using SeekDeepWithin.Controllers;
 using SeekDeepWithin.Models;
-using SeekDeepWithin.Pocos;
+using Term = SeekDeepWithin.Pocos.Term;
 
 namespace SeekDeepWithin.SdwSearch
 {
@@ -57,7 +56,8 @@ namespace SeekDeepWithin.SdwSearch
                var result = new SearchResult
                {
                   Id = id,
-                  Title = string.Format ("<a href=\"{0}/Term/{1}\">{2}</a>", host, id, title.Highlight (search))
+                  Title = title.Highlight (search),
+                  Url = string.Format ("{0}/Term/{1}", host, id),
                };
                results.Add (result);
             }
@@ -70,7 +70,7 @@ namespace SeekDeepWithin.SdwSearch
       /// Adds or Updates the index for the given item.
       /// </summary>
       /// <param name="item">Item to update index for.</param>
-      public static void AddOrUpdateIndex (GlossaryTerm item)
+      public static void AddOrUpdateIndex (Term item)
       {
          AddOrUpdateIndex (new[] { item });
       }
@@ -79,7 +79,7 @@ namespace SeekDeepWithin.SdwSearch
       /// Adds or Updates the index for the given items.
       /// </summary>
       /// <param name="items">Items to update index for.</param>
-      public static void AddOrUpdateIndex (IEnumerable<GlossaryTerm> items)
+      public static void AddOrUpdateIndex (IEnumerable<Term> items)
       {
          var analyzer = new StandardAnalyzer (Lucene.Net.Util.Version.LUCENE_30);
          using (var writer = new IndexWriter (Directory, analyzer, IndexWriter.MaxFieldLength.UNLIMITED))
@@ -112,7 +112,7 @@ namespace SeekDeepWithin.SdwSearch
          var analyzer = new StandardAnalyzer (Lucene.Net.Util.Version.LUCENE_30);
          using (var writer = new IndexWriter (Directory, analyzer, IndexWriter.MaxFieldLength.UNLIMITED))
          {
-            var searchQuery = new TermQuery (new Term ("Id", recordId.ToString (CultureInfo.InvariantCulture)));
+            var searchQuery = new TermQuery (new Lucene.Net.Index.Term ("Id", recordId.ToString (CultureInfo.InvariantCulture)));
             writer.DeleteDocuments (searchQuery);
             analyzer.Close ();
          }
@@ -143,23 +143,17 @@ namespace SeekDeepWithin.SdwSearch
       /// </summary>
       /// <param name="term">Item to index.</param>
       /// <param name="writer">Index writer.</param>
-      private static void AddIndex (GlossaryTerm term, IndexWriter writer)
+      private static void AddIndex (Term term, IndexWriter writer)
       {
          // remove older index entry
          var id = term.Id.ToString (CultureInfo.InvariantCulture);
-         var searchQuery = new TermQuery (new Term ("Id", id));
+         var searchQuery = new TermQuery (new Lucene.Net.Index.Term ("Id", id));
          writer.DeleteDocuments (searchQuery);
          // add new index entry
          var doc = new Document ();
          // add lucene fields mapped to db fields
          doc.Add (new Field ("Id", id, Field.Store.YES, Field.Index.NOT_ANALYZED));
          doc.Add (new Field ("name", term.Name ?? string.Empty, Field.Store.YES, Field.Index.ANALYZED));
-         if (term.Tags.Count > 0)
-         {
-            doc.Add (new Field ("tags", term.Tags.Select (t => t.Tag.Name)
-                  .Aggregate ((i, j) => i + " " + j), Field.Store.YES, Field.Index.ANALYZED));
-         }
-         // add entry to index
          writer.AddDocument (doc);
       }
    }

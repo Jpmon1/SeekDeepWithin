@@ -1,54 +1,49 @@
 ﻿@model SeekDeepWithin.Models.LoginViewModel
 
 @{
-    ViewBag.Title = "Log in";
+   ViewBag.Title = "Log in";
+   var scheme = Request.Url == null ? string.Empty : Request.Url.Scheme;
 }
-
 <h3>@ViewBag.Title</h3>
-
 <div class="row">
    <div class="small-12 large-8 columns">
-      @using (Html.BeginForm(new { ReturnUrl = ViewBag.ReturnUrl })) {
+      @using (Html.BeginForm(new { ViewBag.ReturnUrl })) {
           @Html.AntiForgeryToken()
-          @Html.ValidationSummary(true)
-
-         <fieldset>
-            <legend>Log in details</legend>
-            <div class="row">
-               <div class="large-12 columns">
-                  @Html.LabelFor(m => m.UserEmail)
-                  @Html.EditorFor(m => m.UserEmail)
-                  @Html.ValidationMessageFor(m => m.UserEmail)
-               </div>
-            </div>
-            <div class="row">
-               <div class="large-12 columns">
-                  @Html.LabelFor(m => m.Password)
-                  @Html.PasswordFor(m => m.Password)
-                  @Html.ValidationMessageFor(m => m.Password)
-               </div>
-            </div>
-            <div class="row">
-               <div class="large-12 columns">
-                  <label for="RememberMe">Remember Me</label>
-                  <div class="switch">
-                     <input id="RememberMe" name="RememberMe" type="checkbox">
-                     <label for="RememberMe">Remember Me</label>
+         @Html.ValidationSummary(true)
+         <div class="sdw-panel">
+            <div class="title">Log in details</div>
+            <div class="content">
+               <div class="row">
+                  <div class="large-12 columns">
+                     @Html.LabelFor(m => m.UserEmail)
+                     @Html.EditorFor(m => m.UserEmail)
                   </div>
                </div>
+               <div class="row">
+                  <div class="large-12 columns">
+                     @Html.LabelFor(m => m.Password)
+                     @Html.PasswordFor(m => m.Password)
+                  </div>
+               </div>
+               <div class="row">
+                  <div class="large-12 columns">
+                     <label for="RememberMe">Remember Me</label>
+                     <div class="switch">
+                        <input id="RememberMe" name="RememberMe" type="checkbox">
+                        <label for="RememberMe"></label>
+                     </div>
+                  </div>
+               </div>
+               <input type="submit" value="Log in" class="sdw-button mBottom" />
+               <div class="sdw-callout">
+                  <a href="@Url.Action("Register", "Account", null, scheme)" style="color: white;">Register</a> if you don't have an account.
+               </div>
             </div>
-            <input type="submit" value="Log in" class="button" />
-            <p>
-               <a href="@Url.Action("Register", "Account", null, Request.Url.Scheme)">Register</a> if you don't have an account.
-            </p>
-         </fieldset>
+         </div>
       }
    </div>
 
    <div class="small-12 large-4 columns">
-       @Html.Action("ExternalLoginsList", new { ReturnUrl = ViewBag.ReturnUrl })
+       @Html.Action("ExternalLoginsList", new { ViewBag.ReturnUrl })
    </div>
 </div>
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-}

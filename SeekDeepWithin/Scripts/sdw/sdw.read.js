@@ -1,31 +1,35 @@
 ﻿$(document).ready(function () {
    $('#smallLeftMenuIcon').show();
-   $('#leftMenu').data('loc', 'on');
-   var debouncedScroll = debounce(function () {
-      resizeReadMenu();
-   }, 100);
-   $(window).resize(debouncedScroll);
-   resizeReadMenu();
+   $('#contents').data('loc', 'on');
+   $(window).resize(read_resize);
+   read_resize();
+   //$.ajax('/Chapter/Contents/' + $('#chapterId').val()).done(function(d) {
+   //   $('#contents').append(d);
+   //});
 });
 
-function resizeReadMenu() {
-   var contents = $('#leftMenu');
+function read_resize() {
+   var contents = $('#contents');
    var loc = contents.data('loc');
    if (Foundation.utils.is_small_only()) {
       if (loc === 'on') {
          contents.remove();
-         $('#panel_left').html(contents);
+         $('#panel_left').append(contents);
          contents.data('loc', 'off');
       }
+      contents.css({ 'height': '', 'margin-bottom': '0' });
    } else {
       if (loc === 'off') {
          contents.remove();
          panels_hideLeft();
          panels_hideOverlay();
-         $('#contentPanel').append(contents);
+         $('#contentContainer').append(contents);
          contents.data('loc', 'on');
       }
-      $('#contentPanel').css({ 'height': $('#readingArea').height() });
+      var height = $('#readingArea').height();
+      if (height < 200)
+         height = 200;
+      contents.css({ 'height': height, 'margin-bottom': '1.25rem' });
    }
 }
 

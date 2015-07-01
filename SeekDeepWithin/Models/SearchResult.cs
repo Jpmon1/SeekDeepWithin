@@ -13,6 +13,11 @@
       public string Title { get; set; }
 
       /// <summary>
+      /// Gets or Sets the url of the search result.
+      /// </summary>
+      public string Url { get; set; }
+
+      /// <summary>
       /// Gets or Sets the description of the search item.
       /// </summary>
       public string Description { get; set; }

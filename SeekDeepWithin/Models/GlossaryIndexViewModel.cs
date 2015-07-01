@@ -1,6 +1,4 @@
-﻿using PagedList;
-
-namespace SeekDeepWithin.Models
+﻿namespace SeekDeepWithin.Models
 {
    /// <summary>
    /// View Model for the glossary index page.
@@ -13,8 +11,13 @@ namespace SeekDeepWithin.Models
       public string SourceName { get; set; }
 
       /// <summary>
+      /// Gets or Sets the source Id, if any.
+      /// </summary>
+      public int? SourceId { get; set; }
+
+      /// <summary>
       /// Gets or Sets the terms for the index page.
       /// </summary>
-      public IPagedList <GlossaryTermViewModel> Terms { get; set; }
+      public PagedViewModel <TermViewModel> Terms { get; set; }
    }
 }

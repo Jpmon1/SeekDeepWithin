@@ -14,6 +14,13 @@
 });
 
 function search_Parse(keepOn, page) {
+   $('#parseResults').html('');
+   $('#bookResults').html('');
+   $('#passageResults').html('');
+   $('#termResults').html('');
+   $('#glossaryResults').html('');
+   hideKeyboard($('#txtSearch'));
+   $('#parseResults').focus();
    var doPassages = $('#doPassages').prop('checked');
    if (doPassages) {
       $('#searchLoader').show();
@@ -23,12 +30,15 @@ function search_Parse(keepOn, page) {
          data: search_getData(page)
       }).done(function(data) {
          $('#parseResults').html(data);
-         $(document).foundation('equalizer', 'reflow');
+         $('.sdw-panel').matchHeight();
          if (keepOn) {
             search_Book(keepOn);
          } else {
             $('#searchLoader').hide();
          }
+         $('html, body').animate({
+            scrollTop: $('#parseResults').offset().top
+         }, 100);
       }).fail(function(data) {
          $('#searchLoader').hide();
          $('#parseResults').html('<div class="text-center"><h3><i class="icon-erroralt" style="color:darkred;"></i><small>' + data.responseText + '</small></h3></div>');
@@ -48,7 +58,7 @@ function search_Book(keepOn, page) {
          data: search_getData(page)
       }).done(function (data) {
          $('#bookResults').html(data);
-         $(document).foundation('equalizer', 'reflow');
+         $('.sdw-panel').matchHeight();
          if (keepOn) {
             search_Passage(keepOn);
          } else {
@@ -73,7 +83,7 @@ function search_Passage(keepOn, page) {
          data: search_getData(page)
       }).done(function (data) {
          $('#passageResults').html(data);
-         $(document).foundation('equalizer', 'reflow');
+         $('.sdw-panel').matchHeight();
          if (keepOn) {
             search_Term(keepOn);
          } else {
@@ -96,18 +106,25 @@ function search_Term(keepOn, page) {
          type: 'POST',
          url: '/Search/Terms/',
          data: search_getData(page)
-      }).done(function (data) {
+      }).done(function(data) {
          $('#termResults').html(data);
-         $(document).foundation('equalizer', 'reflow');
+         $('.sdw-panel').matchHeight();
          if (keepOn) {
             search_Glossary();
          } else {
             $('#searchLoader').hide();
          }
-      }).fail(function (data) {
+         if (!$('#doPassages').prop('checked')) {
+            $('html, body').animate({
+               scrollTop: $('#termResults').offset().top
+            }, 100);
+         }
+      }).fail(function(data) {
          $('#searchLoader').hide();
          $('#parseResults').html('<div class="text-center"><h3><i class="icon-erroralt" style="color:darkred;"></i><small>' + data.responseText + '</small></h3></div>');
       });
+   } else {
+      $('#searchLoader').hide();
    }
 }
 
@@ -121,12 +138,14 @@ function search_Glossary(page) {
          data: search_getData(page)
       }).done(function (data) {
          $('#glossaryResults').html(data);
-         $(document).foundation('equalizer', 'reflow');
+         $('.sdw-panel').matchHeight();
          $('#searchLoader').hide();
       }).fail(function (data) {
          $('#searchLoader').hide();
          $('#parseResults').html('<div class="text-center"><h3><i class="icon-erroralt" style="color:darkred;"></i><small>' + data.responseText + '</small></h3></div>');
       });
+   } else {
+      $('#searchLoader').hide();
    }
 }
 
@@ -202,4 +221,15 @@ function generateUUID() {
       return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
    });
    return uuid;
-};
+}
+
+function hideKeyboard(element) {
+   element.attr('readonly', 'readonly'); // Force keyboard to hide on input field.
+   element.attr('disabled', 'true'); // Force keyboard to hide on textarea field.
+   setTimeout(function () {
+      element.blur();  //actually close the keyboard
+      // Remove readonly attribute after keyboard is hidden.
+      element.removeAttr('readonly');
+      element.removeAttr('disabled');
+   }, 100);
+}

@@ -1,54 +1,63 @@
 ﻿@model SeekDeepWithin.Models.BookViewModel
-
 @{
-    ViewBag.Title = "Add New Book";
+   ViewBag.Title = "New Book";
+   var scheme = Request.Url == null ? string.Empty : Request.Url.Scheme;
 }
-
-<h3>New Book!</h3>
-
-@using (Html.BeginForm ()) {
-   @Html.AntiForgeryToken()
-   @Html.ValidationSummary(true)
-
-   <fieldset>
-      <legend>Add Book</legend>
-      @if (ViewBag.ErrorMessage != null) {
-         <div class="row">
-            <div class="small-12 large-12 columns">
-               <div class="alert-box alert">@ViewBag.ErrorMessage</div>
-            </div>
-         </div>
-      }
-
+@section featured {
+   <div class="panel">
       <div class="row">
-         <div class="small-12 large-8 columns">
-            @Html.LabelFor(model => model.Title)
-            @Html.EditorFor(model => model.Title)
-            @Html.ValidationMessageFor(model => model.Title)
+         <div class="small-12 columns">
+            <h3>
+               New Book! <small>Woo-hoo, we love adding new books!</small>
+               <small style="float: right">
+                  <a href="@Url.Action("Index", "Book", null, scheme)" class="sdw-button reg tiny">
+                     <i class="icon-pageback"></i> back to books
+                  </a>
+               </small>
+            </h3>
          </div>
       </div>
-
-      <div class="row">
-         <div class="small-12 large-8 columns">
-            @Html.LabelFor(model => model.SubTitle)
-            @Html.EditorFor(model => model.SubTitle)
-            @Html.ValidationMessageFor(model => model.SubTitle)
-         </div>
-      </div>
-      
-      <div class="row">
-         <div class="small-12 large-12 columns">
-            @Html.LabelFor(model => model.Summary)
-            @Html.TextAreaFor(model => model.Summary, 8, 10, null)
-            @Html.ValidationMessageFor(model => model.Summary)
-         </div>
-      </div>
-
-      <input type="submit" value="Create" class="button" /> <a href="@Url.Action("Index")" class="button secondary small">cancel</a>
-   </fieldset>
+   </div>
 }
-
+@using (Html.BeginForm (null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" })){@Html.AntiForgeryToken()}
+<div class="sdw-panel">
+   <div class="title">Book Details</div>
+   <div class="content">
+      <div class="row">
+         <div class="small-12 columns">
+            <label for="bookTitle">Title <small style="color: darkred;">(required)</small></label>
+            <input type="text" id="bookTitle" name="bookTitle" />
+         </div>
+      </div>
+      <div class="row">
+         <div class="small-12 columns">
+            <label for="termList">Term <small style="color: darkred;">(required)</small></label>
+            <input type="text" id="termList" name="termList" />
+            <input type="hidden" id="selTermId" name="selTermId" />
+         </div>
+      </div>
+      <div class="row">
+         <div class="small-12 columns">
+            <label for="bookSubTitle">Sub Title</label>
+            <input type="text" id="bookSubTitle" name="bookSubTitle" />
+         </div>
+      </div>
+      <div class="row">
+         <div class="small-12 columns">
+            <label for="bookSubTitle">Summary <small style="color: darkred;">(required)</small></label>
+            <textarea id="bookSummary" name="bookSummary" rows="8"></textarea>
+         </div>
+      </div>
+      <div class="row">
+         <div class="small-12 medium-4 medium-offset-4 large-4 large-offset-4 columns">
+            <a href="javascript:book_create();" class="sdw-button add expand">
+               <i class="icon-createfile"></i> create
+            </a>
+         </div>
+      </div>
+   </div>
+</div>
+@Html.Partial("_Modal")
 @section scripts {
-   @Scripts.Render("~/bundles/jqueryval")
+   @Scripts.Render("~/bundles/sdw.book")
 }
-   

@@ -7,6 +7,7 @@ using Lucene.Net.Index;
 using Lucene.Net.Search;
 using Lucene.Net.Store;
 using SeekDeepWithin.Pocos;
+using Term = Lucene.Net.Index.Term;
 
 namespace SeekDeepWithin.SdwSearch
 {

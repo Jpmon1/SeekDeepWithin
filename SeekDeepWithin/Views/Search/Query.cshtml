@@ -1,25 +1,14 @@
 ﻿@model SeekDeepWithin.Models.SearchResultsViewModel
-
-@if (Request.IsAuthenticated && User.IsInRole ("Administrator") && Model.Query.ShowLog) {
-   <div class="row">
-      <div class="small-12 columns">
-         <h4>Parser Log:</h4>
-         <ul>
-            @Html.Raw(Model.ParserLog)
-         </ul>
-      </div>
-   </div>
-}
 @if (Model.Results.Count > 0) {
    var totalSpan = 12;
    <div class="panel">
       <h5>@(Model.Title) <small>@(string.Format ("{0} - {1} of {2}", Model.Start, Model.End, Model.TotalHits))</small></h5>
    </div>
-   @Html.Raw("<div class=\"row\" data-equalizer>")
+   @Html.Raw("<div class=\"row\">")
    foreach (var result in Model.Results) {
       if (totalSpan == 0) {
          @Html.Raw("</div>")
-         @Html.Raw("<div class=\"row\" data-equalizer>")
+         @Html.Raw("<div class=\"row\">")
          totalSpan = 12;
       }
       var span = 3;
@@ -30,16 +19,14 @@
          }
       }
       <div class="small-12 medium-@(span) large-@(span) columns">
-         <ul class="pricing-table" data-equalizer-watch>
-            <li class="description">
-               @Html.Raw(result.Title)
-            </li>
+         <div class="sdw-panel">
+            <a href="@(result.Url)" class="sdw-button white small expand" style="border-bottom: solid 1px #c7c7c7;">@(Html.Raw (result.Title))</a>
             @if (!string.IsNullOrWhiteSpace (result.Description)) {
-               <li class="bullet-item" style="border-bottom: 0">
-                  @Html.Raw(result.Description)
-               </li>
+               <div class="content">
+                  @(Html.Raw(result.Description))
+               </div>
             }
-         </ul>
+         </div>
       </div>
       totalSpan -= span;
    }
@@ -47,8 +34,7 @@
       <div class="small-12 medium-@(totalSpan) large-@(totalSpan) columns">&nbsp;</div>
    }
    @Html.Raw("</div>")
-   if (Model.TotalHits > Model.Results.Count)
-   {
+   if (Model.TotalHits > Model.Results.Count) {
       var startPage = 1;
       var pages = Convert.ToInt32 (Model.TotalHits / 25) + 1;
       var endPage = pages;
@@ -59,22 +45,22 @@
          }
          endPage = Math.Min(pages, startPage + 11);
       }
-      <div class="pagination dark">
+      <div class="pagination">
          @if (startPage != 1) {
-            <a href="javascript:void(0)" class="page dark" onclick="@(method)(false, @(startPage - 1))">&larr;</a>
+            <a href="javascript:void(0)" class="page" onclick="@(method)(false, @(startPage - 1))">&larr;</a>
          }
          @for (int a = startPage; a <= endPage; a++) {
             if (a == Model.Query.Page) {
-               <span class="page dark active">@(a)</span>
+               <span class="page active">@(a)</span>
             } else {
-               <a href="javascript:void(0)" class="page dark" onclick="@(method)(false, @(a))">@(a)</a>
+               <a href="javascript:void(0)" class="page" onclick="@(method)(false, @(a))">@(a)</a>
             }
          }
          @if (endPage < pages) {
-            <a href="javascript:void(0)" class="page dark" onclick="@(method)(false, @(endPage + 1))">&rarr;</a>
+            <a href="javascript:void(0)" class="page" onclick="@(method)(false, @(endPage + 1))">&rarr;</a>
          }
       </div>
    }
 } else if (Model.ShowEmpty) {
-   <div class="alert-box info">No @(Model.Title) found matching '@(Model.Query.QDecoded)'</div>
+   <div class="sdw-callout">No @(Model.Title) found matching '@(Model.Query.QDecoded)'</div>
 }

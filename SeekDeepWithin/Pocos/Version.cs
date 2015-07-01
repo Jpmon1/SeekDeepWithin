@@ -18,19 +18,9 @@ namespace SeekDeepWithin.Pocos
       public bool Hide { get; set; }
 
       /// <summary>
-      /// Gets or Sets if this version is the default version of the book.
-      /// </summary>
-      public bool IsDefault { get; set; }
-
-      /// <summary>
       /// Gets or Sets the contents of this version.
       /// </summary>
       public string Contents { get; set; }
-
-      /// <summary>
-      /// Gets or Sets an abbreviation to use for this version.
-      /// </summary>
-      public string Abbreviation { get; set; }
 
       /// <summary>
       /// Gets or Sets the title of the version.
@@ -53,18 +43,23 @@ namespace SeekDeepWithin.Pocos
       public virtual Book Book { get; set; }
 
       /// <summary>
+      /// Gets or Sets the associated term.
+      /// </summary>
+      public virtual Term Term { get; set; }
+
+      /// <summary>
+      /// Gets or Sets the name of this source.
+      /// </summary>
+      public string SourceName { get; set; }
+
+      /// <summary>
+      /// Gets or Sets the url for the source.
+      /// </summary>
+      public string SourceUrl { get; set; }
+
+      /// <summary>
       /// Gets or Sets the list of subbooks.
       /// </summary>
       public virtual ICollection<VersionSubBook> SubBooks { get; set; }
-
-      /// <summary>
-      /// Gets or Sets the list of writers for this version.
-      /// </summary>
-      public virtual ICollection<VersionWriter> Writers { get; set; }
-
-      /// <summary>
-      /// Gets or Sets the source of this version.
-      /// </summary>
-      public virtual ICollection<VersionSource> VersionSources { get; set; }
    }
 }

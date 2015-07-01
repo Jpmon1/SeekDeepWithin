@@ -9,19 +9,19 @@ namespace SeekDeepWithin.Models
    {
       public StyleViewModel (IStyle style)
       {
+         this.Id = style.Id;
          this.Start = style.Style.Start;
          this.StartIndex = style.StartIndex;
          this.End = style.Style.End;
          this.EndIndex = style.EndIndex;
          this.SpansMultiple = style.Style.SpansMultiple;
-         this.ItemId = style.Id;
          this.StyleId = style.Style.Id;
       }
 
       /// <summary>
       /// Gets or Sets the id.
       /// </summary>
-      public int ItemId { get; set; }
+      public int Id { get; set; }
 
       /// <summary>
       /// Gets or Sets the start of the style.

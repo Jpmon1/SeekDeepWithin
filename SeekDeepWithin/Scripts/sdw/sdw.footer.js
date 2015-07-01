@@ -1,114 +1,71 @@
-﻿
-function footer_create() {
-   $('#modalClose').hide();
-   $('#modalText').text('Saving Footer, please wait...');
-   $('#modal').foundation('reveal', 'open');
-   footer_post('Create', function (d) {
-      $('#modalText').text('Success!');
-      setTimeout(function () { $('#modal').foundation('reveal', 'close'); }, 700);
-      $('#footerList').append('<li id="item_' + d.id + '" class="bullet-item"><a href="javascript:void(0)" onclick="footer_edit(' + d.id +
-         ')">' + d.index + ' - ' + $('#hfText').val() + '</a></li>');
-      footer_new();
-   });
+﻿function footer_create() {
+   sdw_post('/Footer/Create' + $('#editItemType').val(), {
+      itemId: $('#editItemId').val(),
+      text: $('#footerText').val(),
+      index: $('#footerIndex').val()
+   },
+      'Creating Footer, please wait...', function (d) {
+         var text = $('#footerText').val();
+         var len = text.length < 15 ? text.length : 15;
+         $('#currentFooters').append('<a href="javascript:void(0)" id="footer_' + d.id + '" onclick="footer_edit(' + d.id +
+            ')" class="sdw-button white small expand">' + d.index + ' - ' + text.substring(0, len) + '</a>');
+         footer_new();
+      });
+}
+
+function sdw_item_edit_footer() {
+   var type = $('#editItemType').val();
+   if (type === 'Passage') {
+      sdw_get_edit('/Passage/EditFooter?id=' + $('#editEntryId').val() + '&footerId=' + $('#footerEditId').val());
+   } else {
+      sdw_get_edit('/ItemEntry/EditFooter?id=' + $('#editEntryId').val() + '&footerId=' + $('#footerEditId').val());
+   }
 }
 
 function footer_edit(id) {
    $.ajax({
-      url: '/Footer/Get/',
+      url: '/Footer/Get' + $('#editItemType').val(),
       data: {
          id: id,
-         itemId: $('#itemId').val(),
-         itemType: $('#itemType').val()
+         itemId: $('#editItemId').val()
       }
    }).done(function (data) {
-      $('#editId').val(id);
-      $('#rowCreate').hide();
-      $('#rowUpdate').show();
-      $('#rowEdit').show();
-      $('#hfText').val(data.text);
-      $('#hfIndex').val(data.index);
-      $('#footerLegend').text('Edit Footer');
-   }).fail(function (data) {
-      $('#modalClose').show();
-      $('#modalText').text('An error occured - ' + data.responseText);
+      $('#footerCreate').hide();
+      $('#footerUpdate').show();
+      $('#footerEditId').val(data.id);
+      $('#footerText').val(data.text);
+      $('#footerIndex').val(data.index);
    });
 }
 
 function footer_update() {
-   $('#modalClose').hide();
-   $('#modalText').text('Updating Footer, please wait...');
-   $('#modal').foundation('reveal', 'open');
-   footer_post('Update', function () {
-      $('#modalText').text('Success!');
-      setTimeout(function () { $('#modal').foundation('reveal', 'close'); }, 700);
+   sdw_post('/Footer/Update' + $('#editItemType').val(), {
+      itemId: $('#editItemId').val(),
+      text: $('#footerText').val(),
+      index: $('#footerIndex').val(),
+      id: $('#footerEditId').val()
+   }, 'Updating Footer, please wait...', function () {
+      var text = $('#footerText').val();
+      var len = text.length < 15 ? text.length : 15;
+      $('#footer_' + $('#footerEditId').val()).text($('#footerIndex').val() + ' - ' + text.substring(0, len));
+      footer_new();
    });
-}
-
-function footer_post(action, done) {
-   var footer = $('#hfText').val();
-   var index = $('#hfIndex').val();
-   if (footer == '' || index == '' || index == '0') {
-      $('#modalClose').show();
-      $('#modalText').text('Please add some text for the footer, and specify it\'s location.');
-   } else {
-      $.ajax({
-         type: 'POST',
-         url: '/Footer/' + action + '/',
-         data: footer_GetData()
-      }).done(done).fail(function(data) {
-         $('#modalClose').show();
-         $('#modalText').text('An error occured - ' + data.responseText);
-      });
-   }
 }
 
 function footer_delete() {
-   $('#modalClose').hide();
-   $('#modalText').text('Deleting Footer, please wait...');
-   $('#modal').foundation('reveal', 'open');
-   $.ajax({
-      type: 'POST',
-      url: '/Footer/Delete/',
-      data: footer_GetData()
-   }).done(function () {
-      var id = $('#editId').val();
-      $('#item_' + id).remove();
-      $('#modalText').text('Success!');
+   sdw_post('/Footer/Delete' + $('#editItemType').val(), {
+      itemId: $('#editItemId').val(),
+      id: $('#footerEditId').val()
+   }, 'Deleting Footer, please wait...', function () {
+      var id = $('#footerEditId').val();
+      $('#footer_' + id).remove();
       footer_new();
-      setTimeout(function () { $('#modal').foundation('reveal', 'close'); }, 700);
-   }).fail(function (data) {
-      $('#modalClose').show();
-      $('#modalText').text('An error occured - ' + data.responseText);
    });
 }
 
-function footer_GetData() {
-   var form = $('#__AjaxAntiForgeryForm');
-   var token = $('input[name="__RequestVerificationToken"]', form).val();
-   return {
-      __RequestVerificationToken: token,
-      id: $('#editId').val(),
-      text: $('#hfText').val(),
-      itemId: $('#itemId').val(),
-      itemType: $('#itemType').val(),
-      index: $('#hfIndex').val()
-   };
-}
-
 function footer_new() {
-   $('#rowCreate').show();
-   $('#rowUpdate').hide();
-   $('#rowEdit').hide();
-   $('#hfText').val('');
-   $('#editId').val('');
-   $('#hfIndex').val(0);
-   $('#footerLegend').text('New Footer');
-}
-
-function footer_style() {
-   window.location = '/Style/EditFooter?id=' + $('#editId').val() + '&itemId=' + $('#itemId').val() + '&itemType=' + $('#itemType').val();
-}
-
-function footer_link() {
-   window.location = '/Link/EditFooter?id=' + $('#editId').val() + '&itemId=' + $('#itemId').val() + '&itemType=' + $('#itemType').val();
+   $('#footerCreate').show();
+   $('#footerUpdate').hide();
+   $('#footerText').val('');
+   $('#footerEditId').val('');
 }

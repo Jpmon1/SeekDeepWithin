@@ -1,68 +1,49 @@
 ﻿
-function passage_update() {
-   $('#modalClose').hide();
-   $('#modalText').text('Updating Passage, please wait...');
-   $('#modal').foundation('reveal', 'open');
-   var form = $('#__AjaxAntiForgeryForm');
-   var token = $('input[name="__RequestVerificationToken"]', form).val();
-   $.ajax({
-      type: 'POST',
-      url: '/Passage/Update/',
-      data: {
-         __RequestVerificationToken: token,
-         text: $('#passText').val(),
-         order: $('#entryOrder').val(),
-         number: $('#entryNumber').val(),
-         entryId: $('#editEntryId').text()
+$(document).on('closed', '.remodal', function (e) {
+   if (document.passageDel) {
+      document.passageDel = false;
+      if (e.reason === 'confirmation') {
+         passage_delete();
       }
-   }).done(function () {
-      $('#modalText').text('Success!');
-      setTimeout(function () { $('#modal').foundation('reveal', 'close'); }, 700);
-   }).fail(function (data) {
-      $('#modalClose').show();
-      $('#modalText').text('An error occured - ' + data.responseText);
-   });
+   }
+});
+
+function passage_update() {
+   sdw_post('/Passage/Update/', {
+      text: $('#passText').val(),
+      order: $('#entryOrder').val(),
+      number: $('#entryNumber').val(),
+      entryId: $('#editEntryId').val(),
+      header: $('#passHeader').val()
+   }, 'Updating Passage, please wait...');
 }
 
 function passage_check_delete() {
-   $('#deleteModal').foundation('reveal', 'open');
+   document.passageDel = true;
+   $('#modal-content-close').show();
+   $('#modal-content-title').text('Delete');
+   $('#modal-content-text').text('Are you certain you want to delete this passage?');
+   document.modal.open();
 }
 
 function passage_delete() {
-   $('#modalClose').hide();
-   $('#deleteModal').foundation('reveal', 'close');
-   $('#modalText').text('Deleting Passage, please wait...');
-   $('#modal').foundation('reveal', 'open');
-   var form = $('#__AjaxAntiForgeryForm');
-   var token = $('input[name="__RequestVerificationToken"]', form).val();
-   $.ajax({
-      type: 'POST',
-      url: '/Passage/Delete/',
-      data: {
-         __RequestVerificationToken: token,
-         entryId: $('#editEntryId').text()
-      }
-   }).done(function () {
-      $('#modalText').text('Success!');
-      var entryId = $('#editEntryId').text();
+   sdw_post('/Passage/Delete/', { entryId: $('#editEntryId').val() }, 'Deleting Passage, please wait...', function () {
+      var entryId = $('#editEntryId').val();
       $('#item_' + entryId).remove();
       $('#passText').val('');
       $('#entryNumber').val('');
       $('#entryOrder').val('');
-      $('#editPassId').text('');
-      $('#editEntryId').text('');
+      $('#editPassId').val('');
+      $('#editEntryId').val('');
       $('#btnEditLinks').attr('href', '#');
       $('#btnEditStyles').attr('href', '#');
       $('#btnEditHeaders').attr('href', '#');
       $('#btnEditFooters').attr('href', '#');
-      setTimeout(function () { $('#modal').foundation('reveal', 'close'); }, 700);
-   }).fail(function (data) {
-      $('#modalClose').show();
-      $('#modalText').text('An error occured - ' + data.responseText);
    });
 }
 
 function passage_get(id) {
+   $('#editItem').html('<div class="tCenter"><img src="../../Content/ajax-loader_2.gif" alt="Loading..."/></div>');
    $.ajax({
       type: 'GET',
       url: '/Passage/Get/' + id
@@ -71,12 +52,9 @@ function passage_get(id) {
       //$('#passText').selectRange(0);
       $('#entryNumber').val(data.passageNumber);
       $('#entryOrder').val(data.order);
-      $('#editPassId').text(data.passageId);
-      $('#editEntryId').text(data.entryId);
-      $('#btnEditLinks').attr('href', '/Link/EditPassage?id=' + data.entryId);
-      $('#btnEditStyles').attr('href', '/Style/EditPassage?id=' + data.entryId);
-      $('#btnEditHeaders').attr('href', '/Header/Edit?id=' + data.entryId + "&type=Passage");
-      $('#btnEditFooters').attr('href', '/Footer/Edit?id=' + data.entryId + "&type=Passage");
+      $('#editPassId').val(data.passageId);
+      $('#editEntryId').val(data.entryId);
+      $('#passHeader').val(data.header);
       var item = $('#item_' + document.prevEntryId);
       if (item.length > 0) {
          item.removeClass('active');
@@ -84,34 +62,27 @@ function passage_get(id) {
       item = $('#item_' + data.entryId);
       if (item.length > 0) {
          item.addClass('active');
-         //$("#contentPanel").scrollTop(item.position().top - 40);
+         $("#passageList").scrollTop(item.position().top);
       }
       panels_hideLeft();
       panels_hideOverlay();
       document.prevEntryId = data.entryId;
-   }).fail(function (data) {
-      $('#modalClose').show();
-      $('#modal').foundation('reveal', 'open');
-      $('#modalText').text('An error occured - ' + data.responseText);
+
+      sdw_get_edit('/Passage/Edit/' + data.entryId);
+   }).fail(function (d) {
+      $('#modal-content-close').show();
+      $('#modal-content-title').text('Failed');
+      $('#modal-content-text').text(d.responseText);
+      document.modal.open();
    });
 }
 
-function setSelectionRange(input, selectionStart, selectionEnd) {
-   if (input.setSelectionRange) {
-      input.focus();
-      input.setSelectionRange(selectionStart, selectionEnd);
-   }
-   else if (input.createTextRange) {
-      var range = input.createTextRange();
-      range.collapse(true);
-      range.moveEnd('character', selectionEnd);
-      range.moveStart('character', selectionStart);
-      range.select();
-   }
+function passage_edit_header() {
+   sdw_get_edit('/Passage/EditHeader/' + $('#editEntryId').val());
 }
 
 function passage_next() {
-   var entryId = $('#editEntryId').text();
+   var entryId = $('#editEntryId').val();
    var item = $('#item_' + entryId);
    if (item.length > 0) {
       var nextItem = item.next();
@@ -123,7 +94,7 @@ function passage_next() {
 }
 
 function passage_previous() {
-   var entryId = $('#editEntryId').text();
+   var entryId = $('#editEntryId').val();
    var item = $('#item_' + entryId);
    if (item.length > 0) {
       var prevItem = item.prev();

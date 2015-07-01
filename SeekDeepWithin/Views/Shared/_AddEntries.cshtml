@@ -1,0 +1,63 @@
+﻿
+<div class="sdw-panel">
+   <div class="title">Add Items</div>
+   <div class="content">
+      <div class="row">
+         <div class="small-4 columns">
+            <label for="convertNone">Do not convert new lines</label>
+            <input id="convertNone" class="cmn-toggle cmn-toggle-yes-no" type="radio" name="newlines" checked="checked" />
+            <label for="convertNone" data-on="Yes" data-off="No"></label>
+         </div>
+         <div class="small-4 columns">
+            <label for="convertSpaces">Convert new lines to spaces</label>
+            <input id="convertSpaces" class="cmn-toggle cmn-toggle-yes-no" type="radio" name="newlines" />
+            <label for="convertSpaces" data-on="Yes" data-off="No"></label>
+         </div>
+         <div class="small-4 columns">
+            <label for="convertItems">Convert new lines to items</label>
+            <input id="convertItems" class="cmn-toggle cmn-toggle-yes-no" type="radio" name="newlines" />
+            <label for="convertItems" data-on="Yes" data-off="No"></label>
+         </div>
+      </div>
+      <div class="sdw-panel">
+         <div class="title">
+            Remove from text
+            <span style="float: right;">
+               <a href="javacript:void(0);" onclick="sdw_add_remove();" class="sdw-button add icon" title="add a remove item">
+                  <i class="icon-plus"></i>
+               </a>
+            </span>
+         </div>
+         <div class="content">
+            <div id="regexList">
+            </div>
+         </div>
+      </div>
+      <div class="row">
+         <div class="small-12 columns">
+            <label for="unformatted">Unformatted Items to Add</label>
+            <textarea id="unformatted" rows="4"></textarea>
+         </div>
+      </div>
+      <div class="row">
+         <div class="small-12 medium-4 medium-offset-4 large-4 large-offset-4 columns mBottom">
+            <a href="javascript:void(0);" onclick="sdw_format_item();" class="sdw-button alt expand">
+               format
+            </a>
+         </div>
+      </div>
+      <div class="row">
+         <div class="small-12 columns">
+            <label for="formatted">Formatted Items to Add</label>
+            <textarea id="formatted" rows="8"></textarea>
+         </div>
+      </div>
+      <div class="row">
+         <div class="small-12 medium-4 medium-offset-4 large-4 large-offset-4 columns mBottom">
+            <a href="javascript:void(0);" onclick="sdw_item_add();" class="sdw-button reg expand" style="display: none;" id="formattedAddBtn">
+               <i class="icon-plus"></i> add
+            </a>
+         </div>
+      </div>
+   </div>
+</div>

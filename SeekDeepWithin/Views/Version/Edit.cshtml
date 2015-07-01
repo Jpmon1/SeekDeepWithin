@@ -1,134 +1,130 @@
 ﻿@model SeekDeepWithin.Models.VersionViewModel
-
 @{
-   ViewBag.Title = "Edit " + Model.Title;
+   ViewBag.Title = "Editing " + Model.Title;
+   var scheme = Request.Url == null ? string.Empty : Request.Url.Scheme;
 }
-
-<h3><small>editing</small> @Model.Title
-   @if (User.IsInRole ("Creator")) {
-      <small class="bullet-item">
-         @Html.ActionLink("edit contents", "Contents", new {id = Model.Id})
-      </small>
-   }
-</h3>
-@if (ViewBag.ErrorMessage != null) {
-   <div class ="alert-box alert">@ViewBag.ErrorMessage</div>
-}
-@using (Html.BeginForm (null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" })){
-   @Html.AntiForgeryToken()
-}
-
-<div class="row">
-   <div class="small-12 medium-6 large-6 columns">
-      @using (Html.BeginForm ()) {
-         @Html.AntiForgeryToken()
-         @Html.ValidationSummary(true)
-         <fieldset>
-            <legend>Version Details</legend>
-            @Html.HiddenFor(model => model.Id)
-            @Html.HiddenFor(model => model.BookId)
-            <div class="row">
-               <div class="small-12 columns">
-                  @Html.LabelFor(model => model.Abbreviation)
-                  @Html.EditorFor(model => model.Abbreviation)
-                  @Html.ValidationMessageFor(model => model.Abbreviation)
-               </div>
-            </div>
-            <div class="row">
-               <div class="small-12 columns">
-                  @Html.LabelFor(model => model.Title)
-                  @Html.EditorFor(model => model.Title)
-                  @Html.ValidationMessageFor(model => model.Title)
-               </div>
-            </div>
-            <div class="row">
-               <div class="small-12 columns">
-                  @Html.LabelFor(model => model.PublishDate)
-                  @Html.EditorFor(model => model.PublishDate)
-                  @Html.ValidationMessageFor(model => model.PublishDate)
-               </div>
-            </div>
-            <div class="row">
-               <div class="small-12 columns">
-                  <input type="submit" value="Save" class="button expand" />
-               </div>
-            </div>
-            <div class="row">
-               <div class="small-6 columns">
-                  <a href="javascript:void(0)" onclick="version_default()" class="button expand">
-                     Set as Default <i id="saveCheck" class="icon-ok-sign" style="display: none;"></i>
+@section featured {
+   <div class="panel">
+      <div class="row">
+         <div class="small-12 columns">
+            <h3>
+               <small>editing</small> @Model.Title
+               <small style="float: right">
+                  <a href="@Url.Action("Edit", "Book", new {id=Model.BookId}, scheme)" class="sdw-button reg tiny">
+                     <i class="icon-pageback"></i> back to book
                   </a>
-               </div>
-               <div class="small-6 columns">
-                  <a href="@Url.Action("EditSource", "Source", new {id=Model.Id, type="version"}, Request.Url.Scheme)" class="button expand secondary">
-                     Edit Source
-                  </a>
-               </div>
-            </div>
-            <div class="row">
-               <div class="small-6 columns">
-                  <a href="javascript:void(0)" class="button expand secondary" onclick="version_subBookOrder();">
-                     Update SubBook Order <i id="orderCheck" class="icon-ok-sign" style="display: none;"></i>
-                  </a>
-               </div>
-               <div class="small-6 columns">
-                  <label for="startOrder">Start Order</label>
-                  <input type="number" id="startOrder" name="startOrder" value="0" />
-               </div>
-            </div>
-         </fieldset>
-      }
+               </small>
+            </h3>
+         </div>
+      </div>
    </div>
-   <div class="small-12 medium-6 large-6 columns">
-      <fieldset>
-         <legend>Assign Writer <span style="font-size: small"><a href="@Url.Action("Create", "Writer", null, Request.Url.Scheme)">new writer</a></span></legend>
-         <div class="row">
-            <div class="small-8 columns">
-               @Html.DropDownList("writerId", ViewBag.Writers as SelectList)
-            </div>
-            <div class="small-4 columns">
-               <div class="switch">
-                  <input id="isTranslator" name="isTranslator" type="checkbox">
-                  <label for="isTranslator"></label>
-               </div>
-               Translator
-            </div>
-         </div>
-         <div class="row">
-            <div class="small-12 columns">
-               <a href="javascript:void(0)" class="button expand" onclick="version_assignWriter()">Assign 
-                  <i class="icon-ok-sign" id="writerSaved" style="display: none;"></i>
-               </a>
-            </div>
-         </div>
-         <div class="row">
-            <div class="small-12 columns">
-               <div id="writers">
-                  @if (Model.Writers.Count > 0) {
-                     foreach (var writer in Model.Writers) {
-                        <div class="row" id="writer_@writer.Id">
-                           <div class="small-1 columns">
-                              <a href="javascript:void(0)" onclick="version_removeWriter(@Model.Id, @writer.Id) " title="Remove">
-                                 <i class="icon-remove-circle" style="color:red;"></i>
-                              </a>
-                           </div>
-                           <div class="small-11 columns">
-                              <a href="@Url.Action("Details", "Writer", new { id = writer.Id }, Request.Url.Scheme)">@writer.Name</a>
-                           </div>
-                        </div>
-                     }
-                  } else {
-                     <div class="alert-box info" id="noWriters">No writers have been added to this book.</div>
-                  }
+}
+@using (Html.BeginForm (null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" })){@Html.AntiForgeryToken()}
+<input type="hidden" id="versionId" name="versionId" value="@(Model.Id)"/>
+<input type="hidden" id="bookId" name="bookId" value="@(Model.BookId)" />
+<div class="row">
+   <div class="small-12 columns">
+      <div class="sdw-panel">
+         <div class="title">Version Details</div>
+         <div class="content">
+            <div class="row">
+               <div class="small-12 columns">
+                  <label for="versionTitle">Title <small style="color: darkred;">(required)</small></label>
+                  <input type="text" id="versionTitle" name="versionTitle" value="@(Model.Title)" />
                </div>
             </div>
+            <div class="row">
+               <div class="small-12 medium-6 large-6 columns">
+                  <label for="termList">Term <small style="color: darkred;">(required)</small></label>
+                  <input type="text" id="termList" name="termList" value="@(Model.Term.Name)" />
+                  <input type="hidden" id="selTermId" name="selTermId" value="@(Model.Term.Id)" />
+               </div>
+               <div class="small-12 medium-6 large-6 columns">
+                  <label for="versionDate">Publish Date</label>
+                  <input type="text" id="versionDate" name="versionDate" value="@(Model.PublishDate)" />
+               </div>
+            </div>
+            <div class="row">
+               <div class="small-12 medium-6 large-6 columns">
+                  <label for="versionSourceName">Source Name</label>
+                  <input type="text" id="versionSourceName" name="versionSourceName" value="@(Model.SourceName)" />
+               </div>
+               <div class="small-12 medium-6 large-6 columns">
+                  <label for="versionSourceUrl">Source Url</label>
+                  <input type="text" id="versionSourceUrl" name="versionSourceUrl" value="@(Model.SourceUrl)" />
+               </div>
+            </div>
+            <div class="row">
+               <div class="small-12 medium-6 large-6 columns">
+                  <a href="javascript:void(0)" class="sdw-button reg expand" onclick="version_edit();">
+                     <i class="icon-edit"></i> update
+                  </a>
+               </div>
+               <div class="small-12 medium-6 large-6 columns">
+                  <a href="@Url.Action("Edit", "Term", new {id=Model.Term.Id}, scheme)" class="sdw-button alt expand">
+                     <i class="icon-edit"></i> edit term
+                  </a>
+               </div>
+            </div>
          </div>
-      </fieldset>
+      </div>
+   </div>
+</div>
+<div class="row">
+   <div class="small-12 columns">
+      <div class="sdw-panel">
+         <div class="title">Sub Books</div>
+         <div class="content">
+            @foreach (var subBook in Model.SubBooks) {
+               <div class="row">
+                  <div class="small-12 medium-8 large-10 columns">
+                     <a href="@Url.Action("Index", "Term", new {id=subBook.Term.Id}, scheme)" class="sdw-button small white expand tLeft">
+                        <span class="mLeft">@(subBook.Name)
+                        @if (!string.IsNullOrWhiteSpace (subBook.Alias)) {
+                           <em>(@(subBook.Alias))</em>
+                        }
+                        </span>
+                     </a>
+                  </div>
+                  <div class="small-6 medium-2 large-1 columns">
+                     <a href="javascript:void(0)" class="sdw-button err tiny expand" title="Delete">
+                        <i class="icon-trash"></i>
+                     </a>
+                  </div>
+                  <div class="small-6 medium-2 large-1 columns">
+                     <a href="@Url.Action("Edit", "SubBook", new {id=subBook.Id}, scheme)" class="sdw-button alt tiny expand" title="Edit">
+                        <i class="icon-edit"></i>
+                     </a>
+                  </div>
+               </div>
+            }
+            <div class="sdw-panel mTop">
+               <div class="title">Add New Sub Books</div>
+               <div class="content">
+                  <div class="row">
+                     <div class="small-12 columns">
+                        <p>Place the name of each new sub book on a separate line.</p>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="small-12 columns">
+                        <textarea rows="4" id="subBookList"></textarea>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="small-12 medium-4 medium-offset-4 large-4 large-offset-4 columns">
+                        <a href="javascript:void(0)" class="sdw-button add expand" onclick="version_create_subbooks();">
+                           <i class="icon-plus"></i> add
+                        </a>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
    </div>
 </div>
 @Html.Partial("_Modal")
-
 @section Scripts {
-   @Scripts.Render("~/bundles/jqueryval")
-   @Scripts.Render("~/bundles/sdw.versionedit")
+   @Scripts.Render("~/bundles/sdw.version")
 }

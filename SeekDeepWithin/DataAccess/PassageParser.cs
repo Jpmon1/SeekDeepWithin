@@ -6,6 +6,7 @@ using System.Text;
 using SeekDeepWithin.Controllers;
 using SeekDeepWithin.Models;
 using SeekDeepWithin.Pocos;
+using SeekDeepWithin.SdwSearch;
 
 namespace SeekDeepWithin.DataAccess
 {
@@ -194,41 +195,41 @@ namespace SeekDeepWithin.DataAccess
                passages.Add (Convert.ToInt32 (passage));
          }
 
-         var abbreviations = this.m_Db.Abbreviations.Get (a => a.Text == book).ToList();
-         this.m_Log.AppendFormat ("<li>Found {0} abbreviation(s)</li>", abbreviations.Count);
-         foreach (var abbreviation in abbreviations)
+         var subBookId = AbbrevSearch.Query (book);
+         if (subBookId == 0)
          {
-            var version = abbreviation.SubBook.Versions.FirstOrDefault (v => v.Version.IsDefault) ??
-                          abbreviation.SubBook.Versions.FirstOrDefault ();
-            if (version != null)
+            this.m_Log.AppendFormat ("<li>Unable to find information for the abbreviation: {0}</li>", book);
+            return;
+         }
+         var subBook = this.m_Db.VersionSubBooks.Get (subBookId);
+         if (subBook != null)
+         {
+            var chaps = new List <SubBookChapter> ();
+            if (chapters.Count == 0)
+               chaps.Add (subBook.Chapters.FirstOrDefault ());
+            else if (chapters.Count == 1)
+               chaps.Add (subBook.Chapters.FirstOrDefault (c => c.Order == chapters [0]));
+            else
             {
-               var chaps = new List <SubBookChapter> ();
-               if (chapters.Count == 0)
-                  chaps.Add (version.Chapters.FirstOrDefault ());
-               else if (chapters.Count == 1)
-                  chaps.Add (version.Chapters.FirstOrDefault (c => c.Order == chapters [0]));
+               chaps.AddRange ((from subBookChapter in subBook.Chapters
+                  where chapters.Contains (subBookChapter.Order)
+                  select subBookChapter));
+            }
+
+            for (int a = 0; a < chaps.Count; a++)
+            {
+               if (passages.Count == 0)
+                  this.PassageList.AddRange (chaps[a].Passages);
                else
                {
-                  chaps.AddRange ((from subBookChapter in version.Chapters
-                     where chapters.Contains (subBookChapter.Order)
-                     select subBookChapter));
-               }
-
-               for (int a = 0; a < chaps.Count; a++)
-               {
-                  if (passages.Count == 0)
-                     this.PassageList.AddRange (chaps[a].Passages);
-                  else
+                  if (a + 1 == chaps.Count)
                   {
-                     if (a + 1 == chaps.Count)
-                     {
-                        this.PassageList.AddRange (from passageEntry in chaps[a].Passages
-                                                   where passages.Contains (passageEntry.Number)
-                                                   select passageEntry);
-                     }
-                     else
-                        this.PassageList.AddRange (chaps[a].Passages);
+                     this.PassageList.AddRange (from passageEntry in chaps[a].Passages
+                                                where passages.Contains (passageEntry.Number)
+                                                select passageEntry);
                   }
+                  else
+                     this.PassageList.AddRange (chaps[a].Passages);
                }
             }
          }

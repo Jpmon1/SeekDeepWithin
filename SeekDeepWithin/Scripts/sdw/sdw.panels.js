@@ -21,22 +21,18 @@ function panels_showLeft() {
    panels_showOverlay();
    panel_overlay.css({ 'left': '240px' });
    panel_left.addClass('panels-open');
-   body.addClass('cbp-spmenu-push-toright');
 }
 function panels_hideLeft() {
    panel_left.removeClass('panels-open');
-   body.removeClass('cbp-spmenu-push-toright');
 }
 
 function panels_showRight() {
    panels_showOverlay();
    panel_overlay.css({ 'left': '-240px' });
    panel_right.addClass('panels-open');
-   body.addClass('cbp-spmenu-push-toleft');
 }
 function panels_hideRight() {
    panel_right.removeClass('panels-open');
-   body.removeClass('cbp-spmenu-push-toleft');
 }
 
 function panels_showTop() {

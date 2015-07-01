@@ -1,28 +1,23 @@
 ﻿@using SeekDeepWithin.Models
 @model VersionContents
-
-<div id="leftMenu">
-   @if (Model.SubBooks.Count > 0) {
-      <div class="contents">
-         @foreach (var subBook in Model.SubBooks) {
-            if (!subBook.Hide) {
-               <a href="javascript:void(0);" class="subBook" onclick="showContents(@subBook.Id)">
-                  @subBook.Name
-               </a>
-               @(subBook.Id != Model.CurrentSubBook
-                  ? Html.Raw ("<div id=\"subBook_" + subBook.Id + "\" style=\"display:none;\">")
-                  : Html.Raw ("<div id=\"subBook_" + subBook.Id + "\">"))
-            }
-            foreach (var chapter in subBook.Chapters.Where (c => !c.Hide))
-            {
-               <a class="item @if(chapter.Id == Model.CurrentChapter){<text>active</text>}" href="@Url.Action("Index", "Read", new {id=chapter.Id}, Request.Url.Scheme)">
-                  @chapter.Name
-               </a>
-            }
-            if (!subBook.Hide) {
-               @Html.Raw("</div>")
-            }
-         }
-      </div>
+@if (Model.SubBooks.Count > 0) {
+   var scheme = Request.Url == null ? string.Empty : Request.Url.Scheme;
+   foreach (var subBook in Model.SubBooks) {
+      if (!subBook.Hide) {
+         <a href="javascript:void(0);" class="sdw-button grey expand tLeft" onclick="showContents(@subBook.Id)">
+            <i class="icon-bookthree mLeft mRight"></i> <strong>@(subBook.Name)</strong>
+         </a>
+         @(subBook.Id != Model.CurrentSubBook
+            ? Html.Raw ("<div id=\"subBook_" + subBook.Id + "\" style=\"display:none;\">")
+            : Html.Raw ("<div id=\"subBook_" + subBook.Id + "\">"))
+      }
+      foreach (var chapter in subBook.Chapters.Where (c => !c.Hide)) {
+         <a class="sdw-button white small expand tLeft @if(chapter.Id == Model.CurrentChapter){<text>active</text>}" href="@Url.Action("Index", "Read", new {id=chapter.Id}, scheme)">
+            <i class="icon-squarebookmark mLeft mRight"></i> @(chapter.Name)
+         </a>
+      }
+      if (!subBook.Hide) {
+         @(Html.Raw("</div>"))
+      }
    }
-</div>
+}

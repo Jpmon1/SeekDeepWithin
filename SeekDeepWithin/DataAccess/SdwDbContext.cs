@@ -15,33 +15,17 @@ namespace SeekDeepWithin.DataAccess
 
       public DbSet<Version> Versions { get; set; }
 
-      public DbSet<SubBook> SubBooks { get; set; }
-
       public DbSet<Chapter> Chapters { get; set; }
 
       public DbSet<Passage> Passages { get; set; }
 
-      public DbSet<Writer> Authors { get; set; }
-
       public DbSet<Link> Links { get; set; }
-
-      public DbSet<Tag> Tags { get; set; }
 
       public DbSet<Style> Styles { get; set; }
 
-      public DbSet<Source> Sources { get; set; }
+      public DbSet<Term> Terms { get; set; }
 
-      public DbSet<ChapterHeader> ChapterHeaders { get; set; }
-
-      public DbSet<ChapterFooter> ChapterFooters { get; set; }
-
-      public DbSet<PassageHeader> PassageHeaders { get; set; }
-
-      public DbSet<PassageFooter> PassageFooters { get; set; }
-
-      public DbSet<GlossaryTerm> GlossaryItems { get; set; }
-
-      public DbSet<GlossaryItem> GlossaryEntries { get; set; }
+      public DbSet<TermItem> TermItems { get; set; }
 
       public DbSet<AmazonItem> AmazonItems { get; set; }
 
@@ -49,7 +33,7 @@ namespace SeekDeepWithin.DataAccess
 
       public DbSet<SubBookChapter> SubBookChapters { get; set; }
 
-      public DbSet<SubBookWriter> SubBookWriters { get; set; }
+      public DbSet<TermWriter> TermWriters { get; set; }
 
       public DbSet<VersionWriter> VersionWriters { get; set; }
 

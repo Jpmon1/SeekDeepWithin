@@ -2,30 +2,30 @@
 @{
     ViewBag.Title = "Manage Account";
 }
-
-<h3>@ViewBag.Title.</h3>
-
-<p class="message-success">@ViewBag.StatusMessage</p>
-
+@section featured {
+   <div class="panel">
+      <div class="row">
+         <div class="small-12 columns">
+            <h3>@ViewBag.Title.</h3>
+         </div>
+      </div>
+   </div>
+}
 <p>Hello <strong>@User.Identity.Name</strong>, use this page to change information about your account.</p>
 
 <div class="row">
    <div class="small-12 large-8 columns">
-      @(ViewBag.HasLocalPassword ? Html.Partial ("_ChangePasswordPartial") : Html.Partial ("_SetPasswordPartial"))
+      @(ViewBag.HasLocalPassword ? Html.Partial("_ChangePasswordPartial") : Html.Partial("_SetPasswordPartial"))
    </div>
 
    <div class="small-12 large-4 columns">
       @Html.Action("RemoveExternalLogins")
-      @Html.Action("ExternalLoginsList", new { ReturnUrl = ViewBag.ReturnUrl })
+      @Html.Action("ExternalLoginsList", new { ViewBag.ReturnUrl })
    </div>
 </div>
 
 <div class="row">
    <div class="columns">
-      
+
    </div>
 </div>
-
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-}

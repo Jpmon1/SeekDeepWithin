@@ -11,6 +11,7 @@ using Lucene.Net.Store;
 using SeekDeepWithin.Controllers;
 using SeekDeepWithin.Models;
 using SeekDeepWithin.Pocos;
+using Term = Lucene.Net.Index.Term;
 
 namespace SeekDeepWithin.SdwSearch
 {
@@ -58,7 +59,8 @@ namespace SeekDeepWithin.SdwSearch
                var result = new SearchResult
                {
                   Id = id,
-                  Title = string.Format ("<a href=\"{0}/Book/Details/{1}\">{2}</a>", host, id, title.Highlight (search)),
+                  Title = title.Highlight (search),
+                  Url = string.Format ("{0}/Book/Details/{1}", host, id),
                   Description = doc.Get ("summary").Highlight(search)
                };
                results.Add (result);
@@ -158,12 +160,7 @@ namespace SeekDeepWithin.SdwSearch
          doc.Add (new Field ("title", book.Title ?? string.Empty, Field.Store.YES, Field.Index.ANALYZED));
          doc.Add (new Field ("subtitle", book.SubTitle ?? string.Empty, Field.Store.YES, Field.Index.ANALYZED));
          doc.Add (new Field ("summary", book.Summary ?? string.Empty, Field.Store.YES, Field.Index.ANALYZED));
-         if (book.Tags.Count > 0)
-         {
-            doc.Add (new Field ("tags", book.Tags.Select (t => t.Tag.Name)
-                  .Aggregate ((i, j) => i + " " + j), Field.Store.YES, Field.Index.ANALYZED));
-         }
-         if (book.Versions.Count > 0)
+         if (book.Versions != null && book.Versions.Count > 0)
          {
             doc.Add (new Field ("versions", book.Versions.Select (t => t.Title + " " + t.PublishDate)
                   .Aggregate ((i, j) => i + " | " + j), Field.Store.YES, Field.Index.ANALYZED));

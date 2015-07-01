@@ -1,27 +1,24 @@
 ﻿@using System.Globalization
-@model SeekDeepWithin.Models.GlossaryEntryViewModel
-
-@{
-   var id = Model.Id.ToString(CultureInfo.InvariantCulture);
-}
-@foreach (var header in Model.Headers) {
+@model SeekDeepWithin.Models.TermItemEntryViewModel
+@{var id = Model.Id.ToString (CultureInfo.InvariantCulture);}
+@if (Model.Header != null) {
    <div class="row">
       <div class="small-12 large-12 columns">
-         @Html.Partial("_HeaderFooter", header)
+         @(Html.Partial ("_HeaderFooter", Model.Header))
       </div>
    </div>
 }
-
-<div class="row" id="entry_@id" @if(Model.Footers.Count == 0){ @Html.Raw("style=\"padding-bottom: 0.9375rem\"") }>
+<div class="row" id="entry_@(id)" @if (Model.Footers.Count == 0) { @(Html.Raw ("style=\"padding-bottom: 0.9375rem\""))  }>
    <div class="small-12 large-12 columns">
-      @Html.Raw(Model.Render (Request.Url))
+      @(Html.Raw (Model.Render (Request.Url)))
    </div>
 </div>
-
-@foreach (var footer in Model.Footers) {
+@if (Model.Footers.Count > 0) {
    <div class="row">
-      <div class="small-12 large-12 columns footer">
-         @Html.Partial("_HeaderFooter", footer)
-      </div>
+      <div class="small-12 columns footer-box">
+         @foreach (var footer in Model.Footers) {
+            @(Html.Partial ("_HeaderFooter", footer))
+         }
    </div>
+</div>
 }

@@ -3,8 +3,17 @@
 @{
     ViewBag.Title = "Roles";
 }
-
-<h2>Roles</h2>
+@section featured {
+   <div class="panel">
+      <div class="row">
+         <div class="small-12 columns">
+            <h3>
+               Roles
+            </h3>
+         </div>
+      </div>
+   </div>
+}
 @Html.ActionLink("add", "Create") | @Html.ActionLink("assign", "Assign")
 
 @if (Model.Length <= 0) {

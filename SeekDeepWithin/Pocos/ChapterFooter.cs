@@ -2,7 +2,7 @@
 
 namespace SeekDeepWithin.Pocos
 {
-   public class ChapterFooter : IDbTable, IFooter
+   public class ChapterFooter : IDbTable
    {
       /// <summary>
       /// Gets or Sets the id of the footer.
@@ -10,19 +10,9 @@ namespace SeekDeepWithin.Pocos
       public int Id { get; set; }
 
       /// <summary>
-      /// Gets or Sets the index of the footer.
-      /// </summary>
-      public int Index { get; set; }
-
-      /// <summary>
       /// Gets or Sets the footer.
       /// </summary>
       public string Text { get; set; }
-
-      /// <summary>
-      /// Gets or Sets the chapter the footer belongs to.
-      /// </summary>
-      public virtual SubBookChapter Chapter { get; set; }
 
       /// <summary>
       /// Gets the list of links for this entry.

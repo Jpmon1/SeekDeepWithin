@@ -17,35 +17,47 @@ namespace SeekDeepWithin.Models
       public ChapterViewModel ()
       {
          this.Passages = new Collection <PassageViewModel> ();
-         this.Headers = new Collection<ChapterHeaderViewModel> ();
-         this.Footers = new Collection<ChapterFooterViewModel> ();
       }
+
       /// <summary>
       /// Initializes a new chapter view model.
       /// </summary>
       /// <param name="chapter">The chapter to copy data from.</param>
-      public ChapterViewModel (SubBookChapter chapter)
+      /// <param name="subBook">The parent sub book.</param>
+      public ChapterViewModel (SubBookChapter chapter, SubBookViewModel subBook = null)
       {
          this.Id = chapter.Id;
          this.Hide = chapter.Hide;
+         this.Order = chapter.Order;
          this.Name = chapter.Chapter.Name;
-         this.SubBookId = chapter.SubBook.Id;
+         if (chapter.Header != null && !string.IsNullOrWhiteSpace(chapter.Header.Text))
+            this.Header = new HeaderFooterViewModel (chapter.Header);
          this.DefaultToParagraph = chapter.DefaultToParagraph;
-         this.SubBook = new SubBookViewModel (chapter.SubBook);
-         this.Passages = new Collection<PassageViewModel> ();
-         this.Headers = new Collection<ChapterHeaderViewModel> ();
-         this.Footers = new Collection<ChapterFooterViewModel> ();
+         if (subBook == null)
+         {
+            this.SubBook = new SubBookViewModel (chapter.SubBook);
+            this.Passages = new Collection <PassageViewModel> ();
 
-         foreach (var header in chapter.Headers)
-            this.Headers.Add (new ChapterHeaderViewModel (header));
-         foreach (var footer in chapter.Footers)
-            this.Footers.Add (new ChapterFooterViewModel (footer));
-         var renderer = new SdwRenderer ();
-         foreach (var entry in chapter.Passages.OrderBy (pe => pe.Order))
-            this.Passages.Add (new PassageViewModel (entry) { Renderer = renderer });
-         foreach (var passageViewModel in this.Passages)
-            passageViewModel.DisplayType = DefaultToParagraph ? VerseDisplayType.Paragraph : VerseDisplayType.Number;
+            var sb = chapter.SubBook;
+            var version = chapter.SubBook.Version;
+            if (chapter.Footer != null && !string.IsNullOrWhiteSpace (chapter.Footer.Text))
+               this.Footer = new HeaderFooterViewModel (chapter.Footer);
+            var renderer = new SdwRenderer ();
+            foreach (var entry in chapter.Passages.OrderBy (pe => pe.Order))
+               this.Passages.Add (new PassageViewModel (entry, chapter, sb, version) {Renderer = renderer});
+            foreach (var passageViewModel in this.Passages)
+               passageViewModel.DisplayType = DefaultToParagraph ? VerseDisplayType.Paragraph : VerseDisplayType.Number;
+         }
+         else
+         {
+            this.SubBook = subBook;
+         }
       }
+
+      /// <summary>
+      /// Gets or Sets the order of the chapter.
+      /// </summary>
+      public int Order { get; set; }
 
       /// <summary>
       /// Gets or Sets the id of this chapter.
@@ -64,11 +76,6 @@ namespace SeekDeepWithin.Models
       public bool Hide { get; set; }
 
       /// <summary>
-      /// Gets or Sets the id of the parent sub book.
-      /// </summary>
-      public int SubBookId { get; set; }
-
-      /// <summary>
       /// Gets or Sets the default reading style.
       /// </summary>
       public bool DefaultToParagraph { get; set; }
@@ -79,14 +86,14 @@ namespace SeekDeepWithin.Models
       public SubBookViewModel SubBook { get; set; }
 
       /// <summary>
-      /// Get or Sets the headers for this chapter.
+      /// Get or Sets the header for this chapter.
       /// </summary>
-      public Collection<ChapterHeaderViewModel> Headers { get; set; }
+      public HeaderFooterViewModel Header { get; set; }
 
       /// <summary>
       /// Get or Sets the footers for this chapter.
       /// </summary>
-      public Collection<ChapterFooterViewModel> Footers { get; set; }
+      public HeaderFooterViewModel Footer { get; set; }
 
       /// <summary>
       /// Gets or Sets the list of passages.

@@ -1,54 +1,48 @@
-﻿
-$(document).ready(function () {
-   $('#saveReadStyleCheck').hide();
-   $('#verseRadio').change(verseParaChanged);
-   $('#paraRadio').change(verseParaChanged);
+﻿$(document).ready(function () {
    $('#smallLeftMenuIcon').show();
-   $('#leftMenu').data('loc', 'on');
-   $(window).resize(function () {
-      chapter_resize();
-   });
+   $('#passageList').data('loc', 'on');
+   $(window).resize(chapter_resize);
    chapter_resize();
 });
 
 function chapter_resize() {
-   var contents = $('#leftMenu');
-   var loc = contents.data('loc');
+   var passageList = $('#passageList');
+   var loc = passageList.data('loc');
    if (Foundation.utils.is_small_only()) {
       if (loc === 'on') {
-         contents.remove();
-         $('#panel_left').html(contents);
-         contents.data('loc', 'off');
+         passageList.remove();
+         $('#panel_left').html(passageList);
+         passageList.data('loc', 'off');
       }
+      passageList.css({ 'height': '', 'margin-bottom': '0' });
    } else {
       if (loc === 'off') {
-         contents.remove();
+         passageList.remove();
          panels_hideLeft();
          panels_hideOverlay();
-         $('#contentPanel').append(contents);
-         contents.data('loc', 'on');
+         $('#parentListContainer').append(passageList);
+         passageList.data('loc', 'on');
       }
-      $('#contentPanel').css({ 'height': $('#workArea').height() });
+      passageList.css({ 'height': $('#workArea').height(), 'margin-bottom': '1.25rem' });
    }
 }
 
-function verseParaChanged() {
-   var para = $('#paraRadio').prop("checked");
-   var form = $('#__AjaxAntiForgeryForm');
-   var token = $('input[name="__RequestVerificationToken"]', form).val();
-   $.ajax({
-      type: 'POST',
-      url: '/Chapter/ReadStyle/',
-      data: {
-         __RequestVerificationToken: token,
-         paragraph: para,
-         id: $('#chapterId').val()
-      }
-   }).done(function () {
-      $('#saveReadStyleCheck').show(200, function () {
-         setTimeout(function () { $('#saveReadStyleCheck').hide(100); }, 2000);
-      });
-   }).fail(function (data) {
-      alert(data.responseText);
-   });
+function chapter_edit() {
+   sdw_post('/Chapter/Edit/', {
+      id: $('#chapterId').val(),
+      name: $('#chapterName').val(),
+      order: $('#chapterOrder').val(),
+      header: $('#chapterHeader').val(),
+      footer: $('#chapterFooter').val(),
+      visible: $('#chapterVisi').prop('checked'),
+      para: !$('#chapterReadMode').prop('checked')
+   }, 'Editing Chapter, please wait...');
+}
+
+function chapter_edit_header() {
+   sdw_get_edit('/Chapter/EditHeader/' + $('#chapterId').val());
+}
+
+function chapter_edit_footer() {
+   sdw_get_edit('/Chapter/EditFooter/' + $('#chapterId').val());
 }

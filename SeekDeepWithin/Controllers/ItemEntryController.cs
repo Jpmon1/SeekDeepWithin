@@ -1,0 +1,207 @@
+﻿using System;
+using System.Linq;
+using System.Web.Mvc;
+using SeekDeepWithin.DataAccess;
+using SeekDeepWithin.Models;
+using SeekDeepWithin.Pocos;
+using SeekDeepWithin.SdwSearch;
+
+namespace SeekDeepWithin.Controllers
+{
+   public class ItemEntryController : SdwController
+   {
+      /// <summary>
+      /// Initializes a new controller.
+      /// </summary>
+      public ItemEntryController () : base (new SdwDatabase ()) { }
+
+      /// <summary>
+      /// Initializes a new controller with the given db info.
+      /// </summary>
+      /// <param name="db">Database object.</param>
+      public ItemEntryController (ISdwDatabase db) : base (db) { }
+
+      /// <summary>
+      /// Creates a passage for the given chapter.
+      /// </summary>
+      /// <param name="entryList">The list of passages to add.</param>
+      /// <param name="itemId">The id of the item.</param>
+      /// <returns>Create results.</returns>
+      [HttpPost]
+      [ValidateAntiForgeryToken]
+      [Authorize (Roles = "Creator")]
+      public ActionResult Create (string entryList, int itemId)
+      {
+         if (string.IsNullOrWhiteSpace (entryList)) return this.Fail ("No entries were given to add.");
+         var item = this.Database.TermItems.Get (itemId);
+         if (item == null) return this.Fail ("Unable to determine the item.");
+         var entries = entryList.Split (new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+         foreach (var entry in entries)
+         {
+            var entryData = entry.Split ('|');
+            var order = entryData.FirstOrDefault (pd => pd.StartsWith ("[o]"));
+            if (string.IsNullOrWhiteSpace (order)) return this.Fail ("Passage order was not supplied.");
+            var text = entryData.FirstOrDefault (pd => pd.StartsWith ("[t]"));
+            if (string.IsNullOrWhiteSpace (text)) return this.Fail ("Passage text was not supplied.");
+            var header = entryData.FirstOrDefault (pd => pd.StartsWith ("[h]"));
+            var passageEntry = new TermItemEntry
+            {
+               Order = Convert.ToInt32 (order.Substring (3)),
+               Text = text.Substring (3)
+            };
+            if (!string.IsNullOrWhiteSpace (header))
+               passageEntry.Header = new TermItemEntryHeader { Text = header };
+            foreach (var footer in entryData.Where (pd => pd.StartsWith ("[f@")))
+            {
+
+            }
+            item.Entries.Add (passageEntry);
+         }
+         this.Database.Save ();
+         GlossarySearch.AddOrUpdateIndex (item.Entries);
+         GlossarySearch.Optimize ();
+         return Json ("Success");
+      }
+
+      /// <summary>
+      /// Performs an edit for the given entry.
+      /// </summary>
+      /// <param name="entryId">The entry to edit.</param>
+      /// <param name="text">The entry text.</param>
+      /// <param name="order">The entry order.</param>
+      /// <param name="header">A header for the entry.</param>
+      /// <returns>Results.</returns>
+      [HttpPost]
+      [ValidateAntiForgeryToken]
+      [Authorize (Roles = "Editor")]
+      public ActionResult Update (int entryId, string text, int? order, string header)
+      {
+         var entry = this.Database.TermItemEntries.Get (entryId);
+         if (entry == null) return this.Fail ("Unable to determine the item entry.");
+         if (order != null) entry.Order = order.Value;
+         entry.Text = text;
+         if (!string.IsNullOrWhiteSpace (header))
+         {
+            if (entry.Header == null)
+               entry.Header = new TermItemEntryHeader { Text = header };
+            else
+               entry.Header.Text = header;
+         }
+         else if (entry.Header != null)
+         {
+            entry.Header.Styles.Clear();
+            entry.Header = null;
+         }
+         this.Database.Save ();
+         GlossarySearch.AddOrUpdateIndex (entry);
+         return Json ("Success");
+      }
+
+      /// <summary>
+      /// Gets the edit view for the given entry.
+      /// </summary>
+      /// <param name="id">The id of the item we editing.</param>
+      /// <returns></returns>
+      [Authorize (Roles = "Editor")]
+      public ActionResult Edit (int id)
+      {
+         var entry = this.Database.TermItemEntries.Get (id);
+         var viewModel = new EditItemViewModel (id, EditItemType.ItemEntry) { Text = entry.Text };
+         foreach (var style in entry.Styles)
+            viewModel.Styles.Add (new StyleViewModel (style));
+         foreach (var link in entry.Links)
+            viewModel.Links.Add (new LinkViewModel (link));
+         foreach (var footer in entry.Footers)
+            viewModel.Footers.Add (new HeaderFooterViewModel (footer));
+         return PartialView ("_EditItem", viewModel);
+      }
+
+      /// <summary>
+      /// Gets the edit view for the given entry.
+      /// </summary>
+      /// <param name="id">The id of the item we editing.</param>
+      /// <returns></returns>
+      [Authorize (Roles = "Editor")]
+      public ActionResult EditHeader (int id)
+      {
+         var entry = this.Database.TermItemEntries.Get (id);
+         var viewModel = new EditItemViewModel (id, EditItemType.ItemEntryHeader)
+         {
+            HasLinks = false,
+            HasFooters = false
+         };
+         if (entry.Header != null)
+         {
+            viewModel.Text = entry.Header.Text;
+            foreach (var style in entry.Header.Styles)
+               viewModel.Styles.Add (new StyleViewModel (style));
+         }
+         return PartialView ("_EditItem", viewModel);
+      }
+
+      /// <summary>
+      /// Gets the edit view for the given entry.
+      /// </summary>
+      /// <param name="id">The id of the item we editing.</param>
+      /// <param name="footerId">The id of the footer we are editing.</param>
+      /// <returns></returns>
+      [Authorize (Roles = "Editor")]
+      public ActionResult EditFooter (int id, int footerId)
+      {
+         var entry = this.Database.TermItemEntries.Get (id);
+         if (entry == null) return this.Fail ("Unable to determine the entry");
+         var footer = entry.Footers.FirstOrDefault (f => f.Id == footerId);
+         if (footer == null) return this.Fail ("Unable to determine the footer");
+         var viewModel = new EditItemViewModel (id, EditItemType.ItemEntryFooter)
+         {
+            Text = footer.Text,
+            HasFooters = false,
+            FooterId = footerId
+         };
+         foreach (var style in footer.Styles)
+            viewModel.Styles.Add (new StyleViewModel (style));
+         foreach (var link in footer.Links)
+            viewModel.Links.Add (new LinkViewModel (link));
+         return PartialView ("_EditItem", viewModel);
+      }
+
+      /// <summary>
+      /// Deletes the given entry.
+      /// </summary>
+      /// <param name="entryId">The entry to delete.</param>
+      /// <returns>Results.</returns>
+      [HttpPost]
+      [ValidateAntiForgeryToken]
+      [Authorize (Roles = "Creator")]
+      public ActionResult Delete (int entryId)
+      {
+         var entry = this.Database.TermItemEntries.Get (entryId);
+         if (entry == null) return this.Fail ("Unable to determine the item entry.");
+         entry.Item.Entries.Remove (entry);
+         this.Database.TermItemEntries.Delete (entry);
+         this.Database.Save ();
+         GlossarySearch.Delete (entry.Id);
+         return Json ("Success");
+      }
+
+      /// <summary>
+      /// Gets details about the entry with the given id.
+      /// </summary>
+      /// <param name="id"></param>
+      /// <returns></returns>
+      [AllowAnonymous]
+      public ActionResult Get (int id)
+      {
+         var entry = this.Database.TermItemEntries.Get (id);
+         if (entry == null) return this.Fail ("Unable to determine the item entry.");
+         var result = new
+         {
+            entryId = id,
+            text = entry.Text,
+            order = entry.Order,
+            header = entry.Header == null ? string.Empty : entry.Header.Text
+         };
+         return Json (result, JsonRequestBehavior.AllowGet);
+      }
+   }
+}

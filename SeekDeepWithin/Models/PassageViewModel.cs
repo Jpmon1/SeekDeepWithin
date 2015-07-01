@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using SeekDeepWithin.Controllers;
 using SeekDeepWithin.DataAccess;
 using SeekDeepWithin.Pocos;
+using Version = SeekDeepWithin.Pocos.Version;
 
 namespace SeekDeepWithin.Models
 {
@@ -15,7 +16,6 @@ namespace SeekDeepWithin.Models
       {
          this.Links = new Collection <LinkViewModel> ();
          this.Styles = new Collection <StyleViewModel> ();
-         this.Headers = new Collection <HeaderFooterViewModel> ();
          this.Footers = new Collection <HeaderFooterViewModel> ();
       }
 
@@ -23,39 +23,47 @@ namespace SeekDeepWithin.Models
       /// Initializes a new passage view model.
       /// </summary>
       /// <param name="entry">The passage entry to copy data from.</param>
-      public PassageViewModel (PassageEntry entry)
+      /// <param name="chapter">The chapter this entry belongs to.</param>
+      /// <param name="subBook">The subbook this entry belongs to.</param>
+      /// <param name="version">The version this entry belongs to.</param>
+      public PassageViewModel (PassageEntry entry, SubBookChapter chapter = null, VersionSubBook subBook = null, Version version = null)
       {
          if (entry == null) return;
          this.EntryId = entry.Id;
          this.Id = entry.Passage.Id;
          this.Number = entry.Number;
          this.Text = entry.Passage.Text;
-         this.ChapterId = entry.Chapter.Id;
-         this.ChapterName = entry.Chapter.Chapter.Name;
-         this.SubBookId = entry.Chapter.SubBook.Id;
-         this.SubBookName = entry.Chapter.SubBook.SubBook.Name;
-         this.VersionId = entry.Chapter.SubBook.Version.Id;
-         this.VersionName = entry.Chapter.SubBook.Version.Title;
+         if (chapter == null)
+            chapter = entry.Chapter;
+         if (subBook == null)
+            subBook = chapter.SubBook;
+         if (version == null)
+            version = subBook.Version;
+         this.ChapterId = chapter.Id;
+         this.ChapterName = chapter.Chapter.Name;
+         this.SubBookId = subBook.Id;
+         this.SubBookName = subBook.Term.Name;
+         this.VersionId = version.Id;
+         this.VersionName = version.Title;
+         if (entry.Header != null && !string.IsNullOrWhiteSpace(entry.Header.Text))
+            this.Header = new HeaderFooterViewModel (entry.Header);
 
          var title = this.VersionName + " | ";
-         if (!entry.Chapter.SubBook.Hide)
+         if (!chapter.SubBook.Hide)
             title += this.SubBookName + " | ";
-         if (!entry.Chapter.Hide)
+         if (!chapter.Hide)
             title += this.ChapterName + ":";
          title += this.Number;
          this.Title = title;
 
          this.Links = new Collection<LinkViewModel> ();
          this.Styles = new Collection<StyleViewModel> ();
-         this.Headers = new Collection<HeaderFooterViewModel> ();
          this.Footers = new Collection<HeaderFooterViewModel> ();
 
          foreach (var link in entry.Passage.Links)
             this.Links.Add (new LinkViewModel (link));
          foreach (var style in entry.Styles)
             this.Styles.Add (new StyleViewModel (style));
-         foreach (var header in entry.Headers)
-            this.Headers.Add (new HeaderFooterViewModel (header));
          foreach (var footer in entry.Footers)
             this.Footers.Add (new HeaderFooterViewModel (footer));
       }
@@ -133,6 +141,11 @@ namespace SeekDeepWithin.Models
       public string VersionName { get; set; }
 
       /// <summary>
+      /// Get or Sets the headers for this passage.
+      /// </summary>
+      public HeaderFooterViewModel Header { get; set; }
+
+      /// <summary>
       /// Gets the list of links for this passage.
       /// </summary>
       public Collection<LinkViewModel> Links { get; set; }
@@ -148,11 +161,6 @@ namespace SeekDeepWithin.Models
       public Collection<HeaderFooterViewModel> Footers { get; set; }
 
       /// <summary>
-      /// Get or Sets the headers for this passage.
-      /// </summary>
-      public Collection<HeaderFooterViewModel> Headers { get; set; }
-
-      /// <summary>
       /// Gets or Sets the renderer.
       /// </summary>
       public SdwRenderer Renderer { get; set; }
@@ -164,6 +172,7 @@ namespace SeekDeepWithin.Models
       /// <returns>The html to display for the passage.</returns>
       public string Render (Uri url)
       {
+         if (string.IsNullOrWhiteSpace (this.Text)) return string.Empty;
          if (this.Text.StartsWith ("|PARSE|"))
          {
             var parser = new PassageParser (new SdwDatabase ());

@@ -90,6 +90,8 @@ namespace SeekDeepWithin.SdwSearch
          var lockFilePath = Path.Combine (s_LuceneDir, path, "write.lock");
          if (System.IO.File.Exists (lockFilePath))
             System.IO.File.Delete (lockFilePath);
+         if (!directory.Directory.Exists)
+            directory.Directory.Create();
          return directory;
       }
    }

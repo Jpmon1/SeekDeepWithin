@@ -10,30 +10,21 @@ namespace SeekDeepWithin.DataAccess
    {
       private bool m_Disposed;
       private IRepository<Book> m_Books;
-      private IRepository<Writer> m_Authors;
       private IRepository<Pocos.Version> m_Versions;
-      private IRepository<SubBook> m_SubBooks;
       private IRepository<Chapter> m_Chapters;
       private IRepository<Passage> m_Passages;
       private IRepository<Link> m_Links;
-      private IRepository<Tag> m_Tags;
       private IRepository<Style> m_Styles;
-      private IRepository<Source> m_Sources;
       private IRepository<AmazonItem> m_AmazonItems;
-      private IRepository<ChapterHeader> m_ChapterHeaders;
-      private IRepository<ChapterFooter> m_ChapterFooters;
-      private IRepository<PassageHeader> m_PassageHeaders;
-      private IRepository<PassageFooter> m_PassageFooters;
       private IRepository<PassageEntry> m_PassageEntries;
-      private IRepository<GlossaryTerm> m_GlossaryTerms;
-      private IRepository<GlossaryItem> m_GlossaryItems;
-      private IRepository<GlossaryEntry> m_GlossaryEntries;
-      private IRepository <Abbreviation> m_Abbreviations;
+      private IRepository<Term> m_GlossaryTerms;
+      private IRepository<TermItem> m_GlossaryItems;
+      private IRepository<TermItemEntry> m_GlossaryEntries;
       private IRepository <VersionSubBook> m_VersionSubBooks;
-      private IRepository<SubBookWriter> m_SubBookWriters;
+      private IRepository<TermWriter> m_SubBookWriters;
       private IRepository<VersionWriter> m_VersionWriters;
       private IRepository<SubBookChapter> m_SubBookChapters;
-      private IRepository<GlossaryItemSource> m_GlossaryItemSources;
+      private IRepository<TermItemSource> m_GlossaryItemSources;
       private readonly SdwDbContext m_Db = new SdwDbContext ();
 
       /// <summary>
@@ -45,27 +36,19 @@ namespace SeekDeepWithin.DataAccess
       }
 
       /// <summary>
-      /// Gets the repository for writers.
-      /// </summary>
-      public IRepository <Writer> Writers
-      {
-         get { return this.m_Authors ?? (this.m_Authors = new Repository<Writer> (m_Db)); }
-      }
-
-      /// <summary>
       /// Gets the repository for sub book writers.
       /// </summary>
-      public IRepository<SubBookWriter> SubBookWriters
+      public IRepository<TermWriter> SubBookWriters
       {
-         get { return this.m_SubBookWriters ?? (this.m_SubBookWriters = new Repository<SubBookWriter> (m_Db)); }
+         get { return this.m_SubBookWriters ?? (this.m_SubBookWriters = new Repository<TermWriter> (m_Db)); }
       }
 
       /// <summary>
       /// Gets the repository for glossary item sources.
       /// </summary>
-      public IRepository<GlossaryItemSource> GlossaryItemSources
+      public IRepository<TermItemSource> TermItemSources
       {
-         get { return this.m_GlossaryItemSources ?? (this.m_GlossaryItemSources = new Repository<GlossaryItemSource> (m_Db)); }
+         get { return this.m_GlossaryItemSources ?? (this.m_GlossaryItemSources = new Repository<TermItemSource> (m_Db)); }
       }
 
       /// <summary>
@@ -93,14 +76,6 @@ namespace SeekDeepWithin.DataAccess
       }
 
       /// <summary>
-      /// Gets the repository for subbooks.
-      /// </summary>
-      public IRepository<SubBook> SubBooks
-      {
-         get { return this.m_SubBooks ?? (this.m_SubBooks = new Repository<SubBook> (m_Db)); }
-      }
-
-      /// <summary>
       /// Gets the repository for subbook chapter table.
       /// </summary>
       public IRepository <SubBookChapter> SubBookChapters
@@ -119,25 +94,25 @@ namespace SeekDeepWithin.DataAccess
       /// <summary>
       /// Gets the repository for glossary terms.
       /// </summary>
-      public IRepository<GlossaryTerm> GlossaryTerms
+      public IRepository<Term> Terms
       {
-         get { return this.m_GlossaryTerms ?? (this.m_GlossaryTerms = new Repository<GlossaryTerm> (m_Db)); }
+         get { return this.m_GlossaryTerms ?? (this.m_GlossaryTerms = new Repository<Term> (m_Db)); }
       }
 
       /// <summary>
       /// Gets the repository for glossary items.
       /// </summary>
-      public IRepository<GlossaryItem> GlossaryItems
+      public IRepository<TermItem> TermItems
       {
-         get { return this.m_GlossaryItems ?? (this.m_GlossaryItems = new Repository<GlossaryItem> (m_Db)); }
+         get { return this.m_GlossaryItems ?? (this.m_GlossaryItems = new Repository<TermItem> (m_Db)); }
       }
 
       /// <summary>
       /// Gets the repository for glossary entries.
       /// </summary>
-      public IRepository<GlossaryEntry> GlossaryEntries
+      public IRepository<TermItemEntry> TermItemEntries
       {
-         get { return this.m_GlossaryEntries ?? (this.m_GlossaryEntries = new Repository<GlossaryEntry> (this.m_Db)); }
+         get { return this.m_GlossaryEntries ?? (this.m_GlossaryEntries = new Repository<TermItemEntry> (this.m_Db)); }
       }
 
       /// <summary>
@@ -157,59 +132,11 @@ namespace SeekDeepWithin.DataAccess
       }
 
       /// <summary>
-      /// Gets the repository for tags.
-      /// </summary>
-      public IRepository<Tag> Tags
-      {
-         get { return this.m_Tags ?? (this.m_Tags = new Repository<Tag> (m_Db)); }
-      }
-
-      /// <summary>
       /// Gets the repository for styles.
       /// </summary>
       public IRepository<Style> Styles
       {
          get { return this.m_Styles ?? (this.m_Styles = new Repository<Style> (m_Db)); }
-      }
-
-      /// <summary>
-      /// Gets the repository for sources.
-      /// </summary>
-      public IRepository<Source> Sources
-      {
-         get { return this.m_Sources ?? (this.m_Sources = new Repository<Source> (m_Db)); }
-      }
-
-      /// <summary>
-      /// Gets the repository for Chapter headers.
-      /// </summary>
-      public IRepository<ChapterHeader> ChapterHeaders
-      {
-         get { return this.m_ChapterHeaders ?? (this.m_ChapterHeaders = new Repository<ChapterHeader> (m_Db)); }
-      }
-
-      /// <summary>
-      /// Gets the repository for Chapter footers.
-      /// </summary>
-      public IRepository<ChapterFooter> ChapterFooters
-      {
-         get { return this.m_ChapterFooters ?? (this.m_ChapterFooters = new Repository<ChapterFooter> (m_Db)); }
-      }
-
-      /// <summary>
-      /// Gets the repository for Passage headers.
-      /// </summary>
-      public IRepository<PassageHeader> PassageHeaders
-      {
-         get { return this.m_PassageHeaders ?? (this.m_PassageHeaders = new Repository<PassageHeader> (m_Db)); }
-      }
-
-      /// <summary>
-      /// Gets the repository for Passage footers.
-      /// </summary>
-      public IRepository<PassageFooter> PassageFooters
-      {
-         get { return this.m_PassageFooters ?? (this.m_PassageFooters = new Repository<PassageFooter> (m_Db)); }
       }
 
       /// <summary>
@@ -226,14 +153,6 @@ namespace SeekDeepWithin.DataAccess
       public IRepository<AmazonItem> AmazonItems
       {
          get { return this.m_AmazonItems ?? (this.m_AmazonItems = new Repository<AmazonItem> (m_Db)); }
-      }
-
-      /// <summary>
-      /// Gets the repository for abbreviations.
-      /// </summary>
-      public IRepository<Abbreviation> Abbreviations
-      {
-         get { return this.m_Abbreviations ?? (this.m_Abbreviations = new Repository<Abbreviation> (m_Db)); }
       }
 
       /// <summary>

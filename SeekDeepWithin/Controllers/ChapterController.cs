@@ -1,31 +1,23 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
 using SeekDeepWithin.DataAccess;
-using SeekDeepWithin.Pocos;
 using SeekDeepWithin.Models;
+using SeekDeepWithin.Pocos;
 
 namespace SeekDeepWithin.Controllers
 {
-   public class ChapterController : Controller
+   public class ChapterController : SdwController
    {
-      private readonly ISdwDatabase m_Db;
-
       /// <summary>
       /// Initializes a new chapter controller.
       /// </summary>
-      public ChapterController ()
-      {
-         this.m_Db = new SdwDatabase ();
-      }
+      public ChapterController () : base (new SdwDatabase ()) { }
 
       /// <summary>
       /// Initializes a new chapter controller with the given db info.
       /// </summary>
       /// <param name="db">Database object.</param>
-      public ChapterController (ISdwDatabase db)
-      {
-         this.m_Db = db;
-      }
+      public ChapterController (ISdwDatabase db) : base (db) { }
 
       /// <summary>
       /// Gets the edit chapter Page.
@@ -35,122 +27,112 @@ namespace SeekDeepWithin.Controllers
       [Authorize (Roles = "Editor")]
       public ActionResult Edit (int id)
       {
-         if (Request.UrlReferrer != null) TempData["RefUrl"] = Request.UrlReferrer.ToString ();
-         var chapter = this.m_Db.SubBookChapters.Get (id);
+         var chapter = this.Database.SubBookChapters.Get (id);
          return View (new ChapterViewModel (chapter));
       }
 
       /// <summary>
-      /// Gets the add passage view for a chapter.
+      /// Performs edit actions on the given chapter.
       /// </summary>
-      /// <param name="id">The id of the chapter to add passages for.</param>
-      /// <returns>The add passge view.</returns>
-      [Authorize (Roles = "Creator")]
-      public ActionResult Add (int id)
+      /// <param name="id">Id of chapter to edit.</param>
+      /// <param name="name">New name of chapter.</param>
+      /// <param name="order">New order of chapter.</param>
+      /// <param name="visible">New visibility of chapter.</param>
+      /// <param name="para">New default view of chapter.</param>
+      /// <param name="header">The chapter's header.</param>
+      /// <param name="footer">The chapter's footer.</param>
+      /// <returns>Json Results</returns>
+      [HttpPost]
+      [ValidateAntiForgeryToken]
+      [Authorize (Roles = "Editor")]
+      public ActionResult Edit (int id, string name, int order, bool visible, bool para, string header, string footer)
       {
-         if (Request.UrlReferrer != null) TempData["RefUrl"] = Request.UrlReferrer.ToString ();
-         var viewModel = new AddItemViewModel { ParentId = id, ItemType = ItemType.Passage };
-         var chapter = this.m_Db.SubBookChapters.Get (id);
-         var title = chapter.SubBook.Version.Title + " | ";
-         if (!chapter.SubBook.Hide)
-            title += chapter.SubBook.SubBook.Name + " | ";
-         if (!chapter.Hide)
-            title += chapter.Chapter.Name;
-         viewModel.Title = title;
-         if (chapter.Passages.Count > 0)
+         var chapter = this.Database.SubBookChapters.Get (id);
+         if (chapter == null) return this.Fail ("Unable to determine the chapter.");
+         chapter.DefaultToParagraph = para;
+         chapter.Chapter.Name = name;
+         chapter.Hide = !visible;
+         chapter.Order = order;
+         if (!string.IsNullOrWhiteSpace (header))
          {
-            viewModel.Order = chapter.Passages.Max (p => p.Order) + 1;
-            viewModel.Number = chapter.Passages.Max (p => p.Number) + 1;
+            if (chapter.Header == null)
+               chapter.Header = new ChapterHeader {Text = header};
+            else
+               chapter.Header.Text = header;
          }
-         else
+         else if (chapter.Header != null)
          {
-            viewModel.Order = 1;
-            viewModel.Number = 1;
+            chapter.Header.Styles.Clear ();
+            chapter.Header = null;
          }
-         return View (viewModel);
+         if (!string.IsNullOrWhiteSpace (footer))
+         {
+            if (chapter.Footer == null)
+               chapter.Footer = new ChapterFooter {Text = footer};
+            else
+               chapter.Footer.Text = footer;
+         }
+         else if (chapter.Footer != null)
+         {
+            chapter.Footer.Links.Clear();
+            chapter.Footer.Styles.Clear ();
+            chapter.Footer = null;
+         }
+         this.Database.Save ();
+         return Json ("success");
       }
 
       /// <summary>
-      /// Gets the edit page for the given chapter.
+      /// Gets the edit view for the given chapter.
       /// </summary>
-      /// <param name="id">The id of the chapter.</param>
-      /// <param name="hide">True to hide chapter, otherwise false.</param>
+      /// <param name="id"></param>
       /// <returns></returns>
-      [HttpPost]
-      [ValidateAntiForgeryToken]
       [Authorize (Roles = "Editor")]
-      public ActionResult Hide (int id, bool hide)
+      public ActionResult EditHeader (int id)
       {
-         var chapter = this.m_Db.SubBookChapters.Get (id);
-         if (chapter == null)
+         var chapter = this.Database.SubBookChapters.Get (id);
+         var viewModel = new EditItemViewModel (id, EditItemType.ChapterHeader) {HasLinks = false, HasFooters = false};
+         if (chapter.Header != null)
          {
-            Response.StatusCode = 500;
-            return Json ("Unknown Chapter");
+            viewModel.Text = chapter.Header.Text;
+            foreach (var style in chapter.Header.Styles)
+               viewModel.Styles.Add (new StyleViewModel (style));
          }
-         chapter.Hide = hide;
-         this.m_Db.Save ();
-         return Json ("success");
+         return PartialView ("_EditItem", viewModel);
       }
 
       /// <summary>
-      /// Creates a new chapter.
+      /// Gets the edit view for the given chapter.
       /// </summary>
-      /// <returns>The results.</returns>
-      [HttpPost]
-      [ValidateAntiForgeryToken]
+      /// <param name="id"></param>
+      /// <returns></returns>
       [Authorize (Roles = "Editor")]
-      public ActionResult ReadStyle (int id, bool paragraph)
+      public ActionResult EditFooter (int id)
       {
-         var chapter = this.m_Db.SubBookChapters.Get (id);
-         if (chapter == null)
+         var chapter = this.Database.SubBookChapters.Get (id);
+         var viewModel = new EditItemViewModel (id, EditItemType.ChapterFooter) {HasFooters = false};
+         if (chapter.Footer != null)
          {
-            Response.StatusCode = 500;
-            return Json ("Unknown chapter");
+            viewModel.Text = chapter.Footer.Text;
+            foreach (var style in chapter.Footer.Styles)
+               viewModel.Styles.Add (new StyleViewModel (style));
+            foreach (var link in chapter.Footer.Links)
+               viewModel.Links.Add (new LinkViewModel (link));
          }
-         chapter.DefaultToParagraph = paragraph;
-         this.m_Db.Save();
-         return Json ("success");
+         return PartialView ("_EditItem", viewModel);
       }
 
       /// <summary>
-      /// Creates a new chapter.
+      /// Gets the contents view.
       /// </summary>
-      /// <returns>The results.</returns>
-      [HttpPost]
-      [ValidateAntiForgeryToken]
-      [Authorize (Roles = "Creator")]
-      public ActionResult Create (int subBookId, string name)
+      /// <param name="id">Id of chapter to get contents for.</param>
+      /// <returns>The contents HTML.</returns>
+      public ActionResult Contents (int id)
       {
-         var subBook = this.m_Db.VersionSubBooks.Get (subBookId);
-         var maxOrder = (subBook.Chapters.Count > 0 ? subBook.Chapters.Max (c => c.Order) : 0) + 1;
-         var chapter = DbHelper.GetChapter (this.m_Db, name);
-         var sChapter = new SubBookChapter {Chapter = chapter, Order = maxOrder, SubBook = subBook};
-         subBook.Chapters.Add (sChapter);
-         this.m_Db.Save ();
-
-         if (subBook.Version.DefaultReadChapter == 0)
-         {
-            subBook.Version.DefaultReadChapter = sChapter.Id;
-            this.m_Db.Save ();
-         }
-
-         return Json (new {id=sChapter.Id, name, itemId=chapter.Id});
-      }
-
-      /// <summary>
-      /// Renames a chapter.
-      /// </summary>
-      /// <returns>The results.</returns>
-      [HttpPost]
-      [ValidateAntiForgeryToken]
-      [Authorize (Roles = "Creator")]
-      public ActionResult Rename (int id, string name)
-      {
-         var subBook = this.m_Db.SubBookChapters.Get (id);
-         var chapter = subBook.Chapter;
-         chapter.Name = name;
-         this.m_Db.Save();
-         return Json ("success");
+         var chapter = this.Database.SubBookChapters.Get (id);
+         var contents = new VersionContents (chapter.SubBook.Version.Title, chapter.SubBook.Version.Contents,
+            chapter.SubBook.Version.Id, chapter.SubBook.Id, id);
+         return PartialView (contents);
       }
 
       /// <summary>
@@ -163,7 +145,7 @@ namespace SeekDeepWithin.Controllers
       {
          var result = new
          {
-            suggestions = this.m_Db.SubBookChapters.Get (sc => sc.SubBook.Id == subBookId && sc.Chapter.Name.Contains (name))
+            suggestions = this.Database.SubBookChapters.Get (sc => sc.SubBook.Id == subBookId && sc.Chapter.Name.Contains (name))
                                                  .Select (c => new { value = c.Chapter.Name, data = c.Id })
          };
          return Json (result, JsonRequestBehavior.AllowGet);

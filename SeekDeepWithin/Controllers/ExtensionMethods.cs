@@ -61,25 +61,17 @@ namespace SeekDeepWithin.Controllers
       /// Gets the full title of the passage.
       /// </summary>
       /// <param name="entry">Passage to get title for.</param>
-      /// <param name="url">The url, if requesting a link, null if link is not required.</param>
       /// <returns>The full title of the passage.</returns>
-      public static string GetTitle (this PassageEntry entry, Uri url = null)
+      public static string GetTitle (this PassageEntry entry)
       {
          if (entry == null) return string.Empty;
          var title = string.Empty;
-         if (url != null)
-         {
-            var host = url.AbsoluteUri.Replace (url.AbsolutePath, "");
-            title += string.Format ("<a href=\"{0}/Read/{1}#num_{2}\">", host, entry.ChapterId, entry.Number);
-         }
          title += entry.Chapter.SubBook.Version.Title + " | ";
          if (!entry.Chapter.SubBook.Hide)
-            title += entry.Chapter.SubBook.SubBook.Name + " | ";
+            title += entry.Chapter.SubBook.Term.Name + " | ";
          if (!entry.Chapter.Hide)
             title += entry.Chapter.Chapter.Name + ":";
          title += entry.Number;
-         if (url != null)
-            title += "</a>";
          return title;
       }
    }

@@ -33,9 +33,9 @@ namespace SeekDeepWithin.Pocos
       public virtual Version Version { get; set; }
 
       /// <summary>
-      /// Gets or Sets the associated sub book
+      /// Gets or Sets the associated sub book/term
       /// </summary>
-      public virtual SubBook SubBook { get; set; }
+      public virtual Term Term { get; set; }
 
       /// <summary>
       /// Gets or Sets the list of chapters.

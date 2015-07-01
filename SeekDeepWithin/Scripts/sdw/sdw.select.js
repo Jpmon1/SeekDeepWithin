@@ -11,6 +11,7 @@ function select_word(start,end) {
       }, true);
       $('#startIndex').val(start);
       $('#endIndex').val(end);
+      $('#footerIndex').val(end);
       select_text(start, end);
    }
 }
@@ -84,5 +85,6 @@ function select_initRangeSlider(end) {
    });
    $("#textRangeSlider").Link('lower').to($('#startIndex'));
    $("#textRangeSlider").Link('upper').to($('#endIndex'));
+   $("#textRangeSlider").Link('upper').to($('#footerIndex'));
    select_text(0, end);
 }

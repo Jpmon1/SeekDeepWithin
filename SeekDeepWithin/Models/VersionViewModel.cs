@@ -1,6 +1,5 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using SeekDeepWithin.Pocos;
 
 namespace SeekDeepWithin.Models
@@ -10,7 +9,6 @@ namespace SeekDeepWithin.Models
    /// </summary>
    public class VersionViewModel
    {
-      private readonly Collection<WriterViewModel> m_Writers = new Collection<WriterViewModel> ();
       private readonly Collection<SubBookViewModel> m_SubBooks = new Collection<SubBookViewModel> ();
 
       /// <summary>
@@ -22,21 +20,25 @@ namespace SeekDeepWithin.Models
       /// Initializes a new version view model.
       /// </summary>
       /// <param name="version">The version to copy data from.</param>
-      public VersionViewModel (Version version)
+      /// <param name="copySubBooks">True to copy sub book information, default is false.</param>
+      public VersionViewModel (Version version, bool copySubBooks = false)
       {
-         var source = version.VersionSources.FirstOrDefault ();
          this.Id = version.Id;
          this.Title = version.Title;
          this.BookId = version.Book.Id;
-         this.Abbreviation = version.Abbreviation;
+         this.SourceUrl = version.SourceUrl;
+         this.SourceName = version.SourceName;
          this.PublishDate = version.PublishDate;
          this.Contents = version.Contents ?? string.Empty;
          this.Book = new BookViewModel (version.Book);
          this.DefaultReadChapter = version.DefaultReadChapter;
-         this.SourceName = source == null ? string.Empty : source.Source.Name;
-         this.SourceUrl = source == null ? string.Empty : source.Source.Url;
-         foreach (var writer in version.Writers)
-            this.Writers.Add(new WriterViewModel {Id = writer.Writer.Id, Name = writer.Writer.Name, IsTranslator = writer.IsTranslator});
+         if (version.Term != null)
+            this.Term = new TermViewModel (version.Term);
+         if (copySubBooks)
+         {
+            foreach (var subBook in version.SubBooks)
+               this.SubBooks.Add (new SubBookViewModel (subBook, false, this));
+         }
       }
 
       /// <summary>
@@ -91,13 +93,13 @@ namespace SeekDeepWithin.Models
       public BookViewModel Book { get; set; }
 
       /// <summary>
+      /// Gets or Sets the associated term.
+      /// </summary>
+      public TermViewModel Term { get; set; }
+
+      /// <summary>
       /// Gets or Sets the list of sub books.
       /// </summary>
       public Collection<SubBookViewModel> SubBooks { get { return this.m_SubBooks; } }
-
-      /// <summary>
-      /// Gets or Sets the list of writers.
-      /// </summary>
-      public Collection<WriterViewModel> Writers { get { return this.m_Writers; } }
    }
 }

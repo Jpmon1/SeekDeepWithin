@@ -51,6 +51,21 @@ namespace SeekDeepWithin.Models
       }
 
       /// <summary>
+      /// Initializes a new header/footer view model.
+      /// </summary>
+      /// <param name="footer">Footer data to copy.</param>
+      public HeaderFooterViewModel (ChapterFooter footer)
+      {
+         this.HorF = "footer";
+         this.Id = footer.Id;
+         this.Text = footer.Text;
+         foreach (var link in footer.LinkList)
+            this.Links.Add (new LinkViewModel (link));
+         foreach (var style in footer.StyleList)
+            this.Styles.Add (new StyleViewModel (style));
+      }
+
+      /// <summary>
       /// The id of the header or footer.
       /// </summary>
       public int Id { get; set; }

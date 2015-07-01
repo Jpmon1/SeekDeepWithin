@@ -52,12 +52,6 @@
       <HintPath>..\packages\Lucene.Net.3.0.3\lib\NET40\Lucene.Net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="PagedList">
-      <HintPath>..\packages\PagedList.1.17.0.0\lib\net40\PagedList.dll</HintPath>
-    </Reference>
-    <Reference Include="PagedList.Mvc">
-      <HintPath>..\packages\PagedList.Mvc.4.5.0.0\lib\net40\PagedList.Mvc.dll</HintPath>
-    </Reference>
     <Reference Include="RazorGenerator.Mvc">
       <HintPath>..\packages\RazorGenerator.Mvc.2.2.3\lib\net40\RazorGenerator.Mvc.dll</HintPath>
     </Reference>
@@ -214,23 +208,31 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\GlossaryController.cs" />
+    <Compile Include="Controllers\ItemEntryController.cs" />
+    <Compile Include="Controllers\SdwController.cs" />
+    <Compile Include="Controllers\SubBookController.cs" />
+    <Compile Include="Controllers\TermLinkType.cs" />
+    <Compile Include="Models\EditItemType.cs" />
+    <Compile Include="Models\EditItemViewModel.cs" />
+    <Compile Include="Models\PagedViewModel.cs" />
+    <Compile Include="Models\TermLinkViewModel.cs" />
+    <Compile Include="Pocos\TermLink.cs" />
+    <Compile Include="SdwSearch\AbbrevSearch.cs" />
     <Compile Include="SdwSearch\BookSearch.cs" />
     <Compile Include="Controllers\ExtensionMethods.cs" />
-    <Compile Include="Controllers\GlossaryItemController.cs" />
+    <Compile Include="Controllers\TermItemController.cs" />
     <Compile Include="Controllers\ReadController.cs" />
     <Compile Include="SdwSearch\ChapterSearch.cs" />
     <Compile Include="SdwSearch\GlossarySearch.cs" />
     <Compile Include="SdwSearch\PassageSearch.cs" />
     <Compile Include="SdwSearch\SearchCommon.cs" />
     <Compile Include="Controllers\TermController.cs" />
-    <Compile Include="Controllers\WriterController.cs" />
     <Compile Include="Controllers\BookController.cs" />
     <Compile Include="Controllers\DbHelper.cs" />
     <Compile Include="Controllers\ChapterController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\FooterController.cs" />
-    <Compile Include="Controllers\GlossaryController.cs" />
-    <Compile Include="Controllers\HeaderController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\HtmlSanitizer.cs" />
     <Compile Include="Controllers\ConvertController.cs" />
@@ -239,10 +241,7 @@
     <Compile Include="Controllers\RolesController.cs" />
     <Compile Include="Controllers\SdwRenderer.cs" />
     <Compile Include="Controllers\SearchController.cs" />
-    <Compile Include="Controllers\SourceController.cs" />
     <Compile Include="Controllers\StyleController.cs" />
-    <Compile Include="Controllers\SubBookController.cs" />
-    <Compile Include="Controllers\TagController.cs" />
     <Compile Include="Controllers\VersionController.cs" />
     <Compile Include="DataAccess\IRepository.cs" />
     <Compile Include="DataAccess\ISdwDatabase.cs" />
@@ -256,19 +255,16 @@
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\UserConfiguration.cs" />
-    <Compile Include="Models\AbbreviationViewModel.cs" />
     <Compile Include="Models\AccountModels.cs" />
     <Compile Include="Models\AddItemViewModel.cs" />
     <Compile Include="Models\AuthorViewModel.cs" />
-    <Compile Include="Models\ChapterFooterViewModel.cs" />
-    <Compile Include="Models\ChapterHeaderViewModel.cs" />
     <Compile Include="Models\ChapterViewModel.cs" />
     <Compile Include="Models\EditStyleViewModel.cs" />
     <Compile Include="Models\ErrorViewModel.cs" />
-    <Compile Include="Models\GlossaryEntryViewModel.cs" />
+    <Compile Include="Models\TermItemEntryViewModel.cs" />
     <Compile Include="Models\GlossaryIndexViewModel.cs" />
-    <Compile Include="Models\GlossaryItemViewModel.cs" />
-    <Compile Include="Models\GlossaryTermViewModel.cs" />
+    <Compile Include="Models\TermItemViewModel.cs" />
+    <Compile Include="Models\TermViewModel.cs" />
     <Compile Include="Models\HeaderFooterEditViewModel.cs" />
     <Compile Include="Models\LinkEditViewModel.cs" />
     <Compile Include="Models\HeaderFooterViewModel.cs" />
@@ -293,22 +289,21 @@
     <Compile Include="Models\VerseDisplayType.cs" />
     <Compile Include="Models\VersionContents.cs" />
     <Compile Include="Models\WriterComparer.cs" />
-    <Compile Include="Pocos\Abbreviation.cs" />
     <Compile Include="Pocos\AmazonItem.cs" />
     <Compile Include="Pocos\ChapterFooterLink.cs" />
     <Compile Include="Pocos\ChapterFooterStyle.cs" />
     <Compile Include="Pocos\ChapterHeaderStyle.cs" />
     <Compile Include="Pocos\Comment.cs" />
-    <Compile Include="Pocos\GlossaryAmazonItem.cs" />
-    <Compile Include="Pocos\GlossaryEntry.cs" />
-    <Compile Include="Pocos\GlossaryEntryFooter.cs" />
-    <Compile Include="Pocos\GlossaryEntryHeader.cs" />
-    <Compile Include="Pocos\GlossaryEntryLink.cs" />
-    <Compile Include="Pocos\GlossaryEntryStyle.cs" />
-    <Compile Include="Pocos\GlossaryFooterLink.cs" />
-    <Compile Include="Pocos\GlossaryFooterStyle.cs" />
-    <Compile Include="Pocos\GlossaryHeaderStyle.cs" />
-    <Compile Include="Pocos\GlossarySeeAlso.cs" />
+    <Compile Include="Pocos\TermAmazonItem.cs" />
+    <Compile Include="Pocos\TermItemEntry.cs" />
+    <Compile Include="Pocos\TermItemEntryFooter.cs" />
+    <Compile Include="Pocos\TermItemEntryHeader.cs" />
+    <Compile Include="Pocos\TermItemEntryLink.cs" />
+    <Compile Include="Pocos\TermItemEntryStyle.cs" />
+    <Compile Include="Pocos\TermItemEntryFooterLink.cs" />
+    <Compile Include="Pocos\TermItemEntryFooterStyle.cs" />
+    <Compile Include="Pocos\TermItemEntryHeaderStyle.cs" />
+    <Compile Include="Pocos\TermSeeAlso.cs" />
     <Compile Include="Pocos\ILink.cs" />
     <Compile Include="Pocos\IStyle.cs" />
     <Compile Include="Pocos\PassageFooterLink.cs" />
@@ -316,7 +311,6 @@
     <Compile Include="Pocos\PassageHeaderStyle.cs" />
     <Compile Include="Pocos\PassageLocation.cs" />
     <Compile Include="Pocos\SubBookChapter.cs" />
-    <Compile Include="Pocos\SubBookTag.cs" />
     <Compile Include="Pocos\UserData.cs" />
     <Compile Include="Pocos\UserProfile.cs" />
     <Compile Include="Models\VersionSourceViewModel.cs" />
@@ -324,16 +318,14 @@
     <Compile Include="Models\BookViewModel.cs" />
     <Compile Include="Models\VersionViewModel.cs" />
     <Compile Include="Pocos\VersionWriter.cs" />
-    <Compile Include="Pocos\Writer.cs" />
     <Compile Include="Pocos\Book.cs" />
     <Compile Include="Pocos\BookTag.cs" />
     <Compile Include="Pocos\Chapter.cs" />
     <Compile Include="Pocos\ChapterFooter.cs" />
     <Compile Include="Pocos\ChapterHeader.cs" />
-    <Compile Include="Pocos\GlossaryItem.cs" />
-    <Compile Include="Pocos\GlossaryItemSource.cs" />
-    <Compile Include="Pocos\GlossaryTerm.cs" />
-    <Compile Include="Pocos\GlossaryTermTag.cs" />
+    <Compile Include="Pocos\TermItem.cs" />
+    <Compile Include="Pocos\TermItemSource.cs" />
+    <Compile Include="Pocos\Term.cs" />
     <Compile Include="Pocos\IDbTable.cs" />
     <Compile Include="Pocos\IFooter.cs" />
     <Compile Include="Pocos\IHeader.cs" />
@@ -345,32 +337,19 @@
     <Compile Include="Pocos\PassageLink.cs" />
     <Compile Include="Pocos\PassageStyle.cs" />
     <Compile Include="Pocos\ReadStyle.cs" />
-    <Compile Include="Pocos\Source.cs" />
     <Compile Include="Pocos\Style.cs" />
-    <Compile Include="Pocos\SubBook.cs" />
-    <Compile Include="Pocos\Tag.cs" />
     <Compile Include="Pocos\Version.cs" />
-    <Compile Include="Pocos\VersionSource.cs" />
     <Compile Include="Pocos\VersionSubBook.cs" />
-    <Compile Include="Pocos\SubBookWriter.cs" />
+    <Compile Include="Pocos\TermWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SdwSearch\SubBookSearch.cs" />
     <Compile Include="SdwSearch\TermSearch.cs" />
-    <Compile Include="Views\Book\Index.generated.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Index.cshtml</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\SeekDeepWithin.DataAccess.SdwDbContext.mdf" />
     <Content Include="Content\ajax-loader.gif" />
     <Content Include="Content\ajax-loader_2.gif" />
-    <Content Include="Content\BurntOrange.png" />
-    <Content Include="Content\Colors1.png" />
-    <Content Include="Content\Colors2.png" />
     <Content Include="Content\foundation.css" />
-    <Content Include="Content\foundation.min.css" />
     <Content Include="Content\images\icons_16.png" />
     <Content Include="Content\images\jGrowl-close.png" />
     <Content Include="Content\images\modalClose%402x.png" />
@@ -394,9 +373,14 @@
     <Content Include="Content\jquery-ui.css" />
     <Content Include="Content\jquery.nouislider.css" />
     <Content Include="Content\jquery.nouislider.pips.css" />
+    <Content Include="Content\jquery.remodal.css" />
     <Content Include="Content\normalize.css" />
-    <Content Include="Content\PagedList.css" />
-    <Content Include="Content\sdw.default.css" />
+    <Content Include="Content\sdw\sdw.autocomplete.css" />
+    <Content Include="Content\sdw\sdw.base.css" />
+    <Content Include="Content\sdw\sdw.button.css" />
+    <Content Include="Content\sdw\sdw.pagination.css" />
+    <Content Include="Content\sdw\sdw.panels.css" />
+    <Content Include="Content\sdw\sdw.switch.css" />
     <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />
@@ -471,74 +455,48 @@
       <Link>README.md</Link>
     </Content>
     <None Include="Properties\PublishProfiles\SeekDeepWithin.pubxml" />
-    <None Include="Scripts\jquery-1.8.2.intellisense.js" />
     <Content Include="Images\sdw_128.png" />
     <Content Include="Images\sdw_16.png" />
+    <Content Include="Images\sdw_16_w.png" />
     <Content Include="Images\sdw_24.png" />
     <Content Include="Images\sdw_256.png" />
     <Content Include="Images\sdw_32.png" />
     <Content Include="Images\sdw_48.png" />
     <Content Include="Images\sdw_64.png" />
     <Content Include="Images\Untitled.ico" />
+    <Content Include="Images\x.png" />
     <Content Include="Scripts\classie.js" />
     <Content Include="Scripts\fastclick.js" />
-    <Content Include="Scripts\foundation.min.js" />
-    <Content Include="Scripts\foundation.abide.js" />
-    <Content Include="Scripts\foundation.accordion.js" />
-    <Content Include="Scripts\foundation.alert.js" />
-    <Content Include="Scripts\foundation.clearing.js" />
-    <Content Include="Scripts\foundation.dropdown.js" />
-    <Content Include="Scripts\foundation\foundation.equalizer.js" />
-    <Content Include="Scripts\foundation.interchange.js" />
-    <Content Include="Scripts\foundation.joyride.js" />
-    <Content Include="Scripts\foundation\foundation.js" />
-    <Content Include="Scripts\foundation.magellan.js" />
-    <Content Include="Scripts\foundation.offcanvas.js" />
-    <Content Include="Scripts\foundation.orbit.js" />
-    <Content Include="Scripts\foundation\foundation.reveal.js" />
-    <Content Include="Scripts\foundation.slider.js" />
-    <Content Include="Scripts\foundation.tab.js" />
-    <Content Include="Scripts\foundation.tooltip.js" />
-    <Content Include="Scripts\foundation\foundation.topbar.js" />
-    <Content Include="Scripts\jquery-1.11.1.min.js" />
+    <Content Include="Scripts\foundation.js" />
     <Content Include="Scripts\jquery-1.11.2.js" />
     <Content Include="Scripts\jquery-1.11.2.min.js" />
-    <Content Include="Scripts\jquery-1.8.2.js" />
-    <Content Include="Scripts\jquery-1.8.2.min.js" />
-    <None Include="Scripts\jquery.validate-vsdoc.js" />
-    <Content Include="Scripts\jquery-ui-1.8.24.js" />
-    <Content Include="Scripts\jquery-ui-1.8.24.min.js" />
-    <Content Include="Scripts\jquery-ui.js" />
     <Content Include="Scripts\jquery.autocomplete.js" />
     <Content Include="Scripts\jquery.cookie.js" />
+    <Content Include="Scripts\jquery.matchHeight.js" />
+    <Content Include="Scripts\jquery.matchHeight.min.js" />
     <Content Include="Scripts\jquery.nouislider.all.js" />
     <Content Include="Scripts\jquery.qtip.js" />
     <Content Include="Scripts\jquery.qtip.min.js" />
+    <Content Include="Scripts\jquery.remodal.js" />
     <Content Include="Scripts\jquery.sticky-kit.js" />
     <Content Include="Scripts\jquery.sticky-kit.min.js" />
-    <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
-    <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
-    <Content Include="Scripts\jquery.validate.js" />
-    <Content Include="Scripts\jquery.validate.min.js" />
-    <Content Include="Scripts\jquery.validate.unobtrusive.js" />
-    <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\jstree.js" />
     <Content Include="Scripts\jstree.min.js" />
-    <Content Include="Scripts\knockout-2.2.0.debug.js" />
-    <Content Include="Scripts\knockout-2.2.0.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
-    <Content Include="Scripts\scotchPanels.js" />
-    <Content Include="Scripts\scotchPanels.min.js" />
     <Content Include="Scripts\sdw\sdw.addentries.js" />
     <Content Include="Scripts\sdw\sdw.addpassages.js" />
     <Content Include="Scripts\sdw\sdw.addstyle.js" />
+    <Content Include="Scripts\sdw\sdw.book.index.js" />
+    <Content Include="Scripts\sdw\sdw.book.js" />
     <Content Include="Scripts\sdw\sdw.common.js" />
-    <Content Include="Scripts\sdw\sdw.contentsedit.js" />
+    <Content Include="Scripts\sdw\sdw.contents.js" />
     <Content Include="Scripts\sdw\sdw.convert.js" />
     <Content Include="Scripts\sdw\sdw.chapter.js" />
     <Content Include="Scripts\sdw\sdw.footer.js" />
+    <Content Include="Scripts\sdw\sdw.item.edit.js" />
     <Content Include="Scripts\sdw\sdw.header.js" />
     <Content Include="Scripts\sdw\sdw.index.js" />
+    <Content Include="Scripts\sdw\sdw.item.js" />
     <Content Include="Scripts\sdw\sdw.link.js" />
     <Content Include="Scripts\sdw\sdw.panels.js" />
     <Content Include="Scripts\sdw\sdw.passage.js" />
@@ -547,6 +505,7 @@
     <Content Include="Scripts\sdw\sdw.select.js" />
     <Content Include="Scripts\sdw\sdw.style.js" />
     <Content Include="Scripts\sdw\sdw.tag.js" />
+    <Content Include="Scripts\sdw\sdw.term.js" />
     <Content Include="Scripts\sdw\sdw.version.js" />
     <Content Include="Scripts\sdw\selection.js" />
     <Content Include="ToDo.txt" />
@@ -559,7 +518,6 @@
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
-    <Content Include="Content\Site.css" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Images\accent.png" />
     <Content Include="Images\bullet.png" />
@@ -590,15 +548,9 @@
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Web.config" />
-    <Content Include="Views\Writer\Details.cshtml" />
-    <Content Include="Views\Writer\Edit.cshtml" />
-    <Content Include="Scripts\sdw\sdw.glossary.js" />
-    <Content Include="Views\Book\Details.cshtml" />
+    <Content Include="Scripts\sdw\sdw.item.entry.js" />
     <Content Include="Scripts\sdw\sdw.subbook.js" />
-    <None Include="Views\Book\Index.cshtml">
-      <Generator>RazorGenerator</Generator>
-      <LastGenOutput>Index.generated.cs</LastGenOutput>
-    </None>
+    <Content Include="Views\Book\Index.cshtml" />
     <Content Include="Views\Book\Create.cshtml" />
     <Content Include="Views\Book\Edit.cshtml" />
     <Content Include="Views\Version\Edit.cshtml" />
@@ -611,23 +563,11 @@
     <Content Include="Views\Search\Index.cshtml" />
     <Content Include="Views\Glossary\Index.cshtml" />
     <Content Include="Views\Search\Query.cshtml" />
-    <Content Include="Views\Writer\Index.cshtml" />
-    <Content Include="Views\Writer\Create.cshtml" />
-    <Content Include="Views\SubBook\AssignWriter.cshtml" />
     <Content Include="Views\Admin\Index.cshtml" />
     <Content Include="Views\Version\Create.cshtml" />
-    <Content Include="Views\Tag\Index.cshtml" />
-    <Content Include="Views\Tag\Create.cshtml" />
-    <Content Include="Views\Source\Index.cshtml" />
-    <Content Include="Views\GlossaryItem\Edit.cshtml" />
-    <Content Include="Views\Version\EditSource.cshtml" />
-    <Content Include="Views\Source\EditSource.cshtml" />
-    <Content Include="Views\Source\Edit.cshtml" />
-    <Content Include="Views\Shared\_SourceForm.cshtml" />
-    <Content Include="Views\Chapter\Add.cshtml" />
+    <Content Include="Views\TermItem\Edit.cshtml" />
     <Content Include="Views\Shared\_HeaderFooter.cshtml" />
     <Content Include="Views\Shared\_Passage.cshtml" />
-    <Content Include="Views\Version\Contents.cshtml" />
     <Content Include="Views\Footer\Edit.cshtml" />
     <Content Include="Views\Header\Edit.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\ChapterHeaderViewModel.cshtml" />
@@ -635,22 +575,21 @@
     <Content Include="Views\Shared\DisplayTemplates\ChapterHeaderViewModel.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\ChapterFooterViewModel.cshtml" />
     <Content Include="Views\Shared\_GlossaryEntry.cshtml" />
-    <Content Include="Views\Glossary\Add.cshtml" />
-    <Content Include="Views\Tag\Details.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\VersionContents.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\VersionContents.cshtml" />
     <Content Include="Views\SubBook\Edit.cshtml" />
-    <Content Include="Views\SubBook\About.cshtml" />
     <Content Include="Views\Link\Edit.cshtml" />
     <Content Include="Views\Style\Edit.cshtml" />
     <Content Include="Views\Shared\_Modal.cshtml" />
     <Content Include="Views\Read\Index.cshtml" />
-    <Content Include="Views\Source\Create.cshtml" />
     <Content Include="Views\Term\Index.cshtml" />
     <Content Include="Views\Term\Create.cshtml" />
-    <Content Include="Views\GlossaryItem\Create.cshtml" />
+    <Content Include="Views\TermItem\Create.cshtml" />
     <Content Include="Views\Term\Edit.cshtml" />
     <Content Include="Views\Search\IndexData.cshtml" />
+    <Content Include="Views\Shared\_AddEntries.cshtml" />
+    <Content Include="Views\Shared\_EditItem.cshtml" />
+    <Content Include="Views\Chapter\Contents.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

@@ -18,18 +18,16 @@
    @Html.Raw(style.Start)
 }
 
-@if (Model.Headers.Count > 0) {
+@if (Model.Header != null && !string.IsNullOrWhiteSpace(Model.Header.Text)) {
    <div style="margin-top: 0.825rem">
-      @foreach (var header in Model.Headers) {
-         <div class="row">
-            @if (Model.DisplayType == VerseDisplayType.Number) {
-               <div class="small-4 medium-2 large-1 columns">&nbsp;</div>
-            }
-            <div class="small-@smallSpan medium-@mediumSpan large-@largeSpan columns">
-               @Html.Partial("_HeaderFooter", header)
-            </div>
+      <div class="row">
+         @if (Model.DisplayType == VerseDisplayType.Number) {
+            <div class="small-4 medium-2 large-1 columns">&nbsp;</div>
+         }
+         <div class="small-@smallSpan medium-@mediumSpan large-@largeSpan columns">
+            @Html.Partial("_HeaderFooter", Model.Header)
          </div>
-      }
+      </div>
    </div>
 }
 <div class="row" id="pass_@(id)"
@@ -56,12 +54,10 @@
           @if (Model.DisplayType == VerseDisplayType.Number) {
              <div class="small-4 medium-2 large-1 columns">&nbsp;</div>
           }
-          <div class="small-@smallSpan medium-@mediumSpan large-@largeSpan columns">
-             <div class="alert-box secondary">
-                @foreach (var footer in Model.Footers) {
-                   @Html.Partial("_HeaderFooter", footer)
-                }
-             </div>
+          <div class="small-@smallSpan medium-@mediumSpan large-@largeSpan columns footer-box">
+               @foreach (var footer in Model.Footers) {
+                  @(Html.Partial ("_HeaderFooter", footer))
+               }
           </div>
     </div>
 }

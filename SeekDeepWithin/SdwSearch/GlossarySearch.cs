@@ -11,6 +11,7 @@ using Lucene.Net.Store;
 using SeekDeepWithin.Controllers;
 using SeekDeepWithin.Models;
 using SeekDeepWithin.Pocos;
+using Term = Lucene.Net.Index.Term;
 
 namespace SeekDeepWithin.SdwSearch
 {
@@ -63,7 +64,8 @@ namespace SeekDeepWithin.SdwSearch
                var result = new SearchResult
                {
                   Id = id,
-                  Title = string.Format ("<a href=\"{0}/Term/{1}\">{2}</a>", host, termId, title.Highlight (search)),
+                  Title = title.Highlight (search),
+                  Url = string.Format ("{0}/Term/{1}", host, termId),
                   Description = doc.Get ("text").Highlight (search)
                };
                results.Add (result);
@@ -77,7 +79,7 @@ namespace SeekDeepWithin.SdwSearch
       /// Adds or Updates the index for the given item.
       /// </summary>
       /// <param name="item">Item to update index for.</param>
-      public static void AddOrUpdateIndex (GlossaryEntry item)
+      public static void AddOrUpdateIndex (TermItemEntry item)
       {
          AddOrUpdateIndex (new[] { item });
       }
@@ -86,7 +88,7 @@ namespace SeekDeepWithin.SdwSearch
       /// Adds or Updates the index for the given items.
       /// </summary>
       /// <param name="items">Items to update index for.</param>
-      public static void AddOrUpdateIndex (IEnumerable<GlossaryEntry> items)
+      public static void AddOrUpdateIndex (IEnumerable<TermItemEntry> items)
       {
          var analyzer = new StandardAnalyzer (Lucene.Net.Util.Version.LUCENE_30);
          using (var writer = new IndexWriter (Directory, analyzer, IndexWriter.MaxFieldLength.UNLIMITED))
@@ -150,7 +152,7 @@ namespace SeekDeepWithin.SdwSearch
       /// </summary>
       /// <param name="entry">Item to index.</param>
       /// <param name="writer">Index writer.</param>
-      private static void AddIndex (GlossaryEntry entry, IndexWriter writer)
+      private static void AddIndex (TermItemEntry entry, IndexWriter writer)
       {
          // remove older index entry
          var id = entry.Id.ToString (CultureInfo.InvariantCulture);
@@ -165,20 +167,12 @@ namespace SeekDeepWithin.SdwSearch
          doc.Add (new Field ("term", entry.Item.Term.Name, Field.Store.YES, Field.Index.ANALYZED));
          if (entry.Item.Source != null)
             doc.Add (new Field ("source", entry.Item.Source.Name, Field.Store.YES, Field.Index.ANALYZED));
-         if (entry.Headers.Count > 0)
-         {
-            doc.Add (new Field ("header", entry.Headers.Select (h => h.Text).Aggregate ((i, j) => i + " " + j),
-               Field.Store.YES, Field.Index.ANALYZED));
-         }
-         if (entry.Footers.Count > 0)
+         if (entry.Header != null)
+            doc.Add (new Field ("header", entry.Header.Text, Field.Store.YES, Field.Index.ANALYZED));
+         if (entry.Footers != null && entry.Footers.Count > 0)
          {
             doc.Add (new Field ("footer", entry.Footers.Select (f => f.Text).Aggregate ((i, j) => i + " " + j),
                Field.Store.YES, Field.Index.ANALYZED));
-         }
-         if (entry.Item.Term.Tags.Count > 0)
-         {
-            doc.Add (new Field ("tags", entry.Item.Term.Tags.Select (t => t.Tag.Name)
-                  .Aggregate ((i, j) => i + " " + j), Field.Store.YES, Field.Index.ANALYZED));
          }
          // add entry to index
          writer.AddDocument (doc);

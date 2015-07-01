@@ -10,16 +10,6 @@ namespace SeekDeepWithin.Pocos
       public int Id { get; set; }
 
       /// <summary>
-      /// Gets or Sets the passage id.
-      /// </summary>
-      public int PassageId { get; set; }
-
-      /// <summary>
-      /// Gets or Sets the chapter id.
-      /// </summary>
-      public int ChapterId { get; set; }
-
-      /// <summary>
       /// Gets or Sets the number of the passage entry.
       /// </summary>
       public int Number { get; set; }
@@ -40,9 +30,9 @@ namespace SeekDeepWithin.Pocos
       public virtual Passage Passage { get; set; }
 
       /// <summary>
-      /// Gets the list of headers for this passage.
+      /// Gets the header for this passage.
       /// </summary>
-      public virtual ICollection<PassageHeader> Headers { get; set; }
+      public virtual PassageHeader Header { get; set; }
 
       /// <summary>
       /// Gets the list of footers for this passage.

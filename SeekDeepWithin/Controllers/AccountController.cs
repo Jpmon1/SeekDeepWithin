@@ -46,7 +46,7 @@ namespace SeekDeepWithin.Controllers
       [ValidateAntiForgeryToken]
       public ActionResult Login (LoginViewModel viewModel, string returnUrl)
       {
-         if (ModelState.IsValid && WebSecurity.Login (viewModel.UserEmail, viewModel.Password, persistCookie: viewModel.RememberMe))
+         if (ModelState.IsValid && WebSecurity.Login (viewModel.UserEmail, viewModel.Password, viewModel.RememberMe))
          {
             if (!string.IsNullOrWhiteSpace(returnUrl))
                return Redirect (returnUrl);

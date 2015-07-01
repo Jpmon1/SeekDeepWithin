@@ -35,18 +35,18 @@ namespace SeekDeepWithin.Pocos
       public virtual Chapter Chapter { get; set; }
 
       /// <summary>
+      /// Gets the header for this chapter.
+      /// </summary>
+      public virtual ChapterHeader Header { get; set; }
+
+      /// <summary>
       /// Gets or Sets the list of passages.
       /// </summary>
       public virtual ICollection<PassageEntry> Passages { get; set; }
 
       /// <summary>
-      /// Gets the list of headers for this chapter.
+      /// Gets the footer for this chapter.
       /// </summary>
-      public virtual ICollection<ChapterHeader> Headers { get; set; }
-
-      /// <summary>
-      /// Gets the list of footers for this chapter.
-      /// </summary>
-      public virtual ICollection<ChapterFooter> Footers { get; set; }
+      public virtual ChapterFooter Footer { get; set; }
    }
 }

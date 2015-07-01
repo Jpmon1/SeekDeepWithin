@@ -80,17 +80,17 @@ namespace SeekDeepWithin.Models
                foreach (var subBook in dContents)
                {
                   var hideSb = subBook.hide ?? new JValue (false);
-                  var subBookContent = new SubBookContent {Name = subBook.name, Hide = hideSb.Value, Id = subBook.id};
+                  var subBookContent = new SubBookContent { Name = subBook.name, Hide = hideSb.Value, Id = subBook.id, ItemId = subBook.termId };
                   if (subBook.chapters.Count > 0)
                   {
                      foreach (var chapter in subBook.chapters)
                      {
-                        var hideCh = chapter.hide ?? new JValue (false);
+                        if (chapter.id == 0 && chapter.name == string.Empty) continue;
                         subBookContent.Chapters.Add (new ChapterContent
                         {
                            Id = chapter.id,
                            Name = chapter.name,
-                           Hide = hideCh.Value
+                           Hide = chapter.hide
                         });
                         if (chapter.id == this.CurrentChapter)
                            this.PreviousChapter = lastChapter;

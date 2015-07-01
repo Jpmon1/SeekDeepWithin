@@ -1,0 +1,301 @@
+﻿@model SeekDeepWithin.Models.EditItemViewModel
+@if (!string.IsNullOrWhiteSpace(Model.Text)){
+   var totalLength = string.IsNullOrWhiteSpace (Model.Text) ? 0 : Model.Text.Length;
+   <input type="hidden" id="totalLength" value="@(totalLength)" />
+   <input type="hidden" id="editItemId" value="@(Model.ItemId)" />
+   <input type="hidden" id="editItemType" value="@(Model.EditItemType.ToString())" />
+   <input type="hidden" id="editItemFooterId" value="@(Model.FooterId)"/>
+   <div class="row">
+      <div class="small-12 columns mBottom" id="itemText">
+            @{
+               var index = 0;
+               var lastLetter = ' ';
+               var html = string.Empty;
+               var word = string.Empty;
+            }
+            @foreach (var letter in Model.Text) {
+               if (lastLetter == ' ') {
+                  word = string.Format ("{0},", index);
+                  html += "<span onclick=\"select_word(|WORD|)\">";
+               } else if (letter == ' ' || !Char.IsLetter(letter) || index == totalLength - 1) {
+                  word += index;
+                  html = html.Replace ("|WORD|", word);
+                  html += "</span>";
+               }
+               html += string.Format("<span id=\"index_{0}\">{1}</span>", index, letter);
+               lastLetter = letter;
+               index++;
+            }
+            @(Html.Raw(html))
+      </div>
+   </div>
+   <div class="row">
+      <div class="small-12 medium-2 columns">
+         <input id="startIndex" type="number"/>
+      </div>
+      <div class="small-12 medium-8 columns">
+         <div id="textRangeSlider" class="mBottom"></div>
+      </div>
+      <div class="small-12 medium-2 columns">
+         <input id="endIndex" type="number" />
+      </div>
+   </div>
+
+   if (Model.HasLinks) {
+      <div class="row">
+         <div class="small-12 columns">
+            <div class="sdw-panel">
+               <div class="title">Links
+                  <span style="float: right;">
+                     <a href="javascript:void(0)" title="Show/Hide" class="sdw-button alt icon" onclick=" $('#linkArea').slideToggle() ">
+                        <i class="icon-eye-open"></i>
+                     </a>
+                  </span>
+               </div>
+               <div class="content hide" id="linkArea">
+                  <div class="row">
+                     <div class="small-12 medium-6 columns">
+                        <div id="linkCreate">
+                           <select id="linkTypeCombo">
+                              <option value="1">Term</option>
+                              <option value="2">Read</option>
+                              <option value="3">Search</option>
+                              <option value="4">External</option>
+                           </select>
+                           <div id="termArea">
+                              <label for="linkTerm">Term</label>
+                              <input type="text" id="linkTerm" />
+                              <input type="hidden" id="selTermId" />
+                           </div>
+                           <div id="readArea" class="hide">
+                              <label for="linkBook">Book</label>
+                              <input type="text" id="linkBook" name="linkBook" />
+                              <input type="hidden" id="selBookId" name="selBookId" />
+                              <label for="linkVersion">Version</label>
+                              <input type="text" id="linkVersion" name="linkVersion" />
+                              <input type="hidden" id="selVersionId" name="selVersionId" />
+                              <label for="linkSubBook">Sub Book</label>
+                              <input type="text" id="linkSubBook" name="linkSubBook" />
+                              <input type="hidden" id="selSubBookId" name="selSubBookId" />
+                              <label for="linkChapter">Chapter</label>
+                              <input type="text" id="linkChapter" name="linkChapter" />
+                              <input type="hidden" id="selChapterId" name="selChapterId" />
+                           </div>
+                           <div id="otherArea" class="hide">
+                              <label for="linkOther">Link</label>
+                              <input type="text" id="linkOther" />
+                           </div>
+                           <div id="anchorArea">
+                              <label for="linkAnchor">Anchor</label>
+                              <input type="text" id="linkAnchor" />
+                              <div>
+                                 <label for="linkNewWindow">Open in new window</label>
+                                 <input id="linkNewWindow" class="cmn-toggle cmn-toggle-yes-no expand" type="checkbox" />
+                                 <label for="linkNewWindow" data-on="Yes" data-off="No"></label>
+                              </div>
+                           </div>
+                           <a href="javascript:void(0)" class="sdw-button reg expand small" onclick="link_create();">
+                              <i class="icon-createfile"></i> create
+                           </a>
+                        </div>
+                        <div class="row hide" id="linkUpdate">
+                           <a href="#" id="linkOpen" target="_blank" class="sdw-button reg small expand mBottom">Open Link</a>
+                           <div class="small-4 columns">
+                              <a href="javascript:void(0)" class="sdw-button add small expand" onclick="link_update();">
+                                 <i class="icon-savetodrive"></i> update
+                              </a>
+                           </div>
+                           <div class="small-4 columns">
+                              <a href="javascript:void(0)" class="sdw-button err small expand" onclick="link_delete();">
+                                 <i class="icon-trash"></i> delete
+                              </a>
+                           </div>
+                           <div class="small-4 columns">
+                              <a href="javascript:void(0)" class="sdw-button reg small expand" onclick="link_new();">
+                                 <i class="icon-circledelete"></i> cancel
+                              </a>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="small-12 medium-6 columns">
+                        <h5>Current Links</h5>
+                        <input type="hidden" id="linkEditId" />
+                        <div class="sdw-panel" id="currentLinks">
+                           @foreach (var link in Model.Links) {
+                              <a href="javascript:void(0)" class="sdw-button white small expand" onclick="link_edit(@(link.Id))" id="link_@(link.Id)">
+                                 Start: @(link.StartIndex) End: @(link.EndIndex) (@(link.Url))
+                              </a>
+                           }
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+    }
+   <div class="row">
+      <div class="small-12 columns">
+         <div class="sdw-panel">
+            <div class="title">Styles
+               <span style="float: right;">
+                  <a href="javascript:void(0)" title="Show/Hide" class="sdw-button alt icon" onclick="$('#styleArea').slideToggle()">
+                     <i class="icon-eye-open"></i>
+                  </a>
+               </span>
+            </div>
+            <div class="content hide" id="styleArea">
+               <div class="row">
+                  <div class="small-12 medium-6 columns">
+                     <select id="styleList">
+                        <option value="0">None</option>
+                        <option value="1">Bold</option>
+                        <option value="2">Italic</option>
+                        <option value="3">Blockquote</option>
+                        <option value="4">Unordered List</option>
+                        <option value="5">Numbered List</option>
+                        <option value="6">List Item</option>
+                        <option value="7">Small</option>
+                        <option value="8">Div</option>
+                        <option value="9">Align Center</option>
+                        <option value="10">Align Right</option>
+                        <option value="11">Title</option>
+                        <option value="12">Sub Title</option>
+                        <option value="13">Summary Title</option>
+                     </select>
+                     <label for="styleStart">Start Style</label>
+                     <textarea id="styleStart" rows="2"></textarea>
+                     <label for="styleEnd">End Style</label>
+                     <textarea id="styleEnd" rows="2"></textarea>
+                     <div>
+                        <label for="styleSpan">Style spans multiple items</label>
+                        <input id="styleSpan" class="cmn-toggle cmn-toggle-yes-no expand" type="checkbox" />
+                        <label for="styleSpan" data-on="Yes" data-off="No"></label>
+                     </div>
+                     <a href="javascript:void(0)" class="sdw-button reg small expand" id="styleCreate" onclick="style_create();">
+                        <i class="icon-createfile"></i> create
+                     </a>
+                     <div class="row hide" id="styleUpdate">
+                        <div class="small-4 columns">
+                           <a href="javascript:void(0)" class="sdw-button add small expand" onclick="style_update();">
+                              <i class="icon-savetodrive"></i> update
+                           </a>
+                        </div>
+                        <div class="small-4 columns">
+                           <a href="javascript:void(0)" class="sdw-button err small expand" onclick="style_delete();">
+                              <i class="icon-trash"></i> delete
+                           </a>
+                        </div>
+                        <div class="small-4 columns">
+                           <a href="javascript:void(0)" class="sdw-button reg small expand" onclick="style_new();">
+                              <i class="icon-circledelete"></i> cancel
+                           </a>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="small-12 medium-6 columns">
+                     <h5>Current Styles</h5>
+                     <input type="hidden" id="styleEditId" />
+                     <div class="sdw-panel" id="currentStyles">
+                        @foreach (var style in Model.Styles) {
+                           <a href="javascript:void(0)" class="sdw-button white small expand" onclick="style_edit(@(style.Id))" id="style_@(style.Id)">
+                                 Start: @(style.StartIndex) (@(style.Start)) End: @(style.EndIndex) (@(style.End))
+                           </a>
+                        }
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+   if (Model.HasFooters) {
+      <div class="row">
+         <div class="small-12 columns">
+            <div class="sdw-panel">
+               <div class="title">Footers
+                  <span style="float: right;">
+                     <a href="javascript:void(0)" title="Show/Hide" class="sdw-button alt icon" onclick=" $('#footerArea').slideToggle() ">
+                        <i class="icon-eye-open"></i>
+                     </a>
+                  </span>
+               </div>
+               <div class="content hide" id="footerArea">
+                  <div class="row">
+                     <div class="small-12 medium-6 columns">
+                        <label for="footerIndex">Footer Index</label>
+                        <input id="footerIndex" type="number" />
+                        <label for="footerText">Footer Text</label>
+                        <textarea id="footerText" rows="2"></textarea>
+                        <a href="javascript:void(0)" class="sdw-button reg small expand" id="footerCreate" onclick="footer_create();">
+                           <i class="icon-createfile"></i> create
+                        </a>
+                        <div class="row hide" id="footerUpdate">
+                           <div class="small-6 columns mBottom">
+                              <a href="javascript:void(0)" class="sdw-button add small expand" onclick="footer_update();">
+                                 <i class="icon-savetodrive"></i> update
+                              </a>
+                           </div>
+                           <div class="small-6 columns mBottom">
+                              <a href="javascript:void(0)" class="sdw-button alt small expand" onclick="sdw_item_edit_footer();">
+                                 <i class="icon-edit"></i> edit
+                              </a>
+                           </div>
+                           <div class="small-6 columns">
+                              <a href="javascript:void(0)" class="sdw-button err small expand" onclick="footer_delete();">
+                                 <i class="icon-trash"></i> delete
+                              </a>
+                           </div>
+                           <div class="small-6 columns">
+                              <a href="javascript:void(0)" class="sdw-button reg small expand" onclick="footer_new();">
+                                 <i class="icon-circledelete"></i> cancel
+                              </a>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="small-12 medium-6 columns">
+                        <h5>Current Footers</h5>
+                        <input type="hidden" id="footerEditId"/>
+                        <div class="sdw-panel" id="currentFooters">
+                           @foreach (var footer in Model.Footers) {
+                              var len = footer.Text.Length < 15 ? footer.Text.Length : 15;
+                              <a href="javascript:void(0)" class="sdw-button white small expand" id="footer_@(footer.Id)" onclick="footer_edit(@(footer.Id))">
+                                 @(footer.Index) - @(footer.Text.Substring(0, len))...
+                              </a>
+                           }
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   }
+
+   <div class="row">
+      <div class="small-12 columns">
+         <div class="sdw-panel">
+            <div class="title">Rendered Item
+               <span style="float: right;">
+                  <a href="javascript:void(0)" title="Show/Hide" class="sdw-button alt icon" onclick="$('#renderArea').slideToggle()">
+                     <i class="icon-eye-open"></i>
+                  </a>
+               </span>
+            </div>
+            <div class="content row hide" id="renderArea">
+               <div class="small-12 medium-6 columns" id="renderedText">
+                  @(Html.Raw (Model.Html))
+               </div>
+               <div class="small-12 medium-6 columns" id="generatedHtml">
+                  @(Model.Html)
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+} else {
+   <input type="hidden" id="totalLength" name="totalLength" value="0" />
+   <div class="sdw-callout">
+      Nothing to edit!
+   </div>
+}

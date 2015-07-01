@@ -8,15 +8,18 @@
       public int Id { get; set; }
 
       /// <summary>
-      /// Gets or Sets the author.
+      /// Gets or Sets if this is a translator.
       /// </summary>
-      public virtual Writer Writer { get; set; }
+      public bool IsTranslator { get; set; }
+
+      /// <summary>
+      /// Gets or Sets the writer.
+      /// </summary>
+      public virtual Term Writer { get; set; }
 
       /// <summary>
       /// Gets or Sets the sub book.
       /// </summary>
       public virtual Version Version { get; set; }
-
-      public bool IsTranslator { get; set; }
    }
 }

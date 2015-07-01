@@ -1,30 +1,40 @@
 ﻿using System.Linq;
-using System.Web.Mvc;
+using System.Web.Helpers;
 using SeekDeepWithin.DataAccess;
 using SeekDeepWithin.Pocos;
+using Version = SeekDeepWithin.Pocos.Version;
 
 namespace SeekDeepWithin.Controllers
 {
    public static class DbHelper
    {
       /// <summary>
-      /// Gets a sub book with the given name.
+      /// Creates the Table of Contents for the given version.
       /// </summary>
       /// <param name="db">Database object.</param>
-      /// <param name="name">Name of sub book.</param>
-      /// <param name="bookId"></param>
-      /// <returns>A sub book.</returns>
-      public static SubBook GetSubBook (ISdwDatabase db, string name, int bookId)
+      /// <param name="version">Version to Create TOC for.</param>
+      public static void CreateToc (ISdwDatabase db, Version version)
       {
-         var subBook = db.SubBooks.Get (sb => sb.Name == name && sb.Book.Id == bookId).FirstOrDefault();
-         if (subBook == null)
-         {
-            var book = db.Books.Get (bookId);
-            subBook = new SubBook { Name = name, Book = book };
-            db.SubBooks.Insert(subBook);
-            db.Save();
-         }
-         return subBook;
+         var contents =
+            version.SubBooks.Select (
+               sb =>
+                  new
+                  {
+                     name = string.IsNullOrWhiteSpace(sb.Alias) ? sb.Term.Name : sb.Alias,
+                     id = sb.Id,
+                     termId = sb.Term.Id,
+                     hide = sb.Hide,
+                     chapters = sb.Chapters == null ? Enumerable.Repeat(new {name = string.Empty, id=0, hide=true}, 1) :
+                     sb.Chapters.Select (c =>
+                        new
+                        {
+                           name = c.Chapter.Name,
+                           id = c.Id,
+                           hide = c.Hide
+                        })
+                  });
+         version.Contents = Json.Encode (contents);
+         db.Save();
       }
 
       /// <summary>
@@ -40,7 +50,6 @@ namespace SeekDeepWithin.Controllers
          {
             chapter = new Chapter { Name = name };
             db.Chapters.Insert (chapter);
-            db.Save ();
          }
          return chapter;
       }

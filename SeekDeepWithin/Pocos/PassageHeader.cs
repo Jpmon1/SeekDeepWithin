@@ -15,11 +15,6 @@ namespace SeekDeepWithin.Pocos
       public string Text { get; set; }
 
       /// <summary>
-      /// Gets or Sets the passage the header belongs to.
-      /// </summary>
-      public virtual PassageEntry Passage { get; set; }
-
-      /// <summary>
       /// Gets the list of styles.
       /// </summary>
       public virtual ICollection<PassageHeaderStyle> Styles { get; set; }

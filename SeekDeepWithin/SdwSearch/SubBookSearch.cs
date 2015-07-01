@@ -7,6 +7,7 @@ using Lucene.Net.Index;
 using Lucene.Net.Search;
 using Lucene.Net.Store;
 using SeekDeepWithin.Pocos;
+using Term = Lucene.Net.Index.Term;
 
 namespace SeekDeepWithin.SdwSearch
 {
@@ -109,7 +110,7 @@ namespace SeekDeepWithin.SdwSearch
          var doc = new Document ();
          // add lucene fields mapped to db fields
          doc.Add (new Field ("Id", id, Field.Store.YES, Field.Index.NOT_ANALYZED));
-         doc.Add (new Field ("Name", subBook.SubBook.Name ?? string.Empty, Field.Store.YES, Field.Index.ANALYZED));
+         doc.Add (new Field ("Name", subBook.Term.Name ?? string.Empty, Field.Store.YES, Field.Index.ANALYZED));
          doc.Add (new Field ("Hide", subBook.Hide.ToString (), Field.Store.YES, Field.Index.ANALYZED));
          // add entry to index
          writer.AddDocument (doc);

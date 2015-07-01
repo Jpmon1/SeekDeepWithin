@@ -1,8 +1,17 @@
 ﻿@{
     ViewBag.Title = "Create Role";
 }
-
-<h2>Add a new Role</h2>
+@section featured {
+   <div class="panel">
+      <div class="row">
+         <div class="small-12 columns">
+            <h3>
+               New Role
+            </h3>
+         </div>
+      </div>
+   </div>
+}
 
 @using (Html.BeginForm ())
 {

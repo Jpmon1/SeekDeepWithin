@@ -11,6 +11,7 @@ using Lucene.Net.Store;
 using SeekDeepWithin.Controllers;
 using SeekDeepWithin.Models;
 using SeekDeepWithin.Pocos;
+using Term = Lucene.Net.Index.Term;
 
 namespace SeekDeepWithin.SdwSearch
 {
@@ -63,7 +64,8 @@ namespace SeekDeepWithin.SdwSearch
                var result = new SearchResult
                {
                   Id = id,
-                  Title = string.Format ("<a href=\"{0}/Read/{1}\">{2}</a>", host, chapterId, title),
+                  Title = title.Highlight (search),
+                  Url = string.Format ("{0}/Read/{1}", host, chapterId),
                   Description = doc.Get ("text").Highlight(search)
                };
                results.Add (result);
@@ -165,23 +167,15 @@ namespace SeekDeepWithin.SdwSearch
          doc.Add (new Field ("chapterId", passage.Chapter.Id.ToString(CultureInfo.InvariantCulture), Field.Store.YES, Field.Index.NOT_ANALYZED));
          doc.Add (new Field ("text", passage.Passage.Text, Field.Store.YES, Field.Index.ANALYZED));
          doc.Add (new Field ("chapter", passage.Chapter.Chapter.Name, Field.Store.YES, Field.Index.ANALYZED));
-         doc.Add (new Field ("subbook", passage.Chapter.SubBook.SubBook.Name, Field.Store.YES, Field.Index.ANALYZED));
+         doc.Add (new Field ("subbook", passage.Chapter.SubBook.Term.Name, Field.Store.YES, Field.Index.ANALYZED));
          doc.Add (new Field ("version", passage.Chapter.SubBook.Version.Title, Field.Store.YES, Field.Index.ANALYZED));
          doc.Add (new Field ("book", passage.Chapter.SubBook.Version.Book.Title, Field.Store.YES, Field.Index.ANALYZED));
-         if (passage.Headers.Count > 0)
-         {
-            doc.Add (new Field ("header", passage.Headers.Select (h => h.Text).Aggregate ((i, j) => i + " " + j),
-               Field.Store.YES, Field.Index.ANALYZED));
-         }
-         if (passage.Footers.Count > 0)
+         if (passage.Header != null)
+            doc.Add (new Field ("header", passage.Header.Text ?? string.Empty, Field.Store.YES, Field.Index.ANALYZED));
+         if (passage.Footers != null && passage.Footers.Count > 0)
          {
             doc.Add (new Field ("footer", passage.Footers.Select (f => f.Text).Aggregate ((i, j) => i + " " + j),
                Field.Store.YES, Field.Index.ANALYZED));
-         }
-         if (passage.Chapter.SubBook.Version.Book.Tags.Count > 0)
-         {
-            doc.Add (new Field ("tags", passage.Chapter.SubBook.Version.Book.Tags.Select (t => t.Tag.Name)
-                  .Aggregate ((i, j) => i + " " + j), Field.Store.YES, Field.Index.ANALYZED));
          }
          // add entry to index
          writer.AddDocument (doc);

@@ -11,26 +11,18 @@ namespace SeekDeepWithin.Controllers
    /// <summary>
    /// Controller for passages.
    /// </summary>
-   public class PassageController : Controller
+   public class PassageController : SdwController
    {
-      private readonly ISdwDatabase m_Db;
-
       /// <summary>
       /// Initializes a new controller.
       /// </summary>
-      public PassageController ()
-      {
-         this.m_Db = new SdwDatabase ();
-      }
+      public PassageController () : base (new SdwDatabase ()) { }
 
       /// <summary>
       /// Initializes a new controller with the given db info.
       /// </summary>
       /// <param name="db">Database object.</param>
-      public PassageController (ISdwDatabase db)
-      {
-         this.m_Db = db;
-      }
+      public PassageController (ISdwDatabase db) : base (db) { }
 
       /// <summary>
       /// Gets the details page for the given item.
@@ -39,49 +31,72 @@ namespace SeekDeepWithin.Controllers
       /// <returns>The details page.</returns>
       public ActionResult Index (int entryId)
       {
-         var entry = this.m_Db.PassageEntries.Get (entryId);
+         var entry = this.Database.PassageEntries.Get (entryId);
          return View (new PassageViewModel (entry));
       }
 
       /// <summary>
       /// Creates a passage for the given chapter.
       /// </summary>
-      /// <param name="viewModel">View model with data.</param>
+      /// <param name="passageList">The list of passages to add.</param>
+      /// <param name="subBookId">The id of the sub book.</param>
       /// <returns>Create results.</returns>
       [HttpPost]
       [ValidateAntiForgeryToken]
       [Authorize (Roles = "Creator")]
-      public ActionResult Create (AddItemViewModel viewModel)
+      public ActionResult Create (string passageList, int subBookId)
       {
-         if (ModelState.IsValid)
+         if (string.IsNullOrWhiteSpace (passageList)) return this.Fail ("No passages were given to add.");
+         var subBook = this.Database.VersionSubBooks.Get (subBookId);
+         if (subBook == null) return this.Fail ("Unable to determine the sub book.");
+         var passages = passageList.Split (new[] {'\n'}, StringSplitOptions.RemoveEmptyEntries);
+         var lastChapter = -1;
+         SubBookChapter sbChapter = null;
+         foreach (var passage in passages)
          {
-            var chapter = this.m_Db.SubBookChapters.Get (viewModel.ParentId);
-            if (viewModel.IsInsert)
+            var passageData = passage.Split ('|');
+            var chapterOrder = passageData.FirstOrDefault (pd => pd.StartsWith ("[c]"));
+            if (string.IsNullOrWhiteSpace (chapterOrder)) return this.Fail ("Unable to determine the chapter.");
+            var cInt = Convert.ToInt32 (chapterOrder.Substring (3));
+            if (lastChapter != cInt)
             {
-               foreach (var passage in chapter.Passages)
+               lastChapter = cInt;
+               if (sbChapter != null)
                {
-                  if (passage.Order >= viewModel.Order)
-                     passage.Order++;
-                  if (passage.Number >= viewModel.Number)
-                     passage.Number++;
+                  this.Database.Save ();
+                  PassageSearch.AddOrUpdateIndex (sbChapter.Passages);
                }
+               sbChapter = subBook.Chapters.FirstOrDefault (c => c.Order == lastChapter);
             }
+            if (sbChapter == null)
+               return this.Fail ("Unable to determine the correct chapter to add passages to: " + chapterOrder);
+            var number = passageData.FirstOrDefault (pd => pd.StartsWith ("[n]"));
+            if (string.IsNullOrWhiteSpace (number)) return this.Fail ("Passage number was not supplied.");
+            var order = passageData.FirstOrDefault (pd => pd.StartsWith ("[o]"));
+            if (string.IsNullOrWhiteSpace (order)) return this.Fail ("Passage order was not supplied.");
+            var text = passageData.FirstOrDefault (pd => pd.StartsWith ("[t]"));
+            if (string.IsNullOrWhiteSpace (text)) return this.Fail ("Passage text was not supplied.");
+            var header = passageData.FirstOrDefault (pd => pd.StartsWith ("[h]"));
             var passageEntry = new PassageEntry
             {
-               Chapter = chapter,
-               ChapterId = viewModel.ParentId,
-               Number = viewModel.Number,
-               Order = viewModel.Order,
-               Passage = this.GetPassage (viewModel.Text)
+               Chapter = sbChapter,
+               Number = Convert.ToInt32 (number.Substring (3)),
+               Order = Convert.ToInt32 (order.Substring (3)),
+               Passage = this.GetPassage (text.Substring (3))
             };
-            this.m_Db.Passages.Insert (passageEntry.Passage);
-            chapter.Passages.Add (passageEntry);
-            this.m_Db.Save ();
-            PassageSearch.AddOrUpdateIndex (passageEntry);
-            return Json ("Success");
+            if (!string.IsNullOrWhiteSpace(header))
+               passageEntry.Header = new PassageHeader { Text = header };
+            foreach (var footer in passageData.Where(pd => pd.StartsWith("[f@")))
+            {
+               
+            }
+            sbChapter.Passages.Add (passageEntry);
          }
-         Response.StatusCode = 500;
-         return Json ("Data is not valid.");
+         this.Database.Save ();
+         if (sbChapter != null)
+            PassageSearch.AddOrUpdateIndex (sbChapter.Passages);
+         PassageSearch.Optimize ();
+         return Json ("Success");
       }
 
       /// <summary>
@@ -91,24 +106,33 @@ namespace SeekDeepWithin.Controllers
       /// <param name="text">The passage text.</param>
       /// <param name="order">The passage order.</param>
       /// <param name="number">The passage number.</param>
+      /// <param name="header">A header for the passage.</param>
       /// <returns>The edit page.</returns>
       [HttpPost]
       [ValidateAntiForgeryToken]
       [Authorize (Roles = "Editor")]
-      public ActionResult Update (int entryId, string text, int? order, int? number)
+      public ActionResult Update (int entryId, string text, int? order, int? number, string header)
       {
-         var passage = this.m_Db.PassageEntries.Get (entryId);
-         if (passage == null)
-         {
-            Response.StatusCode = 500;
-            return Json ("Data is not valid.");
-         }
+         var passage = this.Database.PassageEntries.Get (entryId);
+         if (passage == null) return this.Fail ("Unable to determine the passage");
          passage.Passage.Text = text;
+         if (!string.IsNullOrWhiteSpace (header))
+         {
+            if (passage.Header == null)
+               passage.Header = new PassageHeader {Text = header};
+            else
+               passage.Header.Text = header;
+         }
+         else if (passage.Header != null)
+         {
+            passage.Header.Styles.Clear();
+            passage.Header = null;
+         }
          if (order != null)
             passage.Order = order.Value;
          if (number != null)
             passage.Number = number.Value;
-         this.m_Db.Save ();
+         this.Database.Save ();
          PassageSearch.AddOrUpdateIndex (passage);
          return Json ("Success");
       }
@@ -123,20 +147,84 @@ namespace SeekDeepWithin.Controllers
       [Authorize (Roles = "Creator")]
       public ActionResult Delete (int entryId)
       {
-         if (ModelState.IsValid)
+         var passage = this.Database.PassageEntries.Get (entryId);
+         if (passage == null) return this.Fail ("Unable to determine the passage");
+         passage.Chapter.Passages.Remove (passage);
+         if (passage.Passage.Entries.Count == 1)
+            this.Database.Passages.Delete(passage.Passage);
+         this.Database.Save ();
+         PassageSearch.Delete (passage.Id);
+         return Json ("Success");
+      }
+
+      /// <summary>
+      /// Gets the edit view for the given entry.
+      /// </summary>
+      /// <param name="id">The id of the item we editing.</param>
+      /// <returns></returns>
+      [Authorize (Roles = "Editor")]
+      public ActionResult Edit (int id)
+      {
+         var entry = this.Database.PassageEntries.Get (id);
+         if (entry == null) return this.Fail ("Unable to determine the passage");
+         var viewModel = new EditItemViewModel (id, EditItemType.Passage) { Text = entry.Passage.Text };
+         foreach (var style in entry.Styles)
+            viewModel.Styles.Add (new StyleViewModel (style));
+         foreach (var link in entry.Passage.Links)
+            viewModel.Links.Add (new LinkViewModel (link));
+         foreach (var footer in entry.Footers)
+            viewModel.Footers.Add(new HeaderFooterViewModel(footer));
+         return PartialView ("_EditItem", viewModel);
+      }
+
+      /// <summary>
+      /// Gets the edit view for the given entry.
+      /// </summary>
+      /// <param name="id">The id of the item we editing.</param>
+      /// <returns></returns>
+      [Authorize (Roles = "Editor")]
+      public ActionResult EditHeader (int id)
+      {
+         var entry = this.Database.PassageEntries.Get (id);
+         if (entry == null) return this.Fail ("Unable to determine the passage");
+         var viewModel = new EditItemViewModel (id, EditItemType.PassageHeader)
          {
-            var passage = this.m_Db.PassageEntries.Get (entryId);
-            passage.Chapter.Passages.Remove (passage);
-            if (passage.Passage.Entries.Count == 1)
-            {
-               this.m_Db.Passages.Delete(passage.Passage);
-            }
-            this.m_Db.Save ();
-            PassageSearch.Delete (passage.Id);
-            return Json ("Success");
+            HasLinks = false,
+            HasFooters = false
+         };
+         if (entry.Header != null)
+         {
+            viewModel.Text = entry.Header.Text;
+            foreach (var style in entry.Header.Styles)
+               viewModel.Styles.Add (new StyleViewModel (style));
          }
-         Response.StatusCode = 500;
-         return Json ("Data is not valid.");
+         return PartialView ("_EditItem", viewModel);
+      }
+
+      /// <summary>
+      /// Gets the edit view for the given entry.
+      /// </summary>
+      /// <param name="id">The id of the item we editing.</param>
+      /// <param name="footerId">The id of the footer we are editing.</param>
+      /// <returns></returns>
+      [Authorize (Roles = "Editor")]
+      public ActionResult EditFooter (int id, int footerId)
+      {
+         var entry = this.Database.PassageEntries.Get (id);
+         if (entry == null) return this.Fail ("Unable to determine the passage");
+         var footer = entry.Footers.FirstOrDefault (f => f.Id == footerId);
+         if (footer == null) return this.Fail ("Unable to determine the footer");
+         var viewModel = new EditItemViewModel (id, EditItemType.PassageFooter)
+         {
+            Text = footer.Text,
+            HasFooters = false,
+            FooterId = footerId
+         };
+         foreach (var style in footer.Styles)
+            viewModel.Styles.Add(new StyleViewModel (style));
+         foreach (var link in footer.Links)
+            viewModel.Links.Add(new LinkViewModel(link));
+         return PartialView ("_EditItem", viewModel);
       }
 
       /// <summary>
@@ -147,14 +235,15 @@ namespace SeekDeepWithin.Controllers
       [AllowAnonymous]
       public ActionResult Get (int id)
       {
-         var entry = this.m_Db.PassageEntries.Get (id);
+         var entry = this.Database.PassageEntries.Get (id);
          var result = new
          {
             entryId = id,
             order = entry.Order,
-            passageId = entry.PassageId,
+            passageId = entry.Passage.Id,
             passageNumber = entry.Number,
-            passageText = entry.Passage.Text
+            passageText = entry.Passage.Text,
+            header = entry.Header == null ? string.Empty : entry.Header.Text
          };
          return Json (result, JsonRequestBehavior.AllowGet);
       }
@@ -166,13 +255,13 @@ namespace SeekDeepWithin.Controllers
       /// <returns>The requested passage, a new passage if does not exist.</returns>
       private Passage GetPassage (string text)
       {
-         var passages = this.m_Db.Passages.Get (h => h.Text == text);
+         var passages = this.Database.Passages.Get (h => h.Text == text);
          var passage = passages.FirstOrDefault ();
          if (passage == null)
          {
             passage = new Passage { Text = text };
-            this.m_Db.Passages.Insert (passage);
-            this.m_Db.Save ();
+            this.Database.Passages.Insert (passage);
+            this.Database.Save ();
          }
          return passage;
       }
@@ -183,7 +272,7 @@ namespace SeekDeepWithin.Controllers
       /// <returns></returns>
       public PassageViewModel GetRandomPassage ()
       {
-         return new PassageViewModel(this.m_Db.PassageEntries.All (q => q.OrderBy (r => Guid.NewGuid ())).Take (1).FirstOrDefault());
+         return new PassageViewModel(this.Database.PassageEntries.All (q => q.OrderBy (r => Guid.NewGuid ())).Take (1).FirstOrDefault());
       }
    }
 }

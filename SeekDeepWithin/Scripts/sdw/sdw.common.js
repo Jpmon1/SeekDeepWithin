@@ -1,4 +1,26 @@
-﻿function lazyload() {
+﻿$(document).ready(function() {
+   document.modal = $('.remodal').remodal({ closeOnEscape: false, closeOnAnyClick: false });
+});
+
+if (!String.format) {
+   String.format = function (format) {
+      var args = Array.prototype.slice.call(arguments, 1);
+      return format.replace(/{(\d+)}/g, function (match, number) {
+         return typeof args[number] != 'undefined'
+           ? args[number]
+           : match
+         ;
+      });
+   };
+}
+
+function escapeHtml(str) {
+   var div = document.createElement('div');
+   div.appendChild(document.createTextNode(str));
+   return div.innerHTML;
+};
+
+function lazyload() {
    var wt = $(window).scrollTop();    //* top of the window
    var wb = wt + $(window).height();  //* bottom of the window
 
@@ -14,21 +36,28 @@
    });
 }
 
-// Returns a function, that, as long as it continues to be invoked, will not
-// be triggered. The function will be called after it stops being called for
-// N milliseconds. If `immediate` is passed, trigger the function on the
-// leading edge, instead of the trailing.
-function debounce(func, wait, immediate) {
-   var timeout;
-   return function () {
-      var context = this, args = arguments;
-      var later = function () {
-         timeout = null;
-         if (!immediate) func.apply(context, args);
-      };
-      var callNow = immediate && !timeout;
-      clearTimeout(timeout);
-      timeout = setTimeout(later, wait);
-      if (callNow) func.apply(context, args);
-   };
-};
+function sdw_post(url, data, status, done) {
+   var form = $('#__AjaxAntiForgeryForm');
+   var token = $('input[name="__RequestVerificationToken"]', form).val();
+   $('#modal-content-title').text('Saving Data');
+   $('#modal-content-text').text(status);
+   $('#modal-content-close').hide();
+   document.modal.open();
+   var postData = { __RequestVerificationToken: token }
+   for (var attrname in data) { postData[attrname] = data[attrname]; }
+   $.ajax({
+      type: 'POST',
+      url: url,
+      data: postData
+   }).done(function (d) {
+      if (done !== undefined) {
+         done(d);
+      }
+      $('#modal-content-text').text('Success!');
+      setTimeout(function () { document.modal.close(); }, 500);
+   }).fail(function (d) {
+      $('#modal-content-close').show();
+      $('#modal-content-title').text('Failed');
+      $('#modal-content-text').text(d.responseText);
+   });
+}

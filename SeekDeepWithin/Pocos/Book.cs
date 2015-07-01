@@ -23,28 +23,28 @@ namespace SeekDeepWithin.Pocos
       public string Title { get; set; }
 
       /// <summary>
+      /// Gets or Set the sub title of the book.
+      /// </summary>
+      public string SubTitle { get; set; }
+
+      /// <summary>
       /// Gets or Sets a brief summary of the book.
       /// </summary>
       public string Summary { get; set; }
 
       /// <summary>
-      /// Gets or Sets the list of sub books that belong to this book.
+      /// Gets or Sets the associated term.
       /// </summary>
-      public virtual ICollection<SubBook> SubBooks { get; set; }
+      public virtual Term Term { get; set; }
+
+      /// <summary>
+      /// Gets or Sets the default version.
+      /// </summary>
+      public virtual Version DefaultVersion { get; set; }
 
       /// <summary>
       /// Gets or Sets the list of verions.
       /// </summary>
        public virtual ICollection<Version> Versions { get; set; }
-
-      /// <summary>
-      /// Gets or Sets the list of tags for this book.
-      /// </summary>
-       public virtual ICollection<BookTag> Tags { get; set; }
-
-      /// <summary>
-      /// Gets or Set the sub title of the book.
-      /// </summary>
-      public string SubTitle { get; set; }
    }
 }

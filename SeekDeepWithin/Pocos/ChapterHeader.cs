@@ -15,11 +15,6 @@ namespace SeekDeepWithin.Pocos
       public string Text { get; set; }
 
       /// <summary>
-      /// Gets or Sets the chapter the header belongs to.
-      /// </summary>
-      public virtual SubBookChapter Chapter { get; set; }
-
-      /// <summary>
       /// Gets the list of styles.
       /// </summary>
       public virtual ICollection<ChapterHeaderStyle> Styles { get; set; }

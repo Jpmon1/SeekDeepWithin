@@ -1,96 +1,43 @@
-﻿
-function version_default() {
-   var form = $('#__AjaxAntiForgeryForm');
-   var token = $('input[name="__RequestVerificationToken"]', form).val();
-   $.ajax({
-      type: 'POST',
-      url: '/Version/SetDefaultVersion/',
-      data: {
-         __RequestVerificationToken: token,
-         bookId: $('#BookId').val(),
-         versionId: $('#Id').val()
+﻿$(document).ready(function () {
+   $('#termList').autocomplete({
+      serviceUrl: '/Term/AutoComplete',
+      paramName: 'term',
+      onSelect: function (suggestion) {
+         $('#selTermId').val(suggestion.data);
       }
-   }).done(function () {
-      $('#saveCheck').show(200, function () {
-         setTimeout(function () { $('#saveCheck').hide(100); }, 2000);
-      });
-      createToc();
-   }).fail(function (d) {
-      $('#modalClose').show();
-      $('#modalText').text(d.responseText);
-      $('#modal').foundation('reveal', 'open');
+   });
+});
+
+function version_create() {
+   sdw_post('/Version/Create/', {
+      bookId: $('#bookId').val(),
+      title: $('#versionTitle').val(),
+      date: $('#versionDate').val(),
+      termId: $('#selTermId').val()
+   }, 'Creating Version, please wait...', function() {
+      $('#versionDate').val('');
+      $('#versionTitle').val('');
+      $('#selTermId').val('');
+      $('#termList').val('');
    });
 }
 
-function version_subBookOrder() {
-   var form = $('#__AjaxAntiForgeryForm');
-   var token = $('input[name="__RequestVerificationToken"]', form).val();
-   $.ajax({
-      type: 'POST',
-      url: '/Version/UpdateSubBookOrder/',
-      data: {
-         __RequestVerificationToken: token,
-         id: $('#Id').val(),
-         start: $('#startOrder').val()
-      }
-   }).done(function () {
-      $('#orderCheck').show(200, function () {
-         setTimeout(function () { $('#saveCheck').hide(100); }, 2000);
-      });
-      createToc();
-   }).fail(function (d) {
-      $('#modalClose').show();
-      $('#modalText').text(d.responseText);
-      $('#modal').foundation('reveal', 'open');
-   });
+function version_edit() {
+   sdw_post('/Version/Edit/', {
+      id: $('#versionId').val(),
+      title: $('#versionTitle').val(),
+      date: $('#versionDate').val(),
+      termId: $('#selTermId').val(),
+      sourceName: $('#versionSourceName').val(),
+      sourceUrl: $('#versionSourceUrl').val()
+   }, 'Editing Version, please wait...');
 }
 
-function version_assignWriter() {
-
-   var form = $('#__AjaxAntiForgeryForm');
-   var token = $('input[name="__RequestVerificationToken"]', form).val();
-   $.ajax({
-      type: 'POST',
-      url: '/Version/AssignWriter/',
-      data: {
-         __RequestVerificationToken: token,
-         id: $('#Id').val(),
-         writerId: $('#writerId').val(),
-         isTranslator: $('#isTranslator').prop("checked")
-      }
-   }).done(function (d) {
-      if ($('#noWriters').length > 0)
-         $('#noWriters').remove();
-      $('#writers').append('<div class="row" id="writer_' + d.writerId + '">' +
-         '<div class="small-1 columns">' +
-         '<a href="javascript:void(0)" onclick="version_removeWriter(' + d.id + ', ' + d.writerId + ')" title="Remove">' +
-         '<i class="icon-remove-circle" style="color:red;"></i></a></div><div class="small-11 columns">' + d.writer + '</div></div>');
-      $('#writerSaved').show(200, function () {
-         setTimeout(function () { $('#writerSaved').hide(100); }, 2000);
-      });
-   }).fail(function (d) {
-      $('#modalClose').show();
-      $('#modalText').text(d.responseText);
-      $('#modal').foundation('reveal', 'open');
-   });
-}
-
-function version_removeWriter(versionId, writerId) {
-   var form = $('#__AjaxAntiForgeryForm');
-   var token = $('input[name="__RequestVerificationToken"]', form).val();
-   $.ajax({
-      type: 'POST',
-      url: '/Version/RemoveWriter/',
-      data: {
-         __RequestVerificationToken: token,
-         subBookId: versionId,
-         writerId: writerId
-      }
-   }).done(function () {
-      $('#writer_' + writerId).remove();
-   }).fail(function (d) {
-      $('#modalClose').show();
-      $('#modalText').text(d.responseText);
-      $('#modal').foundation('reveal', 'open');
+function version_create_subbooks() {
+   sdw_post('/Version/CreateSubBooks/', {
+      id: $('#versionId').val(),
+      list: $('#subBookList').val()
+   }, 'Creating Sub Books, please wait...', function () {
+      window.location.reload();
    });
 }

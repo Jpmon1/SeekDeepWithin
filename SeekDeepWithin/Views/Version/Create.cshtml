@@ -1,44 +1,57 @@
-﻿@model SeekDeepWithin.Models.VersionViewModel
-
-@{
-    ViewBag.Title = "Add Version";
+﻿@{
+   ViewBag.Title = "New Version";
+   var scheme = Request.Url == null ? string.Empty : Request.Url.Scheme;
 }
-
-<h3><small>new version</small> @ViewBag.BookTitle</h3>
-
-@using (Html.BeginForm ()) {
-   @Html.AntiForgeryToken()
-   @Html.ValidationSummary(true)
-
-   <fieldset>
-      <legend>Version Information</legend>
-      @Html.HiddenFor(model => model.BookId)
+@section featured {
+   <div class="panel">
       <div class="row">
-         <div class="small-12 large-6 columns">
-            @Html.LabelFor(model => model.Title)
-            @Html.TextBoxFor(model => model.Title)
-            @Html.ValidationMessageFor(model => model.Title)
+         <div class="small-12 columns">
+            <h3>
+               New Version! <small>for @(ViewBag.BookTitle)</small>
+               <small style="float: right">
+                  <a href="@Url.Action("Edit", "Book", new {id=ViewBag.BookId}, scheme)" class="sdw-button reg tiny">
+                     <i class="icon-pageback"></i> back to book
+                  </a>
+               </small>
+            </h3>
          </div>
       </div>
-      <div class="row">
-         <div class="small-12 large-6 columns">
-            @Html.LabelFor(model => model.Abbreviation)
-            @Html.TextBoxFor(model => model.Abbreviation)
-            @Html.ValidationMessageFor(model => model.Abbreviation)
-         </div>
-      </div>
-      <div class="row">
-         <div class="small-12 large-6 columns">
-            @Html.LabelFor(model => model.PublishDate)
-            @Html.TextBoxFor(model => model.PublishDate)
-            @Html.ValidationMessageFor(model => model.PublishDate)
-         </div>
-      </div>
-
-      <input type="submit" value="Add" class="button" /> <a href="@Url.Action("Index", "Book", null, Request.Url.Scheme)" class="button secondary small">cancel</a>
-   </fieldset>
+   </div>
 }
-
-@section Scripts {
-   @Scripts.Render("~/bundles/jqueryval")
+@using (Html.BeginForm (null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" })){@Html.AntiForgeryToken()}
+<input type="hidden" id="bookId" name="bookId" value="@ViewBag.BookId"/>
+<div class="sdw-panel">
+   <div class="title">Version Details</div>
+   <div class="content">
+      <div class="row">
+         <div class="small-12 columns">
+            <label for="versionTitle">Title <small style="color: darkred;">(required)</small></label>
+            <input type="text" id="versionTitle" name="versionTitle" />
+         </div>
+      </div>
+      <div class="row">
+         <div class="small-12 columns">
+            <label for="versionDate">Publish Date</label>
+            <input type="text" id="versionDate" name="versionDate" />
+         </div>
+      </div>
+      <div class="row">
+         <div class="small-12 columns">
+            <label for="termList">Term <small style="color: darkred;">(required)</small></label>
+            <input type="text" id="termList" name="termList" />
+            <input type="hidden" id="selTermId" name="selTermId" />
+         </div>
+      </div>
+      <div class="row">
+         <div class="small-12 medium-6 medium-offset-3 large-6 large-offset-3 columns">
+            <a href="javascript:void(0)" class="sdw-button reg expand" onclick="version_create();">
+               <i class="icon-createfile"></i> create
+            </a>
+         </div>
+      </div>
+   </div>
+</div>
+@Html.Partial("_Modal")
+@section scripts {
+   @Scripts.Render("~/bundles/sdw.version")
 }

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace SeekDeepWithin.Pocos
+﻿namespace SeekDeepWithin.Pocos
 {
    public class Chapter : IDbTable
    {

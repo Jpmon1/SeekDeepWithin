@@ -11,11 +11,6 @@ namespace SeekDeepWithin.DataAccess
       IRepository <Book> Books { get; }
 
       /// <summary>
-      /// Gets the repository for writers.
-      /// </summary>
-      IRepository<Writer> Writers { get; }
-
-      /// <summary>
       /// Gets the repository for versions.
       /// </summary>
       IRepository<Pocos.Version> Versions { get; }
@@ -24,11 +19,6 @@ namespace SeekDeepWithin.DataAccess
       /// Gets the repository for versions subbook table.
       /// </summary>
       IRepository<VersionSubBook> VersionSubBooks { get; }
-
-      /// <summary>
-      /// Gets the repository for subbooks.
-      /// </summary>
-      IRepository<SubBook> SubBooks { get; }
 
       /// <summary>
       /// Gets the repository for subbook chapter table.
@@ -46,24 +36,14 @@ namespace SeekDeepWithin.DataAccess
       IRepository<Link> Links { get; }
 
       /// <summary>
-      /// Gets the repository for tags.
-      /// </summary>
-      IRepository<Tag> Tags { get; }
-
-      /// <summary>
       /// Gets the repository for styles.
       /// </summary>
       IRepository<Style> Styles { get; }
 
       /// <summary>
-      /// Gets the repository for sources.
-      /// </summary>
-      IRepository<Source> Sources { get; }
-
-      /// <summary>
       /// Gets the repository for Glossary Item sources.
       /// </summary>
-      IRepository<GlossaryItemSource> GlossaryItemSources { get; }
+      IRepository<TermItemSource> TermItemSources { get; }
 
       /// <summary>
       /// Gets the repository for passage entries.
@@ -76,39 +56,19 @@ namespace SeekDeepWithin.DataAccess
       IRepository<Passage> Passages { get; }
 
       /// <summary>
-      /// Gets the repository for Chapter headers.
-      /// </summary>
-      IRepository<ChapterHeader> ChapterHeaders { get; }
-
-      /// <summary>
-      /// Gets the repository for Chapter footers.
-      /// </summary>
-      IRepository<ChapterFooter> ChapterFooters { get; }
-
-      /// <summary>
-      /// Gets the repository for Passage headers.
-      /// </summary>
-      IRepository<PassageHeader> PassageHeaders { get; }
-
-      /// <summary>
-      /// Gets the repository for Passage footers.
-      /// </summary>
-      IRepository<PassageFooter> PassageFooters { get; }
-
-      /// <summary>
       /// Gets the repository for glossary terms.
       /// </summary>
-      IRepository <GlossaryTerm> GlossaryTerms { get; }
+      IRepository <Term> Terms { get; }
 
       /// <summary>
       /// Gets the repository for glossary items.
       /// </summary>
-      IRepository<GlossaryItem> GlossaryItems { get; }
+      IRepository<TermItem> TermItems { get; }
 
       /// <summary>
       /// Gets the repository for glossary entries.
       /// </summary>
-      IRepository<GlossaryEntry> GlossaryEntries { get; }
+      IRepository<TermItemEntry> TermItemEntries { get; }
 
       /// <summary>
       /// Gets the repository for amazon items.
@@ -116,14 +76,9 @@ namespace SeekDeepWithin.DataAccess
       IRepository<AmazonItem> AmazonItems { get; }
 
       /// <summary>
-      /// Gets the repository for abbreviations.
-      /// </summary>
-      IRepository<Abbreviation> Abbreviations { get; }
-
-      /// <summary>
       /// Gets the repository for sub book writers.
       /// </summary>
-      IRepository <SubBookWriter> SubBookWriters { get; }
+      IRepository <TermWriter> SubBookWriters { get; }
 
       /// <summary>
       /// Gets the repository for version writers.

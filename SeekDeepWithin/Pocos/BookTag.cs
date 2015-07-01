@@ -10,7 +10,7 @@
       /// <summary>
       /// Gets or Sets the tag.
       /// </summary>
-      public virtual Tag Tag { get; set; }
+      public virtual Term Tag { get; set; }
 
       /// <summary>
       /// Gets or Sets the book.
