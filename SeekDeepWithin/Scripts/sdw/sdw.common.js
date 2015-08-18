@@ -36,10 +36,10 @@ function lazyload() {
    });
 }
 
-function sdw_post(url, data, status, done) {
+function sdw_post(url, data, status, done, title) {
    var form = $('#__AjaxAntiForgeryForm');
    var token = $('input[name="__RequestVerificationToken"]', form).val();
-   $('#modal-content-title').text('Saving Data');
+   $('#modal-content-title').text(title === undefined ? 'Saving Data' : title);
    $('#modal-content-text').text(status);
    $('#modal-content-close').hide();
    document.modal.open();

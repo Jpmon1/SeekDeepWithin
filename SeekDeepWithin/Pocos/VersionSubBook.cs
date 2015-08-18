@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace SeekDeepWithin.Pocos
 {
@@ -26,6 +27,11 @@ namespace SeekDeepWithin.Pocos
       /// Gets or Sets an alias for this sub book.
       /// </summary>
       public string Alias { get; set; }
+
+      /// <summary>
+      /// Gets or Sets the last time this was modified.
+      /// </summary>
+      public DateTime Modified { get; set; }
 
       /// <summary>
       /// Gets or Sets the associated version

@@ -41,3 +41,9 @@ function version_create_subbooks() {
       window.location.reload();
    });
 }
+
+function version_delete_subbook(id) {
+   sdw_post('/SubBook/Delete/', { id: id }, 'Deleting Sub Book, please wait...', function () {
+      $('#subBook_' + id).remove();
+   }, 'Deleting Data');
+}

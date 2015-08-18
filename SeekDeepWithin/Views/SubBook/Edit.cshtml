@@ -72,7 +72,7 @@
                               @abbreviation
                            </div>
                            <div class="small-4 medium-3 large-2 columns">
-                              <a href="javascript:void(0)" class="sdw-button err tiny expand" title="Delete" onclick="subbook_del_abbrev(@(abbreviation))">
+                              <a href="javascript:void(0)" class="sdw-button err tiny expand" title="Delete" onclick="subbook_del_abbrev('@(abbreviation)')">
                                  <i class="icon-trash"></i>
                               </a>
                            </div>
@@ -103,19 +103,19 @@
          <div class="title">Chapters</div>
          <div class="content">
             @foreach (var chapter in Model.Chapters) {
-               <div class="row">
+               <div class="row" id="chapter_@(chapter.Id)">
                   <div class="small-12 medium-8 large-10 columns">
                      <a href="@Url.Action("Index", "Read", new {id=chapter.Id}, scheme)" class="sdw-button small white expand tLeft">
                         <span class="mLeft">@(chapter.Name)</span>
                      </a>
                   </div>
                   <div class="small-6 medium-2 large-1 columns">
-                     <a href="javascript:void(0)" class="sdw-button err tiny expand" title="Delete">
+                     <a href="javascript:void(0)" class="sdw-button err tiny expand" title="Delete @(chapter.Name)" onclick="subbook_delete_chapter(@(chapter.Id))">
                         <i class="icon-trash"></i>
                      </a>
                   </div>
                   <div class="small-6 medium-2 large-1 columns">
-                     <a href="@Url.Action("Edit", "Chapter", new {id=chapter.Id}, scheme)" class="sdw-button alt tiny expand" title="Edit">
+                     <a href="@Url.Action("Edit", "Chapter", new {id=chapter.Id}, scheme)" class="sdw-button alt tiny expand" title="Edit @(chapter.Name)">
                         <i class="icon-edit"></i>
                      </a>
                   </div>

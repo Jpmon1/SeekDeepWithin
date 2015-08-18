@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web.Mvc;
 using SeekDeepWithin.DataAccess;
 using SeekDeepWithin.Pocos;
@@ -49,20 +51,17 @@ namespace SeekDeepWithin.Controllers
          if (string.IsNullOrWhiteSpace (passageList)) return this.Fail ("No passages were given to add.");
          var subBook = this.Database.VersionSubBooks.Get (subBookId);
          if (subBook == null) return this.Fail ("Unable to determine the sub book.");
-         var passages = passageList.Split (new[] {'\n'}, StringSplitOptions.RemoveEmptyEntries);
+         var passages = passageList.Split (new [] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
          var lastChapter = -1;
          SubBookChapter sbChapter = null;
-         foreach (var passage in passages)
-         {
+         foreach (var passage in passages) {
             var passageData = passage.Split ('|');
             var chapterOrder = passageData.FirstOrDefault (pd => pd.StartsWith ("[c]"));
             if (string.IsNullOrWhiteSpace (chapterOrder)) return this.Fail ("Unable to determine the chapter.");
             var cInt = Convert.ToInt32 (chapterOrder.Substring (3));
-            if (lastChapter != cInt)
-            {
+            if (lastChapter != cInt) {
                lastChapter = cInt;
-               if (sbChapter != null)
-               {
+               if (sbChapter != null) {
                   this.Database.Save ();
                   PassageSearch.AddOrUpdateIndex (sbChapter.Passages);
                }
@@ -70,6 +69,9 @@ namespace SeekDeepWithin.Controllers
             }
             if (sbChapter == null)
                return this.Fail ("Unable to determine the correct chapter to add passages to: " + chapterOrder);
+            var cHeader = passageData.FirstOrDefault (pd => pd.StartsWith ("[ch]"));
+            if (!string.IsNullOrWhiteSpace (cHeader))
+               sbChapter.Header = new ChapterHeader { Text = cHeader.Substring (4) };
             var number = passageData.FirstOrDefault (pd => pd.StartsWith ("[n]"));
             if (string.IsNullOrWhiteSpace (number)) return this.Fail ("Passage number was not supplied.");
             var order = passageData.FirstOrDefault (pd => pd.StartsWith ("[o]"));
@@ -77,18 +79,23 @@ namespace SeekDeepWithin.Controllers
             var text = passageData.FirstOrDefault (pd => pd.StartsWith ("[t]"));
             if (string.IsNullOrWhiteSpace (text)) return this.Fail ("Passage text was not supplied.");
             var header = passageData.FirstOrDefault (pd => pd.StartsWith ("[h]"));
-            var passageEntry = new PassageEntry
-            {
+            var passageEntry = new PassageEntry {
                Chapter = sbChapter,
                Number = Convert.ToInt32 (number.Substring (3)),
                Order = Convert.ToInt32 (order.Substring (3)),
                Passage = this.GetPassage (text.Substring (3))
             };
-            if (!string.IsNullOrWhiteSpace(header))
-               passageEntry.Header = new PassageHeader { Text = header };
-            foreach (var footer in passageData.Where(pd => pd.StartsWith("[f@")))
-            {
-               
+            if (!string.IsNullOrWhiteSpace (header))
+               passageEntry.Header = new PassageHeader { Text = header.Substring (3) };
+            var reg = new Regex ("\\[f@(\\d+)\\](.+)");
+            foreach (var footer in passageData.Where (pd => pd.StartsWith ("[f@"))) {
+               var match = reg.Match (footer);
+               if (match.Success) {
+                  var index = Convert.ToInt32 (match.Groups [1].Value);
+                  var fText = match.Groups [2].Value;
+                  if (passageEntry.Footers == null) passageEntry.Footers = new Collection<PassageFooter> ();
+                  passageEntry.Footers.Add (new PassageFooter { Index = index, Text = fText });
+               }
             }
             sbChapter.Passages.Add (passageEntry);
          }
@@ -96,7 +103,7 @@ namespace SeekDeepWithin.Controllers
          if (sbChapter != null)
             PassageSearch.AddOrUpdateIndex (sbChapter.Passages);
          PassageSearch.Optimize ();
-         return Json ("Success");
+         return this.Success ();
       }
 
       /// <summary>
@@ -116,16 +123,13 @@ namespace SeekDeepWithin.Controllers
          var passage = this.Database.PassageEntries.Get (entryId);
          if (passage == null) return this.Fail ("Unable to determine the passage");
          passage.Passage.Text = text;
-         if (!string.IsNullOrWhiteSpace (header))
-         {
+         if (!string.IsNullOrWhiteSpace (header)) {
             if (passage.Header == null)
-               passage.Header = new PassageHeader {Text = header};
+               passage.Header = new PassageHeader { Text = header };
             else
                passage.Header.Text = header;
-         }
-         else if (passage.Header != null)
-         {
-            passage.Header.Styles.Clear();
+         } else if (passage.Header != null) {
+            passage.Header.Styles.Clear ();
             passage.Header = null;
          }
          if (order != null)
@@ -134,7 +138,7 @@ namespace SeekDeepWithin.Controllers
             passage.Number = number.Value;
          this.Database.Save ();
          PassageSearch.AddOrUpdateIndex (passage);
-         return Json ("Success");
+         return this.Success ();
       }
 
       /// <summary>
@@ -151,10 +155,10 @@ namespace SeekDeepWithin.Controllers
          if (passage == null) return this.Fail ("Unable to determine the passage");
          passage.Chapter.Passages.Remove (passage);
          if (passage.Passage.Entries.Count == 1)
-            this.Database.Passages.Delete(passage.Passage);
+            this.Database.Passages.Delete (passage.Passage);
          this.Database.Save ();
          PassageSearch.Delete (passage.Id);
-         return Json ("Success");
+         return this.Success ();
       }
 
       /// <summary>
@@ -173,7 +177,7 @@ namespace SeekDeepWithin.Controllers
          foreach (var link in entry.Passage.Links)
             viewModel.Links.Add (new LinkViewModel (link));
          foreach (var footer in entry.Footers)
-            viewModel.Footers.Add(new HeaderFooterViewModel(footer));
+            viewModel.Footers.Add (new HeaderFooterViewModel (footer));
          return PartialView ("_EditItem", viewModel);
       }
 
@@ -187,13 +191,11 @@ namespace SeekDeepWithin.Controllers
       {
          var entry = this.Database.PassageEntries.Get (id);
          if (entry == null) return this.Fail ("Unable to determine the passage");
-         var viewModel = new EditItemViewModel (id, EditItemType.PassageHeader)
-         {
+         var viewModel = new EditItemViewModel (id, EditItemType.PassageHeader) {
             HasLinks = false,
             HasFooters = false
          };
-         if (entry.Header != null)
-         {
+         if (entry.Header != null) {
             viewModel.Text = entry.Header.Text;
             foreach (var style in entry.Header.Styles)
                viewModel.Styles.Add (new StyleViewModel (style));
@@ -214,16 +216,15 @@ namespace SeekDeepWithin.Controllers
          if (entry == null) return this.Fail ("Unable to determine the passage");
          var footer = entry.Footers.FirstOrDefault (f => f.Id == footerId);
          if (footer == null) return this.Fail ("Unable to determine the footer");
-         var viewModel = new EditItemViewModel (id, EditItemType.PassageFooter)
-         {
+         var viewModel = new EditItemViewModel (id, EditItemType.PassageFooter) {
             Text = footer.Text,
             HasFooters = false,
             FooterId = footerId
          };
          foreach (var style in footer.Styles)
-            viewModel.Styles.Add(new StyleViewModel (style));
+            viewModel.Styles.Add (new StyleViewModel (style));
          foreach (var link in footer.Links)
-            viewModel.Links.Add(new LinkViewModel(link));
+            viewModel.Links.Add (new LinkViewModel (link));
          return PartialView ("_EditItem", viewModel);
       }
 
@@ -236,8 +237,9 @@ namespace SeekDeepWithin.Controllers
       public ActionResult Get (int id)
       {
          var entry = this.Database.PassageEntries.Get (id);
-         var result = new
-         {
+         if (entry == null) return this.Fail ("Unable to determine the passage");
+         var result = new {
+            status = SUCCESS,
             entryId = id,
             order = entry.Order,
             passageId = entry.Passage.Id,
@@ -257,8 +259,7 @@ namespace SeekDeepWithin.Controllers
       {
          var passages = this.Database.Passages.Get (h => h.Text == text);
          var passage = passages.FirstOrDefault ();
-         if (passage == null)
-         {
+         if (passage == null) {
             passage = new Passage { Text = text };
             this.Database.Passages.Insert (passage);
             this.Database.Save ();
@@ -272,7 +273,32 @@ namespace SeekDeepWithin.Controllers
       /// <returns></returns>
       public PassageViewModel GetRandomPassage ()
       {
-         return new PassageViewModel(this.Database.PassageEntries.All (q => q.OrderBy (r => Guid.NewGuid ())).Take (1).FirstOrDefault());
+         return new PassageViewModel (this.Database.PassageEntries.All (q => q.OrderBy (r => Guid.NewGuid ())).Take (1).FirstOrDefault ());
+      }
+
+      /// <summary>
+      /// Gets the list of passages for the given chapter.
+      /// </summary>
+      /// <param name="id">Id of chapter to get passages for.</param>
+      /// <returns>A JSON result.</returns>
+      public ActionResult List (int id)
+      {
+         var chapter = this.Database.SubBookChapters.Get (id);
+         if (chapter == null)
+            return this.Fail ("Unable to determine the chapter.");
+
+         var result = new {
+            status = SUCCESS,
+            count = chapter.Passages.Count,
+            passages = chapter.Passages.Select (p => new {
+               id = p.Id,
+               order = p.Order,
+               number = p.Number,
+               text = p.Passage.Text,
+               passageid = p.Passage.Id
+            })
+         };
+         return Json (result, JsonRequestBehavior.AllowGet);
       }
    }
 }

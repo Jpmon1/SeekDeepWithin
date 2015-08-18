@@ -32,12 +32,19 @@ namespace SeekDeepWithin.Models
          this.SubTitle = book.SubTitle;
          if (book.Term != null)
             this.Term = new TermViewModel(book.Term);
+         if (book.DefaultVersion != null)
+            this.DefaultChapter = book.DefaultVersion.DefaultReadChapter;
          if (copyVersions)
          {
             foreach (var version in book.Versions)
                this.Versions.Add (new VersionViewModel (version));
          }
       }
+
+      /// <summary>
+      /// Gets the default chapter in the default version to read.
+      /// </summary>
+      public int DefaultChapter { get; set; }
 
       /// <summary>
       /// Gets or Sets the id of the book.

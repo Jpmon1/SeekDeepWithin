@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web.Mvc;
 using SeekDeepWithin.DataAccess;
 using SeekDeepWithin.Models;
@@ -44,18 +46,26 @@ namespace SeekDeepWithin.Controllers
             var text = entryData.FirstOrDefault (pd => pd.StartsWith ("[t]"));
             if (string.IsNullOrWhiteSpace (text)) return this.Fail ("Passage text was not supplied.");
             var header = entryData.FirstOrDefault (pd => pd.StartsWith ("[h]"));
-            var passageEntry = new TermItemEntry
+            var termEntry = new TermItemEntry
             {
                Order = Convert.ToInt32 (order.Substring (3)),
                Text = text.Substring (3)
             };
             if (!string.IsNullOrWhiteSpace (header))
-               passageEntry.Header = new TermItemEntryHeader { Text = header };
+               termEntry.Header = new TermItemEntryHeader { Text = header.Substring (3) };
+            var reg = new Regex ("\\[f@(\\d+)\\](.+)");
             foreach (var footer in entryData.Where (pd => pd.StartsWith ("[f@")))
             {
-
+               var match = reg.Match (footer);
+               if (match.Success)
+               {
+                  var index = Convert.ToInt32 (match.Groups[1].Value);
+                  var fText = match.Groups[2].Value;
+                  if (termEntry.Footers == null) termEntry.Footers = new Collection<TermItemEntryFooter> ();
+                  termEntry.Footers.Add (new TermItemEntryFooter { Index = index, Text = fText });
+               }
             }
-            item.Entries.Add (passageEntry);
+            item.Entries.Add (termEntry);
          }
          this.Database.Save ();
          GlossarySearch.AddOrUpdateIndex (item.Entries);

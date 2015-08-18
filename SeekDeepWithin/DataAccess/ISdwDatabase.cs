@@ -76,16 +76,6 @@ namespace SeekDeepWithin.DataAccess
       IRepository<AmazonItem> AmazonItems { get; }
 
       /// <summary>
-      /// Gets the repository for sub book writers.
-      /// </summary>
-      IRepository <TermWriter> SubBookWriters { get; }
-
-      /// <summary>
-      /// Gets the repository for version writers.
-      /// </summary>
-      IRepository <VersionWriter> VersionWriters { get; }
-
-      /// <summary>
       /// Saves all changes.
       /// </summary>
       void Save ();

@@ -13,7 +13,7 @@ namespace SeekDeepWithin.Controllers
       /// <summary>
       /// Initializes a new book controller.
       /// </summary>
-      public SubBookController () : base (new SdwDatabase()) { }
+      public SubBookController () : base (new SdwDatabase ()) { }
 
       /// <summary>
       /// Initializes a new book controller with the given db info.
@@ -34,20 +34,37 @@ namespace SeekDeepWithin.Controllers
       {
          var subBook = this.Database.VersionSubBooks.Get (id);
          if (subBook == null) return this.Fail ("Unable to determine the sub book.");
-         var chapters = list.Split (new[] {'\n'}, StringSplitOptions.RemoveEmptyEntries);
-         foreach (var chap in chapters)
-         {
-            if (string.IsNullOrWhiteSpace (chap)) continue;
-            var dbChapter = DbHelper.GetChapter(this.Database, chap);
+         var chapters = list.Split (new [] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+         foreach (var chap in chapters) {
+            var chapTrim = chap.Trim ();
+            if (string.IsNullOrWhiteSpace (chapTrim)) continue;
+            var dbChapter = DbHelper.GetChapter (this.Database, chapTrim);
             var maxOrder = (subBook.Chapters.Count > 0 ? subBook.Chapters.Max (c => c.Order) : 0) + 1;
-            var chapter = new SubBookChapter { Chapter = dbChapter, Order = maxOrder, SubBook = subBook };
+            var chapter = new SubBookChapter {
+               Chapter = dbChapter,
+               Order = maxOrder,
+               SubBook = subBook,
+               Modified = DateTime.Now
+            };
             subBook.Chapters.Add (chapter);
          }
          this.Database.Save ();
          if (subBook.Version.DefaultReadChapter == 0 && subBook.Chapters.Count > 0)
             subBook.Version.DefaultReadChapter = subBook.Chapters.First ().Id;
          DbHelper.CreateToc (this.Database, subBook.Version);
-         return Json ("success");
+         return Json (new {
+            status = SUCCESS,
+            message = "Chapters created!",
+            chapters =
+               subBook.Chapters.Select (c => new {
+                  id = c.Id,
+                  hide = c.Hide,
+                  order = c.Order,
+                  name = c.Chapter.Name,
+                  chapterid = c.Chapter.Id,
+                  isparagraphs = c.DefaultToParagraph
+               })
+         });
       }
 
       /// <summary>
@@ -58,11 +75,11 @@ namespace SeekDeepWithin.Controllers
       public ActionResult Edit (int id)
       {
          var subBook = this.Database.VersionSubBooks.Get (id);
-         AbbrevSearch.AddOrUpdateIndex(subBook, subBook.Term.Name.ToLower());
+         AbbrevSearch.AddOrUpdateIndex (subBook, subBook.Term.Name.ToLower ());
          var viewModel = new SubBookViewModel (subBook, true);
          var abbrevations = AbbrevSearch.Get (viewModel.Term.Id);
          foreach (var abbrevation in abbrevations)
-            viewModel.Abbreviations.Add(abbrevation);
+            viewModel.Abbreviations.Add (abbrevation);
          return View (viewModel);
       }
 
@@ -83,18 +100,42 @@ namespace SeekDeepWithin.Controllers
          if (subBook == null) return this.Fail ("Unable to determine the sub book.");
          subBook.Hide = !visible;
          subBook.Alias = alias;
-         var term = subBook.Term;
-         var link = term.Links.FirstOrDefault (l => l.LinkType == (int)TermLinkType.Book && l.RefId == id);
-         if (link != null) term.Links.Remove (link);
-         if (subBook.Term.Id != termId)
-         {
+         if (subBook.Term.Id != termId) {
+            var term = subBook.Term;
+            var link = term.Links.FirstOrDefault (l => l.LinkType == (int) TermLinkType.SubBook && l.RefId == id);
+            if (link != null) term.Links.Remove (link);
             term = this.Database.Terms.Get (termId);
             subBook.Term = term;
+            term.Links.Add (new TermLink { LinkType = (int) TermLinkType.SubBook, RefId = subBook.Id });
          }
-         term.Links.Add (new TermLink { LinkType = (int)TermLinkType.Book, RefId = subBook.Id });
          this.Database.Save ();
          DbHelper.CreateToc (this.Database, subBook.Version);
-         return Json ("success");
+         return this.Success ();
+      }
+
+      /// <summary>
+      /// Deletes the given sub book.
+      /// </summary>
+      /// <param name="id">Id of sub book to delete.</param>
+      /// <returns>The JSON results.</returns>
+      [HttpPost]
+      [ValidateAntiForgeryToken]
+      [Authorize (Roles = "Editor")]
+      public ActionResult Delete (int id)
+      {
+         var subBook = this.Database.VersionSubBooks.Get (id);
+         if (subBook == null) return this.Fail ("Unable to determine the sub book.");
+         var version = subBook.Version;
+         var chapters = subBook.Chapters.ToList ();
+         for (int a = chapters.Count - 1; a >= 0; a--)
+            subBook.Chapters.Remove (chapters [a]);
+         version.SubBooks.Remove (subBook);
+         foreach (var chapter in chapters)
+            this.Database.SubBookChapters.Delete (chapter);
+         this.Database.VersionSubBooks.Delete (subBook);
+         this.Database.Save ();
+         DbHelper.CreateToc (this.Database, version);
+         return this.Success ();
       }
 
       /// <summary>
@@ -109,8 +150,8 @@ namespace SeekDeepWithin.Controllers
       public ActionResult AddAbbreviation (int id, string abbrev)
       {
          var subBook = this.Database.VersionSubBooks.Get (id);
-         AbbrevSearch.AddOrUpdateIndex( subBook, abbrev);
-         return Json ("success");
+         AbbrevSearch.AddOrUpdateIndex (subBook, abbrev);
+         return this.Success ();
       }
 
       /// <summary>
@@ -123,8 +164,34 @@ namespace SeekDeepWithin.Controllers
       [Authorize (Roles = "Editor")]
       public ActionResult RemoveAbbreviation (string abbrev)
       {
-         AbbrevSearch.Delete(abbrev);
-         return Json ("success");
+         AbbrevSearch.Delete (abbrev);
+         return this.Success ();
+      }
+
+      /// <summary>
+      /// Gets the list of sub books for the given version.
+      /// </summary>
+      /// <param name="id">Id of version to get sub books for.</param>
+      /// <returns>A JSON result.</returns>
+      public ActionResult List (int id)
+      {
+         var vesion = this.Database.Versions.Get (id);
+         if (vesion == null)
+            return this.Fail ("Unable to determine the version.");
+
+         var result = new {
+            status = SUCCESS,
+            count = vesion.SubBooks.Count,
+            subbooks = vesion.SubBooks.Select (s => new {
+               id = s.Id,
+               order = s.Order,
+               termname = s.Term.Name,
+               termid = s.Term.Id,
+               hide = s.Hide,
+               alias = s.Alias ?? string.Empty
+            })
+         };
+         return Json (result, JsonRequestBehavior.AllowGet);
       }
 
       /// <summary>
@@ -135,8 +202,7 @@ namespace SeekDeepWithin.Controllers
       /// <returns>The list of possible terms for the given item.</returns>
       public ActionResult AutoComplete (string name, int versionId)
       {
-         var result = new
-         {
+         var result = new {
             suggestions = this.Database.VersionSubBooks.Get (sb => sb.Version.Id == versionId && sb.Term.Name.Contains (name))
                                                  .Select (sb => new { value = sb.Term.Name, data = sb.Id })
          };

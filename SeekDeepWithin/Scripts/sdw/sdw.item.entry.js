@@ -56,7 +56,7 @@ function entry_get(id) {
       panels_hideLeft();
       panels_hideOverlay();
       document.prevEntryId = data.entryId;
-      sdw_get_edit('/ItemEntry/Edit/' + data.entryId);
+      sdw_get_edit('/ItemEntry/Edit/' + data.entryId, false);
    }).fail(function () {
       $('#modal-content-close').show();
       $('#modal-content-title').text('Failed');
@@ -77,7 +77,7 @@ function entry_update() {
 }
 
 function entry_edit_header() {
-   sdw_get_edit('/ItemEntry/EditHeader/' + $('#editEntryId').val());
+   sdw_get_edit('/ItemEntry/EditHeader/' + $('#editEntryId').val(), true);
 }
 
 function entry_check_delete() {

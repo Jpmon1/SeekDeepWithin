@@ -16,9 +16,9 @@
 function sdw_item_edit_footer() {
    var type = $('#editItemType').val();
    if (type === 'Passage') {
-      sdw_get_edit('/Passage/EditFooter?id=' + $('#editEntryId').val() + '&footerId=' + $('#footerEditId').val());
+      sdw_get_edit('/Passage/EditFooter?id=' + $('#editEntryId').val() + '&footerId=' + $('#footerEditId').val(), false);
    } else {
-      sdw_get_edit('/ItemEntry/EditFooter?id=' + $('#editEntryId').val() + '&footerId=' + $('#footerEditId').val());
+      sdw_get_edit('/ItemEntry/EditFooter?id=' + $('#editEntryId').val() + '&footerId=' + $('#footerEditId').val(), false);
    }
 }
 

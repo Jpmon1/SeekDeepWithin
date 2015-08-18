@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace SeekDeepWithin.Pocos
 {
@@ -36,6 +37,11 @@ namespace SeekDeepWithin.Pocos
       /// Gets or Sets the chapter id to read when opeing a version.
       /// </summary>
       public int DefaultReadChapter { get; set; }
+
+      /// <summary>
+      /// Gets or Sets the last time this was modified.
+      /// </summary>
+      public DateTime Modified { get; set; }
 
       /// <summary>
       /// Gets or Sets the book of the version

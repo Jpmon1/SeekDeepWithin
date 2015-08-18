@@ -1,17 +1,15 @@
 ﻿$(document).ready(function () {
-   $('#smallLeftMenuIcon').show();
    $('#contents').data('loc', 'on');
    $(window).resize(read_resize);
+   var sbId = $('#subBookId').val();
    read_resize();
-   //$.ajax('/Chapter/Contents/' + $('#chapterId').val()).done(function(d) {
-   //   $('#contents').append(d);
-   //});
+   $("#contentArea").scrollTop($('#subBookTitle_' + sbId).position().top);
 });
 
 function read_resize() {
    var contents = $('#contents');
    var loc = contents.data('loc');
-   if (Foundation.utils.is_small_only()) {
+   if (is_small_only()) {
       if (loc === 'on') {
          contents.remove();
          $('#panel_left').append(contents);
@@ -26,9 +24,9 @@ function read_resize() {
          $('#contentContainer').append(contents);
          contents.data('loc', 'on');
       }
-      var height = $('#readingArea').height();
-      if (height < 200)
-         height = 200;
+      var height = $('#readingArea').height() - $('#contentTitle').height();
+      if (height < 400)
+         height = 400;
       contents.css({ 'height': height, 'margin-bottom': '1.25rem' });
    }
 }

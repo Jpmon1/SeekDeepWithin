@@ -21,8 +21,6 @@ namespace SeekDeepWithin.DataAccess
       private IRepository<TermItem> m_GlossaryItems;
       private IRepository<TermItemEntry> m_GlossaryEntries;
       private IRepository <VersionSubBook> m_VersionSubBooks;
-      private IRepository<TermWriter> m_SubBookWriters;
-      private IRepository<VersionWriter> m_VersionWriters;
       private IRepository<SubBookChapter> m_SubBookChapters;
       private IRepository<TermItemSource> m_GlossaryItemSources;
       private readonly SdwDbContext m_Db = new SdwDbContext ();
@@ -36,27 +34,11 @@ namespace SeekDeepWithin.DataAccess
       }
 
       /// <summary>
-      /// Gets the repository for sub book writers.
-      /// </summary>
-      public IRepository<TermWriter> SubBookWriters
-      {
-         get { return this.m_SubBookWriters ?? (this.m_SubBookWriters = new Repository<TermWriter> (m_Db)); }
-      }
-
-      /// <summary>
       /// Gets the repository for glossary item sources.
       /// </summary>
       public IRepository<TermItemSource> TermItemSources
       {
          get { return this.m_GlossaryItemSources ?? (this.m_GlossaryItemSources = new Repository<TermItemSource> (m_Db)); }
-      }
-
-      /// <summary>
-      /// Gets the repository for version writers.
-      /// </summary>
-      public IRepository<VersionWriter> VersionWriters
-      {
-         get { return this.m_VersionWriters ?? (this.m_VersionWriters = new Repository<VersionWriter> (m_Db)); }
       }
 
       /// <summary>

@@ -28,6 +28,7 @@
 <input type="hidden" id="editPassId" name="editPassId" />
 <input type="hidden" id="editEntryId" name="editEntryId">
 <input type="hidden" id="subBookId" name="subBookId" value="@(Model.SubBook.Id)" />
+<div id="cd-nav"><a href="javascript:void(0)" class="cd-nav-trigger">Menu<span></span></a></div>
 <div class="sdw-panel">
    <div class="title">Edit Passages</div>
    <div class="content">
@@ -112,7 +113,7 @@
       </div>
    </div>
 </div>
-<div class="sdw-panel">
+<div class="sdw-panel" id="itemEditArea">
    <div class="title">Edit Item</div>
    <div class="content" id="editItem">
       

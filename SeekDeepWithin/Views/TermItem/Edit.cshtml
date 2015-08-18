@@ -20,8 +20,9 @@
       </div>
    </div>
 }
-<input type="hidden" id="editEntryId" name="editEntryId" /><input type="hidden" id="itemId" name="itemId" value="@(Model.Id)" />
 @using (Html.BeginForm (null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" })){@(Html.AntiForgeryToken ())}
+<input type="hidden" id="editEntryId" name="editEntryId" /><input type="hidden" id="itemId" name="itemId" value="@(Model.Id)" />
+<div id="cd-nav"><a href="javascript:void(0)" class="cd-nav-trigger">Menu<span></span></a></div>
 <div class="sdw-panel">
    <div class="title">Edit Entries</div>
    <div class="content">
@@ -105,7 +106,7 @@
       </div>
    </div>
 </div>
-<div class="sdw-panel">
+<div class="sdw-panel" id="itemEditArea">
    <div class="title">Edit Item</div>
    <div class="content" id="editItem">
 

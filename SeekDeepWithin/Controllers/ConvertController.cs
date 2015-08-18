@@ -140,24 +140,33 @@ namespace SeekDeepWithin.Controllers
             Response.StatusCode = 500;
             return Json ("The regex cannot be empty.", JsonRequestBehavior.AllowGet);
          }
+         var prevChapter = -1;
+         var passageList = string.Empty;
          var matches = Regex.Matches (text, regex, RegexOptions.IgnoreCase);
-         var passageList = new Collection <object> ();
+         /*[c]Chapter|[n]Number|[o]Order|[t]Text|[h]Header|[f@index]footer|[f@index]footer|...*/
          foreach (Match match in matches)
          {
-            var order = match.Groups ["order"];
-            var number = match.Groups["number"];
-            var chapter = match.Groups["chapter"];
-            passageList.Add (new
+            var order = match.Groups ["o"];
+            var number = match.Groups["n"];
+            var chapter = match.Groups["c"];
+            var header = match.Groups["h"];
+            var chapNumber = chapter.Success ? Convert.ToInt32(chapter.Value) : 0;
+            if (prevChapter != chapNumber)
             {
-               text = match.Groups["text"].Value.Replace ("\"", "&quot;").Trim (),
-               chapter = chapter.Success ? chapter.Value : "unknown",
-               number = number.Success ? Convert.ToInt32(number.Value) : startNumber,
-               order = order.Success ? Convert.ToInt32 (order.Value) : startOrder
-            });
-            if (startNumber != null)
-               startNumber++;
-            if (startOrder != null)
-               startOrder++;
+               startNumber = 1;
+               startOrder = 1;
+               prevChapter = chapNumber;
+            }
+            passageList += string.Format("[c]{0}|[n]{1}|[o]{2}|[t]{3}", chapNumber,
+               number.Success ? Convert.ToInt32(number.Value) : startNumber,
+               order.Success ? Convert.ToInt32 (order.Value) : startOrder,
+               match.Groups["t"].Value.Replace ("\"", "&quot;").Trim ()
+            );
+            if (header.Success)
+               passageList += "|[h]" + header.Value;
+            passageList += Environment.NewLine;
+            startNumber++;
+            startOrder++;
          }
 
          return Json (new { passages = passageList });

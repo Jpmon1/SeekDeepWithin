@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Web.Helpers;
 using SeekDeepWithin.DataAccess;
 using SeekDeepWithin.Pocos;
@@ -13,10 +14,11 @@ namespace SeekDeepWithin.Controllers
       /// </summary>
       /// <param name="db">Database object.</param>
       /// <param name="version">Version to Create TOC for.</param>
+      /// <returns>The dynamic object for the contents.</returns>
       public static void CreateToc (ISdwDatabase db, Version version)
       {
          var contents =
-            version.SubBooks.Select (
+            version.SubBooks.OrderBy(sb => sb.Order).Select (
                sb =>
                   new
                   {
@@ -25,7 +27,7 @@ namespace SeekDeepWithin.Controllers
                      termId = sb.Term.Id,
                      hide = sb.Hide,
                      chapters = sb.Chapters == null ? Enumerable.Repeat(new {name = string.Empty, id=0, hide=true}, 1) :
-                     sb.Chapters.Select (c =>
+                     sb.Chapters.OrderBy(c => c.Order).Select (c =>
                         new
                         {
                            name = c.Chapter.Name,
@@ -33,6 +35,7 @@ namespace SeekDeepWithin.Controllers
                            hide = c.Hide
                         })
                   });
+         version.Modified = DateTime.Now;
          version.Contents = Json.Encode (contents);
          db.Save();
       }

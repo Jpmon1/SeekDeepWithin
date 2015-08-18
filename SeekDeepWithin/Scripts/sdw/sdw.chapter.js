@@ -1,5 +1,4 @@
 ﻿$(document).ready(function () {
-   $('#smallLeftMenuIcon').show();
    $('#passageList').data('loc', 'on');
    $(window).resize(chapter_resize);
    chapter_resize();
@@ -40,9 +39,9 @@ function chapter_edit() {
 }
 
 function chapter_edit_header() {
-   sdw_get_edit('/Chapter/EditHeader/' + $('#chapterId').val());
+   sdw_get_edit('/Chapter/EditHeader/' + $('#chapterId').val(), true);
 }
 
 function chapter_edit_footer() {
-   sdw_get_edit('/Chapter/EditFooter/' + $('#chapterId').val());
+   sdw_get_edit('/Chapter/EditFooter/' + $('#chapterId').val(), true);
 }

@@ -19,8 +19,6 @@ namespace SeekDeepWithin.Tests.Mocks
       private IRepository<Term> m_GlossaryTerms;
       private IRepository<TermItem> m_GlossaryItems;
       private IRepository<TermItemEntry> m_GlossaryEntries;
-      private IRepository<TermWriter> m_SubBookWriters;
-      private IRepository<VersionWriter> m_VersionWriters;
       private IRepository <VersionSubBook> m_VersionSubBooks;
       private IRepository<SubBookChapter> m_SubBookChapters;
       private IRepository<TermItemSource> m_GlossaryItemSources;
@@ -39,22 +37,6 @@ namespace SeekDeepWithin.Tests.Mocks
       public IRepository<TermItemSource> TermItemSources
       {
          get { return this.m_GlossaryItemSources ?? (this.m_GlossaryItemSources = new MockRepository<TermItemSource> ()); }
-      }
-
-      /// <summary>
-      /// Gets the repository for sub book writers.
-      /// </summary>
-      public IRepository<TermWriter> SubBookWriters
-      {
-         get { return this.m_SubBookWriters ?? (this.m_SubBookWriters = new MockRepository<TermWriter> ()); }
-      }
-
-      /// <summary>
-      /// Gets the repository for version writers.
-      /// </summary>
-      public IRepository<VersionWriter> VersionWriters
-      {
-         get { return this.m_VersionWriters ?? (this.m_VersionWriters = new MockRepository<VersionWriter> ()); }
       }
 
       /// <summary>

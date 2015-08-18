@@ -11,7 +11,7 @@ function sdw_del_remove(b) {
    $(b).closest(".row").remove();
 }
 
-function sdw_get_edit(url) {
+function sdw_get_edit(url, scroll) {
    $('#editItem').html('<div class="tCenter"><img src="../../Content/ajax-loader_2.gif" alt="Loading..."/></div>');
    $.ajax({
       type: 'GET',
@@ -22,6 +22,11 @@ function sdw_get_edit(url) {
       style_setup();
       if ($('#linkArea').length > 0) {
          link_setup();
+      }
+      if (scroll) {
+         $('html, body').animate({
+            scrollTop: $('#itemEditArea').offset().top
+         }, 100);
       }
    });
 }
@@ -35,7 +40,7 @@ function sdw_item_add() {
          });
    } else {
       sdw_post('/Passage/Create/', { passageList: $('#formatted').val(), subBookId: $('#subBookId').val() },
-         'Adding Passages, please wait...', function() {
+         'Adding Passages, please wait...', function () {
 
          });
    }
@@ -68,18 +73,29 @@ function sdw_format_item() {
          order++;
          number++;
       }
+      $('#formatted').val(formattedText);
+      $('#formatted').show();
+      $('#formattedAddBtn').show();
+   } else if ($('#convertRegex').prop('checked')) {
+      sdw_post('/Convert/RegexToPassages/', {
+         text: text,
+         regex: encodeURIComponent($('#regex').val())
+      }, 'Converting, please wait...', function (d) {
+         $('#formatted').val(d.passages);
+         $('#formatted').show();
+         $('#formattedAddBtn').show();
+      }, 'Convert Items');
    } else {
       if ($('#convertSpaces').prop('checked')) {
          text = text.replace(/\n/g, ' ');
          text = text.replace(/\s+/g, ' ');
+         text = text.replace(/^\s+|\s+$/g, '');
       }
       if (chapter === undefined) {
          formattedText = String.format("[o]{0}|[t]{1}", order, text);
       } else {
          formattedText = String.format("[c]{0}|[n]{1}|[o]{2}|[t]{3}", chapter, number, order, text);
       }
+      $('#formatted').val(formattedText);
    }
-   $('#formatted').val(formattedText);
-   $('#formatted').show();
-   $('#formattedAddBtn').show();
 }

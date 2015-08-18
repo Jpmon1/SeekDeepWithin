@@ -26,6 +26,12 @@ function subbook_create_chapters() {
    });
 }
 
+function subbook_delete_chapter(id) {
+   sdw_post('/Chapter/Delete/', { id: id }, 'Deleting Chapter, please wait...', function() {
+      $('#chapter_' + id).remove();
+   }, 'Deleting Data');
+}
+
 function subbook_range() {
    var text = '';
    var title = $('#chapterRangeTitle').val();

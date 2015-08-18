@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace SeekDeepWithin.Pocos
 {
@@ -13,6 +14,11 @@ namespace SeekDeepWithin.Pocos
       /// Gets or Sets the number of votes this entry has.
       /// </summary>
       public int Votes { get; set; }
+
+      /// <summary>
+      /// Gets or Sets the last time this was modified.
+      /// </summary>
+      public DateTime Modified { get; set; }
 
       /// <summary>
       /// Get or Sets the parent glossary term.

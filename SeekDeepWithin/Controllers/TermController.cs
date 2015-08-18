@@ -1,4 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Web.Mvc;
 using SeekDeepWithin.DataAccess;
@@ -64,11 +66,11 @@ namespace SeekDeepWithin.Controllers
          var foundTerm = this.Database.Terms.Get (t => t.Name == name).FirstOrDefault ();
          if (foundTerm != null)
             return this.Fail ("A term with that name already exists.");
-         var term = new Term { Name = name };
+         var term = new Term { Name = name, Modified = DateTime.Now };
          this.Database.Terms.Insert (term);
          this.Database.Save ();
          TermSearch.AddOrUpdateIndex(term);
-         return Json ("success");
+         return Json (new { status = SUCCESS, id = term.Id, name });
       }
 
       /// <summary>
@@ -98,7 +100,7 @@ namespace SeekDeepWithin.Controllers
          term.Name = name;
          this.Database.Save ();
          TermSearch.AddOrUpdateIndex (term);
-         return Json ("success");
+         return this.Success();
       }
 
       /// <summary>
@@ -126,7 +128,7 @@ namespace SeekDeepWithin.Controllers
          var linked = new TermLink {LinkType = (int) TermLinkType.Tagged, RefId = term.Id, Name = term.Name};
          tag.Links.Add (linked);
          this.Database.Save ();
-         return Json (new {id = link.Id, linkedId = linked.Id, termId = id, refId = linkId, name = tag.Name});
+         return Json (new { status = SUCCESS, id = link.Id, linkedId = linked.Id, termId = id, refId = linkId, name = tag.Name });
       }
 
       /// <summary>
@@ -153,11 +155,11 @@ namespace SeekDeepWithin.Controllers
          term.Links.Remove (tagLink);
          tag.Links.Remove (taggedLink);
          this.Database.Save ();
-         return Json ("success");
+         return this.Success();
       }
 
       /// <summary>
-      /// Assigns a writer to a sub book.
+      /// Assigns a writer to a term.
       /// </summary>
       /// <returns>The result.</returns>
       [HttpPost]
@@ -180,11 +182,11 @@ namespace SeekDeepWithin.Controllers
          writer.Links.Add (linked);
 
          this.Database.Save ();
-         return Json (new {id = link.Id, linkedId = linked.Id, termId = id, refId = linkId, name = writer.Name});
+         return Json (new { status = SUCCESS, id = link.Id, linkedId = linked.Id, termId = id, refId = linkId, name = writer.Name });
       }
 
       /// <summary>
-      /// Removes a writer from a sub book.
+      /// Removes a writer from a tern.
       /// </summary>
       /// <returns>The result.</returns>
       [HttpPost]
@@ -205,11 +207,11 @@ namespace SeekDeepWithin.Controllers
          term.Links.Remove (writerLink);
          writer.Links.Remove (writtenLink);
          this.Database.Save ();
-         return Json ("success");
+         return this.Success();
       }
 
       /// <summary>
-      /// Assigns a writer to a sub book.
+      /// Adds a see also to a term.
       /// </summary>
       /// <returns>The result.</returns>
       [HttpPost]
@@ -228,11 +230,11 @@ namespace SeekDeepWithin.Controllers
          var link = new TermLink {LinkType = (int) TermLinkType.SeeAlso, RefId = linkId, Name = seeAlso.Name};
          term.Links.Add (link);
          this.Database.Save ();
-         return Json (new {id = link.Id, termId = id, refId = linkId, name = seeAlso.Name});
+         return Json (new { status = SUCCESS, id = link.Id, termId = id, refId = linkId, name = seeAlso.Name });
       }
 
       /// <summary>
-      /// Removes a writer from a sub book.
+      /// Removes a see also from a term.
       /// </summary>
       /// <returns>The result.</returns>
       [HttpPost]
@@ -250,56 +252,31 @@ namespace SeekDeepWithin.Controllers
 
          term.Links.Remove (seeAlsoLink);
          this.Database.Save ();
-         return Json ("success");
-      }
-
-      /*/// <summary>
-      /// Assigns an abbreviation to a sub book.
-      /// </summary>
-      /// <returns>The result.</returns>
-      [HttpPost]
-      [ValidateAntiForgeryToken]
-      [Authorize (Roles = "Editor")]
-      public ActionResult AddAbbreviation (int subBookId, string text)
-      {
-         text = text.ToLower ().Replace (" ", "");
-         var abbreviation = this.Database.Abbreviations.Get (c => c.Text == text).FirstOrDefault ();
-         if (abbreviation != null)
-         {
-            if (abbreviation.Term.Id == subBookId)
-               return Json ("Abbreviation already exists");
-            return this.Fail ("Abbreviation is already assigned to a different book - " + abbreviation.Term.Name);
-         }
-
-         var term = this.Database.GlossaryTerms.Get (subBookId);
-         if (term.Abbreviations == null)
-            term.Abbreviations = new Collection<Abbreviation> ();
-         abbreviation = new Abbreviation { Term = term, Text = text };
-         term.Abbreviations.Add (abbreviation);
-         this.Database.Save ();
-         TermSearch.AddOrUpdateIndex (term);
-         return Json (new { id = abbreviation.Id, text });
+         return this.Success();
       }
 
       /// <summary>
-      /// Removes an abbreviation from a sub book.
+      /// Gets the list of terms.
       /// </summary>
-      /// <returns>The result.</returns>
-      [HttpPost]
-      [ValidateAntiForgeryToken]
-      [Authorize (Roles = "Editor")]
-      public ActionResult RemoveAbbreviation (int id)
+      /// <returns>A JSON result.</returns>
+      public ActionResult List (int? start, string filter)
       {
-         var abbreviation = this.Database.Abbreviations.Get (id);
-         if (abbreviation == null)
-            return this.Fail ("Unknown abbreviation");
-         var term = abbreviation.Term;
-         term.Abbreviations.Remove (abbreviation);
-         this.Database.Abbreviations.Delete (abbreviation);
-         this.Database.Save ();
-         TermSearch.AddOrUpdateIndex (term);
-         return Json ("success");
-      }*/
+         var terms = this.Database.Terms.All (q => q.OrderBy (t => t.Name))
+            .Where(t => string.IsNullOrEmpty (filter) || t.Name.Contains(filter))
+            .Skip(start ?? 0).Take(25).ToList ();
+         return Json (
+            new
+            {
+               status = SUCCESS,
+               count = terms.Count,
+               terms = terms.Select (t => new
+               {
+                  id = t.Id,
+                  name = t.Name,
+                  modified = t.Modified.ToString (CultureInfo.InvariantCulture)
+               })
+            }, JsonRequestBehavior.AllowGet);
+      }
 
       /// <summary>
       /// Gets auto complete items for the given term.

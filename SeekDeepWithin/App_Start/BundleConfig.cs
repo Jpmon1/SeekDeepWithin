@@ -89,30 +89,14 @@ namespace SeekDeepWithin
             "~/Scripts/foundation.js"));
 
          /************************ READ PAGES ************************/
-         bundles.Add (new ScriptBundle ("~/bundles/sdw.read").Include ("~/Scripts/sdw/sdw.read.js",
-            "~/Scripts/foundation.js"));
+         bundles.Add (new ScriptBundle ("~/bundles/sdw.read").Include ("~/Scripts/sdw/sdw.read.js"));
 
          /************************ SEARCH PAGES ************************/
          bundles.Add (new ScriptBundle ("~/bundles/sdw.search").Include ("~/Scripts/jquery.matchHeight.js",
             "~/Scripts/sdw/sdw.search.js"));
-
-
-         
-         bundles.Add (new ScriptBundle ("~/bundles/sdw.index").Include ("~/Scripts/sdw/sdw.index.js"));
-         
-         bundles.Add (new StyleBundle ("~/Content/themes/base/css").Include (
-            "~/Content/themes/base/jquery.ui.core.css",
-            "~/Content/themes/base/jquery.ui.resizable.css",
-            "~/Content/themes/base/jquery.ui.selectable.css",
-            "~/Content/themes/base/jquery.ui.accordion.css",
-            "~/Content/themes/base/jquery.ui.autocomplete.css",
-            "~/Content/themes/base/jquery.ui.button.css",
-            "~/Content/themes/base/jquery.ui.dialog.css",
-            "~/Content/themes/base/jquery.ui.slider.css",
-            "~/Content/themes/base/jquery.ui.tabs.css",
-            "~/Content/themes/base/jquery.ui.datepicker.css",
-            "~/Content/themes/base/jquery.ui.progressbar.css",
-            "~/Content/themes/base/jquery.ui.theme.css"));
+         bundles.Add (new ScriptBundle ("~/bundles/sdw.index").Include ("~/Scripts/sdw/sdw.common.js",
+            "~/Scripts/jquery.remodal.js",
+            "~/Scripts/sdw/sdw.index.js"));
       }
    }
 }

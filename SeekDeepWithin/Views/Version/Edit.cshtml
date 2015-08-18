@@ -76,7 +76,7 @@
          <div class="title">Sub Books</div>
          <div class="content">
             @foreach (var subBook in Model.SubBooks) {
-               <div class="row">
+               <div class="row" id="subBook_@(subBook.Id)">
                   <div class="small-12 medium-8 large-10 columns">
                      <a href="@Url.Action("Index", "Term", new {id=subBook.Term.Id}, scheme)" class="sdw-button small white expand tLeft">
                         <span class="mLeft">@(subBook.Name)
@@ -87,12 +87,12 @@
                      </a>
                   </div>
                   <div class="small-6 medium-2 large-1 columns">
-                     <a href="javascript:void(0)" class="sdw-button err tiny expand" title="Delete">
+                     <a href="javascript:void(0)" class="sdw-button err tiny expand" title="Delete @(subBook.Name)" onclick="version_delete_subbook(@(subBook.Id))">
                         <i class="icon-trash"></i>
                      </a>
                   </div>
                   <div class="small-6 medium-2 large-1 columns">
-                     <a href="@Url.Action("Edit", "SubBook", new {id=subBook.Id}, scheme)" class="sdw-button alt tiny expand" title="Edit">
+                     <a href="@Url.Action("Edit", "SubBook", new {id=subBook.Id}, scheme)" class="sdw-button alt tiny expand" title="Edit @(subBook.Name)">
                         <i class="icon-edit"></i>
                      </a>
                   </div>

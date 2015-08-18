@@ -60,12 +60,13 @@ namespace SeekDeepWithin.SdwSearch
                var doc = reader.Document (scoreDoc.Doc);
                var id = doc.Get ("Id");
                var title = doc.Get ("title");
+               var number = doc.Get ("number");
                var chapterId = doc.Get ("chapterId");
                var result = new SearchResult
                {
                   Id = id,
                   Title = title.Highlight (search),
-                  Url = string.Format ("{0}/Read/{1}", host, chapterId),
+                  Url = string.Format ("{0}/Read/{1}#num_{2}", host, chapterId, number),
                   Description = doc.Get ("text").Highlight(search)
                };
                results.Add (result);
@@ -164,6 +165,7 @@ namespace SeekDeepWithin.SdwSearch
          doc.Add (new Field ("Id", id, Field.Store.YES, Field.Index.NOT_ANALYZED));
          var title = passage.GetTitle ();
          doc.Add (new Field ("title", title, Field.Store.YES, Field.Index.NOT_ANALYZED));
+         doc.Add (new Field ("number", passage.Number.ToString(CultureInfo.InvariantCulture), Field.Store.YES, Field.Index.NOT_ANALYZED));
          doc.Add (new Field ("chapterId", passage.Chapter.Id.ToString(CultureInfo.InvariantCulture), Field.Store.YES, Field.Index.NOT_ANALYZED));
          doc.Add (new Field ("text", passage.Passage.Text, Field.Store.YES, Field.Index.ANALYZED));
          doc.Add (new Field ("chapter", passage.Chapter.Chapter.Name, Field.Store.YES, Field.Index.ANALYZED));

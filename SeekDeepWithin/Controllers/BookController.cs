@@ -1,4 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Web.Mvc;
 using SeekDeepWithin.DataAccess;
@@ -30,9 +32,9 @@ namespace SeekDeepWithin.Controllers
       public ActionResult Index (int? page)
       {
          if (TempData.ContainsKey ("ErrorMessage"))
-            ViewBag.ErrorMessage = TempData["ErrorMessage"];
+            ViewBag.ErrorMessage = TempData ["ErrorMessage"];
          var books = this.Database.Books.All (q => q.OrderBy (b => b.Title.StartsWith ("The") ? b.Title.Substring (3).Trim () : b.Title));
-         var viewModel = new PagedViewModel<BookViewModel> { PageNumber = page ?? 1, ItemsOnPage = 12, TotalHits = books.Count};
+         var viewModel = new PagedViewModel<BookViewModel> { PageNumber = page ?? 1, ItemsOnPage = 12, TotalHits = books.Count };
          viewModel.AddRange (books.Skip ((viewModel.PageNumber - 1) * viewModel.ItemsOnPage)
             .Take (viewModel.ItemsOnPage)
             .Select (book => new BookViewModel (book, true)));
@@ -73,14 +75,14 @@ namespace SeekDeepWithin.Controllers
          if (term == null)
             return this.Fail ("Unable to determine the associated term.");
 
-         var book = new Book { Summary = summary, Title = title, SubTitle = subTitle, Term = term };
+         var book = new Book { Summary = summary, Title = title, SubTitle = subTitle, Term = term, Modified = DateTime.Now };
          this.Database.Books.Insert (book);
          this.Database.Save ();
          if (term.Links == null) term.Links = new Collection<TermLink> ();
-         term.Links.Add (new TermLink { LinkType = (int)TermLinkType.Book, RefId = book.Id, Name = title });
+         term.Links.Add (new TermLink { LinkType = (int) TermLinkType.Book, RefId = book.Id, Name = title });
          this.Database.Save ();
          BookSearch.AddOrUpdateIndex (book);
-         return Json ("success");
+         return Json (new { status = SUCCESS, title, termId, id = book.Id });
       }
 
       /// <summary>
@@ -114,18 +116,18 @@ namespace SeekDeepWithin.Controllers
          book.Title = title;
          book.SubTitle = subTitle;
          book.Summary = summary;
-         var term = book.Term;
-         var link = term.Links.FirstOrDefault (l => l.LinkType == (int)TermLinkType.Book && l.RefId == id);
-         if (link != null) term.Links.Remove (link);
-         if (book.Term.Id != termId)
-         {
+         book.Modified = DateTime.Now;
+         if (book.Term.Id != termId) {
+            var term = book.Term;
+            var link = term.Links.FirstOrDefault (l => l.LinkType == (int) TermLinkType.Book && l.RefId == id);
+            if (link != null) term.Links.Remove (link);
             term = this.Database.Terms.Get (termId);
             book.Term = term;
+            term.Links.Add (new TermLink { LinkType = (int) TermLinkType.Book, RefId = book.Id });
          }
-         term.Links.Add (new TermLink { LinkType = (int)TermLinkType.Book, RefId = book.Id });
          this.Database.Save ();
          BookSearch.AddOrUpdateIndex (book);
-         return Json ("success");
+         return this.Success ();
       }
 
       /// <summary>
@@ -144,8 +146,35 @@ namespace SeekDeepWithin.Controllers
          if (book == null) return this.Fail ("Unable to determine the book.");
          if (version == null) return this.Fail ("Unable to determine the version.");
          book.DefaultVersion = version;
+         book.Modified = DateTime.Now;
          this.Database.Save ();
-         return Json ("success");
+         return this.Success ();
+      }
+
+      /// <summary>
+      /// Gets the list of books.
+      /// </summary>
+      /// <returns>A JSON result.</returns>
+      public ActionResult List (int? start, string filter)
+      {
+         var books = this.Database.Books.All (q => q.OrderBy (b => b.Title.StartsWith ("The") ? b.Title.Substring (3).Trim () : b.Title))
+            .Where (b => string.IsNullOrEmpty (filter) || b.Title.Contains (filter))
+            .Skip (start ?? 0).Take (25).ToList ();
+         return Json (
+            new {
+               status = SUCCESS,
+               count = books.Count,
+               books = books.Select (b => new {
+                  id = b.Id,
+                  title = b.Title,
+                  subtitle = b.SubTitle,
+                  summary = b.Summary,
+                  termid = b.Term.Id,
+                  termname = b.Term.Name,
+                  modified = b.Modified.ToString (CultureInfo.InvariantCulture),
+                  defaultversion = b.DefaultVersion == null ? 0 : b.DefaultVersion.Id
+               })
+            }, JsonRequestBehavior.AllowGet);
       }
 
       /// <summary>
@@ -155,8 +184,7 @@ namespace SeekDeepWithin.Controllers
       /// <returns>The list of possible terms for the given item.</returns>
       public ActionResult AutoComplete (string title)
       {
-         var result = new
-         {
+         var result = new {
             suggestions = this.Database.Books.Get (t => t.Title.Contains (title))
                                              .Select (t => new { value = t.Title, data = t.Id })
          };

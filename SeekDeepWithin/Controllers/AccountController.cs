@@ -36,6 +36,32 @@ namespace SeekDeepWithin.Controllers
       }
 
       /// <summary>
+      /// Gets the login view.
+      /// </summary>
+      /// <returns>The login view.</returns>
+      [AllowAnonymous]
+      public ActionResult Token ()
+      {
+         return PartialView ();
+      }
+
+      /// <summary>
+      /// Attempts to login.
+      /// </summary>
+      /// <returns>The result.</returns>
+      [HttpPost]
+      [AllowAnonymous]
+      [ValidateAntiForgeryToken]
+      public ActionResult LoginRequest (LoginViewModel viewModel)
+      {
+         if (!ModelState.IsValid)
+            return Json (new {status="fail", message = "Invalid login information."});
+         if (WebSecurity.Login (viewModel.UserEmail, viewModel.Password, viewModel.RememberMe))
+            return Json (new {status="success", message = "Login successful"});
+         return Json (new {status="fail", message = "Login information incorrect."});
+      }
+
+      /// <summary>
       /// Logs a user in.
       /// </summary>
       /// <param name="viewModel">Login information.</param>

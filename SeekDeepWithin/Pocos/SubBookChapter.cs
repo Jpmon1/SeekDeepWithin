@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace SeekDeepWithin.Pocos
 {
@@ -18,6 +19,11 @@ namespace SeekDeepWithin.Pocos
       /// Gets or Sets if this chapter should be hidden or not.
       /// </summary>
       public bool Hide { get; set; }
+
+      /// <summary>
+      /// Gets or Sets the last time this was modified.
+      /// </summary>
+      public DateTime Modified { get; set; }
 
       /// <summary>
       /// Gets or Sets the default reading style.
