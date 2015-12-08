@@ -1,4 +1,5 @@
 ﻿using System.Data.Entity;
+using System.Data.Entity.ModelConfiguration.Conventions;
 using SeekDeepWithin.Pocos;
 using SeekDeepWithin.Migrations;
 
@@ -10,6 +11,8 @@ namespace SeekDeepWithin.DataAccess
       /// Initializes the seek deep within database context.
       /// </summary>
       public SdwDbContext () : base ("SdwConnection") { }
+
+      public DbSet<Light> Lights { get; set; }
 
       public DbSet<Book> Books { get; set; }
 
@@ -50,7 +53,36 @@ namespace SeekDeepWithin.DataAccess
       /// <param name="modelBuilder">The builder that defines the model for the context being created.</param>
       protected override void OnModelCreating (DbModelBuilder modelBuilder)
       {
-         Database.SetInitializer (new MigrateDatabaseToLatestVersion <SdwDbContext, Configuration> ());
+         Database.SetInitializer (new MigrateDatabaseToLatestVersion<SdwDbContext, Configuration> ());
+         /*modelBuilder.Entity<Light> ()
+            .HasMany (l => l.Love)
+            .WithRequired (l => l.ParentLight)
+            .HasForeignKey (l => l.ParentLightId)
+                     .WillCascadeOnDelete (false);
+         modelBuilder.Entity<Light> ()
+            .HasMany (l => l.Love)
+            .WithRequired (l => l.ChildLight)
+            .HasForeignKey (l => l.ChildLightId)
+                     .WillCascadeOnDelete (false);*/
+         /*modelBuilder.Entity <Love>()
+            .HasRequired(l => l.FirstLight)
+            .WithMany (l => l.Love)
+            .HasForeignKey(l => l.ParentId);
+         modelBuilder.Entity<Love> ()
+            .HasRequired (l => l.SecondLight)
+            .WithMany (l => l.Love)
+            .HasForeignKey (l => l.ChildId);*/
+         modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention> (); 
+         /*modelBuilder.Entity<Love> ()
+                     .HasRequired (m => m.Child)
+                     .WithMany (t => t.Children)
+                     .HasForeignKey (m => m.ChildId)
+                     .WillCascadeOnDelete (false);
+         modelBuilder.Entity<Love> ()
+                     .HasRequired (m => m.Parent)
+                     .WithMany (t => t.Parents)
+                     .HasForeignKey (m => m.ParentId)
+                     .WillCascadeOnDelete (false);*/
       }
    }
 }

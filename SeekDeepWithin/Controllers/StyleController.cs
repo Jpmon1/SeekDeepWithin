@@ -19,6 +19,104 @@ namespace SeekDeepWithin.Controllers
       /// <param name="db">Database object.</param>
       public StyleController (ISdwDatabase db) : base (db) { }
 
+      /// <summary>
+      /// Adds a new style to a light.
+      /// </summary>
+      /// <param name="lightId">Id of light to add style to.</param>
+      /// <param name="startStyle">The start tag of the style.</param>
+      /// <param name="endStyle">The end tag of the style.</param>
+      /// <param name="startIndex">The start index of the style.</param>
+      /// <param name="endIndex">The end index of the style.</param>
+      /// <param name="spansMultiple">If true, this is either the start or end to a style to spans multiple lights.</param>
+      /// <returns>Json results</returns>
+      [HttpPost]
+      [Authorize (Roles = "Editor")]
+      public ActionResult Create (int lightId, string startStyle, string endStyle, int startIndex, int endIndex, bool spansMultiple)
+      {
+         var light = this.Database.Light.Get (lightId);
+         if (light == null) return this.Fail ("That light has not yet been illuminated.");
+         var style = GetStyle (startStyle, endStyle, spansMultiple);
+         var lightStyle = new LightStyle {
+            Light = light,
+            Style = style,
+            StartIndex = startIndex,
+            EndIndex = endIndex
+         };
+         light.Styles.Add (lightStyle);
+         this.Database.Save ();
+         return Json (new { status = SUCCESS, id = lightStyle.Id });
+      }
+
+      /// <summary>
+      /// Edits the given style in the given light.
+      /// </summary>
+      /// <param name="id">The id of the style to edit.</param>
+      /// <param name="lightId">Id of light with style to edit.</param>
+      /// <param name="startStyle">The start tag of the style.</param>
+      /// <param name="endStyle">The end tag of the style.</param>
+      /// <param name="startIndex">The start index of the style.</param>
+      /// <param name="endIndex">The end index of the style.</param>
+      /// <param name="spansMultiple">If true, this is either the start or end to a style to spans multiple lights.</param>
+      /// <returns>Json results</returns>
+      [HttpPost]
+      [Authorize (Roles = "Editor")]
+      public ActionResult Edit (int id, int lightId, string startStyle, string endStyle, int startIndex, int endIndex, bool spansMultiple)
+      {
+         var light = this.Database.Light.Get (lightId);
+         if (light == null) return this.Fail ("That light has not yet been illuminated.");
+         var style = GetStyle (startStyle, endStyle, spansMultiple);
+         var lightStyle = light.Styles.FirstOrDefault (s => s.Id == id);
+         if (lightStyle == null) return this.Fail ("Unable to find the style.");
+         if (lightStyle.Style.Id != style.Id) lightStyle.Style = style;
+         lightStyle.EndIndex = endIndex;
+         lightStyle.StartIndex = startIndex;
+         this.Database.Save ();
+         return this.Success ();
+      }
+
+      /// <summary>
+      /// Deletes a style from a light.
+      /// </summary>
+      /// <param name="id">The id of the style to delete.</param>
+      /// <param name="lightId">The id of the light to delete the style from.</param>
+      /// <returns>Json results</returns>
+      [HttpPost]
+      [Authorize (Roles = "Editor")]
+      public ActionResult Delete (int id, int lightId)
+      {
+         var light = this.Database.Light.Get (lightId);
+         if (light == null) return this.Fail ("That light has not yet been illuminated.");
+         var lightStyle = light.Styles.FirstOrDefault (s => s.Id == id);
+         if (lightStyle == null) return this.Fail ("Unable to find the style.");
+         light.Styles.Remove (lightStyle);
+         this.Database.Save ();
+         return this.Success ();
+      }
+
+      /// <summary>
+      /// Gets the styles for a light.
+      /// </summary>
+      /// <param name="lightId">The id of the light to get styles for.</param>
+      /// <returns>Json results</returns>
+      public ActionResult Get (int lightId)
+      {
+         var light = this.Database.Light.Get (lightId);
+         if (light == null) return this.Fail ("That light has not yet been illuminated.");
+         return Json (
+            new {
+               status = SUCCESS,
+               count = light.Styles.Count,
+               light = light.Styles.Select (l => new {
+                  id = l.Id,
+                  endIndex = l.EndIndex,
+                  endStyle = l.Style.End,
+                  startIndex = l.StartIndex,
+                  startStyle = l.Style.Start,
+                  spansMultiple = l.Style.SpansMultiple
+               })
+            }, JsonRequestBehavior.AllowGet);
+      }
+
       #region Passage
 
       /// <summary>
@@ -35,6 +133,7 @@ namespace SeekDeepWithin.Controllers
          if (style == null) return this.Fail ("Unable to determine the style to get");
          return Json (new
          {
+            status = SUCCESS, 
             itemId,
             id = style.Id,
             startIndex = style.StartIndex,
@@ -65,7 +164,7 @@ namespace SeekDeepWithin.Controllers
          };
          passage.Styles.Add (pStyle);
          this.Database.Save ();
-         return Json (new { id = pStyle.Id, startIndex = pStyle.StartIndex, endIndex = pStyle.EndIndex });
+         return Json (new { status = SUCCESS, id = pStyle.Id, startIndex = pStyle.StartIndex, endIndex = pStyle.EndIndex });
       }
 
       /// <summary>
@@ -86,7 +185,7 @@ namespace SeekDeepWithin.Controllers
          pStyle.EndIndex = endIndex;
          pStyle.StartIndex = startIndex;
          this.Database.Save ();
-         return Json ("success");
+         return this.Success ();
       }
 
       /// <summary>
@@ -106,7 +205,7 @@ namespace SeekDeepWithin.Controllers
          if (pStyle == null) return this.Fail ("No style to delete");
          passage.Styles.Remove (pStyle);
          this.Database.Save ();
-         return Json ("success");
+         return this.Success ();
       }
 
       /// <summary>
@@ -124,6 +223,7 @@ namespace SeekDeepWithin.Controllers
          if (style == null) return this.Fail ("Unable to determine the style to get");
          return Json (new
          {
+            status = SUCCESS, 
             itemId,
             id = style.Id,
             startIndex = style.StartIndex,
@@ -155,7 +255,7 @@ namespace SeekDeepWithin.Controllers
          };
          passage.Header.Styles.Add (fStyle);
          this.Database.Save ();
-         return Json (new { id = fStyle.Id, startIndex = fStyle.StartIndex, endIndex = fStyle.EndIndex });
+         return Json (new { status = SUCCESS, id = fStyle.Id, startIndex = fStyle.StartIndex, endIndex = fStyle.EndIndex });
       }
 
       /// <summary>
@@ -177,7 +277,7 @@ namespace SeekDeepWithin.Controllers
          hStyle.EndIndex = endIndex;
          hStyle.StartIndex = startIndex;
          this.Database.Save ();
-         return Json (new { id, startIndex, endIndex });
+         return Json (new { status = SUCCESS, id, startIndex, endIndex });
       }
 
       /// <summary>
@@ -198,7 +298,7 @@ namespace SeekDeepWithin.Controllers
          if (style == null) return this.Fail ("No style to delete.");
          passage.Header.Styles.Remove (style);
          this.Database.Save ();
-         return Json ("success");
+         return this.Success ();
       }
 
       /// <summary>
@@ -218,6 +318,7 @@ namespace SeekDeepWithin.Controllers
          if (style == null) return this.Fail ("Unable to determine the style to get");
          return Json (new
          {
+            status = SUCCESS,
             itemId,
             id = style.Id,
             startIndex = style.StartIndex,
@@ -250,7 +351,7 @@ namespace SeekDeepWithin.Controllers
          };
          footer.Styles.Add (fStyle);
          this.Database.Save ();
-         return Json (new { id = fStyle.Id, startIndex = fStyle.StartIndex, endIndex = fStyle.EndIndex });
+         return Json (new { status = SUCCESS, id = fStyle.Id, startIndex = fStyle.StartIndex, endIndex = fStyle.EndIndex });
       }
 
       /// <summary>
@@ -273,7 +374,7 @@ namespace SeekDeepWithin.Controllers
          fStyle.EndIndex = endIndex;
          fStyle.StartIndex = startIndex;
          this.Database.Save ();
-         return Json (new { id, startIndex, endIndex });
+         return Json (new { status = SUCCESS, id, startIndex, endIndex });
       }
 
       /// <summary>
@@ -296,7 +397,7 @@ namespace SeekDeepWithin.Controllers
          if (style == null) return this.Fail ("Unable to determine the style");
          footer.Styles.Remove (style);
          this.Database.Save ();
-         return Json ("success");
+         return this.Success ();
       }
 
       #endregion
@@ -317,6 +418,7 @@ namespace SeekDeepWithin.Controllers
          if (style == null) return this.Fail ("Unable to determine the style to get");
          return Json (new
          {
+            status = SUCCESS, 
             itemId,
             id = style.Id,
             startIndex = style.StartIndex,
@@ -347,7 +449,7 @@ namespace SeekDeepWithin.Controllers
          };
          entry.Styles.Add (pStyle);
          this.Database.Save ();
-         return Json (new { id = pStyle.Id, startIndex = pStyle.StartIndex, endIndex = pStyle.EndIndex });
+         return Json (new { status = SUCCESS, id = pStyle.Id, startIndex = pStyle.StartIndex, endIndex = pStyle.EndIndex });
       }
 
       /// <summary>
@@ -369,7 +471,7 @@ namespace SeekDeepWithin.Controllers
          if (eStyle.Style.Id != style.Id)
             eStyle.Style = style;
          this.Database.Save ();
-         return Json ("success");
+         return this.Success ();
       }
 
       /// <summary>
@@ -389,7 +491,7 @@ namespace SeekDeepWithin.Controllers
          if (eStyle == null)return this.Fail ("No style to delete.");
          entry.Styles.Remove (eStyle);
          this.Database.Save ();
-         return Json ("success");
+         return this.Success ();
       }
 
       /// <summary>
@@ -407,6 +509,7 @@ namespace SeekDeepWithin.Controllers
          if (style == null) return this.Fail ("Unable to determine the style to get");
          return Json (new
          {
+            status = SUCCESS, 
             itemId,
             id = style.Id,
             startIndex = style.StartIndex,
@@ -438,7 +541,7 @@ namespace SeekDeepWithin.Controllers
          };
          entry.Header.Styles.Add (hStyle);
          this.Database.Save ();
-         return Json (new { id = hStyle.Id, startIndex = hStyle.StartIndex, endIndex = hStyle.EndIndex });
+         return Json (new { status = SUCCESS, id = hStyle.Id, startIndex = hStyle.StartIndex, endIndex = hStyle.EndIndex });
       }
 
       /// <summary>
@@ -460,7 +563,7 @@ namespace SeekDeepWithin.Controllers
          hStyle.EndIndex = endIndex;
          hStyle.StartIndex = startIndex;
          this.Database.Save ();
-         return Json (new { id, startIndex, endIndex });
+         return Json (new { status = SUCCESS, id, startIndex, endIndex });
       }
 
       /// <summary>
@@ -482,7 +585,7 @@ namespace SeekDeepWithin.Controllers
          if (style == null) return this.Fail ("No style to delete.");
          header.Styles.Remove (style);
          this.Database.Save ();
-         return Json ("success");
+         return this.Success ();
       }
 
       /// <summary>
@@ -502,6 +605,7 @@ namespace SeekDeepWithin.Controllers
          if (style == null) return this.Fail ("Unable to determine the style");
          return Json (new
          {
+            status = SUCCESS, 
             id,
             itemId,
             startIndex = style.StartIndex,
@@ -534,7 +638,7 @@ namespace SeekDeepWithin.Controllers
          };
          footer.Styles.Add (fStyle);
          this.Database.Save ();
-         return Json (new { id = fStyle.Id, startIndex = fStyle.StartIndex, endIndex = fStyle.EndIndex });
+         return Json (new { status = SUCCESS, id = fStyle.Id, startIndex = fStyle.StartIndex, endIndex = fStyle.EndIndex });
       }
 
       /// <summary>
@@ -557,7 +661,7 @@ namespace SeekDeepWithin.Controllers
          fStyle.EndIndex = endIndex;
          fStyle.StartIndex = startIndex;
          this.Database.Save ();
-         return Json (new { id, startIndex, endIndex });
+         return Json (new { status = SUCCESS, id, startIndex, endIndex });
       }
 
       /// <summary>
@@ -580,7 +684,7 @@ namespace SeekDeepWithin.Controllers
          if (style == null) return this.Fail ("No style to delete.");
          footer.Styles.Remove (style);
          this.Database.Save ();
-         return Json ("success");
+         return this.Success ();
       }
 
       #endregion
@@ -602,6 +706,7 @@ namespace SeekDeepWithin.Controllers
          if (style == null) return this.Fail ("Unable to determine the style to get");
          return Json (new
          {
+            status = SUCCESS, 
             itemId,
             id = style.Id,
             startIndex = style.StartIndex,
@@ -633,7 +738,7 @@ namespace SeekDeepWithin.Controllers
          };
          chapter.Header.Styles.Add (hStyle);
          this.Database.Save ();
-         return Json (new { id = hStyle.Id, startIndex = hStyle.StartIndex, endIndex = hStyle.EndIndex });
+         return Json (new { status = SUCCESS, id = hStyle.Id, startIndex = hStyle.StartIndex, endIndex = hStyle.EndIndex });
       }
 
       /// <summary>
@@ -655,7 +760,7 @@ namespace SeekDeepWithin.Controllers
          hStyle.EndIndex = endIndex;
          hStyle.StartIndex = startIndex;
          this.Database.Save ();
-         return Json (new { id = hStyle.Id, startIndex = hStyle.StartIndex, endIndex = hStyle.EndIndex });
+         return Json (new { status = SUCCESS, id = hStyle.Id, startIndex = hStyle.StartIndex, endIndex = hStyle.EndIndex });
       }
 
       /// <summary>
@@ -676,7 +781,7 @@ namespace SeekDeepWithin.Controllers
          if (style == null) return this.Fail ("No style to delete.");
          chapter.Header.Styles.Remove (style);
          this.Database.Save ();
-         return Json ("success");
+         return this.Success ();
       }
 
       /// <summary>
@@ -725,7 +830,7 @@ namespace SeekDeepWithin.Controllers
          };
          chapter.Footer.Styles.Add (hStyle);
          this.Database.Save ();
-         return Json (new { id = hStyle.Id, startIndex = hStyle.StartIndex, endIndex = hStyle.EndIndex });
+         return Json (new { status = SUCCESS, id = hStyle.Id, startIndex = hStyle.StartIndex, endIndex = hStyle.EndIndex });
       }
 
       /// <summary>
@@ -747,7 +852,7 @@ namespace SeekDeepWithin.Controllers
          fStyle.EndIndex = endIndex;
          fStyle.StartIndex = startIndex;
          this.Database.Save ();
-         return Json (new { id, startIndex, endIndex });
+         return Json (new { status = SUCCESS, id, startIndex, endIndex });
       }
 
       /// <summary>
@@ -768,7 +873,7 @@ namespace SeekDeepWithin.Controllers
          if (style == null) return this.Fail ("No style to delete.");
          chapter.Footer.Styles.Remove (style);
          this.Database.Save ();
-         return Json ("success");
+         return this.Success ();
       }
 
       #endregion

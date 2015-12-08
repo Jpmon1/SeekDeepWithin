@@ -118,7 +118,7 @@ namespace SeekDeepWithin.Controllers
       [HttpPost]
       [ValidateAntiForgeryToken]
       [Authorize (Roles = "Editor")]
-      public ActionResult Update (int entryId, string text, int? order, int? number, string header)
+      public ActionResult Edit (int entryId, string text, int? order, int? number, string header)
       {
          var passage = this.Database.PassageEntries.Get (entryId);
          if (passage == null) return this.Fail ("Unable to determine the passage");
@@ -229,11 +229,67 @@ namespace SeekDeepWithin.Controllers
       }
 
       /// <summary>
+      /// Gets the header data for the given chapter.
+      /// </summary>
+      /// <param name="id">The id of the chapter to get header data for.</param>
+      /// <returns>JSON results</returns>
+      public ActionResult GetHeader (int id)
+      {
+         var passage = this.Database.PassageEntries.Get (id);
+         if (passage.Header == null)
+            return Json (new { status = SUCCESS, text = string.Empty }, JsonRequestBehavior.AllowGet);
+         var result = new {
+            status = SUCCESS,
+            text = passage.Header.Text,
+            styles = passage.Header.Styles.Select (s => new {
+               id = s.Id,
+               start = s.Style.Start,
+               end = s.Style.End,
+               startindex = s.StartIndex,
+               endindex = s.EndIndex,
+               multispan = s.Style.SpansMultiple
+            })
+         };
+         return Json (result, JsonRequestBehavior.AllowGet);
+      }
+
+      /// <summary>
+      /// Gets the footer data for the given chapter.
+      /// </summary>
+      /// <param name="id">The id of the chapter to get footer data for.</param>
+      /// <returns>JSON results</returns>
+      public ActionResult GetFooter (int id)
+      {
+         var passage = this.Database.PassageEntries.Get (id);
+         var result = new {
+            status = SUCCESS,
+            footers = passage.Footers.Select(f => new {
+               text = f.Text,
+               styles = f.Styles.Select (s => new {
+                  id = s.Id,
+                  start = s.Style.Start,
+                  end = s.Style.End,
+                  startindex = s.StartIndex,
+                  endindex = s.EndIndex,
+                  multispan = s.Style.SpansMultiple
+               }),
+               links = f.Links.Select (l => new {
+                  id = l.Id,
+                  url = l.Link.Url,
+                  endindex = l.EndIndex,
+                  startindex = l.StartIndex,
+                  newwindow = l.OpenInNewWindow
+               })
+            })
+         };
+         return Json (result, JsonRequestBehavior.AllowGet);
+      }
+
+      /// <summary>
       /// Gets the entry data for the given entry id.
       /// </summary>
       /// <param name="id">Id of entry to get text for.</param>
       /// <returns>The text of the entry.</returns>
-      [AllowAnonymous]
       public ActionResult Get (int id)
       {
          var entry = this.Database.PassageEntries.Get (id);
@@ -295,7 +351,8 @@ namespace SeekDeepWithin.Controllers
                order = p.Order,
                number = p.Number,
                text = p.Passage.Text,
-               passageid = p.Passage.Id
+               passageid = p.Passage.Id,
+               header = p.Header == null ? string.Empty : p.Header.Text
             })
          };
          return Json (result, JsonRequestBehavior.AllowGet);

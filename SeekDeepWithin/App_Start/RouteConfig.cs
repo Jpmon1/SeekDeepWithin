@@ -16,6 +16,8 @@ namespace SeekDeepWithin
       {
          routes.IgnoreRoute ("{resource}.axd/{*pathInfo}");
 
+         /*routes.MapRoute ("DefaultApi", "api/{controller}/{id}",
+            new { id = UrlParameter.Optional });*/
          routes.MapRoute (
             "Read",
             "Read/{id}",

@@ -6,9 +6,19 @@ namespace SeekDeepWithin.DataAccess
    public interface ISdwDatabase : IDisposable
    {
       /// <summary>
+      /// Gets the repository for lights.
+      /// </summary>
+      IRepository<Light> Light { get; }
+
+      /// <summary>
+      /// Gets the repository for loves.
+      /// </summary>
+      IRepository<Love> Love { get; }
+
+      /// <summary>
       /// Gets the repository for books.
       /// </summary>
-      IRepository <Book> Books { get; }
+      IRepository<Book> Books { get; }
 
       /// <summary>
       /// Gets the repository for versions.

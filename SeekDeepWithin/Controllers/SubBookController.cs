@@ -38,11 +38,12 @@ namespace SeekDeepWithin.Controllers
          foreach (var chap in chapters) {
             var chapTrim = chap.Trim ();
             if (string.IsNullOrWhiteSpace (chapTrim)) continue;
-            var dbChapter = DbHelper.GetChapter (this.Database, chapTrim);
+            var dbChapter = Helper.GetChapter (this.Database, chapTrim);
             var maxOrder = (subBook.Chapters.Count > 0 ? subBook.Chapters.Max (c => c.Order) : 0) + 1;
             var chapter = new SubBookChapter {
                Chapter = dbChapter,
                Order = maxOrder,
+               Number = maxOrder,
                SubBook = subBook,
                Modified = DateTime.Now
             };
@@ -51,7 +52,7 @@ namespace SeekDeepWithin.Controllers
          this.Database.Save ();
          if (subBook.Version.DefaultReadChapter == 0 && subBook.Chapters.Count > 0)
             subBook.Version.DefaultReadChapter = subBook.Chapters.First ().Id;
-         DbHelper.CreateToc (this.Database, subBook.Version);
+         Helper.CreateToc (this.Database, subBook.Version);
          return Json (new {
             status = SUCCESS,
             message = "Chapters created!",
@@ -109,7 +110,7 @@ namespace SeekDeepWithin.Controllers
             term.Links.Add (new TermLink { LinkType = (int) TermLinkType.SubBook, RefId = subBook.Id });
          }
          this.Database.Save ();
-         DbHelper.CreateToc (this.Database, subBook.Version);
+         Helper.CreateToc (this.Database, subBook.Version);
          return this.Success ();
       }
 
@@ -134,7 +135,7 @@ namespace SeekDeepWithin.Controllers
             this.Database.SubBookChapters.Delete (chapter);
          this.Database.VersionSubBooks.Delete (subBook);
          this.Database.Save ();
-         DbHelper.CreateToc (this.Database, version);
+         Helper.CreateToc (this.Database, version);
          return this.Success ();
       }
 

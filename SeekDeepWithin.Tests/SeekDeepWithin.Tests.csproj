@@ -119,6 +119,7 @@
   <ItemGroup>
     <Compile Include="Controllers\BookControllerTest.cs" />
     <Compile Include="Controllers\ConvertControllerTest.cs" />
+    <Compile Include="Controllers\LightControllerTest.cs" />
     <Compile Include="Controllers\VersionControllerTest.cs" />
     <Compile Include="DataAccess\TestPassageParser.cs" />
     <Compile Include="Mocks\MockDatabase.cs" />

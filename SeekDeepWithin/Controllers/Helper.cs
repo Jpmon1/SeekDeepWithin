@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text;
 using System.Web.Helpers;
 using SeekDeepWithin.DataAccess;
 using SeekDeepWithin.Pocos;
@@ -7,7 +8,7 @@ using Version = SeekDeepWithin.Pocos.Version;
 
 namespace SeekDeepWithin.Controllers
 {
-   public static class DbHelper
+   public static class Helper
    {
       /// <summary>
       /// Creates the Table of Contents for the given version.
@@ -18,18 +19,16 @@ namespace SeekDeepWithin.Controllers
       public static void CreateToc (ISdwDatabase db, Version version)
       {
          var contents =
-            version.SubBooks.OrderBy(sb => sb.Order).Select (
+            version.SubBooks.OrderBy (sb => sb.Order).Select (
                sb =>
-                  new
-                  {
-                     name = string.IsNullOrWhiteSpace(sb.Alias) ? sb.Term.Name : sb.Alias,
+                  new {
+                     name = String.IsNullOrWhiteSpace (sb.Alias) ? sb.Term.Name : sb.Alias,
                      id = sb.Id,
                      termId = sb.Term.Id,
                      hide = sb.Hide,
-                     chapters = sb.Chapters == null ? Enumerable.Repeat(new {name = string.Empty, id=0, hide=true}, 1) :
-                     sb.Chapters.OrderBy(c => c.Order).Select (c =>
-                        new
-                        {
+                     chapters = sb.Chapters == null ? Enumerable.Repeat (new { name = String.Empty, id = 0, hide = true }, 1) :
+                     sb.Chapters.OrderBy (c => c.Order).Select (c =>
+                        new {
                            name = c.Chapter.Name,
                            id = c.Id,
                            hide = c.Hide
@@ -37,7 +36,24 @@ namespace SeekDeepWithin.Controllers
                   });
          version.Modified = DateTime.Now;
          version.Contents = Json.Encode (contents);
-         db.Save();
+         db.Save ();
+      }
+
+      /// <summary>
+      /// Encodes the given string to a base 64 string.
+      /// </summary>
+      /// <param name="text">Text to encode.</param>
+      /// <returns>A base 64 string.</returns>
+      public static string Base64Encode (string text)
+      {
+         var bytes = Encoding.UTF8.GetBytes (text);
+         return Convert.ToBase64String (bytes).TrimEnd ('=');
+      }
+
+      public static string Base64Decode (string encodedText)
+      {
+         var bytes = Convert.FromBase64String (encodedText);
+         return Encoding.UTF8.GetString (bytes);
       }
 
       /// <summary>
@@ -49,8 +65,7 @@ namespace SeekDeepWithin.Controllers
       public static Chapter GetChapter (ISdwDatabase db, string name)
       {
          var chapter = db.Chapters.Get (c => c.Name == name).FirstOrDefault ();
-         if (chapter == null)
-         {
+         if (chapter == null) {
             chapter = new Chapter { Name = name };
             db.Chapters.Insert (chapter);
          }

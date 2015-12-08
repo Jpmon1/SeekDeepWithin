@@ -9,6 +9,8 @@ namespace SeekDeepWithin.DataAccess
    public class SdwDatabase : ISdwDatabase
    {
       private bool m_Disposed;
+      private IRepository<Light> m_Lights;
+      private IRepository<Love> m_Loves;
       private IRepository<Book> m_Books;
       private IRepository<Pocos.Version> m_Versions;
       private IRepository<Chapter> m_Chapters;
@@ -26,11 +28,27 @@ namespace SeekDeepWithin.DataAccess
       private readonly SdwDbContext m_Db = new SdwDbContext ();
 
       /// <summary>
+      /// Gets the repository for light.
+      /// </summary>
+      public IRepository<Light> Light
+      {
+         get { return this.m_Lights ?? (this.m_Lights = new Repository<Light> (m_Db)); }
+      }
+
+      /// <summary>
+      /// Gets the repository for love.
+      /// </summary>
+      public IRepository<Love> Love
+      {
+         get { return this.m_Loves ?? (this.m_Loves = new Repository<Love> (m_Db)); }
+      }
+
+      /// <summary>
       /// Gets the repository for books.
       /// </summary>
-      public IRepository <Book> Books
+      public IRepository<Book> Books
       {
-         get { return this.m_Books ?? (this.m_Books = new Repository <Book> (m_Db)); }
+         get { return this.m_Books ?? (this.m_Books = new Repository<Book> (m_Db)); }
       }
 
       /// <summary>

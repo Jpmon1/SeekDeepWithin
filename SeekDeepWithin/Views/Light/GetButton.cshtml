@@ -1,0 +1,7 @@
+﻿@model SeekDeepWithin.Pocos.Light
+<div id="light@(Model.Id)">
+   @if (ViewBag.Links)  {<a href="javascript:void(0)" onclick="getLove('@(Model.Id)');" class="sdw-button white">@(Model.Text) <i class="icon-share-alt"></i></a>}
+   else                 {<a href="javascript:void(0)" onclick="addLight('@(Model.Id)');" class="sdw-button white expand">@(Model.Text)</a>}
+   @if (ViewBag.Select) {<a href="javascript:void(0)" class="sdw-button white" title="Select"><i class="icon-circleselect"></i></a>}
+   @if (ViewBag.Remove) {<a href="javascript:void(0)" class="sdw-button white" title="remove"><i class="icon-remove-circle"></i></a>}
+</div>

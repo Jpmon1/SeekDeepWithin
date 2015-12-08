@@ -1,94 +1,61 @@
-﻿@using SeekDeepWithin.Models
-
-@{
-   ViewBag.Title = "Welcome";
-   var panelSize = 3;
-   if (Request.IsAuthenticated)
-   {
-      panelSize = 4;
-   }
-   var randomPassage = ViewBag.RandomPassage as PassageViewModel;
-   var urlScheme = Request.Url == null ? string.Empty : Request.Url.Scheme;
-}
-@section featured {
-   <div class="panel">
-      <div class="row">
-         <div class="small-12 columns">
-            <h1>@ViewBag.Title, <span style="font-size: large">study spiritual texts from all over the world</span></h1>
-            <p>
-               This site is currently under construction, please bear with us until it is fully functional.<br />
-               If you like what we are doing, send us a comment from the
-               <a href="@Url.Action("About", "Home", null, urlScheme)">about</a> page.
-            </p>
+﻿@if (User.IsInRole ("Creator")) {
+   <div class="hide" id="divNewLight">
+      <div class="group section">
+         <div class="col span_2_of_12 push"></div>
+         <div class="col span_8_of_12 mNone">
+            <textarea id="textNewLight" rows="2" class="mNone"></textarea>
+         </div>
+      </div>
+      <div class="group section">
+         <div class="col span_2_of_12 push"></div>
+         <div class="col span_4_of_12 mNone">
+            <a href="javascript:createLight();" class="sdw-button reg small expand">Create</a>
+         </div>
+         <div class="col span_4_of_12 mNone">
+            <a href="javascript:void(0);" onclick="$('#divNewLight').velocity('slideUp', { duration: 500 });" class="sdw-button err small expand">Cancel</a>
          </div>
       </div>
    </div>
 }
-
-<div class="row tCenter">
-   <div class="medium-6 large-@panelSize columns">
-      <a href="@Url.Action("Index", "Book", null, urlScheme)">
-         <i class="icon-book" style="font-size: xx-large"> </i>
-         <h4>Read</h4>
-      </a>
-      <p>
-         We are attempting to offer many books and new content is imported almost daily.
-         Take a look in the library to check out the books we currently have.
-      </p>
+<div class="group section tCenter" style="padding: 2.125rem 0">
+   <span style="font-size: 24pt; font-style: italic; font-weight: 300;">Seek, and ye shall find...</span>
+</div>
+<div class="group section">
+   <div class="col span_3_of_12 push"></div>
+   <div class="col span_6_of_12">
+      <input type="text" />
    </div>
-   <div class="medium-6 large-@panelSize columns">
-      <a href="@Url.Action("Index", "Glossary", null, urlScheme)">
-         <i class="icon-list" style="font-size: xx-large"> </i>
-         <h4>Study</h4>
-      </a>
-      <p>
-         Curious about a certain word you stumbled upon while reading?
-         Visit the glossary to see if we can provide you with a definition.
-      </p>
-   </div>
-   <div class="medium-6 large-@panelSize columns">
-      <a href="@Url.Action("Index", "Search", null, urlScheme)">
-         <i class="icon-search" style="font-size: xx-large"> </i>
-         <h4>Search</h4>
-      </a>
-      <p>
-         Search through every bit of information we have on the site. Narrow down
-         your criteria to find exactly what you are looking for.
-      </p>
-   </div>
-   @if (!Request.IsAuthenticated) {
-      <div class="medium-6 large-3 columns">
-         <a href="@Url.Action("Register", "Account", null, urlScheme)">
-            <i class="icon-ok-sign" style="font-size: xx-large"> </i>
-            <h4>Register</h4>
-         </a>
-         <p>
-            Registering and Logging in to SeekDeepWithin.com enables you to have more control over your content.
-         </p>
+</div>
+<div class="group section tCenter" id="lightList">
+</div>
+<div class="group section tCenter" id="lightLinks">
+</div>
+@if (User.IsInRole ("Creator")) {
+   <div class="hide" id="divNewTruth">
+      <div class="group section">
+         <div class="col span_4_of_12 push"></div>
+         <div class="col span_1_of_12 mNone">
+            <a href="javascript:formatTruth();" class="sdw-button reg tiny expand">Format</a>
+         </div>
+         <div class="col span_1_of_12 mNone">
+            <a href="javascript:createTruth();" class="sdw-button reg tiny expand">Create</a>
+         </div>
+         <div class="col span_1_of_12 mNone">
+            <a href="javascript:void(0);" onclick="hideAddTruth();" class="sdw-button err tiny expand">Cancel</a>
+         </div>
+         <div class="col span_1_of_12 mNone">
+            <a href="javascript:void(0);" onclick="newTruth();" class="sdw-button add tiny" id="btnNewTruth">New Truth</a>
+         </div>
       </div>
-   }
-</div>
-<hr/>
-<div class="row">
-   <div class="small-12 medium-6 large-6 columns">
-      <h4>Random Excerpt</h4>
-         @if (randomPassage != null) {
-            <dl>
-               <dt>@randomPassage.Title</dt>
-               <dd>@randomPassage.Render(Request.Url)</dd>
-            </dl>
-            <a href="@Url.Action("Index", "Passage", new { entryId = randomPassage.EntryId }, urlScheme)" class="sdw-button reg expand">
-               View Excerpt
-            </a>
-         } else {
-            <div class="alert-box">None, Sorry!</div>
-         }
+      <div class="group section">
+         <div class="col span_6_of_12 mNone">
+            <textarea id="textNewTruth" rows="8" class="mNone"></textarea>
+         </div>
+         <div class="col span_6_of_12 mNone" id="formattedTruth">
+         </div>
+      </div>
    </div>
-   <div class="small-12 medium-6 large-6 columns">
-      <h4>News</h4>
-      <dl>
-         <dt>March 09, 2015</dt>
-         <dd>Seek Deep Within is up and running!</dd>
-      </dl>
-   </div>
-</div>
+   <a href="javascript:void(0);" onclick="showAddTruth();" class="sdw-button add tiny hide" id="btnAddTruth">
+      <i class="icon-plus-sign"></i> Add Truth
+   </a>
+}

@@ -49,7 +49,7 @@ namespace SeekDeepWithin.Controllers
          var item = new TermItem { Term = term, Source = source };
          this.Database.TermItems.Insert (item);
          this.Database.Save ();
-         return Json ("success");
+         return Json (new { status = "success", sourcename = source.Name, id = item.Id, sourceId, termId });
       }
 
       /// <summary>
@@ -100,7 +100,30 @@ namespace SeekDeepWithin.Controllers
          var source = new TermItemSource {Name = name, Url = url, Term = term};
          this.Database.TermItemSources.Insert (source);
          this.Database.Save ();
-         return Json ("success");
+         return Json (new { status = "success", sourcename = source.Name, sourceid = source.Id });
+      }
+
+      /// <summary>
+      /// Gets the list of items for the given term.
+      /// </summary>
+      /// <param name="id">Id of term to get items for.</param>
+      /// <returns>A JSON result.</returns>
+      public ActionResult List (int id)
+      {
+         var term = this.Database.Terms.Get (id);
+         if (term == null)
+            return this.Fail ("Unable to determine the sub book.");
+
+         var result = new {
+            status = SUCCESS,
+            count = term.Items.Count,
+            items = term.Items.Select (c => new {
+               id = c.Id,
+               sourceurl = c.Source.Url,
+               sourcename = c.Source.Name
+            })
+         };
+         return Json (result, JsonRequestBehavior.AllowGet);
       }
 
       /// <summary>

@@ -174,7 +174,7 @@ namespace SeekDeepWithin.Controllers
             subBook.Term.Links.Add (new TermLink { LinkType = (int) TermLinkType.SubBook, RefId = subBook.Id, Name = subBook.Term.Name });
          }
          this.Database.Save ();
-         DbHelper.CreateToc (this.Database, version);
+         Helper.CreateToc (this.Database, version);
          return
             Json (new {
                status = SUCCESS,

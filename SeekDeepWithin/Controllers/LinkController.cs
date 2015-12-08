@@ -48,7 +48,7 @@ namespace SeekDeepWithin.Controllers
          };
          passage.Passage.Links.Add (rtnLink);
          this.Database.Save ();
-         return Json (new { id = rtnLink.Id, startIndex, endIndex, linkUrl });
+         return Json (new { status = SUCCESS, id = rtnLink.Id, startIndex, endIndex, linkUrl });
       }
 
       /// <summary>
@@ -77,7 +77,7 @@ namespace SeekDeepWithin.Controllers
          };
          entry.Links.Add (rtnLink);
          this.Database.Save ();
-         return Json (new { id = rtnLink.Id, startIndex, endIndex, linkUrl });
+         return Json (new { status = SUCCESS, id = rtnLink.Id, startIndex, endIndex, linkUrl });
       }
 
       /// <summary>
@@ -109,7 +109,7 @@ namespace SeekDeepWithin.Controllers
          };
          footer.Links.Add (rtnLink);
          this.Database.Save ();
-         return Json (new { id = rtnLink.Id, startIndex, endIndex, linkUrl });
+         return Json (new { status = SUCCESS, id = rtnLink.Id, startIndex, endIndex, linkUrl });
       }
 
       /// <summary>
@@ -140,7 +140,7 @@ namespace SeekDeepWithin.Controllers
          };
          chapter.Footer.Links.Add (rtnLink);
          this.Database.Save ();
-         return Json (new { id = rtnLink.Id, startIndex, endIndex, linkUrl });
+         return Json (new { status = SUCCESS, id = rtnLink.Id, startIndex, endIndex, linkUrl });
       }
 
       /// <summary>
@@ -172,7 +172,7 @@ namespace SeekDeepWithin.Controllers
          };
          footer.Links.Add (rtnLink);
          this.Database.Save ();
-         return Json (new { id = rtnLink.Id, startIndex, endIndex, linkUrl });
+         return Json (new { status = SUCCESS, id = rtnLink.Id, startIndex, endIndex, linkUrl });
       }
 
       /// <summary>
@@ -197,7 +197,7 @@ namespace SeekDeepWithin.Controllers
          link.StartIndex = startIndex;
          link.OpenInNewWindow = openInNewWindow;
          this.Database.Save ();
-         return Json (new { id, startIndex, endIndex, openInNewWindow, linkUrl = link.Link.Url });
+         return Json (new { status = SUCCESS, id, startIndex, endIndex, openInNewWindow, linkUrl = link.Link.Url });
       }
 
       /// <summary>
@@ -222,7 +222,7 @@ namespace SeekDeepWithin.Controllers
          link.StartIndex = startIndex;
          link.OpenInNewWindow = openInNewWindow;
          this.Database.Save ();
-         return Json (new { id, startIndex, endIndex, openInNewWindow, linkUrl = link.Link.Url });
+         return Json (new { status = SUCCESS, id, startIndex, endIndex, openInNewWindow, linkUrl = link.Link.Url });
       }
 
       /// <summary>
@@ -250,7 +250,7 @@ namespace SeekDeepWithin.Controllers
          link.StartIndex = startIndex;
          link.OpenInNewWindow = openInNewWindow;
          this.Database.Save ();
-         return Json (new { id, startIndex, endIndex, openInNewWindow, linkUrl = link.Link.Url });
+         return Json (new { status = SUCCESS, id, startIndex, endIndex, openInNewWindow, linkUrl = link.Link.Url });
       }
 
       /// <summary>
@@ -277,7 +277,7 @@ namespace SeekDeepWithin.Controllers
          link.StartIndex = startIndex;
          link.OpenInNewWindow = openInNewWindow;
          this.Database.Save ();
-         return Json (new { id, startIndex, endIndex, openInNewWindow, linkUrl = link.Link.Url });
+         return Json (new { status = SUCCESS, id, startIndex, endIndex, openInNewWindow, linkUrl = link.Link.Url });
       }
 
       /// <summary>
@@ -305,7 +305,7 @@ namespace SeekDeepWithin.Controllers
          link.StartIndex = startIndex;
          link.OpenInNewWindow = openInNewWindow;
          this.Database.Save ();
-         return Json (new { id, startIndex, endIndex, openInNewWindow, linkUrl = link.Link.Url });
+         return Json (new { status = SUCCESS, id, startIndex, endIndex, openInNewWindow, linkUrl = link.Link.Url });
       }
 
       /// <summary>
@@ -325,7 +325,7 @@ namespace SeekDeepWithin.Controllers
          if (link == null) return this.Fail ("Unable to determine the link");
          passage.Passage.Links.Remove (link);
          this.Database.Save ();
-         return Json ("Success!");
+         return this.Success ();
       }
 
       /// <summary>
@@ -345,7 +345,7 @@ namespace SeekDeepWithin.Controllers
          if (link == null) return this.Fail ("Unable to determine the link");
          entry.Links.Remove (link);
          this.Database.Save ();
-         return Json ("Success!");
+         return this.Success ();
       }
 
       /// <summary>
@@ -368,7 +368,7 @@ namespace SeekDeepWithin.Controllers
          if (link == null) return this.Fail ("Unable to determine the link");
          footer.Links.Remove (link);
          this.Database.Save ();
-         return Json ("Success!");
+         return this.Success ();
       }
 
       /// <summary>
@@ -390,7 +390,7 @@ namespace SeekDeepWithin.Controllers
          if (link == null) return this.Fail ("Unable to determine the link");
          chapter.Footer.Links.Remove (link);
          this.Database.Save ();
-         return Json ("Success!");
+         return this.Success ();
       }
 
       /// <summary>
@@ -413,7 +413,7 @@ namespace SeekDeepWithin.Controllers
          if (link == null) return this.Fail ("Unable to determine the link");
          footer.Links.Remove (link);
          this.Database.Save ();
-         return Json ("Success!");
+         return this.Success ();
       }
 
       /// <summary>
@@ -430,6 +430,7 @@ namespace SeekDeepWithin.Controllers
          if (link == null) return this.Fail ("Unable to determine the link");
          return Json (new
          {
+            status = SUCCESS,
             id = link.Id,
             startIndex = link.StartIndex,
             endIndex = link.EndIndex,
@@ -452,6 +453,7 @@ namespace SeekDeepWithin.Controllers
          if (link == null) return this.Fail ("Unable to determine the link");
          return Json (new
          {
+            status = SUCCESS,
             id = link.Id,
             startIndex = link.StartIndex,
             endIndex = link.EndIndex,
@@ -477,6 +479,7 @@ namespace SeekDeepWithin.Controllers
          if (link == null) return this.Fail ("Unable to determine the link");
          return Json (new
          {
+            status = SUCCESS,
             id = link.Id,
             startIndex = link.StartIndex,
             endIndex = link.EndIndex,
@@ -501,6 +504,7 @@ namespace SeekDeepWithin.Controllers
          if (link == null) return this.Fail ("Unable to determine the link");
          return Json (new
          {
+            status = SUCCESS,
             id = link.Id,
             startIndex = link.StartIndex,
             endIndex = link.EndIndex,
@@ -526,6 +530,7 @@ namespace SeekDeepWithin.Controllers
          if (link == null) return this.Fail ("Unable to determine the link");
          return Json (new
          {
+            status = SUCCESS,
             id = link.Id,
             startIndex = link.StartIndex,
             endIndex = link.EndIndex,
@@ -570,7 +575,7 @@ namespace SeekDeepWithin.Controllers
          if (renderable == null)
          {
             Response.StatusCode = 500;
-            return Json ("Invalid Data.", JsonRequestBehavior.AllowGet);
+            return this.Fail ("Invalid Data.");
          }
 
          renderable.Styles.Clear ();

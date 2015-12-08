@@ -8,10 +8,11 @@ namespace SeekDeepWithin.Controllers
       /// Gets the main index page of seek deep within.
       /// </summary>
       /// <returns>The main index page.</returns>
-      public ActionResult Index ()
+      public ActionResult Index (string data)
       {
-         var controller = new PassageController ();
-         ViewBag.RandomPassage = controller.GetRandomPassage ();
+         /*if (!string.IsNullOrWhiteSpace (data)) {
+            var lights = Helper.Base64Decode (data + "==");
+         }*/
          return View ();
       }
 

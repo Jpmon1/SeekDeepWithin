@@ -208,16 +208,28 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\SdwApiController.cs" />
     <Compile Include="Controllers\GlossaryController.cs" />
     <Compile Include="Controllers\ItemEntryController.cs" />
+    <Compile Include="Controllers\LibraryController.cs" />
+    <Compile Include="Controllers\LightController.cs" />
+    <Compile Include="Controllers\LoveController.cs" />
     <Compile Include="Controllers\SdwController.cs" />
     <Compile Include="Controllers\SubBookController.cs" />
     <Compile Include="Controllers\TermLinkType.cs" />
+    <Compile Include="Controllers\TruthController.cs" />
     <Compile Include="Models\EditItemType.cs" />
     <Compile Include="Models\EditItemViewModel.cs" />
+    <Compile Include="Models\LightModel.cs" />
+    <Compile Include="Models\LoveModel.cs" />
     <Compile Include="Models\PagedViewModel.cs" />
     <Compile Include="Models\TermLinkViewModel.cs" />
+    <Compile Include="Pocos\Light.cs" />
+    <Compile Include="Pocos\Love.cs" />
+    <Compile Include="Pocos\TruthType.cs" />
+    <Compile Include="Pocos\LightStyle.cs" />
     <Compile Include="Pocos\TermLink.cs" />
+    <Compile Include="Pocos\Truth.cs" />
     <Compile Include="SdwSearch\AbbrevSearch.cs" />
     <Compile Include="SdwSearch\BookSearch.cs" />
     <Compile Include="Controllers\ExtensionMethods.cs" />
@@ -225,11 +237,12 @@
     <Compile Include="Controllers\ReadController.cs" />
     <Compile Include="SdwSearch\ChapterSearch.cs" />
     <Compile Include="SdwSearch\GlossarySearch.cs" />
+    <Compile Include="SdwSearch\LightSearch.cs" />
     <Compile Include="SdwSearch\PassageSearch.cs" />
     <Compile Include="SdwSearch\SearchCommon.cs" />
     <Compile Include="Controllers\TermController.cs" />
     <Compile Include="Controllers\BookController.cs" />
-    <Compile Include="Controllers\DbHelper.cs" />
+    <Compile Include="Controllers\Helper.cs" />
     <Compile Include="Controllers\ChapterController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\FooterController.cs" />
@@ -374,6 +387,7 @@
     <Content Include="Content\sdw\sdw.button.css" />
     <Content Include="Content\sdw\sdw.pagination.css" />
     <Content Include="Content\sdw\sdw.panels.css" />
+    <Content Include="Content\sdw\sdw.style.css" />
     <Content Include="Content\sdw\sdw.switch.css" />
     <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
@@ -449,6 +463,11 @@
       <Link>README.md</Link>
     </Content>
     <None Include="Properties\PublishProfiles\SeekDeepWithin.pubxml" />
+    <Content Include="Images\favicon.ico" />
+    <Content Include="Images\icon.svg" />
+    <Content Include="Images\icon_16.png" />
+    <Content Include="Images\icon_24.png" />
+    <Content Include="Images\icon_32.png" />
     <Content Include="Images\sdw_128.png" />
     <Content Include="Images\sdw_16.png" />
     <Content Include="Images\sdw_16_w.png" />
@@ -459,6 +478,7 @@
     <Content Include="Images\sdw_64.png" />
     <Content Include="Images\Untitled.ico" />
     <Content Include="Images\x.png" />
+    <Content Include="Scripts\Base64.js" />
     <Content Include="Scripts\classie.js" />
     <Content Include="Scripts\fastclick.js" />
     <Content Include="Scripts\foundation.js" />
@@ -466,6 +486,7 @@
     <Content Include="Scripts\jquery-1.11.2.min.js" />
     <Content Include="Scripts\jquery.autocomplete.js" />
     <Content Include="Scripts\jquery.cookie.js" />
+    <Content Include="Scripts\jquery.history.js" />
     <Content Include="Scripts\jquery.matchHeight.js" />
     <Content Include="Scripts\jquery.matchHeight.min.js" />
     <Content Include="Scripts\jquery.nouislider.all.js" />
@@ -486,6 +507,7 @@
     <Content Include="Scripts\sdw\sdw.contents.js" />
     <Content Include="Scripts\sdw\sdw.convert.js" />
     <Content Include="Scripts\sdw\sdw.chapter.js" />
+    <Content Include="Scripts\sdw\sdw.edit.js" />
     <Content Include="Scripts\sdw\sdw.footer.js" />
     <Content Include="Scripts\sdw\sdw.item.edit.js" />
     <Content Include="Scripts\sdw\sdw.header.js" />
@@ -496,12 +518,16 @@
     <Content Include="Scripts\sdw\sdw.passage.js" />
     <Content Include="Scripts\sdw\sdw.read.js" />
     <Content Include="Scripts\sdw\sdw.search.js" />
+    <Content Include="Scripts\sdw\sdw.seek.js" />
     <Content Include="Scripts\sdw\sdw.select.js" />
     <Content Include="Scripts\sdw\sdw.style.js" />
     <Content Include="Scripts\sdw\sdw.tag.js" />
     <Content Include="Scripts\sdw\sdw.term.js" />
     <Content Include="Scripts\sdw\sdw.version.js" />
     <Content Include="Scripts\sdw\selection.js" />
+    <Content Include="Scripts\velocity.js" />
+    <Content Include="Scripts\velocity.min.js" />
+    <Content Include="Scripts\velocity.ui.js" />
     <Content Include="ToDo.txt" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -586,6 +612,9 @@
     <Content Include="Views\Chapter\Contents.cshtml" />
     <Content Include="Views\Account\Token.cshtml" />
     <Content Include="Views\Term\GetToken.cshtml" />
+    <Content Include="Views\Library\Index.cshtml" />
+    <Content Include="Views\Light\GetButton.cshtml" />
+    <Content Include="Views\Truth\New.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

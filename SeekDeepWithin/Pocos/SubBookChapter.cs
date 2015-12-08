@@ -16,6 +16,11 @@ namespace SeekDeepWithin.Pocos
       public int Order { get; set; }
 
       /// <summary>
+      /// Gets or Sets the number of the chapter.
+      /// </summary>
+      public int Number { get; set; }
+
+      /// <summary>
       /// Gets or Sets if this chapter should be hidden or not.
       /// </summary>
       public bool Hide { get; set; }

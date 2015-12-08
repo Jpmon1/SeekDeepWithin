@@ -195,6 +195,63 @@ namespace SeekDeepWithin.Controllers
       }
 
       /// <summary>
+      /// Gets the header data for the given chapter.
+      /// </summary>
+      /// <param name="id">The id of the chapter to get header data for.</param>
+      /// <returns>JSON results</returns>
+      public ActionResult GetHeader (int id)
+      {
+         var entry = this.Database.TermItemEntries.Get (id);
+         if (entry.Header == null)
+            return Json (new { status = SUCCESS, text = string.Empty }, JsonRequestBehavior.AllowGet);
+         var result = new {
+            status = SUCCESS,
+            text = entry.Header.Text,
+            styles = entry.Header.Styles.Select (s => new {
+               id = s.Id,
+               start = s.Style.Start,
+               end = s.Style.End,
+               startindex = s.StartIndex,
+               endindex = s.EndIndex,
+               multispan = s.Style.SpansMultiple
+            })
+         };
+         return Json (result, JsonRequestBehavior.AllowGet);
+      }
+
+      /// <summary>
+      /// Gets the footer data for the given chapter.
+      /// </summary>
+      /// <param name="id">The id of the chapter to get footer data for.</param>
+      /// <returns>JSON results</returns>
+      public ActionResult GetFooter (int id)
+      {
+         var entry = this.Database.TermItemEntries.Get (id);
+         var result = new {
+            status = SUCCESS,
+            footers = entry.Footers.Select (f => new {
+               text = f.Text,
+               styles = f.Styles.Select (s => new {
+                  id = s.Id,
+                  start = s.Style.Start,
+                  end = s.Style.End,
+                  startindex = s.StartIndex,
+                  endindex = s.EndIndex,
+                  multispan = s.Style.SpansMultiple
+               }),
+               links = f.Links.Select (l => new {
+                  id = l.Id,
+                  url = l.Link.Url,
+                  endindex = l.EndIndex,
+                  startindex = l.StartIndex,
+                  newwindow = l.OpenInNewWindow
+               })
+            })
+         };
+         return Json (result, JsonRequestBehavior.AllowGet);
+      }
+
+      /// <summary>
       /// Gets details about the entry with the given id.
       /// </summary>
       /// <param name="id"></param>

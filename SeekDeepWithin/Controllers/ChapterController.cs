@@ -37,6 +37,7 @@ namespace SeekDeepWithin.Controllers
       /// <param name="id">Id of chapter to edit.</param>
       /// <param name="name">New name of chapter.</param>
       /// <param name="order">New order of chapter.</param>
+      /// <param name="number">New number of chapter.</param>
       /// <param name="visible">New visibility of chapter.</param>
       /// <param name="para">New default view of chapter.</param>
       /// <param name="header">The chapter's header.</param>
@@ -45,7 +46,7 @@ namespace SeekDeepWithin.Controllers
       [HttpPost]
       [ValidateAntiForgeryToken]
       [Authorize (Roles = "Editor")]
-      public ActionResult Edit (int id, string name, int order, bool visible, bool para, string header, string footer)
+      public ActionResult Edit (int id, string name, int order, int number, bool visible, bool para, string header, string footer)
       {
          var chapter = this.Database.SubBookChapters.Get (id);
          if (chapter == null) return this.Fail ("Unable to determine the chapter.");
@@ -73,7 +74,7 @@ namespace SeekDeepWithin.Controllers
             chapter.Footer = null;
          }
          this.Database.Save ();
-         DbHelper.CreateToc (this.Database, chapter.SubBook.Version);
+         Helper.CreateToc (this.Database, chapter.SubBook.Version);
          return this.Success ();
       }
 
@@ -93,6 +94,31 @@ namespace SeekDeepWithin.Controllers
                viewModel.Styles.Add (new StyleViewModel (style));
          }
          return PartialView ("_EditItem", viewModel);
+      }
+
+      /// <summary>
+      /// Gets the header data for the given chapter.
+      /// </summary>
+      /// <param name="id">The id of the chapter to get header data for.</param>
+      /// <returns>JSON results</returns>
+      public ActionResult GetHeader (int id)
+      {
+         var chapter = this.Database.SubBookChapters.Get (id);
+         if (chapter.Header == null)
+            return Json (new {status = SUCCESS, text = string.Empty} , JsonRequestBehavior.AllowGet);
+         var result = new {
+            status = SUCCESS,
+            text = chapter.Header.Text,
+            styles = chapter.Header.Styles.Select (s => new {
+               id = s.Id,
+               start = s.Style.Start,
+               end = s.Style.End,
+               startindex = s.StartIndex,
+               endindex = s.EndIndex,
+               multispan = s.Style.SpansMultiple
+            })
+         };
+         return Json (result, JsonRequestBehavior.AllowGet);
       }
 
       /// <summary>
@@ -116,7 +142,7 @@ namespace SeekDeepWithin.Controllers
             this.Database.PassageEntries.Delete (passage);
          this.Database.SubBookChapters.Delete (chapter);
          this.Database.Save ();
-         DbHelper.CreateToc (this.Database, subBook.Version);
+         Helper.CreateToc (this.Database, subBook.Version);
          return this.Success ();
       }
 
@@ -138,6 +164,42 @@ namespace SeekDeepWithin.Controllers
                viewModel.Links.Add (new LinkViewModel (link));
          }
          return PartialView ("_EditItem", viewModel);
+      }
+
+      /// <summary>
+      /// Gets the footer data for the given chapter.
+      /// </summary>
+      /// <param name="id">The id of the chapter to get footer data for.</param>
+      /// <returns>JSON results</returns>
+      public ActionResult GetFooter (int id)
+      {
+         var chapter = this.Database.SubBookChapters.Get (id);
+         if (chapter.Footer == null)
+            return Json (new { status = SUCCESS, text = string.Empty }, JsonRequestBehavior.AllowGet);
+         var f = chapter.Footer;
+         //var footers = new List <ChapterFooter> {chapter.Footer};
+         var result = new {
+            status = SUCCESS,
+            //footers = footers.Where (f => f != null).Select (f => new {
+               text = f.Text,
+               styles = f.Styles.Select (s => new {
+                  id = s.Id,
+                  start = s.Style.Start,
+                  end = s.Style.End,
+                  startindex = s.StartIndex,
+                  endindex = s.EndIndex,
+                  multispan = s.Style.SpansMultiple
+               }),
+               links = f.Links.Select (l => new {
+                  id = l.Id,
+                  url = l.Link.Url,
+                  endindex = l.EndIndex,
+                  startindex = l.StartIndex,
+                  newwindow = l.OpenInNewWindow
+               })
+            //})
+         };
+         return Json (result, JsonRequestBehavior.AllowGet);
       }
 
       /// <summary>
@@ -171,9 +233,12 @@ namespace SeekDeepWithin.Controllers
                id = c.Id,
                hide = c.Hide,
                order = c.Order,
+               number = c.Number,
                name = c.Chapter.Name,
                chapterid = c.Chapter.Id,
-               isparagraphs = c.DefaultToParagraph
+               isparagraphs = c.DefaultToParagraph,
+               header = c.Header == null ? string.Empty : c.Header.Text,
+               footer = c.Footer == null ? string.Empty : c.Footer.Text
             })
          };
          return Json (result, JsonRequestBehavior.AllowGet);

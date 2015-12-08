@@ -51,12 +51,11 @@ namespace SeekDeepWithin.Controllers
       /// <returns>The result.</returns>
       [HttpPost]
       [AllowAnonymous]
-      [ValidateAntiForgeryToken]
       public ActionResult LoginRequest (LoginViewModel viewModel)
       {
          if (!ModelState.IsValid)
             return Json (new {status="fail", message = "Invalid login information."});
-         if (WebSecurity.Login (viewModel.UserEmail, viewModel.Password, viewModel.RememberMe))
+         if (WebSecurity.Login (viewModel.UserEmail, viewModel.Password, false))
             return Json (new {status="success", message = "Login successful"});
          return Json (new {status="fail", message = "Login information incorrect."});
       }

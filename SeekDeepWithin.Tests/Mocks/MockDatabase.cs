@@ -8,6 +8,8 @@ namespace SeekDeepWithin.Tests.Mocks
    /// </summary>
    public class MockDatabase : ISdwDatabase
    {
+      private IRepository<Love> m_Loves;
+      private IRepository<Light> m_Lights;
       private IRepository <Book> m_Books;
       private IRepository<Version> m_Versions;
       private IRepository<Chapter> m_Chapters;
@@ -22,6 +24,22 @@ namespace SeekDeepWithin.Tests.Mocks
       private IRepository <VersionSubBook> m_VersionSubBooks;
       private IRepository<SubBookChapter> m_SubBookChapters;
       private IRepository<TermItemSource> m_GlossaryItemSources;
+
+      /// <summary>
+      /// Gets the repository for books.
+      /// </summary>
+      public IRepository<Light> Light
+      {
+         get { return this.m_Lights ?? (this.m_Lights = new MockRepository<Light> ()); }
+      }
+
+      /// <summary>
+      /// Gets the repository for loves.
+      /// </summary>
+      public IRepository<Love> Love
+      {
+         get { return this.m_Loves ?? (this.m_Loves = new MockRepository<Love> ()); }
+      }
 
       /// <summary>
       /// Gets the repository for books.

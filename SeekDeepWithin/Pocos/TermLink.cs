@@ -1,6 +1,4 @@
-﻿using SeekDeepWithin.Controllers;
-
-namespace SeekDeepWithin.Pocos
+﻿namespace SeekDeepWithin.Pocos
 {
    public class TermLink : IDbTable
    {

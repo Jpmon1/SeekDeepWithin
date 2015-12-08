@@ -9,7 +9,7 @@ $(document).on('closed', '.remodal', function (e) {
 });
 
 function passage_update() {
-   sdw_post('/Passage/Update/', {
+   sdw_post('/Passage/Edit/', {
       text: $('#passText').val(),
       order: $('#entryOrder').val(),
       number: $('#entryNumber').val(),

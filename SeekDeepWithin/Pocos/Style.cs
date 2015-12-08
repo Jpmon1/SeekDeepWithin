@@ -11,7 +11,7 @@
       public int Id { get; set; }
 
       /// <summary>
-      /// Gets or Sets if this style spans multiple items (entries/passages).
+      /// Gets or Sets if this style spans multiple items (truths).
       /// </summary>
       public bool SpansMultiple { get; set; }
 
