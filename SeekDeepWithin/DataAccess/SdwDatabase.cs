@@ -11,6 +11,8 @@ namespace SeekDeepWithin.DataAccess
       private bool m_Disposed;
       private IRepository<Light> m_Lights;
       private IRepository<Love> m_Loves;
+      private IRepository<Truth> m_Truths;
+      private IRepository<FormatRegex> m_RegexFormats;
       private IRepository<Book> m_Books;
       private IRepository<Pocos.Version> m_Versions;
       private IRepository<Chapter> m_Chapters;
@@ -41,6 +43,22 @@ namespace SeekDeepWithin.DataAccess
       public IRepository<Love> Love
       {
          get { return this.m_Loves ?? (this.m_Loves = new Repository<Love> (m_Db)); }
+      }
+
+      /// <summary>
+      /// Gets the repository for truth.
+      /// </summary>
+      public IRepository<Truth> Truth
+      {
+         get { return this.m_Truths ?? (this.m_Truths = new Repository<Truth> (m_Db)); }
+      }
+
+      /// <summary>
+      /// Gets the repository for formatting regular expressions.
+      /// </summary>
+      public IRepository<FormatRegex> RegexFormats
+      {
+         get { return this.m_RegexFormats ?? (this.m_RegexFormats = new Repository<FormatRegex> (m_Db)); }
       }
 
       /// <summary>

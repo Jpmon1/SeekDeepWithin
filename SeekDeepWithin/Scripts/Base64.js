@@ -33,12 +33,11 @@
 
       }
 
-      return output.replace(/=+$/, "");
+      return output;
    },
 
    // public method for decoding
    decode: function (input) {
-      input += '==';
       var output = "";
       var chr1, chr2, chr3;
       var enc1, enc2, enc3, enc4;

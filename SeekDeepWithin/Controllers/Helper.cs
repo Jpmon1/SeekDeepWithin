@@ -47,7 +47,7 @@ namespace SeekDeepWithin.Controllers
       public static string Base64Encode (string text)
       {
          var bytes = Encoding.UTF8.GetBytes (text);
-         return Convert.ToBase64String (bytes).TrimEnd ('=');
+         return Convert.ToBase64String (bytes);
       }
 
       public static string Base64Decode (string encodedText)

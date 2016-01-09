@@ -8,10 +8,10 @@ namespace SeekDeepWithin.Controllers
       /// Gets the main index page of seek deep within.
       /// </summary>
       /// <returns>The main index page.</returns>
-      public ActionResult Index (string data)
+      public ActionResult Index (string love)
       {
-         /*if (!string.IsNullOrWhiteSpace (data)) {
-            var lights = Helper.Base64Decode (data + "==");
+         /*if (!string.IsNullOrWhiteSpace (love)) {
+            var lights = Helper.Base64Decode (love + "==");
          }*/
          return View ();
       }

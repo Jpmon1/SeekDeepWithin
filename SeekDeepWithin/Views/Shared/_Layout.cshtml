@@ -22,9 +22,6 @@
          </a>
          <div class="fRight">
             @if (Request.IsAuthenticated) {
-               if (User.IsInRole ("Editor")) {
-                  <a href="javascript:void(0);" onclick="$('#divNewLight').velocity('slideDown', { duration: 500 });" title="Add Light"><i class="icon-plus-sign"></i></a>
-               }
                <a href="@Url.Action("Manage", "Account", null, scheme)" title="Manage Account"><i class="icon-user"></i></a>
             } else {
                var returnUrl = Request.Url != null ? Request.Url.ToString () : string.Empty;

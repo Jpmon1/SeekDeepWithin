@@ -12,19 +12,21 @@ namespace SeekDeepWithin
             "~/Scripts/jquery.history.js",
             "~/Scripts/fastclick.js",
             "~/Scripts/Base64.js",
+            "~/Scripts/hashids.js",
             "~/Scripts/velocity.js",
             "~/Scripts/velocity.ui.js",
+            "~/Scripts/jsPlumb-2.0.5.js",
+            "~/Scripts/masonry.pkgd.js",
+            "~/Scripts/sdw/sdw.common.js",
+            "~/Scripts/sdw/sdw.light.js",
+            "~/Scripts/sdw/sdw.love.js",
+            "~/Scripts/sdw/sdw.peace.js",
             "~/Scripts/sdw/sdw.seek.js",
-            "~/Scripts/sdw/sdw.edit.js",
             "~/Scripts/sdw/sdw.panels.js"));
-
-         // Use the development version of Modernizr to develop with and learn from. Then, when you're
-         // ready for production, use the build tool at http://modernizr.com to pick only the tests you need.
-         bundles.Add (new ScriptBundle ("~/bundles/modernizr").Include (
-            "~/Scripts/modernizr-*"));
 
          /************************ COMMON STYLES ************************/
          bundles.Add (new StyleBundle ("~/Content/css").Include ("~/Content/normalize.css",
+            "~/Content/foundation.css",
             "~/Content/whhg.css",
             "~/Content/sdw/sdw.style.css",
             "~/Content/sdw/sdw.button.css"
@@ -35,6 +37,19 @@ namespace SeekDeepWithin
             "~/Content/sdw/sdw.panels.css",
             "~/Content/sdw/sdw.pagination.css",
             "~/Content/sdw/sdw.base.css"*/));
+
+         /************************ EDIT SCRIPTS ************************/
+         bundles.Add (new ScriptBundle ("~/bundles/sdw/edit").Include ("~/Scripts/jquery.autocomplete.js",
+            "~/Scripts/foundation.js",
+            "~/Scripts/sdw/sdw.edit.js"));
+
+         /************************ EDIT STYLES ************************/
+         bundles.Add (new StyleBundle ("~/Content/sdw/edit").Include ("~/Content/sdw/sdw.autocomplete.css"));
+
+         // Use the development version of Modernizr to develop with and learn from. Then, when you're
+         // ready for production, use the build tool at http://modernizr.com to pick only the tests you need.
+         bundles.Add (new ScriptBundle ("~/bundles/modernizr").Include (
+            "~/Scripts/modernizr-*"));
 
          bundles.Add (new StyleBundle ("~/Content/css/slider").Include ("~/Content/jquery.nouislider.css",
             "~/Content/jquery.nouislider.pips.css"));

@@ -1,25 +1,17 @@
 ﻿@using SeekDeepWithin.Pocos
-<div class="section group" id="truth">
-   <div class="col span_3_of_12">
-      <select>
-         @{
-            var values = Enum.GetValues (typeof (TruthType)).Cast<TruthType> ();
-            foreach (var value in values) {
-               <option value="@((int)value)">@(value.ToString())</option>
-            }
+<div class="row" id="@(ViewBag.NewId)">
+   <div class="small-12 medium-3 large-3 column">
+      <select id="type">
+         @{ var values = Enum.GetValues (typeof (TruthType)).Cast <TruthType> (); }
+         @foreach (var value in values) {
+            <option value="@((int)value)">@(value.ToString())</option>
          }
       </select>
    </div>
-   <div class="col span_2_of_12">
-      <input type="number" id="number"/>
-   </div>
-   <div class="col span_2_of_12">
-      <input type="number" id="order" />
-   </div>
-   <div class="col span_4_of_12">
-      <input type="text" id="text" />
-   </div>
-   <div class="col span_1_of_12">
-      <a href="javascript:void(0)" onclick="removeTruth(this);" title="Remove" class="sdw-button err tiny expand"><i class="icon-remove-sign"></i></a>
+   <div class="small-6 medium-2 large-2 column"><input type="number" id="number" /></div>
+   <div class="small-6 medium-2 large-2 column"><input type="number" id="order" /></div>
+   <div class="small-10 medium-4 large-4 column"><input type="text" id="text" /></div>
+   <div class="small-2 medium-1 large-1 column">
+      <a href="javascript:void(0)" onclick="SdwEdit.truthRemove(this);" title="Remove" class="sdw-button err tiny expand"><i class="icon-remove-sign"></i></a>
    </div>
 </div>

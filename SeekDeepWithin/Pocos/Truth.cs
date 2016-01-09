@@ -5,7 +5,7 @@ namespace SeekDeepWithin.Pocos
    /// <summary>
    /// Represents a truth of a light/love combination.
    /// </summary>
-   public class Truth
+   public class Truth : IDbTable
    {
       /// <summary>
       /// Gets or Sets the id of this item.

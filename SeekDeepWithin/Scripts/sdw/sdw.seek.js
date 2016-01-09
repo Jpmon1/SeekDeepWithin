@@ -1,90 +1,68 @@
-﻿$(document).ready(load);
-History.Adapter.bind(window, 'statechange', load);
+﻿var Seek = {
 
-function load() {
-   var btn = $('#btnAddTruth');
-   var data = getURLParameter('data');
-   if (data == null) {
-      if (btn.length > 0) {
-         btn.hide();
-      }
-      loadDefault();
-   } else {
-      if (btn.length > 0) {
-         btn.show();
-      }
-      loadData(data);
-   }
-}
-
-function loadDefault() {
-   $('#lightList').empty();
-   $.ajax({
-      url: "/Light/Get"
-   }).done(function (d) {
-      if (d.status == "success") {
-         var count = d.count;
-         var container = $('#lightLinks');
-         for (var i = 0; i < count; i++) {
-            var light = d.light[i];
-            container.append('<div class="col span_3_of_12"><a href="javascript:void(0);" onclick="addLight(\'' +
-               light.id + '\');" class="sdw-button white expand">' + light.text + '</a></div>');
+   load: function () {
+      var page = $('#pageId').val();
+      if (page == 'index') {
+         var l = SdwCommon.getParam('l');
+         if (l == null || l == '') {
+            Light.load();
+         } else {
+            Love.load(l);
          }
       }
-   }).fail(function (d) {
-      alert(d.responseText);
+   }
+
+};
+
+$(document).ready(function() {
+   //History.Adapter.bind(window, 'statechange', Seek.load);
+   Seek.load();
+});
+
+/*jsPlumb.ready(function () {
+
+   var color = "gray";
+   var instance = jsPlumb.getInstance({
+      // notice the 'curviness' argument to this Bezier curve.  the curves on this page are far smoother
+      // than the curves on the first demo, which use the default curviness value.
+      Connector: ["Bezier", { curviness: 50 }],
+      //DragOptions: { cursor: "pointer", zIndex: 2000 },
+      PaintStyle: { strokeStyle: color, lineWidth: 4 },
+      EndpointStyle: { radius: 9, fillStyle: color },
+      HoverPaintStyle: { strokeStyle: "#0067a7" },
+      EndpointHoverStyle: { fillStyle: "#0067a7" },
+      Container: "lightWeb",
+      ConnectionsDetachable: false
    });
-}
 
-function loadData(data) {
-   $('#lightLinks').empty();
-   // TODO: Show loading....
-   var lightIds = Base64.decode(data);
-   var idArray = lightIds.split(",");
-   // TODO: Get data from server...
-   // TODO: Add light(s) to selected lights...
-   var lightsToAdd = [];
-   for (var i = 0; i < idArray.length; i++) {
-      if (!$('light' + idArray[i]).length) {
-         lightsToAdd.push(idArray[i]);
+   // suspend drawing and initialise.
+   instance.batch(function () {
+      // add endpoints, giving them a UUID.
+      // you DO NOT NEED to use this method. You can use your library's selector method.
+      // the jsPlumb demos use it so that the code can be shared between all three libraries.
+      var windows = jsPlumb.getSelector(".chart-demo .window");
+      for (var i = 0; i < windows.length; i++) {
+         instance.addEndpoint(windows[i], {
+            uuid: windows[i].getAttribute("id") + "-bottom",
+            anchor: "Bottom",
+            maxConnections: -1
+         });
+         instance.addEndpoint(windows[i], {
+            uuid: windows[i].getAttribute("id") + "-top",
+            anchor: "Top",
+            maxConnections: -1
+         });
       }
-   }
-   addLightArray(lightsToAdd);
-   // TODO: Display data...
-   // TODO: Hide loading...
-}
 
-function addLightArray(lights) {
-   if (lights.length > 0) {
-      var id = lights.shift();
-      $.ajax({
-         url: "/Light/GetButton",
-         data: {id: id, links:true, select:true, remove:true}
-      }).done(function (d) {
-         $('#lightList').append(d);
-         $('#light' + id).velocity("transition.bounceIn");
-         addLightArray(lights);
-      }).fail(function (d) {
-         alert(d.responseText);
-      });
-   }
-}
+      instance.connect({ uuids: ["chartWindow3-bottom", "chartWindow6-top"] });
+      instance.connect({ uuids: ["chartWindow1-bottom", "chartWindow2-top"] });
+      instance.connect({ uuids: ["chartWindow1-bottom", "chartWindow3-top"] });
+      instance.connect({ uuids: ["chartWindow2-bottom", "chartWindow4-top"] });
+      instance.connect({ uuids: ["chartWindow2-bottom", "chartWindow5-top"] });
 
-function getLove(id) {
-   
-}
+      //instance.draggable(windows, {grid:[50,50]});
 
-function addLight(id) {
-   var dataDecoded = '';
-   var data = getURLParameter('data');
-   if (data != null) {
-      dataDecoded = Base64.decode(data);
-      dataDecoded += '|';
-   }
-   dataDecoded += id;
-   History.pushState(null, null, "?data=" + Base64.encode(dataDecoded));
-}
+   });
 
-function getURLParameter(name) {
-   return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [, ""])[1].replace(/\+/g, '%20')) || null;
-}
+   jsPlumb.fire("jsPlumbDemoLoaded", instance);
+});*/

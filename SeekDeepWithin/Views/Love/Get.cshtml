@@ -1,0 +1,33 @@
+﻿@using SeekDeepWithin.Pocos
+@model List <SeekDeepWithin.Models.LevelModel>
+@foreach (var level in Model) {
+   //var lastType = 0;
+   var count = level.Items.Count;
+   <div id="templvl_@(level.Index)" class="love">
+      <div class="row">
+         @for (int i = 0; i < count; i++) {
+            var levelItem = level.Items [i];
+            var span = 3;
+            if (levelItem.Type == TruthType.Summary || levelItem.Type == TruthType.Passage) {
+               span = 12;
+            }
+            <div class="small-6 medium-@(span) large-@(span) column@(i == count - 1 ? " end" : "")">
+               <div class="callout" id="light_@(levelItem.Id)" onclick="Love.load(@(levelItem.Id));" data-tid="@(levelItem.TruthId)" data-lid="@(levelItem.LoveId)">
+                  @if (levelItem.Type == TruthType.Passage && levelItem.Number.HasValue) {
+                     <div class="row">
+                        <div class="small-2 medium-1 large-1 columns">
+                           @(levelItem.Number.Value)
+                        </div>
+                        <div class="small-10 medium-11 large-11 columns text-left">
+                           @(levelItem.Text)
+                        </div>
+                     </div>
+                  } else {
+                     @(levelItem.Text)
+                  }
+               </div>
+            </div>
+         }
+      </div>
+   </div>
+}

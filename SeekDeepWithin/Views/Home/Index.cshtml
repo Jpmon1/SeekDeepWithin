@@ -1,61 +1,46 @@
-﻿@if (User.IsInRole ("Creator")) {
-   <div class="hide" id="divNewLight">
-      <div class="group section">
-         <div class="col span_2_of_12 push"></div>
-         <div class="col span_8_of_12 mNone">
-            <textarea id="textNewLight" rows="2" class="mNone"></textarea>
-         </div>
+﻿<input type="hidden" value="index" id="pageId"/>
+<div class="loader">LOADING...</div>
+@if (User.IsInRole ("Editor")) {
+@section styles  {
+   @(Styles.Render ("~/Content/sdw/edit"))
+}
+   <input type="hidden" id="editable"/>
+}
+<div class="row column text-center">
+   <em style="font-size: 24pt;">Seek, and ye shall find...</em>
+</div>
+<div class="row column">
+   <input type="text" placeholder="Search is not functional as of yet!" />
+</div>
+<div class="row column text-center mBottom">
+   <em>Let your Heart be your guide</em>
+</div>
+@if (User.IsInRole ("Creator")) {
+   <div class="row">
+      <div class="small-12 medium-9 large-10 column">
+         <input type="text" id="textNewLight" />
       </div>
-      <div class="group section">
-         <div class="col span_2_of_12 push"></div>
-         <div class="col span_4_of_12 mNone">
-            <a href="javascript:createLight();" class="sdw-button reg small expand">Create</a>
-         </div>
-         <div class="col span_4_of_12 mNone">
-            <a href="javascript:void(0);" onclick="$('#divNewLight').velocity('slideUp', { duration: 500 });" class="sdw-button err small expand">Cancel</a>
-         </div>
+      <div class="small-12 medium-3 large-2 column">
+         <a href="javascript:void(0);" onclick="SdwEdit.lightCreate();" class="sdw-button white small expand"><i class="icon-lightbulb-idea"></i> New Light</a>
       </div>
    </div>
 }
-<div class="group section tCenter" style="padding: 2.125rem 0">
-   <span style="font-size: 24pt; font-style: italic; font-weight: 300;">Seek, and ye shall find...</span>
-</div>
-<div class="group section">
-   <div class="col span_3_of_12 push"></div>
-   <div class="col span_6_of_12">
-      <input type="text" />
+<div class="row" id="lightList"></div>
+<div id="lightWeb"></div>
+<div id="truthArea"></div>
+@if (User.IsInRole ("Editor")) {
+   <ul class="tabs" data-tabs id="editTabs">
+      <li class="tabs-title is-active"><a href="#editTruth" aria-selected="true">Edit Current</a></li>
+      <li class="tabs-title"><a href="#addTruth">Add to Selected</a></li>
+   </ul>
+   <div class="tabs-content" data-tabs-content="editTabs">
+      @(Html.Partial ("_EditTruth"))
+      @(Html.Partial ("_AddTruth"))
    </div>
-</div>
-<div class="group section tCenter" id="lightList">
-</div>
-<div class="group section tCenter" id="lightLinks">
-</div>
-@if (User.IsInRole ("Creator")) {
-   <div class="hide" id="divNewTruth">
-      <div class="group section">
-         <div class="col span_4_of_12 push"></div>
-         <div class="col span_1_of_12 mNone">
-            <a href="javascript:formatTruth();" class="sdw-button reg tiny expand">Format</a>
-         </div>
-         <div class="col span_1_of_12 mNone">
-            <a href="javascript:createTruth();" class="sdw-button reg tiny expand">Create</a>
-         </div>
-         <div class="col span_1_of_12 mNone">
-            <a href="javascript:void(0);" onclick="hideAddTruth();" class="sdw-button err tiny expand">Cancel</a>
-         </div>
-         <div class="col span_1_of_12 mNone">
-            <a href="javascript:void(0);" onclick="newTruth();" class="sdw-button add tiny" id="btnNewTruth">New Truth</a>
-         </div>
-      </div>
-      <div class="group section">
-         <div class="col span_6_of_12 mNone">
-            <textarea id="textNewTruth" rows="8" class="mNone"></textarea>
-         </div>
-         <div class="col span_6_of_12 mNone" id="formattedTruth">
-         </div>
-      </div>
-   </div>
-   <a href="javascript:void(0);" onclick="showAddTruth();" class="sdw-button add tiny hide" id="btnAddTruth">
-      <i class="icon-plus-sign"></i> Add Truth
-   </a>
+}
+<div id="sandbox" class="hide"></div>
+@if (User.IsInRole ("Editor")) {
+   @section scripts  {
+      @(Scripts.Render ("~/bundles/sdw/edit"))
+   }
 }

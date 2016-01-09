@@ -1,65 +1,85 @@
 ﻿namespace SeekDeepWithin.Pocos
 {
    /// <summary>
-   /// Gets the type of love.
+   /// Gets the type of truth.
    /// </summary>
    public enum TruthType
    {
       /// <summary>
-      /// A category/tag .
+      /// A sub title.
       /// </summary>
-      Tag = 1,
-
-      Book,
-
-      Section,
-
-      Passage,
-
-      PublishDate,
-
+      SubTitle = 1,
+      /// <summary>
+      /// A summary of an item.
+      /// </summary>
       Summary,
-
+      /// <summary>
+      /// A date.
+      /// </summary>
+      Date,
+      /// <summary>
+      /// A source.
+      /// </summary>
+      Source,
+      /// <summary>
+      /// A source url
+      /// </summary>
       SourceUrl,
-
-      SourceName,
-
-      SubTitle,
-
-      Term,
-
-      Reference,
-
-      AlsoKnownAs,
-
       /// <summary>
       /// Someone who authored a book.
       /// </summary>
       Author,
-
       /// <summary>
       /// Someone who translated a book.
       /// </summary>
       Translator,
-
+      /// <summary>
+      /// A tag.
+      /// </summary>
+      Tag,
+      /// <summary>
+      /// Another name for an item.
+      /// </summary>
+      AlsoKnownAs,
       /// <summary>
       /// A related light.
       /// </summary>
       SeeAlso,
-
       /// <summary>
-      /// A link.
+      /// A version of a book.
       /// </summary>
-      Link,
-
+      Version,
       /// <summary>
-      /// A header.
+      /// A book/sub book.
+      /// </summary>
+      Book,
+      /// <summary>
+      /// A chapter.
+      /// </summary>
+      Chapter,
+      /// <summary>
+      /// A section in a book.
+      /// </summary>
+      Section,
+      /// <summary>
+      /// A header
       /// </summary>
       Header,
-
+      /// <summary>
+      /// A passage
+      /// </summary>
+      Passage,
       /// <summary>
       /// A footer.
       /// </summary>
-      Footer
+      Footer,
+      /// <summary>
+      /// The previous section
+      /// </summary>
+      Previous,
+      /// <summary>
+      /// The next section
+      /// </summary>
+      Next
    }
 }

@@ -63,24 +63,6 @@ namespace SeekDeepWithin.Controllers
       }
 
       /// <summary>
-      /// Gets the text of the given light.
-      /// </summary>
-      /// <param name="id">The id of the light to get the button for.</param>
-      /// <param name="links">If true, show the link button.</param>
-      /// <param name="select">If true, show the select button.</param>
-      /// <param name="remove">If true, show the remove button.</param>
-      /// <returns>The HTML for the requested button.</returns>
-      public ActionResult GetButton (int id, bool links = false, bool select = false, bool remove = false)
-      {
-         var light = this.Database.Light.Get (id);
-         if (light == null) return this.Fail ("That light has not yet been illuminated.");
-         ViewBag.Links = links;
-         ViewBag.Select = select;
-         ViewBag.Remove = remove;
-         return PartialView (light);
-      }
-
-      /// <summary>
       /// Gets light.
       /// </summary>
       /// <returns>A JSON result.</returns>
@@ -100,6 +82,19 @@ namespace SeekDeepWithin.Controllers
                   key = Helper.Base64Encode (l.Id.ToString (CultureInfo.InvariantCulture))
                })
             }, JsonRequestBehavior.AllowGet);
+      }
+
+      /// <summary>
+      /// Gets auto complete items for the given text.
+      /// </summary>
+      /// <param name="text">Text to search for.</param>
+      /// <returns>The list of possible items for the given text.</returns>
+      public ActionResult AutoComplete (string text)
+      {
+         var result = new {
+            suggestions = this.Database.Light.Get (t => t.Text.Contains (text)).Select (t => new { value = t.Text, data = t.Id })
+         };
+         return Json (result, JsonRequestBehavior.AllowGet);
       }
    }
 }

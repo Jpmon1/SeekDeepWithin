@@ -1,0 +1,15 @@
+﻿@using SeekDeepWithin.Pocos
+@model Love
+@if (Model != null) {
+   foreach (var truth in Model.Truths) {
+      <div class="lightItem">
+         @(truth.Light.Text)
+      </div>
+      @*<div class="title">
+         @(((TruthType)truth.Type).ToString ().ToUpperInvariant ())
+         <a href="javascript:void(0);" class="sdw-button add tiny fRight" title="Add" onclick="addLight('@(truth.Light.Id)')"><i class="icon-plus"></i></a>
+      </div>*@
+   }
+} else {
+   <div class="lightItem"><h4>Nothing has been added yet!</h4></div>
+}
