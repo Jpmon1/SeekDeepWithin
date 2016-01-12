@@ -36,5 +36,10 @@ namespace SeekDeepWithin.Pocos
       /// Gets or Sets the loves this truth is apart of.
       /// </summary>
       public virtual ICollection <Love> Loves { get; set; }
+
+      /// <summary>
+      /// Gets or Sets the styles.
+      /// </summary>
+      public virtual ICollection<TruthStyle> Styles { get; set; }
    }
 }

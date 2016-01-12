@@ -1,4 +1,6 @@
-﻿namespace SeekDeepWithin.Pocos
+﻿using System.Collections.Generic;
+
+namespace SeekDeepWithin.Pocos
 {
    /// <summary>
    /// Represents a style.
@@ -11,11 +13,6 @@
       public int Id { get; set; }
 
       /// <summary>
-      /// Gets or Sets if this style spans multiple items (truths).
-      /// </summary>
-      public bool SpansMultiple { get; set; }
-
-      /// <summary>
       /// Gets or Sets the start of the style.
       /// </summary>
       public string Start { get; set; }
@@ -24,5 +21,10 @@
       /// Gets or Sets the end of the style.
       /// </summary>
       public string End { get; set; }
+
+      /// <summary>
+      /// Gets the collection of truths that have this style.
+      /// </summary>
+      public virtual ICollection<TruthStyle> Truths { get; set; }
    }
 }

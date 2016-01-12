@@ -12,21 +12,8 @@ namespace SeekDeepWithin.DataAccess
       private IRepository<Light> m_Lights;
       private IRepository<Love> m_Loves;
       private IRepository<Truth> m_Truths;
-      private IRepository<FormatRegex> m_RegexFormats;
-      private IRepository<Book> m_Books;
-      private IRepository<Pocos.Version> m_Versions;
-      private IRepository<Chapter> m_Chapters;
-      private IRepository<Passage> m_Passages;
-      private IRepository<Link> m_Links;
       private IRepository<Style> m_Styles;
-      private IRepository<AmazonItem> m_AmazonItems;
-      private IRepository<PassageEntry> m_PassageEntries;
-      private IRepository<Term> m_GlossaryTerms;
-      private IRepository<TermItem> m_GlossaryItems;
-      private IRepository<TermItemEntry> m_GlossaryEntries;
-      private IRepository <VersionSubBook> m_VersionSubBooks;
-      private IRepository<SubBookChapter> m_SubBookChapters;
-      private IRepository<TermItemSource> m_GlossaryItemSources;
+      private IRepository<FormatRegex> m_RegexFormats;
       private readonly SdwDbContext m_Db = new SdwDbContext ();
 
       /// <summary>
@@ -62,115 +49,11 @@ namespace SeekDeepWithin.DataAccess
       }
 
       /// <summary>
-      /// Gets the repository for books.
-      /// </summary>
-      public IRepository<Book> Books
-      {
-         get { return this.m_Books ?? (this.m_Books = new Repository<Book> (m_Db)); }
-      }
-
-      /// <summary>
-      /// Gets the repository for glossary item sources.
-      /// </summary>
-      public IRepository<TermItemSource> TermItemSources
-      {
-         get { return this.m_GlossaryItemSources ?? (this.m_GlossaryItemSources = new Repository<TermItemSource> (m_Db)); }
-      }
-
-      /// <summary>
-      /// Gets the repository for versions.
-      /// </summary>
-      public IRepository<Pocos.Version> Versions
-      {
-         get { return this.m_Versions ?? (this.m_Versions = new Repository<Pocos.Version> (m_Db)); }
-      }
-
-      /// <summary>
-      /// Gets the repository for versions subbook table.
-      /// </summary>
-      public IRepository <VersionSubBook> VersionSubBooks
-      {
-         get { return m_VersionSubBooks ?? (this.m_VersionSubBooks = new Repository <VersionSubBook> (m_Db)); }
-      }
-
-      /// <summary>
-      /// Gets the repository for subbook chapter table.
-      /// </summary>
-      public IRepository <SubBookChapter> SubBookChapters
-      {
-         get { return m_SubBookChapters ?? (this.m_SubBookChapters = new Repository <SubBookChapter> (m_Db)); }
-      }
-
-      /// <summary>
-      /// Gets the repository for chapters.
-      /// </summary>
-      public IRepository<Chapter> Chapters
-      {
-         get { return this.m_Chapters ?? (this.m_Chapters = new Repository<Chapter> (m_Db)); }
-      }
-
-      /// <summary>
-      /// Gets the repository for glossary terms.
-      /// </summary>
-      public IRepository<Term> Terms
-      {
-         get { return this.m_GlossaryTerms ?? (this.m_GlossaryTerms = new Repository<Term> (m_Db)); }
-      }
-
-      /// <summary>
-      /// Gets the repository for glossary items.
-      /// </summary>
-      public IRepository<TermItem> TermItems
-      {
-         get { return this.m_GlossaryItems ?? (this.m_GlossaryItems = new Repository<TermItem> (m_Db)); }
-      }
-
-      /// <summary>
-      /// Gets the repository for glossary entries.
-      /// </summary>
-      public IRepository<TermItemEntry> TermItemEntries
-      {
-         get { return this.m_GlossaryEntries ?? (this.m_GlossaryEntries = new Repository<TermItemEntry> (this.m_Db)); }
-      }
-
-      /// <summary>
-      /// Gets the repository for passages.
-      /// </summary>
-      public IRepository<Passage> Passages
-      {
-         get { return this.m_Passages ?? (this.m_Passages = new Repository<Passage> (m_Db)); }
-      }
-
-      /// <summary>
-      /// Gets the repository for links.
-      /// </summary>
-      public IRepository<Link> Links
-      {
-         get { return this.m_Links ?? (this.m_Links = new Repository<Link> (m_Db)); }
-      }
-
-      /// <summary>
       /// Gets the repository for styles.
       /// </summary>
       public IRepository<Style> Styles
       {
          get { return this.m_Styles ?? (this.m_Styles = new Repository<Style> (m_Db)); }
-      }
-
-      /// <summary>
-      /// Gets the repository for passage entries.
-      /// </summary>
-      public IRepository<PassageEntry> PassageEntries
-      {
-         get { return this.m_PassageEntries ?? (this.m_PassageEntries = new Repository<PassageEntry> (m_Db)); }
-      }
-
-      /// <summary>
-      /// Gets the repository for amazon items.
-      /// </summary>
-      public IRepository<AmazonItem> AmazonItems
-      {
-         get { return this.m_AmazonItems ?? (this.m_AmazonItems = new Repository<AmazonItem> (m_Db)); }
       }
 
       /// <summary>

@@ -12,23 +12,39 @@ namespace SeekDeepWithin.Models
       /// <summary>
       /// Initializes a new new level item.
       /// </summary>
-      public LevelItem () { }
+      public LevelItem ()
+      {
+         this.Headers = new List<LevelItem> ();
+         this.Footers = new List<LevelItem> ();
+      }
 
       /// <summary>
       /// Initializes a new new level item.
       /// </summary>
-      /// <param name="loveId">The id of the parent love (for grouping).</param>
+      /// <param name="love">The parent love (for grouping).</param>
       /// <param name="truth">The truth to use as an item.</param>
-      public LevelItem (int loveId, Truth truth)
+      public LevelItem (Love love, Truth truth)
       {
-         this.LoveId = loveId;
          this.TruthId = truth.Id;
          this.Id = truth.Light.Id;
          this.Order = truth.Order;
          this.Number = truth.Number;
          this.Text = truth.Light.Text;
          this.Type = (TruthType)truth.Type;
+         this.Headers = new List <LevelItem> ();
+         this.Footers = new List <LevelItem> ();
+         this.Title = string.Empty;
+         if (love != null) {
+            this.LoveId = love.Id;
+            foreach (var light in love.Lights) {
+               if (!string.IsNullOrEmpty (this.Title))
+                  this.Title += "|";
+               this.Title += light.Text;
+            }
+         }
       }
+
+      public string Title { get; set; }
 
       /// <summary>
       /// Gets or Sets the id of the parent love.
@@ -84,6 +100,16 @@ namespace SeekDeepWithin.Models
       /// Gets the list of parent selections.
       /// </summary>
       public List <int> Selection { get; private set; }
+
+      /// <summary>
+      /// Gets the list of headers.
+      /// </summary>
+      public List<LevelItem> Headers { get; private set; }
+
+      /// <summary>
+      /// Gets the list of footers.
+      /// </summary>
+      public List<LevelItem> Footers { get; private set; }
 
       /// <summary>
       /// Sets the list of parent selections

@@ -1,18 +1,30 @@
 ﻿using System.Web.Mvc;
+using SeekDeepWithin.DataAccess;
 
 namespace SeekDeepWithin.Controllers
 {
-   public class HomeController : Controller
+   public class HomeController : SdwController
    {
+      /// <summary>
+      /// Initializes a new controller.
+      /// </summary>
+      public HomeController () : base (new SdwDatabase ()) { }
+
+      /// <summary>
+      /// Initializes a new controller with the given db info.
+      /// </summary>
+      /// <param name="db">Database object.</param>
+      public HomeController (ISdwDatabase db) : base (db) { }
+
       /// <summary>
       /// Gets the main index page of seek deep within.
       /// </summary>
       /// <returns>The main index page.</returns>
-      public ActionResult Index (string love)
+      public ActionResult Index (string l)
       {
-         /*if (!string.IsNullOrWhiteSpace (love)) {
-            var lights = Helper.Base64Decode (love + "==");
-         }*/
+         if (User.IsInRole ("Creator")) {
+            ViewBag.Regexs = this.Database.RegexFormats.All ();
+         }
          return View ();
       }
 

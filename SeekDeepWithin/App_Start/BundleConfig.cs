@@ -11,18 +11,14 @@ namespace SeekDeepWithin
          bundles.Add (new ScriptBundle ("~/bundles/jquery").Include ("~/Scripts/jquery-1.11.2.js",
             "~/Scripts/jquery.history.js",
             "~/Scripts/fastclick.js",
-            "~/Scripts/Base64.js",
-            "~/Scripts/hashids.js",
             "~/Scripts/velocity.js",
             "~/Scripts/velocity.ui.js",
-            "~/Scripts/jsPlumb-2.0.5.js",
-            "~/Scripts/masonry.pkgd.js",
+            //"~/Scripts/jsPlumb-2.0.5.js",
+            //"~/Scripts/masonry.pkgd.js",
             "~/Scripts/sdw/sdw.common.js",
             "~/Scripts/sdw/sdw.light.js",
             "~/Scripts/sdw/sdw.love.js",
-            "~/Scripts/sdw/sdw.peace.js",
-            "~/Scripts/sdw/sdw.seek.js",
-            "~/Scripts/sdw/sdw.panels.js"));
+            "~/Scripts/sdw/sdw.seek.js"));
 
          /************************ COMMON STYLES ************************/
          bundles.Add (new StyleBundle ("~/Content/css").Include ("~/Content/normalize.css",
@@ -41,6 +37,8 @@ namespace SeekDeepWithin
          /************************ EDIT SCRIPTS ************************/
          bundles.Add (new ScriptBundle ("~/bundles/sdw/edit").Include ("~/Scripts/jquery.autocomplete.js",
             "~/Scripts/foundation.js",
+            //"~/Scripts/Base64.js",
+            "~/Scripts/hashids.js",
             "~/Scripts/sdw/sdw.edit.js"));
 
          /************************ EDIT STYLES ************************/

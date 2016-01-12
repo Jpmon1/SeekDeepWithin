@@ -1,15 +1,53 @@
-﻿<div class="tabs-panel" id="addTruth">
+﻿@using SeekDeepWithin.Pocos
+@{ var truthTypes = Enum.GetValues (typeof (TruthType)).Cast<TruthType> ().ToList(); }
+<div class="tabs-panel" id="addTruth">
    <div id="editSelectedLight" class="row"></div>
    <div class="row">
       <div class="small-12 medium-6 large-6 column">
-         
+         <div class="row column">Format text for importing<textarea rows="5" id="addTruthFormatText"></textarea></div>
+         <div class="row">
+            <div class="small-12 medium-6 large-6 column">
+               Type
+               <select id="addTruthFormatType">
+                  @foreach (var truthType in truthTypes) {
+               <option value="@((int)truthType)">@(truthType.ToString ())</option>}
+               </select>
+            </div>
+            <div class="small-12 medium-6 large-6 column">Start Order<input type="number" id="addTruthFormatOrder" value="1" /></div>
+         </div>
+         <div class="row column">Regular Expression to use for importing<input type="text" id="addTruthFormatRegex" /></div>
+         <div class="row column">
+            Current Regular Expressions
+            <select id="addTruthCurrentRegex">
+               @foreach (FormatRegex regex in ViewBag.Regexs) {<option value="@regex.Id">@(regex.Regex)</option>}
+            </select>
+         </div>
+         <div class="row column">
+            <a href="javascript:void(0)" class="sdw-button reg expand" onclick="SdwEdit.truthFormat();"><i class="icon-wizard"></i> Format</a>
+         </div>
       </div>
       <div class="small-12 medium-6 large-6 column">
-         <div class="row column">Format text for importing</div>
-         <div class="row column"><textarea rows="5" id="addTruthText"></textarea></div>
-         <div class="row column">Regular Expression to use for importing</div>
-         <div class="row column"><input type="text" id="addTruthRegex"/></div>
-         <div class="small-12 column"><a href="javascript:void(0)" class="sdw-button reg expand"><i class="icon-wizard"></i> Format</a></div>
+         <div class="row column">Data for importing<textarea rows="5" id="addTruthText"></textarea></div>
+         <div class="row column">
+            <a href="javascript:void(0)" class="sdw-button add expand" onclick="SdwEdit.truthCreate();"><i class="icon-plus-sign"></i> Add</a>
+         </div>
+         <div class="row column text-center">
+            <i class="icon-arrow-up"></i> Append to import data <i class="icon-arrow-up"></i>
+         </div>
+         <div class="row">
+            <div class="small-12 medium-6 large-6 column">
+               Type
+               <select id="addTruthAppendType">
+                  @foreach (var truthType in truthTypes) {<option value="@((int)truthType)">@(truthType.ToString ())</option>}
+               </select>
+            </div>
+            <div class="small-12 medium-6 large-6 column">Order<input type="number" id="addTruthAppendOrder"/></div>
+         </div>
+         <div class="row column">Text<input type="text" id="addTruthAppendText"/></div>
+         <div class="row">
+            <div class="small-12 medium-6 large-6 column">Number<input type="number" id="addTruthAppendNumber" /></div>
+            <div class="small-12 medium-6 large-6 column"><a href="javascript:void(0);" onclick="SdwEdit.truthAppend();" class="sdw-button reg expand">Append</a></div>
+         </div>
       </div>
    </div>
 </div>

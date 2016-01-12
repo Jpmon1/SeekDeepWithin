@@ -1,33 +1,34 @@
-﻿@using SeekDeepWithin.Pocos
+﻿@using SeekDeepWithin.Controllers
+@using SeekDeepWithin.Pocos
 @model List <SeekDeepWithin.Models.LevelModel>
+
 @foreach (var level in Model) {
    //var lastType = 0;
-   var count = level.Items.Count;
+   var layout = new LevelLayout (level);
    <div id="templvl_@(level.Index)" class="love">
-      <div class="row">
-         @for (int i = 0; i < count; i++) {
-            var levelItem = level.Items [i];
-            var span = 3;
-            if (levelItem.Type == TruthType.Summary || levelItem.Type == TruthType.Passage) {
-               span = 12;
-            }
-            <div class="small-6 medium-@(span) large-@(span) column@(i == count - 1 ? " end" : "")">
-               <div class="callout" id="light_@(levelItem.Id)" onclick="Love.load(@(levelItem.Id));" data-tid="@(levelItem.TruthId)" data-lid="@(levelItem.LoveId)">
-                  @if (levelItem.Type == TruthType.Passage && levelItem.Number.HasValue) {
-                     <div class="row">
-                        <div class="small-2 medium-1 large-1 columns">
-                           @(levelItem.Number.Value)
+      @foreach (var row in layout.Rows) {
+         var colCount = row.Columns.Count;
+         <div class="row">
+            @for (var i = 0; i < colCount; i++) {
+               var col = row.Columns [i];
+               <div class="small-@(col.SmallSpan) medium-@(col.MediumSpan) large-@(col.LargeSpan) column@(i == colCount - 1 ? " end" : "")">
+                  <div class="callout" id="light_@(col.LevelItem.Id)" onclick="Love.load(@(col.LevelItem.Id));" data-tid="@(col.LevelItem.TruthId)" data-lid="@(col.LevelItem.LoveId)">
+                     @if (col.LevelItem.Type == TruthType.Passage && col.LevelItem.Number.HasValue) {
+                        <div class="row">
+                           <div class="small-2 medium-1 large-1 columns text-right">
+                              @(col.LevelItem.Number.Value)
+                           </div>
+                           <div class="small-10 medium-11 large-11 columns text-left">
+                              @(col.LevelItem.Text)
+                           </div>
                         </div>
-                        <div class="small-10 medium-11 large-11 columns text-left">
-                           @(levelItem.Text)
-                        </div>
-                     </div>
-                  } else {
-                     @(levelItem.Text)
-                  }
+                     } else {
+                        @(col.LevelItem.Text)
+                     }
+                  </div>
                </div>
-            </div>
-         }
-      </div>
+            }
+         </div>
+      }
    </div>
 }

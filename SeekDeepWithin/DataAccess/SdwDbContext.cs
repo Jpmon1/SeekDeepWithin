@@ -12,29 +12,30 @@ namespace SeekDeepWithin.DataAccess
       /// </summary>
       public SdwDbContext () : base ("SdwConnection") { }
 
+      /// <summary>
+      /// Gets or sets the lights.
+      /// </summary>
       public DbSet<Light> Lights { get; set; }
 
-      public DbSet<Book> Books { get; set; }
+      /// <summary>
+      /// Gets or sets the loves.
+      /// </summary>
+      public DbSet<Love> Loves { get; set; }
 
-      public DbSet<Version> Versions { get; set; }
+      /// <summary>
+      /// Gets or sets the truths.
+      /// </summary>
+      public DbSet<Truth> Truths { get; set; }
 
-      public DbSet<Chapter> Chapters { get; set; }
-
-      public DbSet<Passage> Passages { get; set; }
-
-      public DbSet<Link> Links { get; set; }
-
+      /// <summary>
+      /// Gets or sets the styles.
+      /// </summary>
       public DbSet<Style> Styles { get; set; }
 
-      public DbSet<Term> Terms { get; set; }
-
-      public DbSet<TermItem> TermItems { get; set; }
-
-      public DbSet<AmazonItem> AmazonItems { get; set; }
-
-      public DbSet<VersionSubBook> VersionSubBooks { get; set; }
-
-      public DbSet<SubBookChapter> SubBookChapters { get; set; }
+      /// <summary>
+      /// Gets or sets the regexes used for formatting.
+      /// </summary>
+      public DbSet<FormatRegex> FormatRegexes { get; set; }
 
       /// <summary>
       /// This method is called when the model for a derived context has been initialized, but
@@ -54,35 +55,7 @@ namespace SeekDeepWithin.DataAccess
       protected override void OnModelCreating (DbModelBuilder modelBuilder)
       {
          Database.SetInitializer (new MigrateDatabaseToLatestVersion<SdwDbContext, Configuration> ());
-         /*modelBuilder.Entity<Light> ()
-            .HasMany (l => l.Love)
-            .WithRequired (l => l.ParentLight)
-            .HasForeignKey (l => l.ParentLightId)
-                     .WillCascadeOnDelete (false);
-         modelBuilder.Entity<Light> ()
-            .HasMany (l => l.Love)
-            .WithRequired (l => l.ChildLight)
-            .HasForeignKey (l => l.ChildLightId)
-                     .WillCascadeOnDelete (false);*/
-         /*modelBuilder.Entity <Love>()
-            .HasRequired(l => l.FirstLight)
-            .WithMany (l => l.Love)
-            .HasForeignKey(l => l.ParentId);
-         modelBuilder.Entity<Love> ()
-            .HasRequired (l => l.SecondLight)
-            .WithMany (l => l.Love)
-            .HasForeignKey (l => l.ChildId);*/
-         modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention> (); 
-         /*modelBuilder.Entity<Love> ()
-                     .HasRequired (m => m.Child)
-                     .WithMany (t => t.Children)
-                     .HasForeignKey (m => m.ChildId)
-                     .WillCascadeOnDelete (false);
-         modelBuilder.Entity<Love> ()
-                     .HasRequired (m => m.Parent)
-                     .WithMany (t => t.Parents)
-                     .HasForeignKey (m => m.ParentId)
-                     .WillCascadeOnDelete (false);*/
+         modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention> ();
       }
    }
 }

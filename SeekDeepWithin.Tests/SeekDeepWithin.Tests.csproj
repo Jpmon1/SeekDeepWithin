@@ -117,16 +117,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controllers\BookControllerTest.cs" />
-    <Compile Include="Controllers\ConvertControllerTest.cs" />
     <Compile Include="Controllers\LightControllerTest.cs" />
-    <Compile Include="Controllers\VersionControllerTest.cs" />
     <Compile Include="DataAccess\TestPassageParser.cs" />
     <Compile Include="Mocks\MockDatabase.cs" />
     <Compile Include="Mocks\MockRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Controllers\HomeControllerTest.cs" />
-    <Compile Include="ViewModels\BookViewModelTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App.config">

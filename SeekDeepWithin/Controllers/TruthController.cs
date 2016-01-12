@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
+using System.Web;
 using System.Web.Mvc;
 using SeekDeepWithin.DataAccess;
 using SeekDeepWithin.Pocos;
+using SeekDeepWithin.SdwSearch;
 
 namespace SeekDeepWithin.Controllers
 {
@@ -49,12 +52,15 @@ namespace SeekDeepWithin.Controllers
          foreach (var t in truths) {
             var truthData = t.Split ('|');
             var lightText = truthData [3];
+            Truth currTruth = null;
             if (love.Truths == null) love.Truths = new HashSet<Truth>();
-            var truthLight = this.Database.Light.Get (l => l.Text == lightText).FirstOrDefault () ??
-                             new Light { Text = lightText, Modified = DateTime.Now };
-            var currTruth = love.Truths.FirstOrDefault (temp => temp.Light.Id == truthLight.Id);
-            int? order = string.IsNullOrWhiteSpace (truthData [1]) ? null : (int?)Convert.ToInt32 (truthData [1]);
-            int? number = string.IsNullOrWhiteSpace (truthData [2]) ? null : (int?) Convert.ToInt32 (truthData [2]);
+            var order = string.IsNullOrWhiteSpace (truthData [1]) ? null : (int?)Convert.ToInt32 (truthData [1]);
+            var number = string.IsNullOrWhiteSpace (truthData [2]) ? null : (int?) Convert.ToInt32 (truthData [2]);
+            var truthLight = this.Database.Light.Get (l => l.Text == lightText).FirstOrDefault ();
+            if (truthLight == null)
+               truthLight = new Light { Text = lightText, Modified = DateTime.Now };
+            else
+               currTruth = love.Truths.FirstOrDefault (temp => temp.Light.Id == truthLight.Id);
             if (currTruth == null) {
                currTruth = this.Database.Truth.Get (tr => tr.Light.Id == truthLight.Id && tr.Order == order && tr.Number == number).FirstOrDefault () ??
                            new Truth {Type = Convert.ToInt32 (truthData [0]), Light = truthLight, Order = order, Number = number};
@@ -62,6 +68,9 @@ namespace SeekDeepWithin.Controllers
             }
          }
          this.Database.Save ();
+         foreach (var t in love.Truths) {
+            LightSearch.AddOrUpdateIndex (t.Light);
+         }
          return this.Success ();
       }
 
@@ -81,22 +90,31 @@ namespace SeekDeepWithin.Controllers
       {
          var truth = this.Database.Truth.Get (id);
          if (truth == null) return this.Fail ("That is an unknown truth!");
+         var lightChanged = false;
          truth.Order = order;
          truth.Number = number;
          truth.Type = type;
          if (truth.Light.Text != text) {
-            if (all)
+            lightChanged = true;
+            if (all) {
                truth.Light.Text = text;
-            else {
-               var light = this.Database.Light.Get (l => l.Text == text).FirstOrDefault() ??
-                  new Light {Text = text};
+               truth.Light.Modified = DateTime.Now;
+            } else {
+               var light = this.Database.Light.Get (l => l.Text == text).FirstOrDefault () ??
+                           new Light {Text = text, Modified = DateTime.Now};
                truth.Light = light;
             }
          }
          this.Database.Save ();
+         if (lightChanged) LightSearch.AddOrUpdateIndex (truth.Light);
          return this.Success ();
       }
 
+      /// <summary>
+      /// Gets the truth with the given id.
+      /// </summary>
+      /// <param name="id">Id of truth to get.</param>
+      /// <returns>JSON results.</returns>
       public ActionResult Get (int id)
       {
          var truth = this.Database.Truth.Get (id);
@@ -110,22 +128,46 @@ namespace SeekDeepWithin.Controllers
          }, JsonRequestBehavior.AllowGet);
       }
 
+      /// <summary>
+      /// Formats the given text.
+      /// </summary>
+      /// <param name="regex">The regex to use for formatting.</param>
+      /// <param name="text">The text to format.</param>
+      /// <param name="type">The default type.</param>
+      /// <param name="startOrder">The starting order.</param>
+      /// <returns>JSON result.</returns>
       [HttpPost]
       [Authorize (Roles = "Creator")]
-      public ActionResult Format (string regex, string list)
+      public ActionResult Format (string regex, string text, int type, int startOrder)
       {
-         return this.Success ();
-      }
+         text = HttpUtility.UrlDecode (text);
+         if (string.IsNullOrWhiteSpace (text)) return this.Fail ("Nothing given to format.");
+         regex = HttpUtility.UrlDecode (regex);
+         if (string.IsNullOrWhiteSpace (regex)) return this.Fail ("No regular expression supplied.");
+         var matches = Regex.Matches (text, regex, RegexOptions.IgnoreCase);
+         var dbRegex = this.Database.RegexFormats.Get (r => r.Regex == regex).FirstOrDefault ();
+         if (dbRegex == null) {
+            dbRegex = new FormatRegex {Regex = regex};
+            this.Database.RegexFormats.Insert (dbRegex);
+            this.Database.Save ();
+         }
+         /*type|order|number|text...*/
+         var startNumber = 1;
+         var itemList = string.Empty;
+         foreach (Match match in matches) {
+            var order = match.Groups ["o"];
+            var number = match.Groups ["n"];
+            itemList += string.Format ("{0}|{1}|{2}|{3}", type,
+               order.Success ? Convert.ToInt32 (order.Value) : startOrder,
+               number.Success ? Convert.ToInt32 (number.Value) : startNumber,
+               match.Groups ["t"].Value.Replace ("\"", "&quot;").Trim ()
+            );
+            itemList += Environment.NewLine;
+            startOrder++;
+            startNumber++;
+         }
 
-      /// <summary>
-      /// Gets the HTML for a new truth.
-      /// </summary>
-      /// <returns>The HTML used for adding truth.</returns>
-      [Authorize (Roles = "Creator")]
-      public ActionResult New (string id)
-      {
-         ViewBag.NewId = id;
-         return PartialView ();
+         return Json (new { status = SUCCESS, items = itemList, regexId = dbRegex.Id, regexText = HttpUtility.UrlEncode (regex) });
       }
    }
 }

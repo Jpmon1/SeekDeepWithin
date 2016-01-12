@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Web;
 using System.Web.Hosting;
 using Lucene.Net.Index;
@@ -22,18 +23,35 @@ namespace SeekDeepWithin.SdwSearch
       /// <summary>
       /// Builds the query to send to lucene.
       /// </summary>
+      internal static string BuildQuery (List <string> words, string q)
+      {
+         var exactQuery = string.Empty;
+         var fuzzyQuery = string.Empty;
+         foreach (var word in words)
+         {
+            if (!string.IsNullOrEmpty (exactQuery))
+            {
+               fuzzyQuery += " OR ";
+               exactQuery += " OR ";
+            }
+            fuzzyQuery += word + "~0.5";
+            exactQuery += word + "*";
+         }
+         return string.Format (q, exactQuery, fuzzyQuery);
+      }
+
+      /// <summary>
+      /// Builds the query to send to lucene.
+      /// </summary>
       internal static string BuildQuery (SearchQueryViewModel search, string q)
       {
          string query;
-         if (search.SearchType == 0 || search.SearchType == 1)
-         {
+         if (search.SearchType == 0 || search.SearchType == 1) {
             var wordQuery = string.Empty;
             var fuzzyQuery = string.Empty;
             var words = search.QDecoded.GetWords ();
-            foreach (var word in words)
-            {
-               if (!string.IsNullOrEmpty (wordQuery))
-               {
+            foreach (var word in words) {
+               if (!string.IsNullOrEmpty (wordQuery)) {
                   fuzzyQuery += search.SearchType == 0 ? " OR " : " AND ";
                   wordQuery += search.SearchType == 0 ? " OR " : " AND ";
                }
@@ -41,13 +59,9 @@ namespace SeekDeepWithin.SdwSearch
                wordQuery += search.Exact ? word : word + "*";
             }
             query = string.Format (q, wordQuery, fuzzyQuery);
-         }
-         else if (search.SearchType == 2)
-         {
+         } else if (search.SearchType == 2) {
             query = "\"" + search.QDecoded + "\"";
-         }
-         else
-         {
+         } else {
             query = search.QDecoded;
          }
          return query;

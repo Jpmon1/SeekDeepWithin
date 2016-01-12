@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using SeekDeepWithin.Models;
 using SeekDeepWithin.Pocos;
 
@@ -33,18 +34,69 @@ namespace SeekDeepWithin.Controllers
       /// </summary>
       private void Layout ()
       {
-         int rowSpan = 0;
-         var row = new LevelRow();
-         this.Rows.Add (row);
-         TruthType lastType = 0;
-         foreach (var levelItem in this.m_Level.Items) {
-            int span = 3;
-            if (levelItem.Type == TruthType.Summary)
-               span = 12;
-            if (lastType != levelItem.Type || rowSpan == 12) {
-               row = new LevelRow ();
-               this.Rows.Add (row);
-               lastType = levelItem.Type;
+         this.Rows.Clear ();
+         var loveIds = new List <int> ();
+         foreach (var li in this.m_Level.Items) {
+            if (!loveIds.Contains (li.LoveId))
+               loveIds.Add (li.LoveId);
+         }
+         var loves = loveIds.OrderBy(i => i).Select (id => this.m_Level.Items.OrderBy (i => i.Order)
+            .Where (i => i.LoveId == id).ToList ()).ToList ();
+         SetHeadersAndFooters (loves);
+         var span = 3;
+         var loveCount = loveIds.Count;
+         if (loveCount > 1) {
+            span = 12 / loveIds.Count;
+         }
+         if (span < 3) span = 3;
+         var truthTypes = Enum.GetValues (typeof (TruthType)).Cast<TruthType> ();
+         foreach (var type in truthTypes) {
+            var row = new LevelRow ();
+            this.Rows.Add (row);
+            var truthType = type;
+            foreach (var love in loves) {
+               foreach (var li in love.Where (li => li.Type == truthType)) {
+                  var cSpan = span;
+                  if (loveCount == 1 && (truthType == TruthType.Summary || truthType == TruthType.Passage)) {
+                     cSpan = 12;
+                  }
+                  if (row.Span + cSpan > 12) {
+                     row = new LevelRow ();
+                     this.Rows.Add (row);
+                  }
+                  row.AddColumn (cSpan, li);
+               }
+            }
+         }
+      }
+
+      /// <summary>
+      /// Sets the headers and footers.
+      /// </summary>
+      /// <param name="loves">The list of loves.</param>
+      private static void SetHeadersAndFooters (IEnumerable <List <LevelItem>> loves)
+      {
+         foreach (var love in loves) {
+            var remove = new List <LevelItem> ();
+            foreach (var header in love.Where (li => li.Type == TruthType.Header)) {
+               var passage = love.FirstOrDefault (li => li.Number == header.Number);
+               if (passage != null) {
+                  passage.Headers.Add (header);
+               } else {
+                  love.First ().Headers.Add (header);
+               }
+               remove.Add (header);
+            }
+            foreach (var footer in love.Where (li => li.Type == TruthType.Footer)) {
+               var passage = love.FirstOrDefault (li => li.Number == footer.Number);
+               if (passage != null) {
+                  passage.Footers.Add (footer);
+               } else {
+                  love.First ().Footers.Add (footer);
+               }
+            }
+            foreach (var levelItem in remove) {
+               love.Remove (levelItem);
             }
          }
       }

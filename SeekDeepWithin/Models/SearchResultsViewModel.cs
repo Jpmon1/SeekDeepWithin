@@ -53,11 +53,6 @@ namespace SeekDeepWithin.Models
       public bool ShowEmpty { get; set; }
 
       /// <summary>
-      /// Gets or Sets the search type.
-      /// </summary>
-      public SearchType SearchType { get; set; }
-
-      /// <summary>
       /// Gets the collection of results.
       /// </summary>
       public Collection<SearchResult> Results { get { return this.m_Results; } }

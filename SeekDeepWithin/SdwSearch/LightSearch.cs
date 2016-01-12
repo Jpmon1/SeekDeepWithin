@@ -4,13 +4,17 @@ using System.Globalization;
 using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
+using Lucene.Net.QueryParsers;
 using Lucene.Net.Search;
 using Lucene.Net.Store;
+using SeekDeepWithin.Controllers;
 using SeekDeepWithin.Pocos;
-using Term = Lucene.Net.Index.Term;
 
 namespace SeekDeepWithin.SdwSearch
 {
+   /// <summary>
+   /// Search functions for light.
+   /// </summary>
    public class LightSearch
    {
       private static FSDirectory s_Directory;
@@ -19,6 +23,33 @@ namespace SeekDeepWithin.SdwSearch
       /// Gets the lucene directory for glossary entries.
       /// </summary>
       private static FSDirectory Directory { get { return SearchCommon.InitDirectory (ref s_Directory, "light"); } }
+
+      /// <summary>
+      /// Queries the indexed data.
+      /// </summary>
+      /// <param name="token">Toekn to search for.</param>
+      public static Dictionary <int, string> AutoComplete (string token)
+      {
+         var result = new Dictionary <int, string> ();
+         using (var searcher = new IndexSearcher (Directory, true)) {
+            var reader = IndexReader.Open (Directory, true);
+            var collector = TopScoreDocCollector.Create (SearchCommon.HITS_LIMIT, true);
+            var analyzer = new StandardAnalyzer (global::Lucene.Net.Util.Version.LUCENE_30);
+            var parser = new QueryParser (global::Lucene.Net.Util.Version.LUCENE_30, "text", analyzer);
+            var query = SearchCommon.ParseQuery (SearchCommon.BuildQuery (token.GetWords (), "(text:{0})"), parser);
+            searcher.Search (query, collector);
+            var docs = collector.TopDocs (0, 12).ScoreDocs;
+            foreach (var scoreDoc in docs) {
+               var doc = reader.Document (scoreDoc.Doc);
+               var id = Convert.ToInt32 (doc.Get ("Id"));
+               var text = doc.Get ("text");
+               result.Add (id, text);
+            }
+            reader.Dispose ();
+            analyzer.Close ();
+         }
+         return result;
+      }
 
       /// <summary>
       /// Adds or Updates the index for the given item.

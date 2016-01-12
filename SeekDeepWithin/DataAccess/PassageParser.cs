@@ -1,280 +1,270 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using SeekDeepWithin.Controllers;
-using SeekDeepWithin.Models;
-using SeekDeepWithin.Pocos;
-using SeekDeepWithin.SdwSearch;
-
-namespace SeekDeepWithin.DataAccess
+﻿namespace SeekDeepWithin.DataAccess
 {
    public class PassageParser
    {
-      private string m_LastBook = "";
-      private readonly ISdwDatabase m_Db;
-      private readonly StringBuilder m_Log = new StringBuilder();
-      private readonly List<PassageEntry> m_PassageList = new List<PassageEntry> ();
+      //private string m_LastBook = "";
+      //private readonly ISdwDatabase m_Db;
+      //private readonly StringBuilder m_Log = new StringBuilder();
+      //private readonly List<PassageEntry> m_PassageList = new List<PassageEntry> ();
 
-      /// <summary>
-      /// Initializes a new passage parser.
-      /// </summary>
-      public PassageParser (ISdwDatabase db)
-      {
-         this.m_Db = db;
-      }
+      ///// <summary>
+      ///// Initializes a new passage parser.
+      ///// </summary>
+      //public PassageParser (ISdwDatabase db)
+      //{
+      //   this.m_Db = db;
+      //}
       
-      /// <summary>
-      /// Gets or Sets the list of parsed passages.
-      /// </summary>
-      public List<PassageEntry> PassageList { get { return this.m_PassageList; } }
+      ///// <summary>
+      ///// Gets or Sets the list of parsed passages.
+      ///// </summary>
+      //public List<PassageEntry> PassageList { get { return this.m_PassageList; } }
 
-      public string Log { get; private set; }
+      //public string Log { get; private set; }
 
-      /// <summary>
-      /// Parses the given passages.
-      /// </summary>
-      /// <param name="par">Passeges to parse.</param>
-      public void Parse (string par)
-      {
-         this.m_Log.Clear ();
-         string book = "";
-         string chapter = "";
-         string verse = "";
-         bool bBook = true;
-         bool bVerse = false;
-         bool bChapter = false;
-         bool handled = false;
-         par = par.Replace (" ", "");
-         int length = par.Length;
+      ///// <summary>
+      ///// Parses the given passages.
+      ///// </summary>
+      ///// <param name="par">Passeges to parse.</param>
+      //public void Parse (string par)
+      //{
+      //   this.m_Log.Clear ();
+      //   string book = "";
+      //   string chapter = "";
+      //   string verse = "";
+      //   bool bBook = true;
+      //   bool bVerse = false;
+      //   bool bChapter = false;
+      //   bool handled = false;
+      //   par = par.Replace (" ", "");
+      //   int length = par.Length;
 
-         int charIndex = 0;
-         while (Char.IsDigit (par [charIndex]))
-         {
-            book += par [charIndex];
-            charIndex++;
-         }
+      //   int charIndex = 0;
+      //   while (Char.IsDigit (par [charIndex]))
+      //   {
+      //      book += par [charIndex];
+      //      charIndex++;
+      //   }
 
-         for (; charIndex < length; charIndex++)
-         {
-            char currentChar = par [charIndex];
-            if (currentChar == ':')
-            {
-               bBook = false;
-               bChapter = false;
-               bVerse = true;
-            }
-            else if (currentChar == ',')
-            {
-               if (bBook)
-               {
-                  if ((charIndex + 1) < length)
-                  {
-                     if (!Char.IsDigit (par [charIndex + 1]))
-                     {
-                        book += currentChar;
-                        handled = true;
-                     }
-                  }
-               }
-               if (!handled)
-               {
-                  AddPassages (book, chapter, verse);
-                  if (verse == "") chapter = "";
-                  verse = "";
-               }
-            }
-            else if (currentChar == ';')
-            {
-               AddPassages (book, chapter, verse);
-               book = "";
-               chapter = "";
-               verse = "";
-               bBook = true;
-               bChapter = false;
-               bVerse = false;
-            }
-            else if (currentChar == '.')
-            {
-               if (bBook)
-               {
-                  bBook = false;
-                  bChapter = true;
-                  bVerse = false;
-               }
-               else
-               {
-                  bBook = false;
-                  bChapter = false;
-                  bVerse = true;
-               }
-            }
-            else if (currentChar == '-')
-            {
-               if (bChapter)
-                  chapter += currentChar;
-               if (bVerse)
-                  verse += currentChar;
-            }
-            else if (Char.IsDigit (currentChar))
-            {
-               if (bBook)
-               {
-                  if ((charIndex + 1) < length && Char.IsLetter (par [charIndex + 1]) /* && book != "" */)
-                     book += currentChar;
-                  else
-                  {
-                     bBook = false;
-                     bChapter = true;
-                     chapter += currentChar;
-                  }
-               }
-               else if (bChapter)
-                  chapter += currentChar;
-               else
-                  verse += currentChar;
-            }
-            else if (bBook)
-               book += currentChar;
-         }
-         AddPassages (book, chapter, verse);
-         this.Log = this.m_Log.ToString ();
-      }
+      //   for (; charIndex < length; charIndex++)
+      //   {
+      //      char currentChar = par [charIndex];
+      //      if (currentChar == ':')
+      //      {
+      //         bBook = false;
+      //         bChapter = false;
+      //         bVerse = true;
+      //      }
+      //      else if (currentChar == ',')
+      //      {
+      //         if (bBook)
+      //         {
+      //            if ((charIndex + 1) < length)
+      //            {
+      //               if (!Char.IsDigit (par [charIndex + 1]))
+      //               {
+      //                  book += currentChar;
+      //                  handled = true;
+      //               }
+      //            }
+      //         }
+      //         if (!handled)
+      //         {
+      //            AddPassages (book, chapter, verse);
+      //            if (verse == "") chapter = "";
+      //            verse = "";
+      //         }
+      //      }
+      //      else if (currentChar == ';')
+      //      {
+      //         AddPassages (book, chapter, verse);
+      //         book = "";
+      //         chapter = "";
+      //         verse = "";
+      //         bBook = true;
+      //         bChapter = false;
+      //         bVerse = false;
+      //      }
+      //      else if (currentChar == '.')
+      //      {
+      //         if (bBook)
+      //         {
+      //            bBook = false;
+      //            bChapter = true;
+      //            bVerse = false;
+      //         }
+      //         else
+      //         {
+      //            bBook = false;
+      //            bChapter = false;
+      //            bVerse = true;
+      //         }
+      //      }
+      //      else if (currentChar == '-')
+      //      {
+      //         if (bChapter)
+      //            chapter += currentChar;
+      //         if (bVerse)
+      //            verse += currentChar;
+      //      }
+      //      else if (Char.IsDigit (currentChar))
+      //      {
+      //         if (bBook)
+      //         {
+      //            if ((charIndex + 1) < length && Char.IsLetter (par [charIndex + 1]) /* && book != "" */)
+      //               book += currentChar;
+      //            else
+      //            {
+      //               bBook = false;
+      //               bChapter = true;
+      //               chapter += currentChar;
+      //            }
+      //         }
+      //         else if (bChapter)
+      //            chapter += currentChar;
+      //         else
+      //            verse += currentChar;
+      //      }
+      //      else if (bBook)
+      //         book += currentChar;
+      //   }
+      //   AddPassages (book, chapter, verse);
+      //   this.Log = this.m_Log.ToString ();
+      //}
 
-      /**
-       * Adds all passages for the given list.
-       * @param string book The book.
-       * @param string chapter The chapter, or chapters.
-       * @param string passage The verse, or verses.
-       */
-      private void AddPassages (string book, string chapter, string passage)
-      {
-         this.m_Log.AppendFormat ("<li>Adding {0}|{1}|{2}</li>", book, chapter, passage);
-         if (book == "" && chapter == "")
-            return;
-         if (book == "")
-         {
-            if (m_LastBook == "") // Unable to determine the book...
-               return;
-            book = m_LastBook;
-         }
+      //
+      // /// Adds all passages for the given list.
+      // /// @param string book The book.
+      // /// @param string chapter The chapter, or chapters.
+      // /// @param string passage The verse, or verses.
+      //
+      //private void AddPassages (string book, string chapter, string passage)
+      //{
+      //   this.m_Log.AppendFormat ("<li>Adding {0}|{1}|{2}</li>", book, chapter, passage);
+      //   if (book == "" && chapter == "")
+      //      return;
+      //   if (book == "")
+      //   {
+      //      if (m_LastBook == "") // Unable to determine the book...
+      //         return;
+      //      book = m_LastBook;
+      //   }
 
-         this.m_LastBook = book;
-         var passages = new List <int> ();
-         var chapters = new List<int> ();
-         if (chapter.Contains ("-"))
-         {
-            string[] chapterSplit = chapter.Split ('-');
-            int start = Convert.ToInt32 (chapterSplit[0]);
-            int end = Convert.ToInt32 (chapterSplit[1]);
-            for (int a = start; a <= end; a++)
-            {
-               chapters.Add (a);
-               if (!string.IsNullOrWhiteSpace (passage) && a == end)
-               {
-                  for (int c = 1; c <= Convert.ToInt32 (passage); c++)
-                     passages.Add (c);
-               }
-            }
-         }
-         else
-         {
-            if (!string.IsNullOrWhiteSpace(chapter))
-               chapters.Add (Convert.ToInt32 (chapter));
+      //   this.m_LastBook = book;
+      //   var passages = new List <int> ();
+      //   var chapters = new List<int> ();
+      //   if (chapter.Contains ("-"))
+      //   {
+      //      string[] chapterSplit = chapter.Split ('-');
+      //      int start = Convert.ToInt32 (chapterSplit[0]);
+      //      int end = Convert.ToInt32 (chapterSplit[1]);
+      //      for (int a = start; a <= end; a++)
+      //      {
+      //         chapters.Add (a);
+      //         if (!string.IsNullOrWhiteSpace (passage) && a == end)
+      //         {
+      //            for (int c = 1; c <= Convert.ToInt32 (passage); c++)
+      //               passages.Add (c);
+      //         }
+      //      }
+      //   }
+      //   else
+      //   {
+      //      if (!string.IsNullOrWhiteSpace(chapter))
+      //         chapters.Add (Convert.ToInt32 (chapter));
 
-            if (passage.Contains ("-"))
-            {
-               string[] passageSplit = passage.Split ('-');
-               int start = Convert.ToInt32 (passageSplit[0]);
-               int end = Convert.ToInt32 (passageSplit[1]);
-               for (int a = start; a <= end; a++)
-                  passages.Add (a);
-            }
-            else if (!string.IsNullOrEmpty (passage))
-               passages.Add (Convert.ToInt32 (passage));
-         }
+      //      if (passage.Contains ("-"))
+      //      {
+      //         string[] passageSplit = passage.Split ('-');
+      //         int start = Convert.ToInt32 (passageSplit[0]);
+      //         int end = Convert.ToInt32 (passageSplit[1]);
+      //         for (int a = start; a <= end; a++)
+      //            passages.Add (a);
+      //      }
+      //      else if (!string.IsNullOrEmpty (passage))
+      //         passages.Add (Convert.ToInt32 (passage));
+      //   }
 
-         var subBookId = AbbrevSearch.Query (book);
-         if (subBookId == 0)
-         {
-            this.m_Log.AppendFormat ("<li>Unable to find information for the abbreviation: {0}</li>", book);
-            return;
-         }
-         var subBook = this.m_Db.VersionSubBooks.Get (subBookId);
-         if (subBook != null)
-         {
-            var chaps = new List <SubBookChapter> ();
-            if (chapters.Count == 0)
-               chaps.Add (subBook.Chapters.FirstOrDefault ());
-            else if (chapters.Count == 1)
-               chaps.Add (subBook.Chapters.FirstOrDefault (c => c.Order == chapters [0]));
-            else
-            {
-               chaps.AddRange ((from subBookChapter in subBook.Chapters
-                  where chapters.Contains (subBookChapter.Order)
-                  select subBookChapter));
-            }
+      //   var subBookId = AbbrevSearch.Query (book);
+      //   if (subBookId == 0)
+      //   {
+      //      this.m_Log.AppendFormat ("<li>Unable to find information for the abbreviation: {0}</li>", book);
+      //      return;
+      //   }
+      //   var subBook = this.m_Db.VersionSubBooks.Get (subBookId);
+      //   if (subBook != null)
+      //   {
+      //      var chaps = new List <SubBookChapter> ();
+      //      if (chapters.Count == 0)
+      //         chaps.Add (subBook.Chapters.FirstOrDefault ());
+      //      else if (chapters.Count == 1)
+      //         chaps.Add (subBook.Chapters.FirstOrDefault (c => c.Order == chapters [0]));
+      //      else
+      //      {
+      //         chaps.AddRange ((from subBookChapter in subBook.Chapters
+      //            where chapters.Contains (subBookChapter.Order)
+      //            select subBookChapter));
+      //      }
 
-            for (int a = 0; a < chaps.Count; a++)
-            {
-               if (passages.Count == 0)
-                  this.PassageList.AddRange (chaps[a].Passages);
-               else
-               {
-                  if (a + 1 == chaps.Count)
-                  {
-                     this.PassageList.AddRange (from passageEntry in chaps[a].Passages
-                                                where passages.Contains (passageEntry.Number)
-                                                select passageEntry);
-                  }
-                  else
-                     this.PassageList.AddRange (chaps[a].Passages);
-               }
-            }
-         }
-      }
+      //      for (int a = 0; a < chaps.Count; a++)
+      //      {
+      //         if (passages.Count == 0)
+      //            this.PassageList.AddRange (chaps[a].Passages);
+      //         else
+      //         {
+      //            if (a + 1 == chaps.Count)
+      //            {
+      //               this.PassageList.AddRange (from passageEntry in chaps[a].Passages
+      //                                          where passages.Contains (passageEntry.Number)
+      //                                          select passageEntry);
+      //            }
+      //            else
+      //               this.PassageList.AddRange (chaps[a].Passages);
+      //         }
+      //      }
+      //   }
+      //}
 
-      /// <summary>
-      /// Builds html output for the parsed passages.
-      /// </summary>
-      /// <param name="url"></param>
-      /// <returns>The html output of the parse.</returns>
-      public string BuildHtmlOutput (Uri url)
-      {
-         var renderer = new SdwRenderer { DoFooters = false };
-         var html = new StringBuilder ();
-         html.AppendLine("<div class=\"panel passageParseTable\">");
-         var lastChapter = -1;
-         var host = url == null ? string.Empty : url.AbsoluteUri.Replace (url.AbsolutePath, "");
-         foreach (var passage in this.PassageList.Select(p => new PassageViewModel(p)))
-         {
-            passage.Renderer = renderer;
-            if (passage.ChapterId != lastChapter)
-            {
-               html.AppendLine ("<div class=\"row\">");
-               html.AppendLine ("<div class=\"small-12 columns\">");
-               html.AppendFormat ("<a href=\"{0}/Read/{1}\">", host, passage.ChapterId);
-               html.AppendLine (passage.GetTitleNoVerse());
-               html.AppendLine ("</a>");
-               html.AppendLine ("</div>");
-               html.AppendLine ("</div>");
-               lastChapter = passage.ChapterId;
-            }
-            html.AppendLine ("<div class=\"row\">");
-            html.AppendLine ("<div class=\"small-2 medium-1 large-1 columns\"><blockquote>");
-            html.AppendFormat ("<a href=\"{0}/Passage?entryId={1}\">", host, passage.EntryId);
-            html.AppendLine (passage.Number.ToString (CultureInfo.InvariantCulture));
-            html.AppendLine ("</a>");
-            html.AppendLine ("</blockquote></div>");
-            html.AppendLine ("<div class=\"small-10 medium-11 large-11 columns\">");
-            html.AppendLine (passage.Render(url));
-            html.AppendLine ("</div>");
-            html.AppendLine ("</div>");
-         }
-         html.AppendLine ("</div>");
-         return html.ToString();
-      }
+      ///// <summary>
+      ///// Builds html output for the parsed passages.
+      ///// </summary>
+      ///// <param name="url"></param>
+      ///// <returns>The html output of the parse.</returns>
+      //public string BuildHtmlOutput (Uri url)
+      //{
+      //   var renderer = new SdwRenderer { DoFooters = false };
+      //   var html = new StringBuilder ();
+      //   html.AppendLine("<div class=\"panel passageParseTable\">");
+      //   var lastChapter = -1;
+      //   var host = url == null ? string.Empty : url.AbsoluteUri.Replace (url.AbsolutePath, "");
+      //   foreach (var passage in this.PassageList.Select(p => new PassageViewModel(p)))
+      //   {
+      //      passage.Renderer = renderer;
+      //      if (passage.ChapterId != lastChapter)
+      //      {
+      //         html.AppendLine ("<div class=\"row\">");
+      //         html.AppendLine ("<div class=\"small-12 columns\">");
+      //         html.AppendFormat ("<a href=\"{0}/Read/{1}\">", host, passage.ChapterId);
+      //         html.AppendLine (passage.GetTitleNoVerse());
+      //         html.AppendLine ("</a>");
+      //         html.AppendLine ("</div>");
+      //         html.AppendLine ("</div>");
+      //         lastChapter = passage.ChapterId;
+      //      }
+      //      html.AppendLine ("<div class=\"row\">");
+      //      html.AppendLine ("<div class=\"small-2 medium-1 large-1 columns\"><blockquote>");
+      //      html.AppendFormat ("<a href=\"{0}/Passage?entryId={1}\">", host, passage.EntryId);
+      //      html.AppendLine (passage.Number.ToString (CultureInfo.InvariantCulture));
+      //      html.AppendLine ("</a>");
+      //      html.AppendLine ("</blockquote></div>");
+      //      html.AppendLine ("<div class=\"small-10 medium-11 large-11 columns\">");
+      //      html.AppendLine (passage.Render(url));
+      //      html.AppendLine ("</div>");
+      //      html.AppendLine ("</div>");
+      //   }
+      //   html.AppendLine ("</div>");
+      //   return html.ToString();
+      //}
       /*
       /// <summary>
       /// Gets the fully qualified name of the given book.

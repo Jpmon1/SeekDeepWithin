@@ -2,14 +2,22 @@
 
    init: function () {
       $('#editTruthSuccess').velocity('transition.fadeOut');
-      /*$('#textNewLove').autocomplete({
+      $('#addTruthAppendText').autocomplete({
          serviceUrl: '/Light/AutoComplete',
          paramName: 'text',
          onSelect: function(suggestion) {
-            $('#textNewLove').val(suggestion.value);
-            $('#textNewLove').data('lightId', suggestion.data);
+            $('#addTruthAppendText').val(suggestion.value);
+            $('#addTruthAppendText').data('lightId', suggestion.data);
          }
-      });*/
+      });
+      $('#addTruthFormatRegex').val($("#addTruthCurrentRegex option:selected").text());
+      $('#addTruthCurrentRegex').change(function() {
+         $('#addTruthFormatRegex').val($("#addTruthCurrentRegex option:selected").text());
+         //var str = "";
+         //$("addTruthCurrentRegex option:selected").each(function () {
+         //   str += $(this).text() + " ";
+         //});
+      });
    },
 
    lightCreate: function() {
@@ -20,16 +28,25 @@
          });
    },
 
-   truthCreate: function() {
-      SdwEdit._post('/Truth/Create',
-      {
-         light: $('#selLight').val(),
-         truth: $('#loveType').val() + '|' + $('#truthOrder').val() + '|' + $('#truthNumber').val() + '|' + $('#textNewLove').val()
-         },
-         function() {
-            $('#textNewLove').val('');
-            $('#textNewLove').data('lightId', '');
-         });
+   truthCreate: function () {
+      var lights = [];
+      var hashId = new Hashids('GodisLove');
+      $('#editSelectedLight').find('.callout').each(function(i, o) {
+         lights.push(parseInt($(o).attr('id').substr(9)));
+      });
+      SdwEdit._post('/Truth/Create', {
+         light: hashId.encode(lights),
+         truth: $('#addTruthText').val()
+      }, function() {
+         $('#addTruthText').val('');
+      });
+   },
+
+   truthAppend: function () {
+      var text = $('#addTruthText').val() + '\n';
+      text += $('#addTruthAppendType').val() + '|' + $('#addTruthAppendOrder').val() +
+              '|' + $('#addTruthAppendNumber').val() + '|' + $('#addTruthAppendText').val();
+      $('#addTruthText').val(text);
    },
 
    truthEdit: function (last) {
@@ -64,25 +81,22 @@
       }
    },
 
-   truthNew: function() {
-      var uuid = _uuid();
-      $.ajax({
-         url: "/Truth/New",
-         data: { id: uuid }
-      }).done(function (d) {
-         $('#formattedTruth').append(d);
-         var truth = $('#' + uuid);
-         truth.velocity("transition.slideRightIn");
-         var text = truth.find('#text');
-         text.autocomplete({
-            serviceUrl: '/Light/AutoComplete',
-            paramName: 'text',
-            onSelect: function (suggestion) {
-               text.val(suggestion.value);
-            }
-         });
-      }).fail(function (d) {
-         alert(d.message);
+   truthFormat: function () {
+      //var uuid = _uuid();
+      var regex = $('#addTruthFormatRegex').val();
+      SdwEdit._post('/Truth/Format', {
+         regex: encodeURIComponent(regex),
+         text: encodeURIComponent($('#addTruthFormatText').val()),
+         type: $('#addTruthFormatType').val(),
+         startOrder: $('#addTruthFormatOrder').val()
+      }, function (d) {
+         if ($("#addTruthCurrentRegex option[value='" + d.regexId + "']").length <= 0) {
+            $('#addTruthCurrentRegex')
+            .append($("<option></option>")
+            .attr("value", d.regexId)
+            .text(decodeURIComponent(d.regexText)));
+         }
+         $('#addTruthText').val(d.items);
       });
    },
 
@@ -95,9 +109,14 @@
 
    _post: function (url, data, success) {
       $.ajax({ type: 'POST', url: url, data: data }).done(function (d) {
-         if (d.status == 'fail') {
-            alert(d.message);
-         } else {
+         var ok = true;
+         if (d.status) {
+            if (d.status == 'fail') {
+               ok = false;
+               alert(d.message);
+            }
+         }
+         if (ok && success) {
             success(d);
          }
       }).fail(function (d) {

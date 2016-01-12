@@ -78,8 +78,7 @@ namespace SeekDeepWithin.Controllers
                light = lights.Select (l => new {
                   id = l.Id,
                   text = l.Text,
-                  modified = l.Modified.ToString (CultureInfo.InvariantCulture),
-                  key = Helper.Base64Encode (l.Id.ToString (CultureInfo.InvariantCulture))
+                  modified = l.Modified.ToString (CultureInfo.InvariantCulture)
                })
             }, JsonRequestBehavior.AllowGet);
       }
@@ -91,8 +90,9 @@ namespace SeekDeepWithin.Controllers
       /// <returns>The list of possible items for the given text.</returns>
       public ActionResult AutoComplete (string text)
       {
+         var query = LightSearch.AutoComplete (text);
          var result = new {
-            suggestions = this.Database.Light.Get (t => t.Text.Contains (text)).Select (t => new { value = t.Text, data = t.Id })
+            suggestions = query.Select (l => new { value = l.Value, data = l.Key })
          };
          return Json (result, JsonRequestBehavior.AllowGet);
       }

@@ -1,3 +1,27 @@
+History
+Search
+Sources
+Loading
+Scroll to loaded items
+Masonry
+Amazon Items
+Alias
+Headers
+Footers
+Styles
+Top Bar
+Roles
+Get all connections
+Heart (fav)
+About page
+Passage Parser
+Login/Register page
+Remove HTML from sdw.light.js
+Verify:
+   Tags,
+   Authors,
+   passages
+
 Comments
 Filtered search
 Autocomplete using Lucene

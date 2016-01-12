@@ -24,11 +24,6 @@ namespace SeekDeepWithin.Pocos
       public DateTime Modified { get; set; }
 
       /// <summary>
-      /// Gets or Sets the styles.
-      /// </summary>
-      public virtual ICollection <LightStyle> Styles { get; set; }
-
-      /// <summary>
       /// Gets the collection of truth for this light.
       /// </summary>
       public virtual ICollection<Truth> Truths { get; set; }

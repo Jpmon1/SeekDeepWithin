@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Web.Mvc;
 using Newtonsoft.Json.Linq;
@@ -67,7 +66,7 @@ namespace SeekDeepWithin.Controllers
                      var toAdd = new List<LevelItem> ();
                      var max = possibleLove.Max (l => l.Lights.Count);
                      foreach (var l in possibleLove.Where (lo => lo.Lights.Count == max))
-                        toAdd.AddRange (l.Truths.OrderBy (t => t.Type).ThenBy (t => t.Order ?? 0).Select (t => new LevelItem (l.Id, t)));
+                        toAdd.AddRange (l.Truths.OrderBy (t => t.Type).ThenBy (t => t.Order ?? 0).Select (t => new LevelItem (l, t)));
                      if (toAdd.Any (t => t.Id == levelItem.Id)) continue;
                      foreach (var truth in toAdd) {
                         if ((existingLevel == null || existingLevel.Items.All (i => i.Id != truth.Id)) &&
@@ -82,11 +81,13 @@ namespace SeekDeepWithin.Controllers
                if (existingLevel != null) {
                   var carryOver = existingLevel.Items.Where (i => level.Items.All (li => li.TruthId != i.TruthId)).ToList ();
                   if (carryOver.Any ()) {
-                     var carryOverIds = carryOver.Select (c => c.TruthId).ToList ();
-                     var truths = this.Database.Truth.Get (t => carryOverIds.Contains (t.Id));
+                     var truthIds = carryOver.Select (c => c.TruthId).ToList ();
+                     var loveIds = carryOver.Select (c => c.LoveId).ToList ();
+                     var truths = this.Database.Truth.Get (t => truthIds.Contains (t.Id));
+                     var love = this.Database.Love.Get (l => loveIds.Contains (l.Id)).ToList();
                      foreach (var truth in truths) {
                         var item = carryOver.FirstOrDefault (c => c.TruthId == truth.Id);
-                        level.Items.Add (new LevelItem (item == null ? 0 : item.LoveId, truth));
+                        level.Items.Add (new LevelItem (item == null ? null : love.FirstOrDefault (l => l.Id == item.LoveId), truth));
                      }
                   }
                }
@@ -94,31 +95,6 @@ namespace SeekDeepWithin.Controllers
             }
          }
          return PartialView (rtnLevels);
-         /*return Json (new {
-            status = SUCCESS,
-            levels = rtnLevels.Select (l => new {
-               index = l.Index,
-               items = l.Items.OrderBy (t => t.Type).ThenBy (t => t.Order ?? 0).Select (i => new {
-                  id = i.Id,
-                  text = i.Text,
-                  type = i.Type,
-                  order = i.Order,
-                  number = i.Number,
-                  truthId = i.TruthId
-               })
-            })}, JsonRequestBehavior.AllowGet);*/
-      }
-
-      private string RenderPartialToString (string viewName, object model)
-      {
-         ViewData.Model = model;
-         using (var sw = new StringWriter ()) {
-            var viewResult = ViewEngines.Engines.FindPartialView (ControllerContext, viewName);
-            var viewContext = new ViewContext (ControllerContext, viewResult.View, ViewData, TempData, sw);
-            viewResult.View.Render (viewContext, sw);
-            viewResult.ViewEngine.ReleaseView (ControllerContext, viewResult.View);
-            return sw.GetStringBuilder ().ToString ();
-         }
       }
    }
 }

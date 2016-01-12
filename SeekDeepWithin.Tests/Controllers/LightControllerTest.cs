@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Web.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SeekDeepWithin.Controllers;
 using SeekDeepWithin.Pocos;
 using SeekDeepWithin.Tests.Mocks;
 
@@ -44,8 +42,8 @@ namespace SeekDeepWithin.Tests.Controllers
             Modified = DateTime.Now,
             Lights = { bg1 },
             Truths = {
-               new Truth { Id = this.m_TruthId++, Light = date2008, Type = (int)TruthType.PublishDate},
-               new Truth { Id = this.m_TruthId++, Light = sourceName, Type = (int)TruthType.SourceName},
+               new Truth { Id = this.m_TruthId++, Light = date2008, Type = (int)TruthType.Date},
+               new Truth { Id = this.m_TruthId++, Light = sourceName, Type = (int)TruthType.Source},
                new Truth { Id = this.m_TruthId++, Light = sourceUrl, Type = (int)TruthType.SourceUrl },
                new Truth { Id = this.m_TruthId++, Light = introV1, Type = (int)TruthType.Summary }
             }

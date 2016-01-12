@@ -56,23 +56,5 @@ namespace SeekDeepWithin.Controllers
          var punctuation = text.Where (Char.IsPunctuation).Distinct ().ToArray ();
          return text.Split ().Select (x => x.Trim (punctuation)).ToList ();
       }
-
-      /// <summary>
-      /// Gets the full title of the passage.
-      /// </summary>
-      /// <param name="entry">Passage to get title for.</param>
-      /// <returns>The full title of the passage.</returns>
-      public static string GetTitle (this PassageEntry entry)
-      {
-         if (entry == null) return string.Empty;
-         var title = string.Empty;
-         title += entry.Chapter.SubBook.Version.Title + " | ";
-         if (!entry.Chapter.SubBook.Hide)
-            title += entry.Chapter.SubBook.Term.Name + " | ";
-         if (!entry.Chapter.Hide)
-            title += entry.Chapter.Chapter.Name + ":";
-         title += entry.Number;
-         return title;
-      }
    }
 }

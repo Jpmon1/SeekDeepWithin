@@ -1,12 +1,12 @@
-namespace SeekDeepWithin.Pocos
+﻿namespace SeekDeepWithin.Pocos
 {
    /// <summary>
-   /// Glossary footer style
+   /// Represents a style for a peace.
    /// </summary>
-   public class TermItemEntryFooterStyle : IStyle
+   public class TruthStyle : IDbTable
    {
       /// <summary>
-      /// Gets or Sets the id of the entry style.
+      /// Gets or Sets the id.
       /// </summary>
       public int Id { get; set; }
 
@@ -26,8 +26,8 @@ namespace SeekDeepWithin.Pocos
       public virtual Style Style { get; set; }
 
       /// <summary>
-      /// Gets or Sets the footer.
+      /// Gets or Sets the parent truth.
       /// </summary>
-      public virtual TermItemEntryFooter Footer { get; set; }
+      public virtual Truth Truth { get; set; }
    }
 }

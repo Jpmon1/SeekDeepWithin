@@ -14,11 +14,11 @@ namespace SeekDeepWithin.Tests.DataAccess
       [TestMethod]
       public void TestBible ()
       {
-         var parser = new PassageParser (new MockDatabase());
-         parser.Parse("John3:16");
+         //var parser = new PassageParser (new MockDatabase());
+         //parser.Parse("John3:16");
          //Assert.AreEqual ("16", parser.PassageList["Bible"]["King James Bible"]["John"]["3"].First());
-         parser.PassageList.Clear();
-         parser.Parse ("gen1:1");
+         //parser.PassageList.Clear();
+         //parser.Parse ("gen1:1");
          //Assert.AreEqual ("1", parser.PassageList["Bible"]["King James Bible"]["Genesis"]["1"].First ());
       }
    }
