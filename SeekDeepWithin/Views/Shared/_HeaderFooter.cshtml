@@ -1,8 +1,0 @@
-﻿@using SeekDeepWithin.Controllers
-@model SeekDeepWithin.Models.HeaderFooterViewModel
-<div>
-   @if (Model.HorF == "footer" && Model.Number > 0) {
-      <sup>(@Model.Number)</sup>
-   }
-   @Html.Raw(HtmlSanitizer.Sanitize (Model.Render()))
-</div>

@@ -120,12 +120,13 @@
             success(d);
          }
       }).fail(function (d) {
-         alert(d.message);
+         if (d.message) {
+            alert(d.message);
+         }
       });
    }
 
 };
-$(document).foundation();
 $(document).ready(function () {
    SdwEdit.init();
 });

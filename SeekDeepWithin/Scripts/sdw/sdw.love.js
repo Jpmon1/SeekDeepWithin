@@ -1,15 +1,6 @@
 ﻿var Love = {
    
    load: function (selected) {
-      /*var lArray = [];
-      var l = SdwCommon.getParam('l');
-      var hashids = new Hashids("GodisLove");
-      if (l != null) { lArray = hashids.decode(l); }
-      if ($.inArray(selected, lArray) < 0) { lArray.push(selected); }
-      var all = hashids.encode(lArray);
-      var history = '?l=' + all;
-      History.pushState(null, 'Seek Deep Within', history);*/
-
       var data = [];
       var last = $('#light_' + selected);
       last.toggleClass('selected');
@@ -32,6 +23,10 @@
          var web = $('#lightWeb');
          var sandbox = $('#sandbox');
          sandbox.html(d);
+         var histId = $('#historyId');
+         var history = '?l=' + histId.val();
+         History.pushState('Seek Deep Within', 'Seek Deep Within', history);
+         histId.remove();
          var children = sandbox.children();
          var count = children.length;
          for (var i = 0; i < count; i++) {
@@ -49,7 +44,6 @@
                child.velocity('transition.fadeIn');
             }
          }
-         // TODO: Draw lines...
          SdwCommon.loadStop();
       });
    }

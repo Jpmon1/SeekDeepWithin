@@ -1,7 +1,7 @@
 ﻿@using SeekDeepWithin.Controllers
 @using SeekDeepWithin.Pocos
 @model List <SeekDeepWithin.Models.LevelModel>
-
+<input type="hidden" id="historyId" value="@(ViewBag.HistoryId)"/>
 @foreach (var level in Model) {
    //var lastType = 0;
    var layout = new LevelLayout (level);
@@ -11,8 +11,10 @@
          <div class="row">
             @for (var i = 0; i < colCount; i++) {
                var col = row.Columns [i];
-               <div class="small-@(col.SmallSpan) medium-@(col.MediumSpan) large-@(col.LargeSpan) column@(i == colCount - 1 ? " end" : "")">
-                  <div class="callout" id="light_@(col.LevelItem.Id)" onclick="Love.load(@(col.LevelItem.Id));" data-tid="@(col.LevelItem.TruthId)" data-lid="@(col.LevelItem.LoveId)">
+               var mOff = (i == 0 && row.Offset > 0) ? " medium-offset-" + row.Offset : "";
+               var lOff = (i == 0 && row.Offset > 0) ? " large-offset-" + row.Offset : "";
+               <div class="small-@(col.SmallSpan) medium-@(col.MediumSpan)@(mOff) large-@(col.LargeSpan)@(lOff) column@(i == colCount - 1 ? " end" : "")">
+                  <div class="callout" id="light_@(col.LevelItem.Id)" onclick="sdw.love(@(col.LevelItem.Id));" data-tid="@(col.LevelItem.TruthId)" data-lid="@(col.LevelItem.LoveId)">
                      @if (col.LevelItem.Type == TruthType.Passage && col.LevelItem.Number.HasValue) {
                         <div class="row">
                            <div class="small-2 medium-1 large-1 columns text-right">

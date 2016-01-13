@@ -26,6 +26,11 @@ namespace SeekDeepWithin.DataAccess
       IRepository<FormatRegex> RegexFormats { get; }
 
       /// <summary>
+      /// Gets the repository for history.
+      /// </summary>
+      IRepository<History> Histories { get; }
+
+      /// <summary>
       /// Gets the repository for styles.
       /// </summary>
       IRepository<Style> Styles { get; }

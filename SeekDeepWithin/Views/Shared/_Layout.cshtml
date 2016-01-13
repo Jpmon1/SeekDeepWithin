@@ -14,100 +14,64 @@
       @(Styles.Render ("~/Content/css"))
       <link href="https://fonts.googleapis.com/css?family=Merriweather+Sans:400,700,300,300italic" rel="stylesheet" type="text/css">
    </head>
-   <body>
-      <nav class="sdw-top-menu">
-         <img src="~/Images/icon_24.png" alt="Seek Deep Within" />
-         <a href="@Url.Action("Index", "Home", null, scheme)" class="title">
-            SEEK DEEP WITHIN
-         </a>
-         <div class="fRight">
-            @if (Request.IsAuthenticated) {
-               <a href="@Url.Action("Manage", "Account", null, scheme)" title="Manage Account"><i class="icon-user"></i></a>
-            } else {
-               var returnUrl = Request.Url != null ? Request.Url.ToString () : string.Empty;
-               <a href="@Url.Action("Register", "Account", null, scheme)" title="Register"><i class="icon-circlepencil"></i></a>
-               <a href="@Url.Action("Login", "Account", new { returnUrl }, scheme)" title="Login"><i class="icon-enter"></i></a>
-            }
-            @*<a href="@Url.Action("Index", "Search", null, scheme)" title="Search"><i class="icon-search"></i></a>*@
-            <a href="@Url.Action("About", "Home", null, scheme)" title="About"><i class="icon-question-sign"></i></a>
-            @if (Request.IsAuthenticated) {
-               <a href="javascript:document.getElementById('logoutForm').submit()" title="Log out"><i class="icon-exit"></i></a>
-            }
+<body>
+   <div class="stick-container">
+      <div class="sticky is-stuck stick-container">
+         <div class="loader">LOADING...</div>
+         <div class="title-bar" data-responsive-toggle="sdw-menu" data-hide-for="medium">
+            <button class="menu-icon" type="button" data-toggle></button>
+            <div class="title-bar-title">Menu</div>
          </div>
-      </nav>
-      @*<div class="cbp-spmenu cbp-spmenu-vertical cbp-spmenu-left" id="panel_left">
-         </div>
-         <div class="cbp-spmenu cbp-spmenu-vertical cbp-spmenu-right" id="panel_right">
-            <div class="sdw-panel">
-               <div class="title">Menu</div>
-               <a class="sdw-button white expand tLeft" href="@Url.Action("Index", "Book", null, scheme)"><i class="icon-book mRight mLeft"></i> Books</a>
-               <a class="sdw-button white expand tLeft" href="@Url.Action("Index", "Glossary", null, scheme)"><i class="icon-list mRight mLeft"></i> Glossary</a>
-               <a class="sdw-button white expand tLeft" href="@Url.Action("Index", "Search", null, scheme)"><i class="icon-search mRight mLeft"></i> Search</a>
-               <a class="sdw-button white expand tLeft" href="@Url.Action("About", "Home", null, scheme)"><i class="icon-question-sign mRight mLeft"></i> About</a>
-               @if (Request.IsAuthenticated) {
-                  <a class="sdw-button white expand tLeft" href="javascript:document.getElementById('logoutForm').submit()"><i class="icon-exit mRight mLeft"></i> Log out</a>
-                  <a class="sdw-button white expand tLeft" href="@Url.Action("Manage", "Account", null, scheme)"><i class="icon-user mRight mLeft"></i> @(User.Identity.Name)</a>
-               } else {
-                  var returnUrl = Request.Url != null ? Request.Url.ToString () : string.Empty;
-                  <a class="sdw-button white expand tLeft" href="@Url.Action("Register", "Account", null, scheme)"><i class="icon-ok-sign mRight mLeft"></i> Register</a>
-                  <a class="sdw-button white expand tLeft" href="@Url.Action("Login", "Account", new { returnUrl }, scheme)"><i class="icon-enter mRight mLeft"></i> Log in</a>
-               }
+
+         <div class="top-bar" id="sdw-menu">
+            <div class="top-bar-left">
+               <ul class="menu">
+                  <li><img src="~/Images/icon_24.png" alt="Seek Deep Within" /></li>
+                  <li class="menu-text"><a href="@Url.Action("Index", "Home", null, scheme)" class="title">SEEK DEEP WITHIN</a></li>
+                  @if (Request.IsAuthenticated) {
+                     <li><a href="@Url.Action("Manage", "Account", null, scheme)" title="Manage Account"><i class="icon-user"></i></a></li>
+                  } else {
+                     var returnUrl = Request.Url != null ? Request.Url.ToString () : string.Empty;
+                     <li><a href="@Url.Action("Register", "Account", null, scheme)" title="Register"><i class="icon-circlepencil"></i></a></li>
+                     <li><a href="@Url.Action("Login", "Account", new { returnUrl }, scheme)" title="Login"><i class="icon-enter"></i></a></li>
+                  }
+                  <li><a href="@Url.Action("About", "Home", null, scheme)" title="About"><i class="icon-question-sign"></i></a></li>
+                  @if (Request.IsAuthenticated) {
+                     <li><a href="#" onclick="document.getElementById('logoutForm').submit()" title="Log out"><i class="icon-exit"></i></a></li>
+                  }
+               </ul>
             </div>
-         </div>
-         <div class="cbp-spmenu cbp-spmenu-horizontal cbp-spmenu-top" id="panel_top"></div>
-         <div class="cbp-spmenu cbp-spmenu-horizontal cbp-spmenu-bottom" id="panel_bottom"></div>
-         <nav class="sdw-top-menu" id="siteNavBar">
-            <div class="title">
-               <h5 class="tCenter">
-                  <a href="@Url.Action("Index", "Home", null, scheme)">
-                     <img src="~/Images/sdw_16_w.png" class="hide-for-small" alt="Seek Deep Within" /> Seek Deep Within
-                  </a>
-               </h5>
-            </div>
-            <div class="sdw-menu-buttons">
-               @if (Request.IsAuthenticated) {
-                  <a href="@Url.Action("Manage", "Account", null, scheme)"><i class="icon-user"></i> @User.Identity.Name</a>
-               } else {
-                  var returnUrl = Request.Url != null ? Request.Url.ToString() : string.Empty;
-                  <a href="@Url.Action("Register", "Account", null, scheme)"><i class="icon-ok-sign"></i> Register</a>
-                  <a href="@Url.Action("Login", "Account", new { returnUrl }, scheme)"><i class="icon-enter"></i> Log in</a>
-               }
-               <a href="@Url.Action("Index", "Book", null, scheme)"><i class="icon-book"></i> Books</a>
-               <a href="@Url.Action("Index", "Glossary", null, scheme)"><i class="icon-list"></i> Glossary</a>
-               <a href="@Url.Action("Index", "Search", null, scheme)"><i class="icon-search"></i> Search</a>
-               <a href="@Url.Action("About", "Home", null, scheme)"><i class="icon-question-sign"></i> About</a>
-               @if (Request.IsAuthenticated) {
-                  <a href="javascript:document.getElementById('logoutForm').submit()"><i class="icon-exit"></i> Log out</a>
-               }
-            </div>
-            <div class="sdw-menu-button" style="float: right;">
-               <a href="javascript:void(0)" onclick="panels_showRight();"><i class="icon-menu"></i></a>
-            </div>
-         </nav>
-         <span class="panels_overlay"></span>*@
-      <div class="pBottom">
-         @(RenderSection ("featured", false))
-         <div class="row">
-            <div class="small-12 large-12 columns">
-               @(RenderBody ())
-               @if (Request.IsAuthenticated) {
-                  <!-- LOG OUT FORM-->
-                  <div style="display: none;">
-                     @using (Html.BeginForm ("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" })) { @(Html.AntiForgeryToken ()) }
-                  </div>
-               }
+            <div class="top-bar-right">
+               <ul class="menu">
+                  <li><input type="search" placeholder="Search" id="searchText"></li>
+                  <li><button type="button" class="sdw-button alt tiny">Search</button></li>
+               </ul>
             </div>
          </div>
       </div>
-      <!-- FOOTER -->
-      <div class="sdw-footer">
-         <div class="row">
-            <div class="large-6 columns">
-               <p>&copy; @DateTime.Now.Year - Seek Deep Within</p>
+   </div>
+   <div class="pBottom">
+      @(RenderSection ("featured", false))
+      <div class="row column">
+         @(RenderBody ())
+         @if (Request.IsAuthenticated) {
+               <!-- LOG OUT FORM-->
+            <div style="display: none;">
+               @using (Html.BeginForm ("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" })) { @(Html.AntiForgeryToken ()) }
             </div>
+         }
+      </div>
+   </div>
+   <!-- FOOTER -->
+   <div class="sdw-footer">
+      <div class="row">
+         <div class="large-6 columns">
+            <p>&copy; @DateTime.Now.Year - Seek Deep Within</p>
          </div>
       </div>
-      @(Scripts.Render ("~/bundles/jquery"))
-      @(RenderSection ("scripts", false))
-   </body>
+   </div>
+   @(Scripts.Render ("~/bundles/jquery"))
+   @(RenderSection ("scripts", false))
+</body>
+
 </html>

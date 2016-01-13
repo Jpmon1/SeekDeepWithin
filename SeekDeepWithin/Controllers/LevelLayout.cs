@@ -49,23 +49,39 @@ namespace SeekDeepWithin.Controllers
             span = 12 / loveIds.Count;
          }
          if (span < 3) span = 3;
+         AddColumns (loves, 0, 4, loveCount);
          var truthTypes = Enum.GetValues (typeof (TruthType)).Cast<TruthType> ();
          foreach (var type in truthTypes) {
-            var row = new LevelRow ();
-            this.Rows.Add (row);
-            var truthType = type;
-            foreach (var love in loves) {
-               foreach (var li in love.Where (li => li.Type == truthType)) {
-                  var cSpan = span;
-                  if (loveCount == 1 && (truthType == TruthType.Summary || truthType == TruthType.Passage)) {
-                     cSpan = 12;
-                  }
-                  if (row.Span + cSpan > 12) {
-                     row = new LevelRow ();
-                     this.Rows.Add (row);
-                  }
-                  row.AddColumn (cSpan, li);
+            AddColumns (loves, type, span, loveCount);
+         }
+         for (var i = this.Rows.Count - 1; i >= 0; i--) {
+            if (this.Rows[i].Columns.Count <= 0)
+               this.Rows.RemoveAt (i);
+         }
+      }
+
+      /// <summary>
+      /// Adds columns for the given truth type.
+      /// </summary>
+      /// <param name="loves">Loves to look in.</param>
+      /// <param name="truthType">Truth type to find.</param>
+      /// <param name="span">The suggested span.</param>
+      /// <param name="loveCount">The number of loves.</param>
+      private void AddColumns (IEnumerable <List <LevelItem>> loves, TruthType truthType, int span, int loveCount)
+      {
+         var row = new LevelRow ();
+         this.Rows.Add (row);
+         foreach (var love in loves) {
+            foreach (var li in love.Where (li => li.Type == truthType)) {
+               var cSpan = span;
+               if (loveCount == 1 && (truthType == TruthType.Summary || truthType == TruthType.Passage)) {
+                  cSpan = 12;
                }
+               if (row.Span + cSpan > 12) {
+                  row = new LevelRow ();
+                  this.Rows.Add (row);
+               }
+               row.AddColumn (cSpan, li);
             }
          }
       }

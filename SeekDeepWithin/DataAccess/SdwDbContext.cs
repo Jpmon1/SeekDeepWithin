@@ -28,6 +28,11 @@ namespace SeekDeepWithin.DataAccess
       public DbSet<Truth> Truths { get; set; }
 
       /// <summary>
+      /// Gets or sets the histories.
+      /// </summary>
+      public DbSet<History> Histories { get; set; }
+
+      /// <summary>
       /// Gets or sets the styles.
       /// </summary>
       public DbSet<Style> Styles { get; set; }

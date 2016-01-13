@@ -9,10 +9,11 @@ namespace SeekDeepWithin.DataAccess
    public class SdwDatabase : ISdwDatabase
    {
       private bool m_Disposed;
-      private IRepository<Light> m_Lights;
       private IRepository<Love> m_Loves;
+      private IRepository<Light> m_Lights;
       private IRepository<Truth> m_Truths;
       private IRepository<Style> m_Styles;
+      private IRepository<History> m_Histories;
       private IRepository<FormatRegex> m_RegexFormats;
       private readonly SdwDbContext m_Db = new SdwDbContext ();
 
@@ -54,6 +55,14 @@ namespace SeekDeepWithin.DataAccess
       public IRepository<Style> Styles
       {
          get { return this.m_Styles ?? (this.m_Styles = new Repository<Style> (m_Db)); }
+      }
+
+      /// <summary>
+      /// Gets the repository for histories.
+      /// </summary>
+      public IRepository<History> Histories
+      {
+         get { return this.m_Histories ?? (this.m_Histories = new Repository<History> (m_Db)); }
       }
 
       /// <summary>

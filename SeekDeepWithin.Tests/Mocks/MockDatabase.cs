@@ -11,8 +11,9 @@ namespace SeekDeepWithin.Tests.Mocks
       private IRepository<Love> m_Loves;
       private IRepository<Light> m_Lights;
       private IRepository<Truth> m_Truths;
-      private IRepository<FormatRegex> m_RegexFormats;
       private IRepository<Style> m_Styles;
+      private IRepository<History> m_Histories;
+      private IRepository<FormatRegex> m_RegexFormats;
 
       /// <summary>
       /// Gets the repository for books.
@@ -52,6 +53,14 @@ namespace SeekDeepWithin.Tests.Mocks
       public IRepository<Style> Styles
       {
          get { return this.m_Styles ?? (this.m_Styles = new MockRepository<Style> ()); }
+      }
+
+      /// <summary>
+      /// Gets the repository for histories.
+      /// </summary>
+      public IRepository<History> Histories
+      {
+         get { return this.m_Histories ?? (this.m_Histories = new Repository<History> (m_Db)); }
       }
 
       /// <summary>

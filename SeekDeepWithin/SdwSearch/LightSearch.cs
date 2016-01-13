@@ -36,7 +36,7 @@ namespace SeekDeepWithin.SdwSearch
             var collector = TopScoreDocCollector.Create (SearchCommon.HITS_LIMIT, true);
             var analyzer = new StandardAnalyzer (global::Lucene.Net.Util.Version.LUCENE_30);
             var parser = new QueryParser (global::Lucene.Net.Util.Version.LUCENE_30, "text", analyzer);
-            var query = SearchCommon.ParseQuery (SearchCommon.BuildQuery (token.GetWords (), "(text:{0})"), parser);
+            var query = SearchCommon.ParseQuery (SearchCommon.BuildQuery (token.GetWords (), "(text:{0}) OR (text:{1})"), parser);
             searcher.Search (query, collector);
             var docs = collector.TopDocs (0, 12).ScoreDocs;
             foreach (var scoreDoc in docs) {

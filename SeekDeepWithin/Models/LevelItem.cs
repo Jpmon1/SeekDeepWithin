@@ -25,14 +25,19 @@ namespace SeekDeepWithin.Models
       /// <param name="truth">The truth to use as an item.</param>
       public LevelItem (Love love, Truth truth)
       {
+         this.Update(love, truth);
+      }
+
+      public void Update (Love love, Truth truth)
+      {
          this.TruthId = truth.Id;
          this.Id = truth.Light.Id;
          this.Order = truth.Order;
          this.Number = truth.Number;
          this.Text = truth.Light.Text;
-         this.Type = (TruthType)truth.Type;
-         this.Headers = new List <LevelItem> ();
-         this.Footers = new List <LevelItem> ();
+         this.Type = (TruthType) truth.Type;
+         this.Headers = new List<LevelItem> ();
+         this.Footers = new List<LevelItem> ();
          this.Title = string.Empty;
          if (love != null) {
             this.LoveId = love.Id;

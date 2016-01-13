@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace SeekDeepWithin.Models
 {
@@ -39,13 +40,14 @@ namespace SeekDeepWithin.Models
       {
          this.Span += span;
          var column = new LevelColumn {
-            SmallSpan = span == 12 ? 12 : 6,
+            SmallSpan = levelItem.Type == 0 ? 12 :
+                        span == 12 ? 12 : 6,
             LargeSpan = span,
             MediumSpan = span,
             LevelItem = levelItem
          };
          this.Columns.Add (column);
-         this.Offset = (12 - span) / 2;
+         this.Offset = (12 - this.Span) / 2;
       }
    }
 }

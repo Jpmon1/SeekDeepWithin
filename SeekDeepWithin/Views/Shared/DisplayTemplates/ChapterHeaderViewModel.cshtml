@@ -1,8 +1,0 @@
-﻿@using SeekDeepWithin.Controllers
-@model SeekDeepWithin.Models.ChapterHeaderViewModel
-
-<div class="row">
-   <div class="small-12 large-12 columns">
-      @Html.Raw(HtmlSanitizer.Sanitize (Model.Render()))
-   </div>
-</div>

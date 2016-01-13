@@ -1,16 +1,9 @@
 ﻿<input type="hidden" value="index" id="pageId"/>
-<div class="loader">LOADING...</div>
 @if (User.IsInRole ("Editor")) {
-@section styles  {
-   @(Styles.Render ("~/Content/sdw/edit"))
-}
    <input type="hidden" id="editable"/>
 }
-<div class="row column text-center">
+<div class="row column text-center mTopBig">
    <em style="font-size: 24pt;">Seek, and ye shall find...</em>
-</div>
-<div class="row column">
-   <input type="text" placeholder="Search is not functional as of yet!" />
 </div>
 <div class="row column text-center mBottom">
    <em>Let your Heart be your guide</em>
