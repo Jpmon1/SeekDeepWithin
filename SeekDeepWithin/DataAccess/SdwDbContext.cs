@@ -23,14 +23,19 @@ namespace SeekDeepWithin.DataAccess
       public DbSet<Love> Loves { get; set; }
 
       /// <summary>
+      /// Gets or sets the souls.
+      /// </summary>
+      public DbSet<Soul> Souls { get; set; }
+
+      /// <summary>
       /// Gets or sets the truths.
       /// </summary>
       public DbSet<Truth> Truths { get; set; }
 
       /// <summary>
-      /// Gets or sets the histories.
+      /// Gets or sets the peace.
       /// </summary>
-      public DbSet<History> Histories { get; set; }
+      public DbSet<Peace> Peaces { get; set; }
 
       /// <summary>
       /// Gets or sets the styles.

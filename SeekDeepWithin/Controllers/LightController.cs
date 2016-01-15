@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Globalization;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using SeekDeepWithin.DataAccess;
@@ -42,6 +42,17 @@ namespace SeekDeepWithin.Controllers
       }
 
       /// <summary>
+      /// Gets the edit view for the given light.
+      /// </summary>
+      /// <param name="id">Id of light to get view for.</param>
+      /// <returns>The edit view or json error.</returns>
+      public ActionResult Edit (int id)
+      {
+         var light = this.Database.Light.Get (id);
+         return light == null ? this.Fail ("That light has not yet been illuminated.") : PartialView (light);
+      }
+
+      /// <summary>
       /// Edits light.
       /// </summary>
       /// <param name="id">The id of the light to edit.</param>
@@ -66,21 +77,25 @@ namespace SeekDeepWithin.Controllers
       /// Gets light.
       /// </summary>
       /// <returns>A JSON result.</returns>
-      public ActionResult Get (int? start, string filter)
+      public ActionResult Get (int? start, int? seed)
       {
-         var lights = this.Database.Light.All (q => q.OrderBy (b => b.Text))
-            .Where (b => string.IsNullOrEmpty (filter) || b.Text.Contains (filter))
-            .Skip (start ?? 0).Take (100).ToList ();
-         return Json (
-            new {
-               status = SUCCESS,
-               count = lights.Count,
-               light = lights.Select (l => new {
-                  id = l.Id,
-                  text = l.Text,
-                  modified = l.Modified.ToString (CultureInfo.InvariantCulture)
-               })
-            }, JsonRequestBehavior.AllowGet);
+         if (seed == null)
+            seed = Environment.TickCount;
+         if (start == null)
+            start = 1;
+         var total = start + 100;
+         var ids = new List <int> ();
+         var random = new Random (seed.Value);
+         var maxId = this.Database.Light.All ().Max (l => l.Id);
+         for (int i = 0; i < total; i++) {
+            var id = random.Next (1, maxId + 1);
+            if (i >= start) {
+               ids.Add (id);
+            }
+         }
+         ViewBag.Seed = seed.Value;
+         var lights = this.Database.Light.Get (l => ids.Contains (l.Id)).OrderBy(l => ids.IndexOf(l.Id));
+         return PartialView (lights);
       }
 
       /// <summary>
@@ -91,8 +106,9 @@ namespace SeekDeepWithin.Controllers
       public ActionResult AutoComplete (string text)
       {
          var query = LightSearch.AutoComplete (text);
+         var lights = this.Database.Light.Get (l => query.Contains (l.Id));
          var result = new {
-            suggestions = query.Select (l => new { value = l.Value, data = l.Key })
+            suggestions = lights.Select (l => new { value = l.Text, data = l.Id })
          };
          return Json (result, JsonRequestBehavior.AllowGet);
       }

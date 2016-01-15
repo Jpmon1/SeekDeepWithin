@@ -3,31 +3,36 @@
 @model List <SeekDeepWithin.Models.LevelModel>
 <input type="hidden" id="historyId" value="@(ViewBag.HistoryId)"/>
 @foreach (var level in Model) {
-   //var lastType = 0;
    var layout = new LevelLayout (level);
-   <div id="templvl_@(level.Index)" class="love">
+   <div id="ts@(level.Key)" class="love" data-pkey="@(level.Parent)" data-rkey="@(level.Replace)">
       @foreach (var row in layout.Rows) {
          var colCount = row.Columns.Count;
          <div class="row">
             @for (var i = 0; i < colCount; i++) {
                var col = row.Columns [i];
-               var mOff = (i == 0 && row.Offset > 0) ? " medium-offset-" + row.Offset : "";
-               var lOff = (i == 0 && row.Offset > 0) ? " large-offset-" + row.Offset : "";
-               <div class="small-@(col.SmallSpan) medium-@(col.MediumSpan)@(mOff) large-@(col.LargeSpan)@(lOff) column@(i == colCount - 1 ? " end" : "")">
-                  <div class="callout" id="light_@(col.LevelItem.Id)" onclick="sdw.love(@(col.LevelItem.Id));" data-tid="@(col.LevelItem.TruthId)" data-lid="@(col.LevelItem.LoveId)">
-                     @if (col.LevelItem.Type == TruthType.Passage && col.LevelItem.Number.HasValue) {
-                        <div class="row">
-                           <div class="small-2 medium-1 large-1 columns text-right">
-                              @(col.LevelItem.Number.Value)
+               var mOff = (i == 0 && row.MediumOffset > 0) ? " medium-offset-" + row.MediumOffset : "";
+               var lOff = (i == 0 && row.LargeOffset > 0) ? " large-offset-" + row.LargeOffset : "";
+               <div class="small-@(col.SmallSpan) medium-@(col.MediumSpan)@(mOff) large-@(col.LargeSpan)@(lOff) column@(i == colCount - 1 ? " end" : string.Empty)">
+                  @if (col.LevelItem != null) {
+                     <div class="callout@(col.LevelItem.IsSelected ? " selected" : string.Empty)" id="l@(col.LevelItem.Id)_@(level.Key)" onclick="sdw.love(@(col.LevelItem.Id), @(level.Key)); " data-tid="@(col.LevelItem.TruthId)" data-lid="@(col.LevelItem.LoveId)">
+                        @foreach (var header in col.LevelItem.Headers) {
+                           <h4>@(header.Text)@if (User.IsInRole ("Editor")) {<a href="javascript:void(0);" onclick="SdwEdit.truthEdit(@(header.TruthId))"><i class="icon-edit"></i></a>}</h4>
+                        }
+                        @if (col.LevelItem.Type == SdwType.Passage && col.LevelItem.Number.HasValue) {
+                           <div class="row">
+                              <div class="small-2 medium-1 large-1 columns text-right">
+                                 @(col.LevelItem.Number.Value)
+                              </div>
+                              <div class="small-10 medium-11 large-11 columns text-left">
+                                 @(col.LevelItem.Text)
+                              </div>
                            </div>
-                           <div class="small-10 medium-11 large-11 columns text-left">
-                              @(col.LevelItem.Text)
-                           </div>
-                        </div>
-                     } else {
-                        @(col.LevelItem.Text)
-                     }
-                  </div>
+                        } else {
+                           @(col.LevelItem.Text)
+                        }
+                        <div style="font-size: x-small">@(col.LevelItem.Title)</div>
+                     </div>
+                  }
                </div>
             }
          </div>

@@ -10,10 +10,11 @@ namespace SeekDeepWithin.DataAccess
    {
       private bool m_Disposed;
       private IRepository<Love> m_Loves;
+      private IRepository<Soul> m_Souls;
       private IRepository<Light> m_Lights;
       private IRepository<Truth> m_Truths;
+      private IRepository<Peace> m_Peaces;
       private IRepository<Style> m_Styles;
-      private IRepository<History> m_Histories;
       private IRepository<FormatRegex> m_RegexFormats;
       private readonly SdwDbContext m_Db = new SdwDbContext ();
 
@@ -34,11 +35,27 @@ namespace SeekDeepWithin.DataAccess
       }
 
       /// <summary>
+      /// Gets the repository for soul.
+      /// </summary>
+      public IRepository<Soul> Soul
+      {
+         get { return this.m_Souls ?? (this.m_Souls = new Repository<Soul> (m_Db)); }
+      }
+      
+      /// <summary>
       /// Gets the repository for truth.
       /// </summary>
       public IRepository<Truth> Truth
       {
          get { return this.m_Truths ?? (this.m_Truths = new Repository<Truth> (m_Db)); }
+      }
+
+      /// <summary>
+      /// Gets the repository for peace.
+      /// </summary>
+      public IRepository<Peace> Peace
+      {
+         get { return this.m_Peaces ?? (this.m_Peaces = new Repository<Peace> (m_Db)); }
       }
 
       /// <summary>
@@ -55,14 +72,6 @@ namespace SeekDeepWithin.DataAccess
       public IRepository<Style> Styles
       {
          get { return this.m_Styles ?? (this.m_Styles = new Repository<Style> (m_Db)); }
-      }
-
-      /// <summary>
-      /// Gets the repository for histories.
-      /// </summary>
-      public IRepository<History> Histories
-      {
-         get { return this.m_Histories ?? (this.m_Histories = new Repository<History> (m_Db)); }
       }
 
       /// <summary>

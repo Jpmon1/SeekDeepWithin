@@ -3,7 +3,7 @@
    /// <summary>
    /// Gets the type of truth.
    /// </summary>
-   public enum TruthType
+   public enum SdwType
    {
       /// <summary>
       /// A sub title.

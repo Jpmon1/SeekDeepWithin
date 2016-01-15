@@ -1,52 +1,54 @@
 ﻿var sdw = {
    sel: function (id) {
-      $('#lightWeb').show();
-      $('#lightList').hide();
-      $('#lightWeb').append('<div class="row love" id="lvl_0"><div class="small-12 medium-4 medium-offset-4 large-4 large-offset-4 column">' +
-         '<div class="callout" id="light_' + id + '" onclick="sdw.love(' + id + ');">' + $('#l' + id).text() + '</div></div></div>');
-      $('#light_' + id).velocity("transition.fadeIn");
+      $('#lightList').masonry('destroy');
       $('#lightList').empty();
       sdw.love(id);
    },
 
    light: function () {
-      $('#lightWeb').hide();
-      $('#lightWeb').empty();
-      $('#lightList').show();
+      SdwCommon.loadStart();
       $('#lightList').empty();
       SdwCommon.get('/Light/Get', {}, function (d) {
-         var count = d.count;
-         var container = $('#lightList');
-         for (var i = 0; i < count; i++) {
-            var light = d.light[i];
-            container.append('<div class="small-6 medium-4 large-3 column' + (i == (count - 1) ? ' end' : '') +
-               '"><div class="callout" onclick="sdw.sel(' + light.id + ');" id="l' + light.id + '">' + light.text + '</a></div>');
-         }
+         $('#lightList').html(d).masonry({itemSelector: '.column'});
          SdwCommon.loadStop();
       });
    },
 
-   love: function (selected) {
+   love: function (lightId, levelId) {
+      SdwCommon.loadStart();
+      if (levelId == undefined) levelId = 0;
+      var isEditable = $('#editable').length > 0;
+      var last = $('#l' + lightId + "_" + levelId);
+      if (last.length > 0) {
+         last.toggleClass('selected');
+         if (isEditable) {
+            SdwEdit.truthEdit(last.data('tid'));
+            SdwEdit.truthAdd(lightId);
+         }
+         if (!last.hasClass('selected')) { return; }
+      } else if (isEditable) {
+         SdwEdit.truthAdd(lightId);
+      }
       var data = [];
-      var last = $('#light_' + selected);
-      last.toggleClass('selected');
+      var hash = new Hashids('GodisLove');
       $('.love').each(function (i, o) {
-         var level = [];
-         $(o).find('.callout').each(function (cI, cO) {
+         var love = $(o);
+         var key = parseInt(love.attr('id').substr(1));
+         data.push(0);
+         data.push(key);
+         love.find('.selected').each(function (cI, cO) {
             var light = $(cO);
-            var id = parseInt(light.attr("id").substr(6));
-            var lObj = { i: id, t: light.data('tid'), l: light.data('lid') };
-            if (light.hasClass('selected')) {
-               lObj.s = 1;
-            }
-            level.push(lObj);
+            var id = parseInt(light.attr("id").substr(1));
+            data.push(id);
          });
-         data.push(level);
       });
-      if ($('#editable').length > 0) { SdwEdit.truthEdit(last); }
-      SdwCommon.get('/Love/Get', { lastId: selected, data: JSON.stringify(data) }, function (d) {
+      // Remove lights and Re-layout current level
+      // SEND TO SERVER = list of levels, list of selected, list of get all, selected id
+      // Add new lights
+      // Add layed out Removed lights
+      SdwCommon.post('/Love/Get', { clicked: lightId, data: hash.encode(data), levelId: levelId }, function (d) {
          window.ignoreHistory = true;
-         var web = $('#lightWeb');
+         var container = $('#lightList');
          var sandbox = $('#sandbox');
          sandbox.html(d);
          var histId = $('#historyId');
@@ -57,31 +59,41 @@
          var count = children.length;
          for (var i = 0; i < count; i++) {
             var child = $(children[i]);
-            var index = child.attr('id').substr(8);
-            var current = $('#lvl_' + index);
-            if (current.length > 0) {
-               current.html(child.html());
+            var rKey = parseInt(child.data('rkey'));
+            var pKey = parseInt(child.data('pkey'));
+            var key = child.attr('id').substr(2);
+            if (rKey > 0) {
+               var replace = $('#s' + rKey);
+               replace.html(child.html());
+               replace.attr('id', 's' + key);
                child.remove();
-               current.velocity('callout.bounce');
+               replace.velocity('callout.bounce');
+            } else if (pKey > 0) {
+               var parent = $('#s' + pKey);
+               child = child.detach();
+               parent.after(child);
+               child.attr('id', 's' + key);
+               child.velocity('transition.slideDownIn');
             } else {
                child = child.detach();
-               web.append(child);
-               child.attr('id', 'lvl_' + index);
-               child.velocity('transition.fadeIn');
+               container.append(child);
+               child.attr('id', 's' + key);
+               child.velocity('transition.slideDownIn');
             }
-            window.ignoreHistory = false;
          }
+         window.ignoreHistory = false;
          SdwCommon.loadStop();
       });
    },
 
    loveAll: function () {
-      if (window.ignoreHistory)return;
+      SdwCommon.loadStart();
+      if (window.ignoreHistory) return;
       var l = SdwCommon.getParam('l');
-      SdwCommon.get('/Love/Load', { id: l }, function (d) {
-         var web = $('#lightWeb');
+      SdwCommon.get('/Love/Load', { data: l }, function (d) {
+         var container = $('#lightList');
          var sandbox = $('#sandbox');
-         web.empty();
+         container.empty();
          sandbox.html(d);
          var histId = $('#historyId');
          histId.remove();
@@ -89,12 +101,13 @@
          var count = children.length;
          for (var i = 0; i < count; i++) {
             var child = $(children[i]);
-            var index = child.attr('id').substr(8);
+            var key = child.attr('id').substr(2);
             child = child.detach();
-            web.append(child);
-            child.attr('id', 'lvl_' + index);
+            container.append(child);
+            child.attr('id', 's' + key);
             child.velocity('transition.fadeIn');
          }
+         SdwCommon.loadStop();
       });
    },
 
@@ -107,6 +120,8 @@
          } else {
             sdw.loveAll();
          }
+      } else {
+         SdwCommon.loadStop();
       }
    },
 }

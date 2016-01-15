@@ -11,7 +11,6 @@
    },
 
    get: function(url, data, success) {
-      SdwCommon.loadStart();
       $.ajax({ url: url, data: data }).done(function (d) {
          var ok = true;
          if (d.status) {
@@ -25,6 +24,27 @@
             success(d);
          }
       }).fail(function(d) {
+         SdwCommon.loadStop();
+         if (d.message) {
+            alert(d.message);
+         }
+      });
+   },
+
+   post: function (url, data, success) {
+      $.ajax({ type: 'POST', url: url, data: data }).done(function (d) {
+         var ok = true;
+         if (d.status) {
+            if (d.status == 'fail') {
+               SdwCommon.loadStop();
+               ok = false;
+               alert(d.message);
+            }
+         }
+         if (ok && success) {
+            success(d);
+         }
+      }).fail(function (d) {
          SdwCommon.loadStop();
          if (d.message) {
             alert(d.message);

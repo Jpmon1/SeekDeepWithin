@@ -36,27 +36,6 @@ namespace SeekDeepWithin.Tests.Controllers
          var con1 = new Light { Id = this.m_LightId++, Text = "Conversation 1" };
          var introV1 = new Light { Id = this.m_LightId++, Text = "The Bhagavad Gita — or, in translation from Sanskrit, the Song of God — is the most important part of the Indian epic poem Mahabharata. The latter describes events that took place about 5000 years ago." };
          var wiki = new Light { Id = this.m_LightId++, Text = "Wikipedia" };
-
-         var love1 = new Love {
-            Id = this.m_LoveId++,
-            Modified = DateTime.Now,
-            Lights = { bg1 },
-            Truths = {
-               new Truth { Id = this.m_TruthId++, Light = date2008, Type = (int)TruthType.Date},
-               new Truth { Id = this.m_TruthId++, Light = sourceName, Type = (int)TruthType.Source},
-               new Truth { Id = this.m_TruthId++, Light = sourceUrl, Type = (int)TruthType.SourceUrl },
-               new Truth { Id = this.m_TruthId++, Light = introV1, Type = (int)TruthType.Summary }
-            }
-         };
-
-         var love2 = new Love {
-            Id = this.m_LoveId++,
-            Modified = DateTime.Now,
-            Lights = { bg1, intro },
-            Truths = {
-               new Truth { Id = this.m_TruthId++, Light = introV1, Order = 1}
-            }
-         };
       }
 
       [TestMethod]

@@ -1,6 +1,5 @@
 ﻿using System.Web.Mvc;
 using SeekDeepWithin.DataAccess;
-using SeekDeepWithin.SdwSearch;
 
 namespace SeekDeepWithin.Controllers
 {
@@ -26,6 +25,7 @@ namespace SeekDeepWithin.Controllers
          if (User.IsInRole ("Creator")) {
             ViewBag.Regexs = this.Database.RegexFormats.All ();
          }
+         //LightSearch.AddOrUpdateIndex(this.Database.Light.All());
          return View ();
       }
 

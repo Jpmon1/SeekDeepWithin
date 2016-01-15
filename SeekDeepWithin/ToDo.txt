@@ -1,27 +1,29 @@
-History
-Light Title
+Load items under item instead of end of document - Keep SubTitle, Summary, Date, and Versions at same level, move everything else below.
+Change lId to be light id and level key
+Do something when no items are found on love.get;
+load more light on start when scroll to bottom
+??? Scroll to loaded items
 Search
-Sources
-Headers
 Footers
-Scroll to loaded items
-Load passage/footer items under passage/footer instead of end of document
-Masonry
-Amazon Items
+About page
+Login/Register page
+Links
 Alias
 Styles
 Roles
+Amazon Items
+Edit headers
+Passage Parser
 Light Item Menu:
-   Get all connections
+   Show all connections
    Heart (fav)
    Link to here
-About page
-Passage Parser
-Login/Register page
-Remove HTML from sdw.seek.js
 Verify:
    Tags
+   Footers
    Authors
+   Sources
+Facebook/Twitter post
 
 Comments
 Filtered search

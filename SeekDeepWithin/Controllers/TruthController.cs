@@ -35,17 +35,33 @@ namespace SeekDeepWithin.Controllers
          if (string.IsNullOrWhiteSpace (light)) return this.Fail ("No light supplied for the truth");
          var truths = truth.Split (new [] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
          var hashIds = new Hashids ("GodisLove") { Order = false };
-         var lightIds = hashIds.Decode (light).ToList();
-         var love = this.Database.Love.Get (l => l.Lights.Count == lightIds.Count && l.Lights.All (li => lightIds.Contains (li.Id))).FirstOrDefault ();
-
-         if (love == null) {
-            hashIds.Order = true;
-            love = new Love { Modified = DateTime.Now, Lights = new HashSet<Light> () };
-            foreach (var lId in lightIds) {
-               var l = this.Database.Light.Get (lId);
-               if (l == null) return this.Fail ("The given light was has not yet been illuminated - " + lId);
-               love.Lights.Add(l);
+         var allIds = hashIds.Decode (light).ToList ();
+         var lightIds = new List<int> ();
+         var typeIds = new List <int> ();
+         for (var i = 0; i < allIds.Count; i++) {
+            if (i % 2 == 0)
+               lightIds.Add (allIds[i]);
+            else
+               typeIds.Add (allIds[i]);
+         }
+         var peaces = new List <Peace> ();
+         for (var i = 0; i < lightIds.Count; i++) {
+            var typeId = typeIds[i];
+            var lightId = lightIds [i];
+            var peace = this.Database.Peace.Get (p => p.Type == typeId && p.Light.Id == lightId).FirstOrDefault ();
+            if (peace == null) {
+               var l = this.Database.Light.Get (lightId);
+               if (l == null) return this.Fail ("The given light was has not yet been illuminated - " + lightId);
+               peace = new Peace { Type = typeId, Light = l };
+               this.Database.Peace.Insert (peace);
             }
+            peaces.Add (peace);
+         }
+         this.Database.Save ();
+         var peaceIds = peaces.Select (p => p.Id).ToList ();
+         var love = this.Database.Love.Get (l => l.Peaces.Count == peaceIds.Count && l.Peaces.All (p => peaceIds.Contains (p.Id))).FirstOrDefault ();
+         if (love == null) {
+            love = new Love { Modified = DateTime.Now, Peaces = new HashSet<Peace> (peaces) };
             this.Database.Love.Insert (love);
          }
 

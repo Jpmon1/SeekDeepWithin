@@ -14,6 +14,7 @@ namespace SeekDeepWithin.Models
       /// </summary>
       public LevelItem ()
       {
+         this.OtherLights = new List<int> ();
          this.Headers = new List<LevelItem> ();
          this.Footers = new List<LevelItem> ();
       }
@@ -28,6 +29,8 @@ namespace SeekDeepWithin.Models
          this.Update(love, truth);
       }
 
+      public List<int> OtherLights { get; private set; }
+
       public void Update (Love love, Truth truth)
       {
          this.TruthId = truth.Id;
@@ -35,16 +38,18 @@ namespace SeekDeepWithin.Models
          this.Order = truth.Order;
          this.Number = truth.Number;
          this.Text = truth.Light.Text;
-         this.Type = (TruthType) truth.Type;
+         this.Type = (SdwType) truth.Type;
+         this.OtherLights = new List <int> ();
          this.Headers = new List<LevelItem> ();
          this.Footers = new List<LevelItem> ();
          this.Title = string.Empty;
          if (love != null) {
             this.LoveId = love.Id;
-            foreach (var light in love.Lights) {
+            foreach (var peace in love.Peaces.OrderBy(p => p.Type)) {
+               if (peace.Type == (int) this.Type) continue;
                if (!string.IsNullOrEmpty (this.Title))
                   this.Title += "|";
-               this.Title += light.Text;
+               this.Title += peace.Light.Text;
             }
          }
       }
@@ -84,7 +89,7 @@ namespace SeekDeepWithin.Models
       /// <summary>
       /// Gets or Sets the type
       /// </summary>
-      public TruthType Type { get; set; }
+      public SdwType Type { get; set; }
 
       /// <summary>
       /// Gets or Sets if the item is selected or not.

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
@@ -28,23 +29,29 @@ namespace SeekDeepWithin.SdwSearch
       /// Queries the indexed data.
       /// </summary>
       /// <param name="token">Toekn to search for.</param>
-      public static Dictionary <int, string> AutoComplete (string token)
+      public static List <int> AutoComplete (string token)
       {
-         var result = new Dictionary <int, string> ();
+         return Query (0, 12, token);
+      }
+
+      /// <summary>
+      /// Queries the indexed data.
+      /// </summary>
+      /// <param name="start">The starting index.</param>
+      /// <param name="count">The number of items to return.</param>
+      /// <param name="text">The text to query for.</param>
+      public static List<int> Query (int start, int count, string text)
+      {
+         var result = new List<int> ();
          using (var searcher = new IndexSearcher (Directory, true)) {
             var reader = IndexReader.Open (Directory, true);
             var collector = TopScoreDocCollector.Create (SearchCommon.HITS_LIMIT, true);
-            var analyzer = new StandardAnalyzer (global::Lucene.Net.Util.Version.LUCENE_30);
-            var parser = new QueryParser (global::Lucene.Net.Util.Version.LUCENE_30, "text", analyzer);
-            var query = SearchCommon.ParseQuery (SearchCommon.BuildQuery (token.GetWords (), "(text:{0}) OR (text:{1})"), parser);
+            var analyzer = new StandardAnalyzer (Lucene.Net.Util.Version.LUCENE_30);
+            var parser = new QueryParser (Lucene.Net.Util.Version.LUCENE_30, "text", analyzer);
+            var query = SearchCommon.ParseQuery (SearchCommon.BuildQuery (text.GetWords (), "(text:{0}) OR (text:{1})"), parser);
             searcher.Search (query, collector);
-            var docs = collector.TopDocs (0, 12).ScoreDocs;
-            foreach (var scoreDoc in docs) {
-               var doc = reader.Document (scoreDoc.Doc);
-               var id = Convert.ToInt32 (doc.Get ("Id"));
-               var text = doc.Get ("text");
-               result.Add (id, text);
-            }
+            var docs = collector.TopDocs (start, count).ScoreDocs;
+            result.AddRange (docs.Select (scoreDoc => reader.Document (scoreDoc.Doc)).Select (doc => Convert.ToInt32 (doc.Get ("Id"))));
             reader.Dispose ();
             analyzer.Close ();
          }
@@ -132,7 +139,7 @@ namespace SeekDeepWithin.SdwSearch
          var doc = new Document ();
          // add lucene fields mapped to db fields
          doc.Add (new Field ("Id", id, Field.Store.YES, Field.Index.NOT_ANALYZED));
-         doc.Add (new Field ("text", light.Text ?? string.Empty, Field.Store.YES, Field.Index.ANALYZED));
+         doc.Add (new Field ("text", light.Text ?? string.Empty, Field.Store.NO, Field.Index.ANALYZED));
          writer.AddDocument (doc);
       }
    }

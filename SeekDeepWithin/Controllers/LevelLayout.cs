@@ -50,13 +50,15 @@ namespace SeekDeepWithin.Controllers
          }
          if (span < 3) span = 3;
          AddColumns (loves, 0, 4, loveCount);
-         var truthTypes = Enum.GetValues (typeof (TruthType)).Cast<TruthType> ();
+         var truthTypes = Enum.GetValues (typeof (SdwType)).Cast<SdwType> ();
          foreach (var type in truthTypes) {
             AddColumns (loves, type, span, loveCount);
          }
          for (var i = this.Rows.Count - 1; i >= 0; i--) {
-            if (this.Rows[i].Columns.Count <= 0)
+            if (this.Rows [i].Columns.Count <= 0)
                this.Rows.RemoveAt (i);
+            else
+               this.Rows [i].MakeReady ();
          }
       }
 
@@ -64,24 +66,32 @@ namespace SeekDeepWithin.Controllers
       /// Adds columns for the given truth type.
       /// </summary>
       /// <param name="loves">Loves to look in.</param>
-      /// <param name="truthType">Truth type to find.</param>
+      /// <param name="sdwType">Truth type to find.</param>
       /// <param name="span">The suggested span.</param>
       /// <param name="loveCount">The number of loves.</param>
-      private void AddColumns (IEnumerable <List <LevelItem>> loves, TruthType truthType, int span, int loveCount)
+      private void AddColumns (IEnumerable <List <LevelItem>> loves, SdwType sdwType, int span, int loveCount)
       {
-         var row = new LevelRow ();
-         this.Rows.Add (row);
-         foreach (var love in loves) {
-            foreach (var li in love.Where (li => li.Type == truthType)) {
-               var cSpan = span;
-               if (loveCount == 1 && (truthType == TruthType.Summary || truthType == TruthType.Passage)) {
-                  cSpan = 12;
+         var items = loves.Select (love => love.Where (li => li.Type == sdwType).ToList ()).ToList ();
+         if (items.First ().Count > 0) {
+            var row = new LevelRow ();
+            this.Rows.Add (row);
+            var max = items.Max (i => i.Count);
+            for (int i = 0; i < max; i++) {
+               foreach (var item in items) {
+                  var cSpan = span;
+                  LevelItem li = null;
+                  if (item.Count > i) {
+                     li = item [i];
+                     if (loveCount == 1 && (sdwType == SdwType.Summary || sdwType == SdwType.Passage)) {
+                        cSpan = 12;
+                     }
+                     if (row.Span + cSpan > 12) {
+                        row = new LevelRow ();
+                        this.Rows.Add (row);
+                     }
+                  }
+                  row.AddColumn (cSpan, li);
                }
-               if (row.Span + cSpan > 12) {
-                  row = new LevelRow ();
-                  this.Rows.Add (row);
-               }
-               row.AddColumn (cSpan, li);
             }
          }
       }
@@ -94,21 +104,17 @@ namespace SeekDeepWithin.Controllers
       {
          foreach (var love in loves) {
             var remove = new List <LevelItem> ();
-            foreach (var header in love.Where (li => li.Type == TruthType.Header)) {
-               var passage = love.FirstOrDefault (li => li.Number == header.Number);
+            foreach (var header in love.Where (li => li.Type == SdwType.Header)) {
+               var passage = love.FirstOrDefault (li => li.Number == header.Number && li.Id != header.Id);
                if (passage != null) {
                   passage.Headers.Add (header);
-               } else {
-                  love.First ().Headers.Add (header);
+                  remove.Add (header);
                }
-               remove.Add (header);
             }
-            foreach (var footer in love.Where (li => li.Type == TruthType.Footer)) {
+            foreach (var footer in love.Where (li => li.Type == SdwType.Footer)) {
                var passage = love.FirstOrDefault (li => li.Number == footer.Number);
                if (passage != null) {
                   passage.Footers.Add (footer);
-               } else {
-                  love.First ().Footers.Add (footer);
                }
             }
             foreach (var levelItem in remove) {

@@ -76,3 +76,6 @@ a:hover{ text-decoration: underline; }
    -ms-opacity:0.9;
    opacity:0.9;
 }
+.callout.selected {
+   font-weight: bold;
+}

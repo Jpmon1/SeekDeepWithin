@@ -16,19 +16,24 @@ namespace SeekDeepWithin.DataAccess
       IRepository<Love> Love { get; }
 
       /// <summary>
+      /// Gets the repository for souls.
+      /// </summary>
+      IRepository<Soul> Soul { get; }
+
+      /// <summary>
       /// Gets the repository for truth.
       /// </summary>
       IRepository<Truth> Truth { get; }
 
       /// <summary>
+      /// Gets the repository for peace.
+      /// </summary>
+      IRepository<Peace> Peace { get; }
+
+      /// <summary>
       /// Gets the repository for formatting regular expressions.
       /// </summary>
       IRepository<FormatRegex> RegexFormats { get; }
-
-      /// <summary>
-      /// Gets the repository for history.
-      /// </summary>
-      IRepository<History> Histories { get; }
 
       /// <summary>
       /// Gets the repository for styles.

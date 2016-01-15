@@ -9,10 +9,11 @@ namespace SeekDeepWithin.Tests.Mocks
    public class MockDatabase : ISdwDatabase
    {
       private IRepository<Love> m_Loves;
+      private IRepository<Soul> m_Souls;
       private IRepository<Light> m_Lights;
       private IRepository<Truth> m_Truths;
+      private IRepository<Peace> m_Peaces;
       private IRepository<Style> m_Styles;
-      private IRepository<History> m_Histories;
       private IRepository<FormatRegex> m_RegexFormats;
 
       /// <summary>
@@ -32,11 +33,27 @@ namespace SeekDeepWithin.Tests.Mocks
       }
 
       /// <summary>
+      /// Gets the repository for soul.
+      /// </summary>
+      public IRepository<Soul> Soul
+      {
+         get { return this.m_Souls ?? (this.m_Souls = new MockRepository<Soul> ()); }
+      }
+
+      /// <summary>
       /// Gets the repository for truth.
       /// </summary>
       public IRepository<Truth> Truth
       {
          get { return this.m_Truths ?? (this.m_Truths = new MockRepository<Truth> ()); }
+      }
+
+      /// <summary>
+      /// Gets the repository for peace.
+      /// </summary>
+      public IRepository<Peace> Peace
+      {
+         get { return this.m_Peaces ?? (this.m_Peaces = new MockRepository<Peace> ()); }
       }
 
       /// <summary>
@@ -53,14 +70,6 @@ namespace SeekDeepWithin.Tests.Mocks
       public IRepository<Style> Styles
       {
          get { return this.m_Styles ?? (this.m_Styles = new MockRepository<Style> ()); }
-      }
-
-      /// <summary>
-      /// Gets the repository for histories.
-      /// </summary>
-      public IRepository<History> Histories
-      {
-         get { return this.m_Histories ?? (this.m_Histories = new Repository<History> (m_Db)); }
       }
 
       /// <summary>

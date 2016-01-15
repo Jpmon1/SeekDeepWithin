@@ -29,8 +29,8 @@ namespace SeekDeepWithin.Pocos
       public virtual ICollection<Truth> Truths { get; set; }
 
       /// <summary>
-      /// Gets the collection of love for this light.
+      /// Gets the collection of peace for this light.
       /// </summary>
-      public virtual ICollection<Love> Loves { get; set; }
+      public virtual ICollection<Peace> Peaces { get; set; }
    }
 }

@@ -19,9 +19,9 @@ namespace SeekDeepWithin.Pocos
       public DateTime Modified { get; set; }
 
       /// <summary>
-      /// Gets or Sets the parent light.
+      /// Gets or Sets the parent peace.
       /// </summary>
-      public virtual ICollection<Light> Lights { get; set; }
+      public virtual ICollection<Peace> Peaces { get; set; }
 
       /// <summary>
       /// Gets or Sets the truths.

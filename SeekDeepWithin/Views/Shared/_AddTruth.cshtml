@@ -1,7 +1,7 @@
 ﻿@using SeekDeepWithin.Pocos
-@{ var truthTypes = Enum.GetValues (typeof (TruthType)).Cast<TruthType> ().ToList(); }
+@{ var truthTypes = Enum.GetValues (typeof (SdwType)).Cast<SdwType> ().ToList(); }
 <div class="tabs-panel" id="addTruth">
-   <div id="editSelectedLight" class="row"></div>
+   <div id="editLights" class="row"></div>
    <div class="row">
       <div class="small-12 medium-6 large-6 column">
          <div class="row column">Format text for importing<textarea rows="5" id="addTruthFormatText"></textarea></div>

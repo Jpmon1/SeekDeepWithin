@@ -36,9 +36,6 @@
                      <li><a href="@Url.Action("Login", "Account", new { returnUrl }, scheme)" title="Login"><i class="icon-enter"></i></a></li>
                   }
                   <li><a href="@Url.Action("About", "Home", null, scheme)" title="About"><i class="icon-question-sign"></i></a></li>
-                  @if (Request.IsAuthenticated) {
-                     <li><a href="#" onclick="document.getElementById('logoutForm').submit()" title="Log out"><i class="icon-exit"></i></a></li>
-                  }
                </ul>
             </div>
             <div class="top-bar-right">
@@ -54,12 +51,6 @@
       @(RenderSection ("featured", false))
       <div class="row column">
          @(RenderBody ())
-         @if (Request.IsAuthenticated) {
-               <!-- LOG OUT FORM-->
-            <div style="display: none;">
-               @using (Html.BeginForm ("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" })) { @(Html.AntiForgeryToken ()) }
-            </div>
-         }
       </div>
    </div>
    <!-- FOOTER -->

@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace SeekDeepWithin.Models
 {
@@ -27,9 +27,14 @@ namespace SeekDeepWithin.Models
       public int Span { get; private set; }
 
       /// <summary>
-      /// Gets or Sets the starting offset.
+      /// Gets or Sets the starting medium offset.
       /// </summary>
-      public int Offset { get; private set; }
+      public int MediumOffset { get; private set; }
+
+      /// <summary>
+      /// Gets or Sets the starting large offset.
+      /// </summary>
+      public int LargeOffset { get; private set; }
 
       /// <summary>
       /// Adds a new column for the given item.
@@ -40,14 +45,33 @@ namespace SeekDeepWithin.Models
       {
          this.Span += span;
          var column = new LevelColumn {
-            SmallSpan = levelItem.Type == 0 ? 12 :
+            SmallSpan = levelItem != null && levelItem.Type == 0 ? 12 :
                         span == 12 ? 12 : 6,
             LargeSpan = span,
             MediumSpan = span,
             LevelItem = levelItem
          };
          this.Columns.Add (column);
-         this.Offset = (12 - this.Span) / 2;
+      }
+
+      /// <summary>
+      /// Gets the row ready to display.
+      /// </summary>
+      public void MakeReady ()
+      {
+         if (this.Columns.Count == 1 && this.Columns [0].LargeSpan == 3) {
+            this.Columns [0].LargeSpan = 4;
+            this.Columns [0].MediumSpan = 6;
+         } else if (this.Columns.Count == 3) {
+            if (this.Columns.All (c => c.LargeSpan == 3)) {
+               foreach (var column in Columns) {
+                  column.LargeSpan = 4;
+                  column.MediumSpan = 4;
+               }
+            }
+         }
+         this.LargeOffset = (12 - this.Columns.Sum (c => c.LargeSpan)) / 2;
+         this.MediumOffset = (12 - this.Columns.Sum (c => c.MediumSpan)) / 2;
       }
    }
 }

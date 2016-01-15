@@ -219,10 +219,11 @@
     <Compile Include="Models\LevelRow.cs" />
     <Compile Include="Models\PagedViewModel.cs" />
     <Compile Include="Pocos\FormatRegex.cs" />
-    <Compile Include="Pocos\History.cs" />
     <Compile Include="Pocos\Light.cs" />
     <Compile Include="Pocos\Love.cs" />
-    <Compile Include="Pocos\TruthType.cs" />
+    <Compile Include="Pocos\Peace.cs" />
+    <Compile Include="Pocos\SdwType.cs" />
+    <Compile Include="Pocos\Soul.cs" />
     <Compile Include="Pocos\TruthStyle.cs" />
     <Compile Include="Pocos\Truth.cs" />
     <Compile Include="Controllers\ExtensionMethods.cs" />
@@ -251,8 +252,6 @@
     <Compile Include="Models\LoginViewModel.cs" />
     <Compile Include="Models\RegisterViewModel.cs" />
     <Compile Include="Models\SearchQueryViewModel.cs" />
-    <Compile Include="Models\SearchResult.cs" />
-    <Compile Include="Models\SearchResultsViewModel.cs" />
     <Compile Include="DataAccess\UsersContext.cs" />
     <Compile Include="Pocos\Comment.cs" />
     <Compile Include="Pocos\UserData.cs" />
@@ -352,6 +351,8 @@
     <Content Include="Views\Love\Get.cshtml" />
     <Content Include="Views\Shared\_EditTruth.cshtml" />
     <Content Include="Views\Shared\_AddTruth.cshtml" />
+    <Content Include="Views\Light\Get.cshtml" />
+    <Content Include="Views\Light\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

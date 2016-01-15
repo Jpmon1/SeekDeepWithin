@@ -6,7 +6,7 @@
          <div class="row column">Type</div>
          <div class="row column">
             <select id="editTruthType">
-               @{ var values = Enum.GetValues (typeof (TruthType)).Cast<TruthType> (); }
+               @{ var values = Enum.GetValues (typeof (SdwType)).Cast<SdwType> (); }
                @foreach (var value in values) {
                   <option value="@((int)value)">@(value.ToString ())</option>
                }
@@ -33,7 +33,7 @@
                   <a href="javascript:void(0)" onclick="SdwEdit.truthEdit();" class="sdw-button reg expand"><i class="icon-savetodrive"></i> Save</a>
                </div>
                <div class="small-2 medium-2 large-4 column">
-                  <i class="icon-ok-circle" style="color: green;" id="editTruthSuccess"></i>
+                  <i class="icon-ok-circle" style="color: green;" id="editTruthOk"></i>
                </div>
             </div>
          </div>
