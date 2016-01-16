@@ -42,7 +42,6 @@ namespace SeekDeepWithin.Controllers
          }
          var loves = loveIds.OrderBy(i => i).Select (id => this.m_Level.Items.OrderBy (i => i.Order)
             .Where (i => i.LoveId == id).ToList ()).ToList ();
-         SetHeadersAndFooters (loves);
          var span = 3;
          var loveCount = loveIds.Count;
          if (loveCount > 1) {
@@ -92,33 +91,6 @@ namespace SeekDeepWithin.Controllers
                   }
                   row.AddColumn (cSpan, li);
                }
-            }
-         }
-      }
-
-      /// <summary>
-      /// Sets the headers and footers.
-      /// </summary>
-      /// <param name="loves">The list of loves.</param>
-      private static void SetHeadersAndFooters (IEnumerable <List <LevelItem>> loves)
-      {
-         foreach (var love in loves) {
-            var remove = new List <LevelItem> ();
-            foreach (var header in love.Where (li => li.Type == SdwType.Header)) {
-               var passage = love.FirstOrDefault (li => li.Number == header.Number && li.Id != header.Id);
-               if (passage != null) {
-                  passage.Headers.Add (header);
-                  remove.Add (header);
-               }
-            }
-            foreach (var footer in love.Where (li => li.Type == SdwType.Footer)) {
-               var passage = love.FirstOrDefault (li => li.Number == footer.Number);
-               if (passage != null) {
-                  passage.Footers.Add (footer);
-               }
-            }
-            foreach (var levelItem in remove) {
-               love.Remove (levelItem);
             }
          }
       }

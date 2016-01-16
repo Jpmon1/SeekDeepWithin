@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using SeekDeepWithin.Pocos;
 
 namespace SeekDeepWithin.Models
@@ -14,7 +13,6 @@ namespace SeekDeepWithin.Models
       /// </summary>
       public LevelItem ()
       {
-         this.OtherLights = new List<int> ();
          this.Headers = new List<LevelItem> ();
          this.Footers = new List<LevelItem> ();
       }
@@ -22,16 +20,29 @@ namespace SeekDeepWithin.Models
       /// <summary>
       /// Initializes a new new level item.
       /// </summary>
-      /// <param name="love">The parent love (for grouping).</param>
       /// <param name="truth">The truth to use as an item.</param>
-      public LevelItem (Love love, Truth truth)
+      public LevelItem (Truth truth)
       {
-         this.Update(love, truth);
+         this.Headers = new List<LevelItem> ();
+         this.Footers = new List<LevelItem> ();
+         this.Update(truth);
       }
 
-      public List<int> OtherLights { get; private set; }
+      /// <summary>
+      /// Initializes a new level item from the given light.
+      /// </summary>
+      /// <param name="light">The light to use.</param>
+      public LevelItem (Light light) : this ()
+      {
+         this.Id = light.Id;
+         this.Text = light.Text;
+      }
 
-      public void Update (Love love, Truth truth)
+      /// <summary>
+      /// Updates the level item for the given truth.
+      /// </summary>
+      /// <param name="truth">Truth to use.</param>
+      public void Update (Truth truth)
       {
          this.TruthId = truth.Id;
          this.Id = truth.Light.Id;
@@ -39,19 +50,6 @@ namespace SeekDeepWithin.Models
          this.Number = truth.Number;
          this.Text = truth.Light.Text;
          this.Type = (SdwType) truth.Type;
-         this.OtherLights = new List <int> ();
-         this.Headers = new List<LevelItem> ();
-         this.Footers = new List<LevelItem> ();
-         this.Title = string.Empty;
-         if (love != null) {
-            this.LoveId = love.Id;
-            foreach (var peace in love.Peaces.OrderBy(p => p.Type)) {
-               if (peace.Type == (int) this.Type) continue;
-               if (!string.IsNullOrEmpty (this.Title))
-                  this.Title += "|";
-               this.Title += peace.Light.Text;
-            }
-         }
       }
 
       public string Title { get; set; }
@@ -60,11 +58,6 @@ namespace SeekDeepWithin.Models
       /// Gets or Sets the id of the parent love.
       /// </summary>
       public int LoveId { get; set; }
-
-      /// <summary>
-      /// Gets or Sets the parent level.
-      /// </summary>
-      public LevelModel Level { get; set; }
 
       /// <summary>
       /// Gets or Sets the id.
@@ -92,24 +85,14 @@ namespace SeekDeepWithin.Models
       public SdwType Type { get; set; }
 
       /// <summary>
-      /// Gets or Sets if the item is selected or not.
-      /// </summary>
-      public bool IsSelected { get; set; }
-
-      /// <summary>
-      /// Gets or Sets if we want to show all connections or not.
-      /// </summary>
-      public bool ShowAll { get; set; }
-
-      /// <summary>
       /// Gets or Sets the truth id for editing.
       /// </summary>
       public int TruthId { get; set; }
 
       /// <summary>
-      /// Gets the list of parent selections.
+      /// Gets or Set the parent id hash.
       /// </summary>
-      public List <int> Selection { get; private set; }
+      public string Parents { get; set; }
 
       /// <summary>
       /// Gets the list of headers.
@@ -120,21 +103,5 @@ namespace SeekDeepWithin.Models
       /// Gets the list of footers.
       /// </summary>
       public List<LevelItem> Footers { get; private set; }
-
-      /// <summary>
-      /// Sets the list of parent selections
-      /// </summary>
-      public void SetSelection ()
-      {
-         var sel = new List <int> ();
-         if (this.IsSelected)
-            sel.Add (this.Id);
-         var level = this.Level.Previous;
-         while (level != null) {
-            sel.AddRange (from levelItem in level.Items where levelItem.IsSelected select levelItem.Id);
-            level = level.Previous;
-         }
-         this.Selection = sel;
-      }
    }
 }

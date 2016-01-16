@@ -9,7 +9,6 @@
 
       /// <summary>
       /// Gets or Sets the data of the soul.
-      /// lightId.loveId.truthId|lightId.loveId.truthId|...
       /// </summary>
       public string Data { get; set; }
    }

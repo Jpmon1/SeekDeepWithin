@@ -34,35 +34,5 @@ namespace SeekDeepWithin.Models
       /// Get or Sets the index of the level.
       /// </summary>
       public int Index { get; set; }
-
-      /// <summary>
-      /// Gets or Sets the key for this level stored in the database.
-      /// </summary>
-      public int Key { get; set; }
-
-      /// <summary>
-      /// Gets the key to the parent model.
-      /// </summary>
-      public int Parent { get; set; }
-
-      /// <summary>
-      /// Gets or Sets the key this level should replace.
-      /// </summary>
-      public int Replace { get; set; }
-
-      /// <summary>
-      /// Gets the data to save to the database.
-      /// </summary>
-      /// <returns>The string representation of the data in this level.</returns>
-      public string GetData ()
-      {
-         var data = string.Empty;
-         foreach (var item in this.Items) {
-            if (!string.IsNullOrEmpty (data))
-               data += "|";
-            data += string.Format ("{0}.{1}.{2}", item.Id, item.LoveId, item.TruthId);
-         }
-         return data;
-      }
    }
 }

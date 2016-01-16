@@ -1,13 +1,10 @@
-Load items under item instead of end of document - Keep SubTitle, Summary, Date, and Versions at same level, move everything else below.
-Change lId to be light id and level key
-Do something when no items are found on love.get;
+History
+Links
 load more light on start when scroll to bottom
-??? Scroll to loaded items
 Search
 Footers
 About page
 Login/Register page
-Links
 Alias
 Styles
 Roles

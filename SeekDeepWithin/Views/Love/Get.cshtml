@@ -1,41 +1,19 @@
-﻿@using SeekDeepWithin.Controllers
-@using SeekDeepWithin.Pocos
-@model List <SeekDeepWithin.Models.LevelModel>
-<input type="hidden" id="historyId" value="@(ViewBag.HistoryId)"/>
-@foreach (var level in Model) {
-   var layout = new LevelLayout (level);
-   <div id="ts@(level.Key)" class="love" data-pkey="@(level.Parent)" data-rkey="@(level.Replace)">
-      @foreach (var row in layout.Rows) {
-         var colCount = row.Columns.Count;
+﻿@using SeekDeepWithin.Pocos
+@model SeekDeepWithin.Models.LevelModel
+@foreach (var item in Model.Items.OrderBy(i => (int)i.Type).ThenBy(i => i.Order ?? 0)) {
+<div class="small-6 medium-4 large-4 column truth" id="c@(item.Id)_@(item.Parents)">
+   <div class="callout" id="l@(item.Id)_@(item.Parents)" onclick="sdw.love(@(item.Id), '@(item.Parents)');" data-tid="@(item.TruthId)">
+      @foreach (var header in item.Headers) { <h4>@(header.Text)</h4> }
+      @if (item.Type == SdwType.Passage && item.Number.HasValue) {
          <div class="row">
-            @for (var i = 0; i < colCount; i++) {
-               var col = row.Columns [i];
-               var mOff = (i == 0 && row.MediumOffset > 0) ? " medium-offset-" + row.MediumOffset : "";
-               var lOff = (i == 0 && row.LargeOffset > 0) ? " large-offset-" + row.LargeOffset : "";
-               <div class="small-@(col.SmallSpan) medium-@(col.MediumSpan)@(mOff) large-@(col.LargeSpan)@(lOff) column@(i == colCount - 1 ? " end" : string.Empty)">
-                  @if (col.LevelItem != null) {
-                     <div class="callout@(col.LevelItem.IsSelected ? " selected" : string.Empty)" id="l@(col.LevelItem.Id)_@(level.Key)" onclick="sdw.love(@(col.LevelItem.Id), @(level.Key)); " data-tid="@(col.LevelItem.TruthId)" data-lid="@(col.LevelItem.LoveId)">
-                        @foreach (var header in col.LevelItem.Headers) {
-                           <h4>@(header.Text)@if (User.IsInRole ("Editor")) {<a href="javascript:void(0);" onclick="SdwEdit.truthEdit(@(header.TruthId))"><i class="icon-edit"></i></a>}</h4>
-                        }
-                        @if (col.LevelItem.Type == SdwType.Passage && col.LevelItem.Number.HasValue) {
-                           <div class="row">
-                              <div class="small-2 medium-1 large-1 columns text-right">
-                                 @(col.LevelItem.Number.Value)
-                              </div>
-                              <div class="small-10 medium-11 large-11 columns text-left">
-                                 @(col.LevelItem.Text)
-                              </div>
-                           </div>
-                        } else {
-                           @(col.LevelItem.Text)
-                        }
-                        <div style="font-size: x-small">@(col.LevelItem.Title)</div>
-                     </div>
-                  }
-               </div>
-            }
+            <div class="small-2 columns text-right">@(item.Number.Value)</div>
+            <div class="small-10 columns text-left">@(item.Text)</div>
          </div>
+      } else {
+         @(item.Text)
       }
+      @foreach (var footer in item.Footers) { <div style="font-size: x-small" class="mTop">@(footer.Text)</div> }
+      @if (!string.IsNullOrEmpty (item.Title)) { <div style="font-size: x-small" class="mTop">@(item.Title)</div> }
    </div>
+</div>
 }

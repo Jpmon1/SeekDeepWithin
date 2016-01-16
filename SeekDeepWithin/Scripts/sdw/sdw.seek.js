@@ -1,8 +1,7 @@
 ﻿var sdw = {
    sel: function (id) {
-      $('#lightList').masonry('destroy');
       $('#lightList').empty();
-      sdw.love(id);
+      sdw.love(id, '', true);
    },
 
    light: function () {
@@ -14,73 +13,42 @@
       });
    },
 
-   love: function (lightId, levelId) {
+   love: function (lightId, parents, root) {
       SdwCommon.loadStart();
-      if (levelId == undefined) levelId = 0;
+      if (parents == undefined) parents = 0;
       var isEditable = $('#editable').length > 0;
-      var last = $('#l' + lightId + "_" + levelId);
+      var last = $('#l' + lightId + '_' + parents);
       if (last.length > 0) {
          last.toggleClass('selected');
          if (isEditable) {
             SdwEdit.truthEdit(last.data('tid'));
             SdwEdit.truthAdd(lightId);
          }
-         if (!last.hasClass('selected')) { return; }
+         var clicked = last.data('c');
+         if (!last.hasClass('selected') || clicked == 1) {
+            SdwCommon.loadStop();
+            return;
+         }
       } else if (isEditable) {
          SdwEdit.truthAdd(lightId);
       }
-      var data = [];
-      var hash = new Hashids('GodisLove');
-      $('.love').each(function (i, o) {
-         var love = $(o);
-         var key = parseInt(love.attr('id').substr(1));
-         data.push(0);
-         data.push(key);
-         love.find('.selected').each(function (cI, cO) {
-            var light = $(cO);
-            var id = parseInt(light.attr("id").substr(1));
-            data.push(id);
-         });
-      });
-      // Remove lights and Re-layout current level
-      // SEND TO SERVER = list of levels, list of selected, list of get all, selected id
-      // Add new lights
-      // Add layed out Removed lights
-      SdwCommon.post('/Love/Get', { clicked: lightId, data: hash.encode(data), levelId: levelId }, function (d) {
+      SdwCommon.post('/Love/Get', { clicked: lightId, items: parents, root: root }, function (d) {
          window.ignoreHistory = true;
          var container = $('#lightList');
-         var sandbox = $('#sandbox');
-         sandbox.html(d);
-         var histId = $('#historyId');
-         var history = '?l=' + histId.val();
-         History.pushState('Seek Deep Within', 'Seek Deep Within', history);
-         histId.remove();
-         var children = sandbox.children();
-         var count = children.length;
-         for (var i = 0; i < count; i++) {
-            var child = $(children[i]);
-            var rKey = parseInt(child.data('rkey'));
-            var pKey = parseInt(child.data('pkey'));
-            var key = child.attr('id').substr(2);
-            if (rKey > 0) {
-               var replace = $('#s' + rKey);
-               replace.html(child.html());
-               replace.attr('id', 's' + key);
-               child.remove();
-               replace.velocity('callout.bounce');
-            } else if (pKey > 0) {
-               var parent = $('#s' + pKey);
-               child = child.detach();
-               parent.after(child);
-               child.attr('id', 's' + key);
-               child.velocity('transition.slideDownIn');
-            } else {
-               child = child.detach();
-               container.append(child);
-               child.attr('id', 's' + key);
-               child.velocity('transition.slideDownIn');
-            }
+         if (root) {
+            container.append(d);
+            $('#l' + lightId + '_').data('c', 1);
+         } else {
+            var col = $('#c' + lightId + "_" + parents);
+            col.after(d);
+            last.data('c', 1);
          }
+         container.masonry('reloadItems');
+         container.masonry('layout').one('layoutComplete', function () {
+            if (root) {
+               $('#l' + lightId + '_').velocity("scroll", { duration: 1500 });
+            }
+         });
          window.ignoreHistory = false;
          SdwCommon.loadStop();
       });
@@ -88,7 +56,6 @@
 
    loveAll: function () {
       SdwCommon.loadStart();
-      if (window.ignoreHistory) return;
       var l = SdwCommon.getParam('l');
       SdwCommon.get('/Love/Load', { data: l }, function (d) {
          var container = $('#lightList');
@@ -112,6 +79,7 @@
    },
 
    histChange: function () {
+      if (window.ignoreHistory) return;
       var page = $('#pageId').val();
       if (page == 'index') {
          var l = SdwCommon.getParam('l');
@@ -135,7 +103,7 @@ $(document).ready(function() {
       onSelect: function (suggestion) {
          $('#searchText').val(suggestion.value);
          $('#searchText').data('lightId', suggestion.data);
-         // TODO: Load/Append this item...
+         sdw.love(suggestion.data, '', true);
       }
    });
 });
