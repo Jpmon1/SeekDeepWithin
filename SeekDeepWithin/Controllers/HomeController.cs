@@ -1,5 +1,6 @@
 ﻿using System.Web.Mvc;
 using SeekDeepWithin.DataAccess;
+using SeekDeepWithin.SdwSearch;
 
 namespace SeekDeepWithin.Controllers
 {

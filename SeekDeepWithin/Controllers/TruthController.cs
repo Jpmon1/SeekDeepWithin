@@ -73,13 +73,13 @@ namespace SeekDeepWithin.Controllers
             var order = string.IsNullOrWhiteSpace (truthData [1]) ? null : (int?)Convert.ToInt32 (truthData [1]);
             var number = string.IsNullOrWhiteSpace (truthData [2]) ? null : (int?) Convert.ToInt32 (truthData [2]);
             var truthLight = this.Database.Light.Get (l => l.Text == lightText).FirstOrDefault ();
-            if (truthLight == null)
-               truthLight = new Light { Text = lightText, Modified = DateTime.Now };
-            else
+            if (truthLight == null) {
+               truthLight = new Light {Text = lightText, Modified = DateTime.Now};
+            } else {
                currTruth = love.Truths.FirstOrDefault (temp => temp.Light.Id == truthLight.Id);
+            }
             if (currTruth == null) {
-               currTruth = this.Database.Truth.Get (tr => tr.Light.Id == truthLight.Id && tr.Order == order && tr.Number == number).FirstOrDefault () ??
-                           new Truth {Type = Convert.ToInt32 (truthData [0]), Light = truthLight, Order = order, Number = number};
+               currTruth = new Truth {Type = Convert.ToInt32 (truthData [0]), Light = truthLight, Order = order, Number = number};
                love.Truths.Add (currTruth);
             }
          }

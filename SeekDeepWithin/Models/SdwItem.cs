@@ -6,25 +6,25 @@ namespace SeekDeepWithin.Models
    /// <summary>
    /// An item found in the level.
    /// </summary>
-   public class LevelItem
+   public class SdwItem
    {
       /// <summary>
       /// Initializes a new new level item.
       /// </summary>
-      public LevelItem ()
+      public SdwItem ()
       {
-         this.Headers = new List<LevelItem> ();
-         this.Footers = new List<LevelItem> ();
+         this.Headers = new List<SdwItem> ();
+         this.Footers = new List<SdwItem> ();
       }
 
       /// <summary>
       /// Initializes a new new level item.
       /// </summary>
       /// <param name="truth">The truth to use as an item.</param>
-      public LevelItem (Truth truth)
+      public SdwItem (Truth truth)
       {
-         this.Headers = new List<LevelItem> ();
-         this.Footers = new List<LevelItem> ();
+         this.Headers = new List<SdwItem> ();
+         this.Footers = new List<SdwItem> ();
          this.Update(truth);
       }
 
@@ -32,7 +32,7 @@ namespace SeekDeepWithin.Models
       /// Initializes a new level item from the given light.
       /// </summary>
       /// <param name="light">The light to use.</param>
-      public LevelItem (Light light) : this ()
+      public SdwItem (Light light) : this ()
       {
          this.Id = light.Id;
          this.Text = light.Text;
@@ -65,6 +65,11 @@ namespace SeekDeepWithin.Models
       public int Id { get; set; }
 
       /// <summary>
+      /// Gets or Sets the key.
+      /// </summary>
+      public string Key { get; set; }
+
+      /// <summary>
       /// Gets or Sets the text.
       /// </summary>
       public string Text { get; set; }
@@ -95,13 +100,25 @@ namespace SeekDeepWithin.Models
       public string Parents { get; set; }
 
       /// <summary>
+      /// Gets or Sets if this item is selected.
+      /// </summary>
+      public bool IsSelected { get; set; }
+
+      /// <summary>
       /// Gets the list of headers.
       /// </summary>
-      public List<LevelItem> Headers { get; private set; }
+      public List<SdwItem> Headers { get; private set; }
 
       /// <summary>
       /// Gets the list of footers.
       /// </summary>
-      public List<LevelItem> Footers { get; private set; }
+      public List<SdwItem> Footers { get; private set; }
+
+      public string GetData ()
+      {
+         return this.TruthId > 0 ?
+            string.Format ("T,{0},{1}", this.TruthId, this.Key) :
+            string.Format ("L,{0},{1}", this.Id, this.Key);
+      }
    }
 }

@@ -28,14 +28,19 @@ namespace SeekDeepWithin.Pocos
       public int? Number { get; set; }
 
       /// <summary>
+      /// Gets or Sets the parent id.
+      /// </summary>
+      public int? ParentId { get; set; }
+
+      /// <summary>
+      /// Gets or Sets the love this truth is for.
+      /// </summary>
+      public virtual Love Love { get; set; }
+
+      /// <summary>
       /// Gets or Sets the light.
       /// </summary>
       public virtual Light Light { get; set; }
-
-      /// <summary>
-      /// Gets or Sets the loves this truth is apart of.
-      /// </summary>
-      public virtual ICollection <Love> Loves { get; set; }
 
       /// <summary>
       /// Gets or Sets the styles.

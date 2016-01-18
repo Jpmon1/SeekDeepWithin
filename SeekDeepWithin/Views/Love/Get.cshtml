@@ -1,19 +1,29 @@
 ﻿@using SeekDeepWithin.Pocos
-@model SeekDeepWithin.Models.LevelModel
-@foreach (var item in Model.Items.OrderBy(i => (int)i.Type).ThenBy(i => i.Order ?? 0)) {
-<div class="small-6 medium-4 large-4 column truth" id="c@(item.Id)_@(item.Parents)">
-   <div class="callout" id="l@(item.Id)_@(item.Parents)" onclick="sdw.love(@(item.Id), '@(item.Parents)');" data-tid="@(item.TruthId)">
-      @foreach (var header in item.Headers) { <h4>@(header.Text)</h4> }
-      @if (item.Type == SdwType.Passage && item.Number.HasValue) {
-         <div class="row">
-            <div class="small-2 columns text-right">@(item.Number.Value)</div>
-            <div class="small-10 columns text-left">@(item.Text)</div>
-         </div>
-      } else {
-         @(item.Text)
-      }
-      @foreach (var footer in item.Footers) { <div style="font-size: x-small" class="mTop">@(footer.Text)</div> }
-      @if (!string.IsNullOrEmpty (item.Title)) { <div style="font-size: x-small" class="mTop">@(item.Title)</div> }
+@model SeekDeepWithin.Models.ItemModel
+@if(ViewBag.HistoryId != null){<input type="hidden" id="historyId" value="@(ViewBag.HistoryId)"/>}
+@foreach (var key in Model.ToRemove) {<em>@(key)</em>}
+@foreach (var item in Model.ToAdd.OrderBy(i => (int)i.Type).ThenBy(i => i.Order ?? 0)) {
+   var sSpan = item.Text.Length > 200 || item.Type == SdwType.Passage ? 12 : 6;
+   var mSpan = item.Type == SdwType.Passage ? 12 : item.Text.Length > 200 ? 8 : 4;
+<div class="small-@(sSpan) medium-@(mSpan) large-@(mSpan) column" id="c@(item.Key)">
+   <div class="callout@(item.IsSelected?" selected":string.Empty)" id="l@(item.Key)" data-tid="@(item.TruthId)">
+      <div class="truth" onclick="sdw.love(@(item.Id), '@(item.Parents)', '@(item.Key)');">
+         @foreach (var header in item.Headers) { <h4>@(header.Text)</h4> }
+         @if (item.Type == SdwType.Passage && item.Number.HasValue) {
+            <div class="row">
+               <div class="small-2 large-1 columns text-right">@(item.Number.Value)</div>
+               <div class="small-10 large-11 columns text-left">@(item.Text)</div>
+            </div>
+         } else {
+            @(item.Text)
+         }
+         @foreach (var footer in item.Footers) { <div style="font-size: x-small" class="mTop">@(footer.Text)</div> }
+         @if (!string.IsNullOrEmpty (item.Title)) { <div style="font-size: x-small" class="mNone">@(item.Title)</div> }
+      </div>
+      @*<div class="button-group">
+         <a href="#" class="sdw-button white tiny"><i class="icon-heartempty-love"></i></a>
+         <a href="#" class="sdw-button white tiny"><i class="icon-share-alt"></i></a>
+      </div>*@
    </div>
 </div>
 }

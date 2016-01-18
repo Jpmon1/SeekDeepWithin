@@ -17,27 +17,22 @@ table, caption, tbody, tfoot, thead, tr, th, td {
    vertical-align: baseline;
 }
 em{ font-weight: 300;font-style: italic; }
-.bold { font-weight: bold;}
-.tLeft { text-align: left; }
-.tRight { text-align: right; }
 .mTop {margin-top: 1.125rem;}
-.mTopBig {margin-top: 3.333rem;}
+.mTopBig {margin-top: 5.333rem;}
 .mLeft {margin-left: 1.125rem;}
 .mRight {margin-right: 1.125rem;}
 .mBottom {margin-bottom: 1.125rem;}
 .mNone { margin: 0; }
+.pTop {padding-top: 1.125rem;}
 .pLeft {padding-left: 1.125rem;}
 .pRight {padding-right: 1.125rem;}
 .pBottom {padding-bottom: 1.125rem;}
 .pNone { padding: 0; }
-.fRight { float: right; }
-.fLeft { float: left; }
 a,a:hover,a:visited {
    color: black;
    text-decoration: none;
 }
 .stick-container{ width: 100%;}
-.love{ padding: 0;margin: 0;}
 a:hover{ text-decoration: underline; }
 .loader {
   width: 20%;
@@ -50,8 +45,8 @@ a:hover{ text-decoration: underline; }
   z-index: 9999999999999;
 }
 .callout {
-   cursor:pointer;
-   text-align:center;
+   padding: 0;
+   text-align: center;
    -ms-box-shadow: 2px 2px 19px #aaa;
    -o-box-shadow: 2px 2px 19px #aaa;
    -webkit-box-shadow: 2px 2px 19px #aaa;
@@ -79,4 +74,9 @@ a:hover{ text-decoration: underline; }
 .callout.selected {
    font-weight: bold;
 }
-.truth{}
+.love{ padding: 0;margin: 0;}
+.truth {
+   padding: 1rem;
+   cursor:pointer;
+}
+.r{ display: none;}

@@ -3,7 +3,7 @@
    /// <summary>
    /// Represents a column in a level.
    /// </summary>
-   public class LevelColumn
+   public class LayoutColumn
    {
       /// <summary>
       /// Gets or Sets the small span.
@@ -23,6 +23,6 @@
       /// <summary>
       /// Gets or Sets the Item to display.
       /// </summary>
-      public LevelItem LevelItem { get; set; }
+      public SdwItem SdwItem { get; set; }
    }
 }

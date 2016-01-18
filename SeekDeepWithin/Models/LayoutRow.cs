@@ -6,20 +6,20 @@ namespace SeekDeepWithin.Models
    /// <summary>
    /// Represents a row for a level.
    /// </summary>
-   public class LevelRow
+   public class LayoutRow
    {
       /// <summary>
       /// Initializes a new level row.
       /// </summary>
-      public LevelRow ()
+      public LayoutRow ()
       {
-         this.Columns = new List <LevelColumn> ();
+         this.Columns = new List <LayoutColumn> ();
       }
 
       /// <summary>
       /// Gets the list of columns in the row.
       /// </summary>
-      public List<LevelColumn> Columns { get; private set; }
+      public List<LayoutColumn> Columns { get; private set; }
 
       /// <summary>
       /// Gets the span of the row.
@@ -40,16 +40,16 @@ namespace SeekDeepWithin.Models
       /// Adds a new column for the given item.
       /// </summary>
       /// <param name="span">The span of the item.</param>
-      /// <param name="levelItem">The item to add to a column.</param>
-      public void AddColumn (int span, LevelItem levelItem)
+      /// <param name="sdwItem">The item to add to a column.</param>
+      public void AddColumn (int span, SdwItem sdwItem)
       {
          this.Span += span;
-         var column = new LevelColumn {
-            SmallSpan = levelItem != null && levelItem.Type == 0 ? 12 :
+         var column = new LayoutColumn {
+            SmallSpan = sdwItem != null && sdwItem.Type == 0 ? 12 :
                         span == 12 ? 12 : 6,
             LargeSpan = span,
             MediumSpan = span,
-            LevelItem = levelItem
+            SdwItem = sdwItem
          };
          this.Columns.Add (column);
       }

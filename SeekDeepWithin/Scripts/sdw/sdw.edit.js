@@ -19,7 +19,7 @@
    },
 
    lightCreate: function() {
-      SdwCommon.post('/Light/Create',
+      SdwEdit._post('/Light/Create',
          { text: $('#textNewLight').val() },
          function() {
             $('#textNewLight').val('');
@@ -34,7 +34,7 @@
          lights.push(parseInt(callout.attr('id').substr(9)));
          lights.push(parseInt(callout.find('select').first().val()));
       });
-      SdwCommon.post('/Truth/Create', {
+      SdwEdit._post('/Truth/Create', {
          light: hashId.encode(lights),
          truth: $('#addTruthText').val()
       }, function() {
@@ -43,7 +43,8 @@
    },
 
    truthAppend: function() {
-      var text = $('#addTruthText').val() + '\n';
+      var text = $('#addTruthText').val();
+      if (text != '') { text += '\n'; }
       text += $('#addTruthAppendType').val() + '|' + $('#addTruthAppendOrder').val() +
               '|' + $('#addTruthAppendNumber').val() + '|' + $('#addTruthAppendText').val();
       $('#addTruthText').val(text);
@@ -60,7 +61,7 @@
 
    truthEdit: function (tId) {
       if (tId) {
-         SdwCommon.get('/Truth/Get', { id: tId }, function (d) {
+         SdwCommon.get('/Truth/Get', { id: tId }, function(d) {
             $('#editTruthId').val(d.id);
             $('#editTruthType').val(d.type);
             $('#editTruthText').val(d.text);
@@ -68,23 +69,31 @@
             $('#editTruthNumber').val(d.number);
          });
       } else {
-         SdwCommon.post('/Truth/Edit', {
-            id: $('#editTruthId').val(),
-            type: $('#editTruthType').val(),
-            text: $('#editTruthText').val(),
-            order: $('#editTruthOrder').val(),
-            number: $('#editTruthNumber').val(),
-            all: $('#editTruthAll').prop('checked')
-         }, function () {
-            $('#editTruthOk').velocity('transition.fadeIn').velocity('transition.fadeOut');
-         });
+         $('#editTruthId').val('');
+         $('#editTruthType').val('');
+         $('#editTruthText').val('');
+         $('#editTruthOrder').val('');
+         $('#editTruthNumber').val('');
       }
+   },
+
+   truthSave: function () {
+      SdwEdit._post('/Truth/Edit', {
+         id: $('#editTruthId').val(),
+         type: $('#editTruthType').val(),
+         text: $('#editTruthText').val(),
+         order: $('#editTruthOrder').val(),
+         number: $('#editTruthNumber').val(),
+         all: $('#editTruthAll').prop('checked')
+      }, function () {
+         $('#editTruthOk').velocity('transition.fadeIn').velocity('transition.fadeOut');
+      });
    },
 
    truthFormat: function () {
       //var uuid = _uuid();
       var regex = $('#addTruthFormatRegex').val();
-      SdwCommon.post('/Truth/Format', {
+      SdwEdit._post('/Truth/Format', {
          regex: encodeURIComponent(regex),
          text: encodeURIComponent($('#addTruthFormatText').val()),
          type: $('#addTruthFormatType').val(),
@@ -105,7 +114,28 @@
          var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
          return v.toString(16);
       });
-   }
+   },
+
+   _post: function (url, data, success) {
+      $.ajax({ type: 'POST', url: url, data: data }).done(function (d) {
+         var ok = true;
+         if (d.status) {
+            if (d.status == 'fail') {
+               SdwCommon.loadStop();
+               alert(d.message);
+               ok = false;
+            }
+         }
+         if (ok && success) {
+            success(d);
+         }
+      }).fail(function (d) {
+         SdwCommon.loadStop();
+         if (d.message) {
+            alert(d.message);
+         }
+      });
+   },
 
 };
 $(document).ready(function () {

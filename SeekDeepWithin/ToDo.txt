@@ -1,26 +1,29 @@
 History
 Links
+what to do with duplicate lights...
 load more light on start when scroll to bottom
-Search
-Footers
 About page
 Login/Register page
+Remove icon pack
+???Footers - tooltips
 Alias
 Styles
 Roles
+Images
 Amazon Items
 Edit headers
 Passage Parser
 Light Item Menu:
-   Show all connections
+   Edit Header/Footer
    Heart (fav)
-   Link to here
+   ???Close/Remove
+   Link to here - Share
+   Facebook/Twitter post - Share
 Verify:
    Tags
    Footers
    Authors
    Sources
-Facebook/Twitter post
 
 Comments
 Filtered search

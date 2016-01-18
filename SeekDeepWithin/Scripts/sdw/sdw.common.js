@@ -4,12 +4,6 @@
       return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [, ""])[1].replace(/\+/g, '%20')) || null;
    },
 
-   escapeHtml: function(str) {
-      var div = document.createElement('div');
-      div.appendChild(document.createTextNode(str));
-      return div.innerHTML;
-   },
-
    get: function(url, data, success) {
       $.ajax({ url: url, data: data }).done(function (d) {
          var ok = true;
@@ -31,27 +25,6 @@
       });
    },
 
-   post: function (url, data, success) {
-      $.ajax({ type: 'POST', url: url, data: data }).done(function (d) {
-         var ok = true;
-         if (d.status) {
-            if (d.status == 'fail') {
-               SdwCommon.loadStop();
-               ok = false;
-               alert(d.message);
-            }
-         }
-         if (ok && success) {
-            success(d);
-         }
-      }).fail(function (d) {
-         SdwCommon.loadStop();
-         if (d.message) {
-            alert(d.message);
-         }
-      });
-   },
-
    loadStart: function() {
       $('.loader').css('left', 0).show();
       $('.loader').velocity({ left: "80%" }, {
@@ -62,10 +35,6 @@
 
    loadStop: function() {
       $('.loader').velocity("stop").velocity('transition.fadeOut');
-   },
-
-   toRadian: function(angle) {
-       return (angle * Math.PI) / 180;
    }
 
 };

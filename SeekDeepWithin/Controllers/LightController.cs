@@ -103,13 +103,12 @@ namespace SeekDeepWithin.Controllers
       /// </summary>
       /// <param name="text">Text to search for.</param>
       /// <returns>The list of possible items for the given text.</returns>
+      [AllowAnonymous]
       public ActionResult AutoComplete (string text)
       {
          var query = LightSearch.AutoComplete (text);
-         var lights = this.Database.Light.Get (l => query.Contains (l.Id));
-         var result = new {
-            suggestions = lights.Select (l => new { value = l.Text, data = l.Id })
-         };
+         //var lights = this.Database.Light.Get (l => l.Text.Contains (text));
+         var result = new { suggestions = query.Select (kvp => new { value = kvp.Value, data = kvp.Key }) };
          return Json (result, JsonRequestBehavior.AllowGet);
       }
    }

@@ -19,7 +19,7 @@
       <div class="sticky is-stuck stick-container">
          <div class="loader">LOADING...</div>
          <div class="title-bar" data-responsive-toggle="sdw-menu" data-hide-for="medium">
-            <button class="menu-icon" type="button" data-toggle></button>
+            <button class="menu-icon" type="button" data-toggle style="background-color: transparent;border: 0;"></button>
             <div class="title-bar-title">Menu</div>
          </div>
 
@@ -40,8 +40,8 @@
             </div>
             <div class="top-bar-right">
                <ul class="menu">
-                  <li><input type="search" placeholder="Search" id="searchText"></li>
-                  <li><button type="button" class="sdw-button alt tiny">Search</button></li>
+                  <li class="small-8"><input type="search" placeholder="Search" id="searchText"></li>
+                  <li><button type="button" class="sdw-button alt tiny" onclick="sdw.search();">Search</button></li>
                </ul>
             </div>
          </div>
