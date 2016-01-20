@@ -3,7 +3,7 @@
    init: function () {
       $('#editTruthOk').velocity('transition.fadeOut');
       $('#addTruthAppendText').autocomplete({
-         serviceUrl: '/Light/AutoComplete',
+         serviceUrl: '/Seek/AutoComplete',
          paramName: 'text',
          noCache: true,
          onSelect: function(suggestion) {
@@ -19,11 +19,13 @@
    },
 
    lightCreate: function() {
-      SdwEdit._post('/Light/Create',
-         { text: $('#textNewLight').val() },
-         function() {
-            $('#textNewLight').val('');
-         });
+      SdwEdit._post('/Edit/Illuminate', { text: $('#textNewLight').val() }, function (d) {
+         $('#textNewLight').val('');
+         var container = $('#lightList');
+         container.append(d);
+         container.masonry('reloadItems');
+         container.masonry('layout');
+      });
    },
 
    truthCreate: function() {
@@ -34,7 +36,7 @@
          lights.push(parseInt(callout.attr('id').substr(9)));
          lights.push(parseInt(callout.find('select').first().val()));
       });
-      SdwEdit._post('/Truth/Create', {
+      SdwEdit._post('/Edit/Love', {
          light: hashId.encode(lights),
          truth: $('#addTruthText').val()
       }, function() {
@@ -50,10 +52,10 @@
       $('#addTruthText').val(text);
    },
 
-   truthAdd: function (id) {
+   lightAdd: function (id) {
       var edit = $('#editLight' + id);
       if (edit.length <= 0) {
-         SdwCommon.get('/Light/Edit', { id: id }, function (d) { $('#editLights').append(d).velocity('transition.fadeIn'); });
+         SdwCommon.get('/Edit/Light', { id: id }, function (d) { $('#editLights').append(d).velocity('transition.fadeIn'); });
       } else {
          edit.remove();
       }
@@ -61,7 +63,7 @@
 
    truthEdit: function (tId) {
       if (tId) {
-         SdwCommon.get('/Truth/Get', { id: tId }, function(d) {
+         SdwCommon.get('/Seek/Truth', { id: tId }, function(d) {
             $('#editTruthId').val(d.id);
             $('#editTruthType').val(d.type);
             $('#editTruthText').val(d.text);
@@ -78,7 +80,7 @@
    },
 
    truthSave: function () {
-      SdwEdit._post('/Truth/Edit', {
+      SdwEdit._post('/Edit/Truth', {
          id: $('#editTruthId').val(),
          type: $('#editTruthType').val(),
          text: $('#editTruthText').val(),
@@ -93,7 +95,7 @@
    truthFormat: function () {
       //var uuid = _uuid();
       var regex = $('#addTruthFormatRegex').val();
-      SdwEdit._post('/Truth/Format', {
+      SdwEdit._post('/Edit/Format', {
          regex: encodeURIComponent(regex),
          text: encodeURIComponent($('#addTruthFormatText').val()),
          type: $('#addTruthFormatType').val(),

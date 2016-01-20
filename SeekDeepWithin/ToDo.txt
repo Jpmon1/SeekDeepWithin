@@ -1,10 +1,5 @@
-History
 Links
-what to do with duplicate lights...
-load more light on start when scroll to bottom
-About page
-Login/Register page
-Remove icon pack
+Edit light with no truth
 ???Footers - tooltips
 Alias
 Styles
@@ -13,6 +8,7 @@ Images
 Amazon Items
 Edit headers
 Passage Parser
+???History....
 Light Item Menu:
    Edit Header/Footer
    Heart (fav)

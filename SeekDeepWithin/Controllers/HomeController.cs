@@ -1,9 +1,12 @@
 ﻿using System.Web.Mvc;
+using Microsoft.Web.WebPages.OAuth;
 using SeekDeepWithin.DataAccess;
-using SeekDeepWithin.SdwSearch;
+using SeekDeepWithin.Filters;
+using WebMatrix.WebData;
 
 namespace SeekDeepWithin.Controllers
 {
+   [InitializeSimpleMembership]
    public class HomeController : SdwController
    {
       /// <summary>
@@ -23,10 +26,10 @@ namespace SeekDeepWithin.Controllers
       /// <returns>The main index page.</returns>
       public ActionResult Index (string l)
       {
+         ViewBag.HasAccount = OAuthWebSecurity.HasLocalAccount (WebSecurity.GetUserId (User.Identity.Name));
          if (User.IsInRole ("Creator")) {
             ViewBag.Regexs = this.Database.RegexFormats.All ();
          }
-         //LightSearch.AddOrUpdateIndex(this.Database.Light.All());
          return View ();
       }
 

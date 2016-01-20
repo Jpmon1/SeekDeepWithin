@@ -1,49 +1,24 @@
 ﻿@model SeekDeepWithin.Models.LoginViewModel
-
-@{
-   ViewBag.Title = "Log in";
-   var scheme = Request.Url == null ? string.Empty : Request.Url.Scheme;
-}
-<h3>@ViewBag.Title</h3>
-<div class="row">
-   <div class="small-12 large-8 columns">
-      @using (Html.BeginForm(new { ViewBag.ReturnUrl })) {
-          @Html.AntiForgeryToken()
-         @Html.ValidationSummary(true)
-         <div class="sdw-panel">
-            <div class="title">Log in details</div>
-            <div class="content">
-               <div class="row">
-                  <div class="large-12 columns">
-                     @Html.LabelFor(m => m.UserEmail)
-                     @Html.EditorFor(m => m.UserEmail)
-                  </div>
-               </div>
-               <div class="row">
-                  <div class="large-12 columns">
-                     @Html.LabelFor(m => m.Password)
-                     @Html.PasswordFor(m => m.Password)
-                  </div>
-               </div>
-               <div class="row">
-                  <div class="large-12 columns">
-                     <label for="RememberMe">Remember Me</label>
-                     <div class="switch">
-                        <input id="RememberMe" name="RememberMe" type="checkbox">
-                        <label for="RememberMe"></label>
-                     </div>
-                  </div>
-               </div>
-               <input type="submit" value="Log in" class="sdw-button mBottom" />
-               <div class="sdw-callout">
-                  <a href="@Url.Action("Register", "Account", null, scheme)" style="color: white;">Register</a> if you don't have an account.
-               </div>
+@{ ViewBag.IsLogin = true; }
+@{var scheme = Request.Url == null ? string.Empty : Request.Url.Scheme;}
+@using (Html.BeginForm(new { ViewBag.ReturnUrl })) {
+   @Html.AntiForgeryToken()
+   @Html.ValidationSummary(true)
+   <div class="row mTopBig">
+      <div class="small-12 large-6 large-offset-3 column">
+         <p><em style="font-size: 18pt;">Login</em></p>
+         @(Html.LabelFor (m => m.UserEmail))
+         @(Html.EditorFor (m => m.UserEmail))
+         @(Html.LabelFor (m => m.Password))
+         @(Html.PasswordFor (m => m.Password))
+         <div class="row">
+            <div class="small-12 medium-6 medium-offset-3 large-4 large-offset-4 column">
+               <input type="submit" value="Login" class="sdw-button expand reg mBottom" />
             </div>
          </div>
-      }
+         <div class="callout" style="padding: 1rem;">
+            <a href="@Url.Action("Register", "Account", null, scheme)" style="color: #346789;">Register</a> if you don't have an account.
+         </div>
+      </div>
    </div>
-
-   <div class="small-12 large-4 columns">
-       @Html.Action("ExternalLoginsList", new { ViewBag.ReturnUrl })
-   </div>
-</div>
+}

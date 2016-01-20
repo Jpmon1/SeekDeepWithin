@@ -29,13 +29,14 @@
                   <li><img src="~/Images/icon_24.png" alt="Seek Deep Within" /></li>
                   <li class="menu-text"><a href="@Url.Action("Index", "Home", null, scheme)" class="title">SEEK DEEP WITHIN</a></li>
                   @if (Request.IsAuthenticated) {
-                     <li><a href="@Url.Action("Manage", "Account", null, scheme)" title="Manage Account"><i class="icon-user"></i></a></li>
+                     <li><a href="@Url.Action("Manage", "Account", null, scheme)" title="Manage Account">Account</a></li>
                   } else {
-                     var returnUrl = Request.Url != null ? Request.Url.ToString () : string.Empty;
-                     <li><a href="@Url.Action("Register", "Account", null, scheme)" title="Register"><i class="icon-circlepencil"></i></a></li>
-                     <li><a href="@Url.Action("Login", "Account", new { returnUrl }, scheme)" title="Login"><i class="icon-enter"></i></a></li>
+                     <li><a href="@Url.Action("Register", "Account", null, scheme)" title="Register">Register</a></li>
+                     if (ViewBag.IsLogin == null) {
+                         <li><a href="@Url.Action("Login", "Account", null, scheme)" title="Login">Login</a></li>
+                      }
                   }
-                  <li><a href="@Url.Action("About", "Home", null, scheme)" title="About"><i class="icon-question-sign"></i></a></li>
+                  <li><a href="@Url.Action("About", "Home", null, scheme)" title="About">About</a></li>
                </ul>
             </div>
             <div class="top-bar-right">

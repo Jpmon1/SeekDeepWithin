@@ -92,8 +92,6 @@ namespace SeekDeepWithin.Controllers
       public ActionResult LogOff ()
       {
          WebSecurity.Logout ();
-         if (Request.UrlReferrer != null)
-            return Redirect (Request.UrlReferrer.ToString ());
          return RedirectToAction ("Index", "Home");
       }
 

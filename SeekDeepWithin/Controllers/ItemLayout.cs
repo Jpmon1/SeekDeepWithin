@@ -11,16 +11,16 @@ namespace SeekDeepWithin.Controllers
    /// </summary>
    public class ItemLayout
    {
-      private readonly ItemModel m_Item;
+      private readonly LoveModel m_Love;
 
       /// <summary>
       /// Initializes a new level layout.
       /// </summary>
-      /// <param name="item">The level to layout.</param>
-      public ItemLayout (ItemModel item)
+      /// <param name="love">The level to layout.</param>
+      public ItemLayout (LoveModel love)
       {
          this.Rows = new List <LayoutRow> ();
-         this.m_Item = item;
+         this.m_Love = love;
          this.Layout ();
       }
 
@@ -36,11 +36,11 @@ namespace SeekDeepWithin.Controllers
       {
          this.Rows.Clear ();
          var loveIds = new List <int> ();
-         foreach (var li in this.m_Item.ToAdd) {
+         foreach (var li in this.m_Love.ToAdd) {
             if (!loveIds.Contains (li.LoveId))
                loveIds.Add (li.LoveId);
          }
-         var loves = loveIds.OrderBy(i => i).Select (id => this.m_Item.ToAdd.OrderBy (i => i.Order)
+         var loves = loveIds.OrderBy(i => i).Select (id => this.m_Love.ToAdd.OrderBy (i => i.Order)
             .Where (i => i.LoveId == id).ToList ()).ToList ();
          var span = 3;
          var loveCount = loveIds.Count;

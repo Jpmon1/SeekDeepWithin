@@ -38,6 +38,10 @@
       /// </summary>
       Tag,
       /// <summary>
+      /// A term.
+      /// </summary>
+      Term,
+      /// <summary>
       /// Another name for an item.
       /// </summary>
       AlsoKnownAs,
@@ -74,12 +78,8 @@
       /// </summary>
       Footer,
       /// <summary>
-      /// The previous section
+      /// An Alternate version.
       /// </summary>
-      Previous,
-      /// <summary>
-      /// The next section
-      /// </summary>
-      Next
+      AltVersion
    }
 }

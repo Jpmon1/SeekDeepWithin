@@ -1,0 +1,23 @@
+﻿@using SeekDeepWithin.Pocos
+@model SeekDeepWithin.Models.LoveModel
+@foreach (var item in Model.ToAdd.OrderBy (i => i.Order ?? 0)) {
+   var id = Guid.NewGuid ().ToString ().Replace ("-", "");
+   var mSpan = item.Number.HasValue ? 12 : 4;
+<div class="small-12 medium-@(mSpan) large-@(mSpan) column" id="c@(id)">
+   <div class="callout@(item.IsSelected?" selected":string.Empty)" id="l@(id)">
+      <div class="truth" onclick="sdw.love(this);" data-l="@(item.Id)" data-t="@(item.TruthId)" data-p="@(item.Parents)">
+         @foreach (var header in item.Headers) { <h4>@(header.Text)</h4> }
+         @if (item.Number.HasValue) {
+            <div class="row">
+               <div class="small-2 large-1 columns text-right">@(item.Number.Value)</div>
+               <div class="small-10 large-11 columns text-left">@(item.Text)</div>
+            </div>
+         } else {
+            @(item.Text)
+         }
+         @foreach (var footer in item.Footers) { <div style="font-size: x-small" class="mTop">@(footer.Text)</div> }
+         @if (!string.IsNullOrEmpty (item.Title)) { <div style="font-size: x-small" class="mNone">@(item.Title)</div> }
+      </div>
+   </div>
+</div>
+}

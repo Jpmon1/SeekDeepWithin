@@ -1,31 +1,15 @@
 ﻿@model SeekDeepWithin.Models.LocalPasswordModel
-@{
-    ViewBag.Title = "Manage Account";
-}
-@section featured {
-   <div class="panel">
-      <div class="row">
-         <div class="small-12 columns">
-            <h3>@ViewBag.Title.</h3>
-         </div>
-      </div>
-   </div>
-}
-<p>Hello <strong>@User.Identity.Name</strong>, use this page to change information about your account.</p>
-
+<p class="mTopBig">
+   Hello <em>@(User.Identity.Name)</em>, use this page to change information about your account.
+   <a href="#" onclick="document.getElementById('logoutForm').submit()" title="Log out" style="color: #346789;">Log out here.</a>
+</p>
 <div class="row">
-   <div class="small-12 large-8 columns">
-      @(ViewBag.HasLocalPassword ? Html.Partial("_ChangePasswordPartial") : Html.Partial("_SetPasswordPartial"))
+   <div class="small-12 large-8 columns mTop">
+      @(Html.Partial("_ChangePasswordPartial"))
    </div>
-
    <div class="small-12 large-4 columns">
-      @Html.Action("RemoveExternalLogins")
-      @Html.Action("ExternalLoginsList", new { ViewBag.ReturnUrl })
    </div>
 </div>
-
-<div class="row">
-   <div class="columns">
-
-   </div>
+<div style="display: none;">
+   @using (Html.BeginForm ("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" })) { @(Html.AntiForgeryToken ()) }
 </div>

@@ -21,27 +21,25 @@ namespace SeekDeepWithin.Filters
          LazyInitializer.EnsureInitialized (ref s_Initializer, ref s_IsInitialized, ref s_InitializerLock);
       }
 
+      /// <summary>
+      /// Simple memeber ship initializer used for a user options table.
+      /// </summary>
       private class SimpleMembershipInitializer
       {
          public SimpleMembershipInitializer ()
          {
             Database.SetInitializer (new MigrateDatabaseToLatestVersion<UsersContext, UserConfiguration> ());
 
-            try
-            {
-               using (var context = new UsersContext ())
-               {
-                  if (!context.Database.Exists ())
-                  {
-                     context.Database.Create();
+            try {
+               using (var context = new UsersContext ()) {
+                  if (!context.Database.Exists ()) {
+                     context.Database.Create ();
                   }
                   context.UserProfiles.Find (1);
                }
 
                WebSecurity.InitializeDatabaseConnection ("UserConnection", "UserProfile", "UserId", "Email", autoCreateTables: true);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                throw new InvalidOperationException ("The ASP.NET Simple Membership database could not be initialized. For more information, please see http://go.microsoft.com/fwlink/?LinkId=256588", ex);
             }
          }

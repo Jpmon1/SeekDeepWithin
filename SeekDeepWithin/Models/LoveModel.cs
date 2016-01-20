@@ -5,12 +5,12 @@ namespace SeekDeepWithin.Models
    /// <summary>
    /// Represents a level on SDW.
    /// </summary>
-   public class ItemModel
+   public class LoveModel
    {
       /// <summary>
       /// Initializes a new level.
       /// </summary>
-      public ItemModel ()
+      public LoveModel ()
       {
          this.ToAdd = new Collection<SdwItem> ();
          this.ToRemove = new Collection<string> ();

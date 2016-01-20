@@ -15,7 +15,6 @@ namespace SeekDeepWithin
             "~/Scripts/fastclick.js",
             "~/Scripts/velocity.js",
             "~/Scripts/velocity.ui.js",
-            "~/Scripts/hashids.js",
             //"~/Scripts/jsPlumb-2.0.5.js",
             "~/Scripts/masonry.pkgd.js",
             "~/Scripts/sdw/sdw.common.js",
@@ -25,7 +24,7 @@ namespace SeekDeepWithin
          bundles.Add (new StyleBundle ("~/Content/css").Include ("~/Content/normalize.css",
             "~/Content/sdw/sdw.autocomplete.css",
             "~/Content/foundation.css",
-            "~/Content/whhg.css",
+            //"~/Content/whhg.css",
             "~/Content/sdw/sdw.style.css",
             "~/Content/sdw/sdw.button.css"
             /*"~/Content/foundation.css",
@@ -38,6 +37,7 @@ namespace SeekDeepWithin
 
          /************************ EDIT SCRIPTS ************************/
          bundles.Add (new ScriptBundle ("~/bundles/sdw/edit").Include (//"~/Scripts/Base64.js",
+            "~/Scripts/hashids.js",
             "~/Scripts/sdw/sdw.edit.js"));
 
          // Use the development version of Modernizr to develop with and learn from. Then, when you're

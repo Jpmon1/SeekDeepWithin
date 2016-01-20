@@ -209,13 +209,13 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\Hashids.cs" />
     <Compile Include="Controllers\ItemLayout.cs" />
-    <Compile Include="Controllers\LoveController.cs" />
+    <Compile Include="Controllers\SeekController.cs" />
     <Compile Include="Controllers\LightController.cs" />
     <Compile Include="Controllers\SdwController.cs" />
-    <Compile Include="Controllers\TruthController.cs" />
+    <Compile Include="Controllers\EditController.cs" />
     <Compile Include="Models\LayoutColumn.cs" />
     <Compile Include="Models\SdwItem.cs" />
-    <Compile Include="Models\ItemModel.cs" />
+    <Compile Include="Models\LoveModel.cs" />
     <Compile Include="Models\LayoutRow.cs" />
     <Compile Include="Models\PagedViewModel.cs" />
     <Compile Include="Models\SoulItem.cs" />
@@ -329,14 +329,9 @@
     <Content Include="Scripts\_references.js" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Account\_ChangePasswordPartial.cshtml" />
-    <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
-    <Content Include="Views\Account\_RemoveExternalLoginsPartial.cshtml" />
-    <Content Include="Views\Account\_SetPasswordPartial.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Account\Manage.cshtml" />
     <Content Include="Views\Account\Register.cshtml" />
-    <Content Include="Views\Account\ExternalLoginFailure.cshtml" />
-    <Content Include="Views\Account\ExternalLoginConfirmation.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
@@ -349,11 +344,11 @@
     <Content Include="Views\Error\Index.cshtml" />
     <Content Include="Views\Style\Edit.cshtml" />
     <Content Include="Views\Account\Token.cshtml" />
-    <Content Include="Views\Love\Get.cshtml" />
     <Content Include="Views\Shared\_EditTruth.cshtml" />
     <Content Include="Views\Shared\_AddTruth.cshtml" />
-    <Content Include="Views\Light\Get.cshtml" />
     <Content Include="Views\Light\Edit.cshtml" />
+    <Content Include="Views\Edit\Light.cshtml" />
+    <Content Include="Views\Shared\Love.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
@@ -361,7 +356,9 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Views\Seek\" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

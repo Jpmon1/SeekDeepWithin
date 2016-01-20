@@ -186,7 +186,7 @@ var Hashids = (function () {
 			numbersSize = numbers.length,
 			numbersHashInt = 0;
 
-	   numbers.sort(function(a, b) { return a - b; });
+	   //TODO: numbers.sort(function(a, b) { return a - b; });
 		for (i = 0, len = numbers.length; i !== len; i++) {
 			numbersHashInt += (numbers[i] % (i + 100));
 		}

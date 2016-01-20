@@ -49,7 +49,6 @@ namespace SeekDeepWithin.Models
          this.Order = truth.Order;
          this.Number = truth.Number;
          this.Text = truth.Light.Text;
-         this.Type = (SdwType) truth.Type;
       }
 
       public string Title { get; set; }
@@ -85,11 +84,6 @@ namespace SeekDeepWithin.Models
       public int? Number { get; set; }
 
       /// <summary>
-      /// Gets or Sets the type
-      /// </summary>
-      public SdwType Type { get; set; }
-
-      /// <summary>
       /// Gets or Sets the truth id for editing.
       /// </summary>
       public int TruthId { get; set; }
@@ -113,12 +107,5 @@ namespace SeekDeepWithin.Models
       /// Gets the list of footers.
       /// </summary>
       public List<SdwItem> Footers { get; private set; }
-
-      public string GetData ()
-      {
-         return this.TruthId > 0 ?
-            string.Format ("T,{0},{1}", this.TruthId, this.Key) :
-            string.Format ("L,{0},{1}", this.Id, this.Key);
-      }
    }
 }

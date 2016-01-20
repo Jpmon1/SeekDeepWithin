@@ -1,39 +1,21 @@
 ﻿@model SeekDeepWithin.Models.RegisterViewModel
-@{
-   ViewBag.Title = "Register";
-}
-
-<h3>Create a new account</h3>
-
-@using (Html.BeginForm ())
-{
+@using (Html.BeginForm ()) {
    @Html.AntiForgeryToken()
    @Html.ValidationSummary()
-
-   <fieldset>
-      <legend>Registration Form</legend>
-      <div class="row">
-         <div class="small-12 large-6 columns">
-            @Html.LabelFor(m => m.UserEmail)
-            @Html.EditorFor(m => m.UserEmail)
+   <div class="row mTopBig">
+      <div class="small-12 large-6 large-offset-3 column">
+         <p><em style="font-size: 18pt;">Create a new account</em></p>
+         @(Html.LabelFor (m => m.UserEmail))
+         @(Html.EditorFor (m => m.UserEmail))
+         @(Html.LabelFor (m => m.Password))
+         @(Html.PasswordFor (m => m.Password))
+         @(Html.LabelFor (m => m.ConfirmPassword))
+         @(Html.PasswordFor (m => m.ConfirmPassword))
+         <div class="row">
+            <div class="small-12 medium-6 medium-offset-3 large-4 large-offset-4 column">
+               <input type="submit" value="Register" class="sdw-button expand reg" />
+            </div>
          </div>
       </div>
-      <div class="row">
-         <div class="small-12 large-6 columns">
-            @Html.LabelFor(m => m.Password)
-            @Html.PasswordFor(m => m.Password)
-         </div>
-      </div>
-      <div class="row">
-         <div class="small-12 large-6 columns">
-            @Html.LabelFor(m => m.ConfirmPassword)
-            @Html.PasswordFor(m => m.ConfirmPassword)
-         </div>
-      </div>
-      <input type="submit" value="Register" class="button" />
-   </fieldset>
-}
-
-@section Scripts {
-   @Scripts.Render("~/bundles/jqueryval")
+   </div>
 }
