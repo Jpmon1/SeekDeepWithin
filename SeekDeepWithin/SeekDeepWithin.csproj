@@ -208,15 +208,12 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\Hashids.cs" />
-    <Compile Include="Controllers\ItemLayout.cs" />
     <Compile Include="Controllers\SeekController.cs" />
     <Compile Include="Controllers\LightController.cs" />
     <Compile Include="Controllers\SdwController.cs" />
     <Compile Include="Controllers\EditController.cs" />
-    <Compile Include="Models\LayoutColumn.cs" />
     <Compile Include="Models\SdwItem.cs" />
     <Compile Include="Models\LoveModel.cs" />
-    <Compile Include="Models\LayoutRow.cs" />
     <Compile Include="Models\PagedViewModel.cs" />
     <Compile Include="Models\SoulItem.cs" />
     <Compile Include="Pocos\FormatRegex.cs" />
