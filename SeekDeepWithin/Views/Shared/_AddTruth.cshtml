@@ -1,20 +1,18 @@
 ﻿@using SeekDeepWithin.Pocos
-@{ var truthTypes = Enum.GetValues (typeof (SdwType)).Cast<SdwType> ().ToList(); }
 <div class="tabs-panel" id="addTruth">
    <div id="editLights" class="row"></div>
    <div class="row">
       <div class="small-12 medium-6 large-6 column">
-         <div class="row column">Format text for importing<textarea rows="5" id="addTruthFormatText"></textarea></div>
+         <div class="row column">Text<input type="text" id="addTruthAppendText" /></div>
          <div class="row">
-            <div class="small-12 medium-6 large-6 column">
-               Type
-               <select id="addTruthFormatType">
-                  @foreach (var truthType in truthTypes) {
-               <option value="@((int)truthType)">@(truthType.ToString ())</option>}
-               </select>
-            </div>
-            <div class="small-12 medium-6 large-6 column">Start Order<input type="number" id="addTruthFormatOrder" value="1" /></div>
+            <div class="small-12 medium-6 large-6 column">Order<input type="number" id="addTruthAppendOrder" /></div>
+            <div class="small-12 medium-6 large-6 column">Number<input type="number" id="addTruthAppendNumber" /></div>
          </div>
+         <div class="row">
+            <div class="small-12 column"><a href="javascript:void(0);" onclick="SdwEdit.truthAppend();" class="sdw-button reg expand">Append &rArr;</a></div>
+         </div>
+         <hr />
+         <div class="row column">Format text for importing<textarea rows="5" id="addTruthFormatText"></textarea></div>
          <div class="row column">Regular Expression to use for importing<input type="text" id="addTruthFormatRegex" /></div>
          <div class="row column">
             Current Regular Expressions
@@ -22,32 +20,22 @@
                @foreach (FormatRegex regex in ViewBag.Regexs) {<option value="@regex.Id">@(regex.Regex)</option>}
             </select>
          </div>
+         <div class="row">
+            <div class="small-12 medium-6 large-6 column">Start Order<input type="number" id="addTruthFormatOrder" /></div>
+            <div class="small-12 medium-6 large-6 column">Start Number<input type="number" id="addTruthFormatNumber" /></div>
+         </div>
          <div class="row column">
-            <a href="javascript:void(0)" class="sdw-button reg expand" onclick="SdwEdit.truthFormat();">Format</a>
+            <a href="javascript:void(0)" class="sdw-button reg small expand" onclick="SdwEdit.truthFormat();">Format</a>
          </div>
       </div>
       <div class="small-12 medium-6 large-6 column">
+         <div class="row column"><input type="checkbox" id="addTruthInvert"/> Invert truth/light relationship</div>
          <div class="row column">Data for importing<textarea rows="5" id="addTruthText"></textarea></div>
          <div class="row column">
             <a href="javascript:void(0)" class="sdw-button add expand" onclick="SdwEdit.truthCreate();">Add</a>
          </div>
-         <div class="row column text-center">
-            &uArr; Append to import data &uArr;
-         </div>
-         <div class="row">
-            <div class="small-12 medium-6 large-6 column">
-               Type
-               <select id="addTruthAppendType">
-                  @foreach (var truthType in truthTypes) {<option value="@((int)truthType)">@(truthType.ToString ())</option>}
-               </select>
-            </div>
-            <div class="small-12 medium-6 large-6 column">Order<input type="number" id="addTruthAppendOrder"/></div>
-         </div>
-         <div class="row column">Text<input type="text" id="addTruthAppendText"/></div>
-         <div class="row">
-            <div class="small-12 medium-6 large-6 column">Number<input type="number" id="addTruthAppendNumber" /></div>
-            <div class="small-12 medium-6 large-6 column"><a href="javascript:void(0);" onclick="SdwEdit.truthAppend();" class="sdw-button reg expand">Append</a></div>
-         </div>
+         <em class="mTop">Add links to the follow:</em>
+         <div class="row column" id="addTruthLinks"></div>
       </div>
    </div>
 </div>

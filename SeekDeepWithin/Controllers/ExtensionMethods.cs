@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using SeekDeepWithin.Models;
-using SeekDeepWithin.Pocos;
 
 namespace SeekDeepWithin.Controllers
 {
@@ -13,17 +11,15 @@ namespace SeekDeepWithin.Controllers
       /// Highlights the words in the given query.
       /// </summary>
       /// <param name="text">Text to highlight.</param>
-      /// <param name="query">Query to hightlight.</param>
+      /// <param name="words">Words to hightlight.</param>
       /// <returns>Html text with highlighted words.</returns>
-      public static string Highlight (this string text, SearchQueryViewModel query)
+      public static string Highlight (this string text, IEnumerable <string> words)
       {
-         if (query.SearchType == 3) return text;
          var html = string.Empty;
-         var words = query.QDecoded.GetWords ();
          var indexes = new Dictionary <int, int> ();
          foreach (var word in words)
          {
-            var hilite = query.Exact ? "\\b" + Regex.Escape (word) + "\\b" : Regex.Escape (word);
+            var hilite = Regex.Escape (word);
             var matches = Regex.Matches (text, hilite, RegexOptions.IgnoreCase);
             foreach (Match match in matches)
             {

@@ -29,16 +29,24 @@
    },
 
    truthCreate: function() {
+      var links = [];
       var lights = [];
       var hashId = new Hashids('GodisLove');
       $('#editLights').find('.callout').each(function (i, o) {
          var callout = $(o);
          lights.push(parseInt(callout.attr('id').substr(9)));
-         lights.push(parseInt(callout.find('select').first().val()));
+      });
+      $('#addTruthLinks').find('.truthLink').each(function (i, o) {
+         var input = $(o);
+         if (input.prop('checked')) {
+            links.push(parseInt(input.data('l')));
+         }
       });
       SdwEdit._post('/Edit/Love', {
+         links: hashId.encode(links),
          light: hashId.encode(lights),
-         truth: $('#addTruthText').val()
+         truth: $('#addTruthText').val(),
+         invert: $('#addTruthInvert').prop('checked')
       }, function() {
          $('#addTruthText').val('');
       });
@@ -47,32 +55,46 @@
    truthAppend: function() {
       var text = $('#addTruthText').val();
       if (text != '') { text += '\n'; }
-      text += $('#addTruthAppendType').val() + '|' + $('#addTruthAppendOrder').val() +
-              '|' + $('#addTruthAppendNumber').val() + '|' + $('#addTruthAppendText').val();
+      text += $('#addTruthAppendOrder').val() + '|' + $('#addTruthAppendNumber').val() + '|' + $('#addTruthAppendText').val();
       $('#addTruthText').val(text);
    },
 
    lightAdd: function (id) {
       var edit = $('#editLight' + id);
       if (edit.length <= 0) {
-         SdwCommon.get('/Edit/Light', { id: id }, function (d) { $('#editLights').append(d).velocity('transition.fadeIn'); });
+         SdwCommon.get('/Edit/Light', { id: id }, function(d) {
+            $('#editLights').append(d).velocity('transition.fadeIn');
+            SdwEdit.getLinks();
+         });
       } else {
          edit.remove();
+         SdwEdit.getLinks();
       }
+   },
+
+   getLinks: function () {
+      var lights = [];
+      $('#addTruthLinks').html('Loading...');
+      var hashId = new Hashids('GodisLove');
+      $('#editLights').find('.callout').each(function (i, o) {
+         var callout = $(o);
+         lights.push(parseInt(callout.attr('id').substr(9)));
+      });
+      SdwCommon.get('/Edit/Links', { lights: hashId.encode(lights) }, function (d) {
+         $('#addTruthLinks').html(d).velocity('transition.fadeIn');
+      });
    },
 
    truthEdit: function (tId) {
       if (tId) {
          SdwCommon.get('/Seek/Truth', { id: tId }, function(d) {
             $('#editTruthId').val(d.id);
-            $('#editTruthType').val(d.type);
             $('#editTruthText').val(d.text);
             $('#editTruthOrder').val(d.order);
             $('#editTruthNumber').val(d.number);
          });
       } else {
          $('#editTruthId').val('');
-         $('#editTruthType').val('');
          $('#editTruthText').val('');
          $('#editTruthOrder').val('');
          $('#editTruthNumber').val('');
@@ -82,7 +104,6 @@
    truthSave: function () {
       SdwEdit._post('/Edit/Truth', {
          id: $('#editTruthId').val(),
-         type: $('#editTruthType').val(),
          text: $('#editTruthText').val(),
          order: $('#editTruthOrder').val(),
          number: $('#editTruthNumber').val(),
@@ -98,8 +119,8 @@
       SdwEdit._post('/Edit/Format', {
          regex: encodeURIComponent(regex),
          text: encodeURIComponent($('#addTruthFormatText').val()),
-         type: $('#addTruthFormatType').val(),
-         startOrder: $('#addTruthFormatOrder').val()
+         startOrder: $('#addTruthFormatOrder').val(),
+         startNumber: $('#addTruthFormatNumber').val()
       }, function (d) {
          if ($("#addTruthCurrentRegex option[value='" + d.regexId + "']").length <= 0) {
             $('#addTruthCurrentRegex')

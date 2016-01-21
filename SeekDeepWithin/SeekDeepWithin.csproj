@@ -220,7 +220,6 @@
     <Compile Include="Pocos\Light.cs" />
     <Compile Include="Pocos\Love.cs" />
     <Compile Include="Pocos\Peace.cs" />
-    <Compile Include="Pocos\SdwType.cs" />
     <Compile Include="Pocos\Soul.cs" />
     <Compile Include="Pocos\TruthStyle.cs" />
     <Compile Include="Pocos\Truth.cs" />
@@ -249,7 +248,6 @@
     <Compile Include="Models\ErrorViewModel.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
     <Compile Include="Models\RegisterViewModel.cs" />
-    <Compile Include="Models\SearchQueryViewModel.cs" />
     <Compile Include="DataAccess\UsersContext.cs" />
     <Compile Include="Pocos\Comment.cs" />
     <Compile Include="Pocos\UserData.cs" />
@@ -280,12 +278,28 @@
       <Link>README.md</Link>
     </Content>
     <None Include="Properties\PublishProfiles\SeekDeepWithin.pubxml" />
+    <Content Include="Images\about.png" />
+    <Content Include="Images\aboutw.png" />
+    <Content Include="Images\icon.ico" />
     <Content Include="Images\icon.svg" />
+    <Content Include="Images\icon_128.png" />
+    <Content Include="Images\icon_128w.png" />
     <Content Include="Images\icon_16.png" />
+    <Content Include="Images\icon_16w.png" />
     <Content Include="Images\icon_24.png" />
+    <Content Include="Images\icon_24w.png" />
+    <Content Include="Images\icon_256.png" />
+    <Content Include="Images\icon_256w.png" />
     <Content Include="Images\icon_32.png" />
-    <Content Include="Images\sdw_16.png" />
-    <Content Include="Images\sdw_16_w.png" />
+    <Content Include="Images\icon_32w.png" />
+    <Content Include="Images\icon_64.png" />
+    <Content Include="Images\icon_64w.png" />
+    <Content Include="Images\login.png" />
+    <Content Include="Images\loginw.png" />
+    <Content Include="Images\register.png" />
+    <Content Include="Images\registerw.png" />
+    <Content Include="Images\user.png" />
+    <Content Include="Images\userw.png" />
     <Content Include="Scripts\Base64.js" />
     <Content Include="Scripts\fastclick.js" />
     <Content Include="Scripts\foundation.js" />
@@ -346,6 +360,7 @@
     <Content Include="Views\Light\Edit.cshtml" />
     <Content Include="Views\Edit\Light.cshtml" />
     <Content Include="Views\Shared\Love.cshtml" />
+    <Content Include="Views\Edit\Links.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

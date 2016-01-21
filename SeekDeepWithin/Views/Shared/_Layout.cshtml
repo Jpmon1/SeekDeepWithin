@@ -9,43 +9,29 @@
       <meta name="author" content="SeekDeepWithin.com" />
       <meta name="copyright" content="SeekDeepWithin Copyright (c) @DateTime.Now.Year" />
       <title>Seek Deep Within</title>
-      <link href="/Images/icon_16.png" rel="shortcut icon" type="image/x-icon" />
+      <link href="/Images/icon.ico" rel="shortcut icon" type="image/x-icon" />
       @(RenderSection ("styles", false))
       @(Styles.Render ("~/Content/css"))
       <link href="https://fonts.googleapis.com/css?family=Merriweather+Sans:400,700,300,300italic" rel="stylesheet" type="text/css">
    </head>
 <body>
-   <div class="stick-container">
-      <div class="sticky is-stuck stick-container">
-         <div class="loader">LOADING...</div>
-         <div class="title-bar" data-responsive-toggle="sdw-menu" data-hide-for="medium">
-            <button class="menu-icon" type="button" data-toggle style="background-color: transparent;border: 0;"></button>
-            <div class="title-bar-title">Menu</div>
+   <div class="sticky is-stuck top-menu-container">
+      <div class="loader">LOADING...</div>
+      <div class="expanded row">
+         <div class="small-12 medium-6 large-6 column">
+            <img src="~/Images/icon_24w.png" alt="Seek Deep Within" />
+            <a href="@Url.Action("Index", "Home", null, scheme)" class="top-menu-item">SEEK DEEP WITHIN</a>
+            @if (Request.IsAuthenticated) {
+               <a href="@Url.Action("Manage", "Account", null, scheme)" class="top-menu-item" title="Manage Account"><img src="~/Images/userw.png" alt="Account Settings" /></a>
+            } else {
+               <a href="@Url.Action("Register", "Account", null, scheme)" class="top-menu-item" title="Register"><img src="~/Images/registerw.png" alt="Register" /></a>
+               if (ViewBag.IsLogin == null) {
+                  <a href="@Url.Action("Login", "Account", null, scheme)" class="top-menu-item" title="Login"><img src="~/Images/loginw.png" alt="Login" /></a>
+               }
+            }
+            <a href="@Url.Action("About", "Home", null, scheme)" class="top-menu-item" title="About"><img src="~/Images/aboutw.png" alt="About Seek Deep Within" /></a>
          </div>
-
-         <div class="top-bar" id="sdw-menu">
-            <div class="top-bar-left">
-               <ul class="menu">
-                  <li><img src="~/Images/icon_24.png" alt="Seek Deep Within" /></li>
-                  <li class="menu-text"><a href="@Url.Action("Index", "Home", null, scheme)" class="title">SEEK DEEP WITHIN</a></li>
-                  @if (Request.IsAuthenticated) {
-                     <li><a href="@Url.Action("Manage", "Account", null, scheme)" title="Manage Account">Account</a></li>
-                  } else {
-                     <li><a href="@Url.Action("Register", "Account", null, scheme)" title="Register">Register</a></li>
-                     if (ViewBag.IsLogin == null) {
-                         <li><a href="@Url.Action("Login", "Account", null, scheme)" title="Login">Login</a></li>
-                      }
-                  }
-                  <li><a href="@Url.Action("About", "Home", null, scheme)" title="About">About</a></li>
-               </ul>
-            </div>
-            <div class="top-bar-right">
-               <ul class="menu">
-                  <li class="small-8"><input type="search" placeholder="Search" id="searchText"></li>
-                  <li><button type="button" class="sdw-button alt tiny" onclick="sdw.search();">Search</button></li>
-               </ul>
-            </div>
-         </div>
+         <div class="small-12 medium-6 large-6 column"><input type="search" placeholder="Search" id="menuSearchText" class="top-menu-search"></div>
       </div>
    </div>
    <div class="pBottom">

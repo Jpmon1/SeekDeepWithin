@@ -1,17 +1,7 @@
-﻿@using SeekDeepWithin.Pocos
-<div class="tabs-panel is-active" id="editTruth">
+﻿<div class="tabs-panel is-active" id="editTruth">
    <input type="hidden" id="editTruthId" />
    <div class="row">
       <div class="small-12 medium-6 large-4 column">
-         <div class="row column">Type</div>
-         <div class="row column">
-            <select id="editTruthType">
-               @{ var values = Enum.GetValues (typeof (SdwType)).Cast<SdwType> (); }
-               @foreach (var value in values) {
-                  <option value="@((int)value)">@(value.ToString ())</option>
-               }
-            </select>
-         </div>
          <div class="row column">Order</div>
          <div class="row column">
             <input type="number" id="editTruthOrder" />

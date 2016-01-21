@@ -10,9 +10,9 @@ namespace SeekDeepWithin.Pocos
       public int Id { get; set; }
 
       /// <summary>
-      /// Get or Sets the type of peace.
+      /// Get or Sets the order of peace.
       /// </summary>
-      public int Type { get; set; }
+      public int Order { get; set; }
 
       /// <summary>
       /// Gets or Sets the parent light.
@@ -20,8 +20,8 @@ namespace SeekDeepWithin.Pocos
       public virtual Light Light { get; set; }
 
       /// <summary>
-      /// Gets or Sets the parent loves.
+      /// Gets or Sets the parent love.
       /// </summary>
-      public virtual ICollection <Love> Loves { get; set; }
+      public virtual Love Love { get; set; }
    }
 }

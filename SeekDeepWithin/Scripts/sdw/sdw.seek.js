@@ -2,14 +2,15 @@
    love: function (clicked) {
       var id = clicked;
       var parents = '';
+      var history = '';
       var item = $(clicked);
       if (clicked && isNaN(clicked)) {
          id = item.data('l');
-         var isEditable = $('#editable').length > 0;
          parents = item.data('p');
+         history = item.data('h');
          var light = item.closest('.callout');
          light.toggleClass('selected');
-         if (isEditable) {
+         if (window.isEditable) {
             SdwEdit.lightAdd(id);
             SdwEdit.truthEdit(item.data('t'));
          }
@@ -18,7 +19,7 @@
          item.data('c', 1);
       }
       SdwCommon.loadStart();
-      SdwCommon.get('/Seek/Love', { id: id, items: parents }, function (d) {
+      SdwCommon.get('/Seek/Love', { id: id, items: parents, history: history }, function (d) {
          var added = $(d);
          var container = $('#lightList');
          if (clicked && isNaN(clicked)) {
@@ -34,13 +35,14 @@
    },
 
    search: function () {
+      SdwCommon.loadStart();
       SdwCommon.get('/Seek/Search', { text: $('#searchText').val() }, function (d) {
          var container = $('#lightList');
          var last = container.children().last().find('.callout').first();
          container.append(d);
          container.masonry('reloadItems');
          container.masonry('layout').one('layoutComplete', function () {
-            last.velocity('scroll', { duration: 1500 });
+            last.velocity('scroll', { duration: 1000 });
          });
          SdwCommon.loadStop();
       });
@@ -49,6 +51,8 @@
 
 $(document).foundation();
 $(document).ready(function () {
+   $('#menuSearchText').velocity('transition.fadeOut', false, false);
+   window.isEditable = $('#editable').length > 0;
    $('#lightList').masonry({ itemSelector: '.column' });
    var page = $('#pageId').val();
    if (page == 'index') {
@@ -56,18 +60,37 @@ $(document).ready(function () {
    } else {
       SdwCommon.loadStop();
    }
-   $('#searchText').autocomplete({
-      serviceUrl: '/Seek/AutoComplete',
-      paramName: 'text',
-      onSelect: function (suggestion) {
-         $('#searchText').val(suggestion.value);
-         $('#searchText').data('lightId', suggestion.data);
-         sdw.search();
+   setSearch($('#searchText'));
+   setSearch($('#menuSearchText'));
+   window.menusearch = false;
+   $(window).scroll(Foundation.util.throttle(function () {
+      var top = $(window).scrollTop();
+      var searchTop = $('#searchText').offset().top;
+      if (!window.menusearch && top > searchTop) {
+         window.menusearch = true;
+         $('#menuSearchText').velocity('transition.fadeIn', false, false);
+      } else if (window.menusearch && top < searchTop) {
+         window.menusearch = false;
+         $('#menuSearchText').velocity('transition.fadeOut', false, false);
       }
-   });
-   $(window).scroll(Foundation.util.throttle(function() {
-      if ($(window).scrollTop() == $(document).height() - $(window).height()) {
-         sdw.love();
+      if (top == $(document).height() - $(window).height()) {
+         if (!window.isEditable) {
+            sdw.love();
+         }
       }
    }, 300));
 });
+
+function setSearch(search) {
+   search.autocomplete({
+      serviceUrl: '/Seek/AutoComplete',
+      paramName: 'text'
+   });
+   search.keypress(function (e) {
+      var keycode = (e.keyCode ? e.keyCode : e.which);
+      if (keycode == '13') {
+         search.blur();
+         sdw.search();
+      }
+   });
+}

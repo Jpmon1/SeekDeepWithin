@@ -26,7 +26,7 @@ namespace SeekDeepWithin.Controllers
       /// Gets the love.
       /// </summary>
       [AllowAnonymous]
-      public ActionResult Love (int? id, string items)
+      public ActionResult Love (int? id, string items, string history)
       {
          var model = new LoveModel ();
          var hash = new Hashids ("GodisLove") { Order = true };
@@ -37,18 +37,22 @@ namespace SeekDeepWithin.Controllers
                model.ToAdd.Add (new SdwItem (light) { Key = hash.Encode(light.Id)});
             }
          } else {
-            var loves = new List <Love> ();
+            var histIds = hash.Decode (history).ToList ();
+            histIds.Add (id.Value);
+            history = hash.Encode (histIds);
             var light = this.Database.Light.Get (id.Value);
             ids.Add (id.Value);
-            foreach (var peace in light.Peaces) {
-               loves.AddRange (peace.Loves.Where (l => l.Peaces.All (p => ids.Contains (p.Light.Id))));
-            }
+            var loves = (from peace in light.Peaces
+                         where peace.Love.Peaces.All (p => ids.Contains (p.Light.Id))
+                         select peace.Love).ToList ();
             if (loves.Count > 0) {
                var max = loves.Max (l => l.Peaces.Count);
                foreach (var love in loves.Where (l => l.Peaces.Count == max)) {
                   foreach (var truth in love.Truths) {
-                     if (ids.Contains (truth.Light.Id)) continue;
-                     var item = new SdwItem (truth);
+                     if (ids.Contains (truth.Light.Id) || model.ToAdd.Any (i=> i.Id == truth.Light.Id) ||
+                        (histIds.Contains (truth.Light.Id) && !truth.Number.HasValue))
+                        continue;
+                     var item = new SdwItem (truth) { History = history };
                      if (truth.ParentId != null) {
                         var l = this.Database.Love.Get (truth.ParentId.Value);
                         item.Title = GetTitle (l.Peaces);
@@ -59,10 +63,9 @@ namespace SeekDeepWithin.Controllers
                      } else {
                         var parents = new List <Peace> ();
                         var tempParents = (from peace in truth.Light.Peaces
-                           from peaceLove in peace.Loves
-                           from p in peaceLove.Peaces
-                           where ids.Contains (p.Light.Id)
-                           select p).ToList();
+                                           from p in peace.Love.Peaces
+                                           where ids.Contains (p.Light.Id)
+                                           select p).ToList();
                         foreach (var tp in tempParents) {
                            if (parents.Any (p => p.Light.Id == tp.Light.Id)) continue;
                            parents.Add (tp);
@@ -71,7 +74,8 @@ namespace SeekDeepWithin.Controllers
                         item.Parents = hash.Encode (parentIds);
                         parentIds.Add (item.Id);
                         item.Key = hash.Encode (parentIds);
-                        item.Title = GetTitle ((parents.Count > 0) ? parents : love.Peaces);
+                        item.IsSelected = histIds.Contains (truth.Light.Id);
+                        item.Title = GetTitle ((parents.Count > 0) ? parents : truth.Number.HasValue ? love.Peaces : new List <Peace> ());
                      }
                      model.ToAdd.Add (item);
                   }
@@ -94,7 +98,6 @@ namespace SeekDeepWithin.Controllers
          return Json (new {
             id,
             status = SUCCESS,
-            type = truth.Type,
             order = truth.Order,
             number = truth.Number,
             text = truth.Light.Text
@@ -117,6 +120,7 @@ namespace SeekDeepWithin.Controllers
          foreach (var light in lights) {
             model.ToAdd.Add (new SdwItem (light) { Key = hash.Encode (light.Id) });
          }
+         ViewBag.Search = text.GetWords ();
          return PartialView ("Love", model);
       }
 
@@ -129,7 +133,6 @@ namespace SeekDeepWithin.Controllers
       public ActionResult AutoComplete (string text)
       {
          var query = LightSearch.AutoComplete (text);
-         //var lights = this.Database.Light.Get (l => l.Text.Contains (text));
          var result = new { suggestions = query.Select (kvp => new { value = kvp.Value, data = kvp.Key }) };
          return Json (result, JsonRequestBehavior.AllowGet);
       }
@@ -138,13 +141,15 @@ namespace SeekDeepWithin.Controllers
       /// Gets the title of the given list.
       /// </summary>
       /// <param name="peaces">The list of peace to get title for.</param>
-      private static string GetTitle (IEnumerable <Peace> peaces)
+      private static string GetTitle (ICollection <Peace> peaces)
       {
          var title = string.Empty;
-         foreach (var peace in peaces.OrderBy (p => p.Type)) {
-            if (!string.IsNullOrEmpty (title))
-               title += "|";
-            title += peace.Light.Text;
+         if (peaces.Count > 0) {
+            foreach (var peace in peaces.OrderBy (p => p.Order)) {
+               if (!string.IsNullOrEmpty (title))
+                  title += "|";
+               title += peace.Light.Text;
+            }
          }
          return title;
       }
@@ -156,14 +161,14 @@ namespace SeekDeepWithin.Controllers
       private static void SetHeadersAndFooters (LoveModel model)
       {
          var remove = new List<SdwItem> ();
-         foreach (var header in model.ToAdd.Where (li => li.Order.HasValue && li.Order == 0)) {
+         foreach (var header in model.ToAdd.Where (li => li.Order.HasValue && li.Order == 0 && li.Number.HasValue)) {
             var passage = model.ToAdd.FirstOrDefault (li => li.Number == header.Number && li.Id != header.Id);
             if (passage != null) {
                passage.Headers.Add (header);
                remove.Add (header);
             }
          }
-         foreach (var footer in model.ToAdd.Where (li => li.Order.HasValue && li.Order < 0)) {
+         foreach (var footer in model.ToAdd.Where (li => li.Order.HasValue && li.Order < 0 && li.Number.HasValue)) {
             var passage = model.ToAdd.FirstOrDefault (li => li.Number == footer.Number);
             if (passage != null) {
                passage.Footers.Add (footer);

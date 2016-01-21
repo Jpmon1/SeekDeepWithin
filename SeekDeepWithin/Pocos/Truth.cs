@@ -13,11 +13,6 @@ namespace SeekDeepWithin.Pocos
       public int Id { get; set; }
 
       /// <summary>
-      /// Gets or Sets the type of truth.
-      /// </summary>
-      public int Type { get; set; }
-
-      /// <summary>
       /// Gets or Sets the order.
       /// </summary>
       public int? Order { get; set; }

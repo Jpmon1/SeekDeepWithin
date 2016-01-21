@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using Lucene.Net.QueryParsers;
 using Lucene.Net.Search;
 using Lucene.Net.Store;
-using SeekDeepWithin.Controllers;
 using SeekDeepWithin.Pocos;
 
 namespace SeekDeepWithin.SdwSearch
@@ -48,7 +46,7 @@ namespace SeekDeepWithin.SdwSearch
             var collector = TopScoreDocCollector.Create (count, true);
             var analyzer = new StandardAnalyzer (Lucene.Net.Util.Version.LUCENE_30);
             var parser = new QueryParser (Lucene.Net.Util.Version.LUCENE_30, "text", analyzer);
-            var query = SearchCommon.ParseQuery (SearchCommon.BuildQuery (text.GetWords (), "(text:{0}) OR (text:{1})"), parser);
+            var query = SearchCommon.ParseQuery (string.Format ("(text:{0}) OR (text:{0}*) OR (text:{0}~0.5)", text), parser);
             searcher.Search (query, collector);
             var docs = collector.TopDocs (start, count).ScoreDocs;
             foreach (var scoreDoc in docs) {

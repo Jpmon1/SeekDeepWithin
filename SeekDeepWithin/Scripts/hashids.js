@@ -36,6 +36,7 @@ var Hashids = (function () {
 
 		/* alphabet vars */
 
+	   this.order = false;
 		this.alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
 		this.seps = "cfhistuCFHISTU";
 		this.minHashLength = parseInt(minHashLength, 10) > 0 ? minHashLength : 0;
@@ -186,8 +187,10 @@ var Hashids = (function () {
 			numbersSize = numbers.length,
 			numbersHashInt = 0;
 
-	   //TODO: numbers.sort(function(a, b) { return a - b; });
-		for (i = 0, len = numbers.length; i !== len; i++) {
+	   if (this.order) {
+	      numbers.sort(function(a, b) { return a - b; });
+	   }
+	   for (i = 0, len = numbers.length; i !== len; i++) {
 			numbersHashInt += (numbers[i] % (i + 100));
 		}
 

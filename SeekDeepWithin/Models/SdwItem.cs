@@ -99,6 +99,11 @@ namespace SeekDeepWithin.Models
       public bool IsSelected { get; set; }
 
       /// <summary>
+      /// Gets or Sets the history hash.
+      /// </summary>
+      public string History { get; set; }
+
+      /// <summary>
       /// Gets the list of headers.
       /// </summary>
       public List<SdwItem> Headers { get; private set; }
