@@ -51,6 +51,8 @@ a.top-menu-item {
 }
 a:hover{ text-decoration: underline; }
 .loader {
+  top: 0;
+  left: 0;
   width: 20%;
   color: white;
   text-align: center;
@@ -60,9 +62,11 @@ a:hover{ text-decoration: underline; }
   position: absolute;
   z-index: 9999999999999;
 }
-.callout {
+.light {
    padding: 0;
+   margin: 1rem 0;
    text-align: center;
+   border:2px solid white;
    -ms-box-shadow: 2px 2px 19px #aaa;
    -o-box-shadow: 2px 2px 19px #aaa;
    -webkit-box-shadow: 2px 2px 19px #aaa;
@@ -71,22 +75,21 @@ a:hover{ text-decoration: underline; }
    -moz-border-radius:0.5em;
    -ms-border-radius:0.5em;
    border-radius:0.5em;
-   -webkit-transition: -webkit-box-shadow 0.15s ease-in;
-   -moz-transition: -moz-box-shadow 0.15s ease-in;
-   -o-transition: -o-box-shadow 0.15s ease-in;
-   -ms-transition: box-shadow 0.15s ease-in;
-   transition: box-shadow 0.15s ease-in;
+   -webkit-transition: -webkit-box-shadow 0.25s ease-in;
+   -moz-transition: -moz-box-shadow 0.25s ease-in;
+   -o-transition: -o-box-shadow 0.25s ease-in;
+   -ms-transition: box-shadow 0.25s ease-in;
+   transition: box-shadow 0.25s ease-in;
 }
-.callout:hover, .callout.selected {
-   border:1px solid #346789;
+.light:hover {
    -ms-box-shadow: 2px 2px 19px #444;
    -o-box-shadow: 2px 2px 19px #444;
     -webkit-box-shadow: 2px 2px 19px #444;
     -moz-box-shadow: 2px 2px 19px #fff;
    box-shadow: 2px 2px 19px #444;
 }
-.callout.selected {
-   font-weight: bold;
+.light:hover, .light.selected {
+   border:2px solid #346789;
 }
 .love{ padding: 0;margin: 0;}
 .truth {

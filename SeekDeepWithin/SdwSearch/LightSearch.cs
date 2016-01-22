@@ -40,13 +40,19 @@ namespace SeekDeepWithin.SdwSearch
       /// <param name="text">The text to query for.</param>
       public static Dictionary<int, string> Query (int start, int count, string text)
       {
+         text = text.Trim ();
          var result = new Dictionary<int, string> ();
+         if (string.IsNullOrEmpty (text))
+            return result;
          using (var searcher = new IndexSearcher (Directory, true)) {
             var reader = IndexReader.Open (Directory, true);
             var collector = TopScoreDocCollector.Create (count, true);
             var analyzer = new StandardAnalyzer (Lucene.Net.Util.Version.LUCENE_30);
             var parser = new QueryParser (Lucene.Net.Util.Version.LUCENE_30, "text", analyzer);
-            var query = SearchCommon.ParseQuery (string.Format ("(text:{0}) OR (text:{0}*) OR (text:{0}~0.5)", text), parser);
+            var qText = /*text.IndexOf (' ') > 0
+               ? string.Format ("(text:\"{0}\") OR (text:\"{0}*\")", text)
+               : */string.Format ("(text:{0}*) OR (text:{0}~0.5)", text);
+            var query = SearchCommon.ParseQuery (qText, parser);
             searcher.Search (query, collector);
             var docs = collector.TopDocs (start, count).ScoreDocs;
             foreach (var scoreDoc in docs) {
@@ -142,7 +148,8 @@ namespace SeekDeepWithin.SdwSearch
          var doc = new Document ();
          // add lucene fields mapped to db fields
          doc.Add (new Field ("Id", id, Field.Store.YES, Field.Index.NOT_ANALYZED));
-         doc.Add (new Field ("text", light.Text ?? string.Empty, Field.Store.YES, Field.Index.ANALYZED));
+         doc.Add (new Field ("text", light.Text ?? string.Empty, Field.Store.YES, Field.Index.ANALYZED,
+            Field.TermVector.WITH_POSITIONS_OFFSETS));
          writer.AddDocument (doc);
       }
    }

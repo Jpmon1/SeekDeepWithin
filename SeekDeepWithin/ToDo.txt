@@ -1,13 +1,9 @@
-Update Title bar
-Links (Reference)
-Edit light with no truth
-???Footers - tooltips
+Add a way to change user settings.
 Alias
-Styles
-Roles
 Images
+URL sources...
 Amazon Items
-Edit headers
+Roles
 Passage Parser
 ???History....
 Light Item Menu:

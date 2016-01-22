@@ -1,7 +1,6 @@
 ﻿var SdwEdit = {
 
    init: function () {
-      $('#editTruthOk').velocity('transition.fadeOut');
       $('#addTruthAppendText').autocomplete({
          serviceUrl: '/Seek/AutoComplete',
          paramName: 'text',
@@ -11,44 +10,105 @@
             $('#addTruthAppendText').data('lightId', suggestion.data);
          }
       });
+      $('#editLightSearch').autocomplete({
+         serviceUrl: '/Seek/AutoComplete',
+         paramName: 'text',
+         noCache: true,
+         onSelect: function (suggestion) {
+            $('#editLightSearch').val(suggestion.value);
+            $('#editLightSearch').data('lightId', suggestion.data);
+         }
+      });
       $('#addTruthFormatRegex').val($("#addTruthCurrentRegex option:selected").text());
       $('#addTruthCurrentRegex').change(function() {
          $('#addTruthFormatRegex').val($("#addTruthCurrentRegex option:selected").text());
       });
       $('#addTruthAppendText').autocomplete('clearCache');
+      SdwEdit._getLinkTruths();
    },
 
-   lightCreate: function() {
+   lightCreate: function () {
+      SdwCommon.loadStart();
       SdwEdit._post('/Edit/Illuminate', { text: $('#textNewLight').val() }, function (d) {
          $('#textNewLight').val('');
-         var container = $('#lightList');
-         container.append(d);
-         container.masonry('reloadItems');
-         container.masonry('layout');
+         SdwCommon.loadStop();
+         SdwEdit.lightGetItem(d.id);
+      });
+   },
+
+   lightAddItem: function () {
+      var id = $('#editLightSearch').data('lightId');
+      $('#editLightSearch').val('');
+      $('#editLightSearch').data('lightId', '');
+      SdwEdit.lightGetItem(id);
+   },
+
+   lightAddLinkItem: function () {
+      SdwCommon.loadStart();
+      var id = $('#editLightSearch').data('lightId');
+      SdwCommon.get('/Edit/Light', { id: id, link: true }, function (html) {
+         $('#linkArea').append(html).velocity('transition.fadeIn');
+         SdwCommon.loadStop();
+         SdwEdit._getLinkTruths();
+      });
+   },
+
+   lightGetItem: function (id) {
+      SdwCommon.loadStart();
+      SdwCommon.get('/Edit/Light', { id: id }, function (html) {
+         $('#editLights').append(html).velocity('transition.fadeIn');
+         SdwCommon.loadStop();
+         SdwEdit._getLinks();
+      });
+   },
+
+   lightEdit: function (id) {
+      SdwCommon.loadStart();
+      SdwCommon.get('/Edit/LightEdit', { id: id }, function (html) {
+         $('#editArea').html(html).velocity('transition.fadeIn').velocity('scroll', { duration: 300 });
+         $('#editLightOk').velocity('transition.fadeOut');
+         SdwCommon.loadStop();
+      });
+   },
+
+   lightSave: function () {
+      SdwCommon.loadStart();
+      SdwEdit._post('/Edit/LightEdit', { id: $('#editLightId').val(), text: $('#editLightText').val() }, function () {
+         $('#editLightOk').velocity('transition.fadeIn').velocity('transition.fadeOut');
+         SdwCommon.loadStop();
       });
    },
 
    truthCreate: function() {
-      var links = [];
-      var lights = [];
+      var versions = [];
+      var truthLinks = '';
+      SdwCommon.loadStart();
+      var lights = SdwEdit._getEditLight();
       var hashId = new Hashids('GodisLove');
-      $('#editLights').find('.callout').each(function (i, o) {
-         var callout = $(o);
-         lights.push(parseInt(callout.attr('id').substr(9)));
-      });
-      $('#addTruthLinks').find('.truthLink').each(function (i, o) {
+      $('#addVersionLinks').find('.switch-input').each(function (i, o) {
          var input = $(o);
          if (input.prop('checked')) {
-            links.push(parseInt(input.data('l')));
+            versions.push(parseInt(input.data('l')));
+         }
+      });
+      $('#addTruthLinks').find('.switch-input').each(function (i, o) {
+         var input = $(o);
+         if (input.prop('checked')) {
+            if (truthLinks != '') {
+               truthLinks += ',';
+            }
+            truthLinks+= input.data('h');
          }
       });
       SdwEdit._post('/Edit/Love', {
-         links: hashId.encode(links),
          light: hashId.encode(lights),
          truth: $('#addTruthText').val(),
-         invert: $('#addTruthInvert').prop('checked')
+         versions: hashId.encode(versions),
+         truthLinks: truthLinks
       }, function() {
          $('#addTruthText').val('');
+         SdwCommon.loadStop();
+         SdwEdit._getLinks();
       });
    },
 
@@ -59,62 +119,68 @@
       $('#addTruthText').val(text);
    },
 
-   lightAdd: function (id) {
-      var edit = $('#editLight' + id);
-      if (edit.length <= 0) {
-         SdwCommon.get('/Edit/Light', { id: id }, function(d) {
-            $('#editLights').append(d).velocity('transition.fadeIn');
-            SdwEdit.getLinks();
-         });
-      } else {
-         edit.remove();
-         SdwEdit.getLinks();
-      }
-   },
-
-   getLinks: function () {
-      var lights = [];
-      $('#addTruthLinks').html('Loading...');
-      var hashId = new Hashids('GodisLove');
-      $('#editLights').find('.callout').each(function (i, o) {
-         var callout = $(o);
-         lights.push(parseInt(callout.attr('id').substr(9)));
-      });
-      SdwCommon.get('/Edit/Links', { lights: hashId.encode(lights) }, function (d) {
-         $('#addTruthLinks').html(d).velocity('transition.fadeIn');
+   truthEdit: function (id) {
+      SdwCommon.loadStart();
+      SdwCommon.get('/Edit/TruthEdit', { id: id }, function (html) {
+         $('#editArea').html(html).velocity('transition.fadeIn').velocity('scroll', { duration: 300 });
+         $('#editLightOk').velocity('transition.fadeOut');
+         $('#editTruthOk').velocity('transition.fadeOut');
+         SdwCommon.loadStop();
       });
    },
 
-   truthEdit: function (tId) {
-      if (tId) {
-         SdwCommon.get('/Seek/Truth', { id: tId }, function(d) {
-            $('#editTruthId').val(d.id);
-            $('#editTruthText').val(d.text);
-            $('#editTruthOrder').val(d.order);
-            $('#editTruthNumber').val(d.number);
-         });
-      } else {
-         $('#editTruthId').val('');
-         $('#editTruthText').val('');
-         $('#editTruthOrder').val('');
-         $('#editTruthNumber').val('');
-      }
+   truthRemove: function (id) {
+      SdwCommon.loadStart();
+      SdwEdit._post('/Edit/TruthRemove', { id: id }, function() {
+         $('#currentTruth' + id).velocity('transition.fadeOut').remove();
+         SdwCommon.loadStop();
+      });
    },
 
    truthSave: function () {
-      SdwEdit._post('/Edit/Truth', {
+      SdwCommon.loadStart();
+      SdwEdit._post('/Edit/EditTruth', {
          id: $('#editTruthId').val(),
-         text: $('#editTruthText').val(),
          order: $('#editTruthOrder').val(),
-         number: $('#editTruthNumber').val(),
-         all: $('#editTruthAll').prop('checked')
+         number: $('#editTruthNumber').val()
       }, function () {
          $('#editTruthOk').velocity('transition.fadeIn').velocity('transition.fadeOut');
+         SdwCommon.loadStop();
+      });
+   },
+
+   truthIndex: function() {
+      $('#editTruthOrder').val(-parseInt($('#editLightText').get_selection().start));
+   },
+
+   truthAddAsTruth: function (id) {
+      var lights = SdwEdit._getEditLight();
+      var hashId = new Hashids('GodisLove');
+      SdwEdit._post('/Edit/TruthAddTruth', {
+         id:id,
+         light: hashId.encode(lights)
+      }, function () {
+         $('#editTruthOk').velocity('transition.fadeIn').velocity('transition.fadeOut');
+         SdwCommon.loadStop();
+      });
+   },
+
+   loveAddAsTruth: function () {
+      var links = SdwEdit._getLinkLight();
+      var lights = SdwEdit._getEditLight();
+      var hashId = new Hashids('GodisLove');
+      SdwEdit._post('/Edit/TruthAddLove', {
+         link: hashId.encode(links),
+         light: hashId.encode(lights)
+      }, function () {
+         $('#editTruthOk').velocity('transition.fadeIn').velocity('transition.fadeOut');
+         SdwCommon.loadStop();
       });
    },
 
    truthFormat: function () {
       //var uuid = _uuid();
+      SdwCommon.loadStart();
       var regex = $('#addTruthFormatRegex').val();
       SdwEdit._post('/Edit/Format', {
          regex: encodeURIComponent(regex),
@@ -123,13 +189,92 @@
          startNumber: $('#addTruthFormatNumber').val()
       }, function (d) {
          if ($("#addTruthCurrentRegex option[value='" + d.regexId + "']").length <= 0) {
-            $('#addTruthCurrentRegex')
-            .append($("<option></option>")
-            .attr("value", d.regexId)
-            .text(decodeURIComponent(d.regexText)));
+            $('#addTruthCurrentRegex').append($("<option></option>").attr("value", d.regexId).text(decodeURIComponent(d.regexText)));
          }
          $('#addTruthText').val(d.items);
+         $('#addTruthText').velocity('scroll', { duration: 300 });
+         SdwCommon.loadStop();
       });
+   },
+
+   styleAdd: function () {
+      SdwCommon.loadStart();
+      SdwEdit._post('/Edit/TruthAddStyle', {
+         id: $('#editTruthId').val(),
+         startIndex: $('#editStyleStartIndex').val(),
+         endIndex: $('#editStyleEndIndex').val(),
+         start: encodeURIComponent($('#editStyleStart').val()),
+         end: encodeURIComponent($('#editStyleEnd').val())
+      }, function () {
+         SdwEdit.truthEdit($('#editTruthId').val());
+         SdwCommon.loadStop();
+      });
+   },
+
+   styleRemove: function (id) {
+      SdwCommon.loadStart();
+      SdwEdit._post('/Edit/TruthRemoveStyle', { id: $('#editTruthId').val(), sId: id }, function () {
+         $('#style' + id).remove();
+         SdwCommon.loadStop();
+      });
+   },
+
+   _getLinkLight: function () {
+      var lights = [];
+      $('#linkTruths').html('Loading...');
+      $('#linkArea').find('.column').each(function (i, o) {
+         var light = $(o);
+         lights.push(parseInt(light.attr('id').substr(9)));
+      });
+      return lights;
+   },
+
+   _getEditLight: function () {
+      var lights = [];
+      $('#editLights').find('.column').each(function (i, o) {
+         var light = $(o);
+         lights.push(parseInt(light.attr('id').substr(9)));
+      });
+      return lights;
+   },
+
+   _getLinks: function () {
+      var lights = SdwEdit._getEditLight();
+      var hashId = new Hashids('GodisLove');
+      $('#currentTruth').html('Loading...');
+      $('#addTruthLinks').html('Loading...');
+      $('#addVersionLinks').html('Loading...');
+      if (lights.length > 0) {
+         var hash = hashId.encode(lights);
+         SdwCommon.get('/Edit/TruthLinks', { lights: hash }, function(d) {
+            $('#addTruthLinks').html(d).velocity('transition.fadeIn');
+         });
+         SdwCommon.get('/Edit/VersionLinks', { lights: hash }, function(d) {
+            $('#addVersionLinks').html(d).velocity('transition.fadeIn');
+         });
+         SdwCommon.get('/Edit/Truths', { lights: hash }, function(d) {
+            $('#currentTruth').html(d).velocity('transition.fadeIn');
+         });
+      } else {
+         $('#currentTruth').html('');
+         $('#addTruthLinks').html('');
+         $('#addVersionLinks').html('');
+      }
+   },
+
+   _getLinkTruths: function () {
+      var lights = SdwEdit._getLinkLight();
+      var hashId = new Hashids('GodisLove');
+      if (lights.length > 0) {
+         $('#addLove').show();
+         var hash = hashId.encode(lights);
+         SdwCommon.get('/Edit/Truths', { lights: hash, link: true }, function(d) {
+            $('#linkTruths').html(d).velocity('transition.fadeIn');
+         });
+      } else {
+         $('#addLove').hide();
+         $('#linkTruths').html('');
+      }
    },
 
    _uuid:function() {
@@ -162,5 +307,6 @@
 
 };
 $(document).ready(function () {
+   SdwCommon.loadStop();
    SdwEdit.init();
 });

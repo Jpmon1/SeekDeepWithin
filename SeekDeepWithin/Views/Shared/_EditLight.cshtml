@@ -1,0 +1,14 @@
+﻿@model SeekDeepWithin.Pocos.Light
+<input type="hidden" id="editLightId" value="@(Model.Id)" />
+<div class="row column text-center"><em style="font-size: 18px;">Edit Light</em></div>
+<div class="row column">
+   <textarea id="editLightText" rows="5">@(Model.Text)</textarea>
+</div>
+<div class="row">
+   <div class="small-6 small-offset-3 column">
+      <a href="javascript:void(0);" onclick="SdwEdit.lightSave();" class="sdw-button reg expand tiny">Save Light</a>
+   </div>
+   <div class="small-3 column">
+      <span style="color: green;" id="editLightOk">OK</span>
+   </div>
+</div>

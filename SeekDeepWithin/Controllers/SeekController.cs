@@ -34,7 +34,7 @@ namespace SeekDeepWithin.Controllers
          if (id == null) {
             var lights = this.Database.Light.All (q => q.OrderBy(l => Guid.NewGuid())).Take (25);
             foreach (var light in lights) {
-               model.ToAdd.Add (new SdwItem (light) { Key = hash.Encode(light.Id)});
+               model.ToAdd.Add (new SdwItem (light));
             }
          } else {
             var histIds = hash.Decode (history).ToList ();
@@ -46,21 +46,34 @@ namespace SeekDeepWithin.Controllers
                          where peace.Love.Peaces.All (p => ids.Contains (p.Light.Id))
                          select peace.Love).ToList ();
             if (loves.Count > 0) {
-               var max = loves.Max (l => l.Peaces.Count);
+               var max = loves.Where(l => l.Truths.Any ()).Max (l => l.Peaces.Count);
                foreach (var love in loves.Where (l => l.Peaces.Count == max)) {
                   foreach (var truth in love.Truths) {
-                     if (ids.Contains (truth.Light.Id) || model.ToAdd.Any (i=> i.Id == truth.Light.Id) ||
-                        (histIds.Contains (truth.Light.Id) && !truth.Number.HasValue))
+                     Love truthLove = null;
+                     var truthIds = new List <int> ();
+                     if (truth.Light != null)
+                        truthIds.Add(truth.Light.Id);
+                     if (truth.ParentId.HasValue) {
+                        truthLove = this.Database.Love.Get (truth.ParentId.Value);
+                        truthIds.AddRange (truthLove.Peaces.Select (p => p.Light.Id));
+                     }
+                     if ((truthLove == null && truthIds.All (ids.Contains)) || (truth.Light !=null && model.ToAdd.Any (i => i.Id == truth.Light.Id)) ||
+                        (truthIds.All (histIds.Contains) && !truth.Number.HasValue))
+                        continue;
+
+                     if (truthLove == null && truthIds.Count <= 0)
                         continue;
                      var item = new SdwItem (truth) { History = history };
-                     if (truth.ParentId != null) {
-                        var l = this.Database.Love.Get (truth.ParentId.Value);
-                        item.Title = GetTitle (l.Peaces);
-                        item.Parents = hash.Encode (l.Peaces.Select (p => p.Light.Id));
-                        var parentIds = l.Peaces.Select (p => p.Light.Id).ToList ();
-                        parentIds.Add (item.Id);
-                        item.Key = hash.Encode (parentIds);
-                     } else {
+                     if (truthLove != null) {
+                        var text = GetTitle (truthLove.Peaces);
+                        if (truth.Light != null)
+                           item.Title = text;
+                        else {
+                           item.Text = text;
+                           item.Id = truthLove.Peaces.OrderBy (p => p.Order).Last ().Light.Id;
+                        }
+                        item.Parents = hash.Encode (truthLove.Peaces.Select (p => p.Light.Id));
+                     } else if (truth.Light != null) {
                         var parents = new List <Peace> ();
                         var tempParents = (from peace in truth.Light.Peaces
                                            from p in peace.Love.Peaces
@@ -72,8 +85,6 @@ namespace SeekDeepWithin.Controllers
                         }
                         var parentIds = parents.Select (p => p.Light.Id).ToList ();
                         item.Parents = hash.Encode (parentIds);
-                        parentIds.Add (item.Id);
-                        item.Key = hash.Encode (parentIds);
                         item.IsSelected = histIds.Contains (truth.Light.Id);
                         item.Title = GetTitle ((parents.Count > 0) ? parents : truth.Number.HasValue ? love.Peaces : new List <Peace> ());
                      }
@@ -87,24 +98,6 @@ namespace SeekDeepWithin.Controllers
       }
 
       /// <summary>
-      /// Gets the truth with the given id.
-      /// </summary>
-      /// <param name="id">Id of truth to get.</param>
-      /// <returns>JSON results.</returns>
-      public ActionResult Truth (int id)
-      {
-         var truth = this.Database.Truth.Get (id);
-         if (truth == null) return this.Fail ("That is an unknown truth!");
-         return Json (new {
-            id,
-            status = SUCCESS,
-            order = truth.Order,
-            number = truth.Number,
-            text = truth.Light.Text
-         }, JsonRequestBehavior.AllowGet);
-      }
-
-      /// <summary>
       /// Searches the database for the given text.
       /// </summary>
       /// <param name="text">Text to search for.</param>
@@ -115,12 +108,11 @@ namespace SeekDeepWithin.Controllers
          var query = LightSearch.Query (0, 100, text);
          var model = new LoveModel ();
          var lightIds = query.Select (kvp => kvp.Key);
-         var hash = new Hashids ("GodisLove") { Order = true };
          var lights = this.Database.Light.Get (l => lightIds.Contains (l.Id));
          foreach (var light in lights) {
-            model.ToAdd.Add (new SdwItem (light) { Key = hash.Encode (light.Id) });
+            model.ToAdd.Add (new SdwItem (light));
          }
-         ViewBag.Search = text.GetWords ();
+         ViewBag.Search = text;
          return PartialView ("Love", model);
       }
 

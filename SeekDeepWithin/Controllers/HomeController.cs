@@ -9,6 +9,8 @@ namespace SeekDeepWithin.Controllers
    [InitializeSimpleMembership]
    public class HomeController : SdwController
    {
+      private readonly UsersContext m_UserDb = new UsersContext ();
+
       /// <summary>
       /// Initializes a new controller.
       /// </summary>
@@ -26,9 +28,12 @@ namespace SeekDeepWithin.Controllers
       /// <returns>The main index page.</returns>
       public ActionResult Index (string l)
       {
-         ViewBag.HasAccount = OAuthWebSecurity.HasLocalAccount (WebSecurity.GetUserId (User.Identity.Name));
-         if (User.IsInRole ("Creator")) {
-            ViewBag.Regexs = this.Database.RegexFormats.All ();
+         var userId = WebSecurity.GetUserId (User.Identity.Name);
+         ViewBag.LoadOnScroll = 1;
+         if (OAuthWebSecurity.HasLocalAccount (userId)) {
+            ViewBag.HasAccount = true;
+            var user = this.m_UserDb.UserProfiles.Find (userId);
+            ViewBag.LoadOnScroll = user.UserData.LoadOnScroll.HasValue && user.UserData.LoadOnScroll.Value ? 1 : 0;
          }
          return View ();
       }

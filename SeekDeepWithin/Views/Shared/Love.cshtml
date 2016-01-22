@@ -1,13 +1,14 @@
 ﻿@using SeekDeepWithin.Controllers
 @model SeekDeepWithin.Models.LoveModel
+@{ var renderer = new SdwRenderer { SearchText = ViewBag.Search };}
 @foreach (var item in Model.ToAdd.OrderBy (i => i.Order ?? 0)) {
    var id = Guid.NewGuid ().ToString ().Replace ("-", "");
-   var text = ViewBag.Search == null ? item.Text : item.Text.Highlight((IEnumerable <string>)ViewBag.Search);
+   var text = renderer.Render (item);
    var mSpan = item.Number.HasValue ? 12 : 4;
 <div class="small-12 medium-@(mSpan) large-@(mSpan) column" id="c@(id)">
-   <div class="callout@(item.IsSelected?" selected":string.Empty)" id="l@(id)">
+   <div class="light@(item.IsSelected?" selected":string.Empty)" id="l@(id)">
       <div class="truth" onclick="sdw.love(this);" data-l="@(item.Id)" data-t="@(item.TruthId)" data-p="@(item.Parents)" data-h="@(item.History)">
-         @foreach (var header in item.Headers) { <h4>@(header.Text)</h4> }
+         @foreach (var header in item.Headers) { <div>@(Html.Raw (renderer.Render (header)))</div> }
          @if (item.Number.HasValue) {
             <div class="row">
                <div class="small-2 large-1 columns text-right">@(item.Number.Value)</div>
@@ -16,7 +17,7 @@
          } else {
             @(Html.Raw(text))
          }
-         @foreach (var footer in item.Footers) { <div style="font-size: x-small" class="mTop">@(footer.Text)</div> }
+         @foreach (var footer in item.Footers) { <div style="font-size: x-small" class="mTop">@(Html.Raw (renderer.Render (footer)))</div> }
          @if (!string.IsNullOrEmpty (item.Title)) { <div style="font-size: x-small" class="mNone">@(item.Title)</div> }
       </div>
    </div>

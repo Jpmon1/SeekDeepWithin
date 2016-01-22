@@ -1,0 +1,55 @@
+﻿@model SeekDeepWithin.Pocos.Truth
+<input type="hidden" id="editTruthId" value="@(Model.Id)" />
+<div class="row column text-center"><em style="font-size: 18px;">Edit Truth</em></div>
+<div class="row">
+   <div class="small-12 medium-6 large-6 column">Order<input type="number" id="editTruthOrder" value="@(Model.Order)"/></div>
+   <div class="small-12 medium-6 large-6 column">Number<input type="number" id="editTruthNumber" value="@(Model.Number)" /></div>
+</div>
+<div class="row column">
+   <div class="callout small text-center warning">
+      <em style="font-size:smaller;">
+         For Headers and Footers, the number will be that of which truth the header/footer belongs to.<br />
+         For Headers, the order will be 0.<br />
+         For Footers, the order will be the negative index of where it should be.
+      </em>
+   </div></div>
+<div class="row mBottom">
+   <div class="small-5 column">
+      <a href="javascript:void(0);" onclick="SdwEdit.truthSave();" class="sdw-button reg expand tiny">Save Truth</a>
+   </div>
+   <div class="small-2 column">
+      <span style="color: green;" id="editTruthOk">OK</span>
+   </div>
+   <div class="small-5 column">
+      @if (Model.Light != null) {
+         <a href="javascript:void(0);" onclick=" SdwEdit.truthIndex(); " class="sdw-button reg expand tiny">Set Footer Index</a>
+      }
+   </div>
+</div>
+@if (Model.Light != null) {
+   @(Html.Partial ("_EditLight", Model.Light))
+   var color = "white";
+   <div class="row column text-center mTop"><em style="font-size: 18px;">Edit Truth Style</em></div>
+   <div class="row">
+      <div class="small-12 medium-6 large-6 column">
+         <div class="row column">Start Style<textarea id="editStyleStart" rows="2"></textarea></div>
+         <div class="row column">End Style<textarea id="editStyleEnd" rows="2"></textarea></div>
+         <div class="row column">Start Index<input type="number" id="editStyleStartIndex" /></div>
+         <div class="row column">End Index<input type="number" id="editStyleEndIndex" /></div>
+         <div class="row column"><a href="javascript:void(0);" onclick="SdwEdit.styleAdd();" class="sdw-button add tiny expand">Add Style</a></div>
+      </div>
+      <div class="small-12 medium-6 large-6 column">
+         @foreach (var style in Model.Styles) {
+            color = color == "white" ? "#C0C0C0" : "white";
+            <div class="row" id="style@(style.Id)" style="background-color: @(color); padding: 0.25rem;">
+               <div class="small-10 column">@(style.Style.Start) | @(style.Style.End) | {@(style.StartIndex), @(style.EndIndex)}</div>
+               <div class="small-2 column">
+                  <a href="javascript:void(0);" class="sdw-button err expand tiny" onclick="SdwEdit.styleRemove(@(style.Id));" title="Remove">
+                     <img src="~/Images/trashw.png" width="16" height="16" alt="Remove" />
+                  </a>
+               </div>
+            </div>
+         }
+      </div>
+   </div>
+}

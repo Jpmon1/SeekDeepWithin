@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using SeekDeepWithin.Pocos;
 
 namespace SeekDeepWithin.Models
@@ -15,6 +16,7 @@ namespace SeekDeepWithin.Models
       {
          this.Headers = new List<SdwItem> ();
          this.Footers = new List<SdwItem> ();
+         this.Styles = new List<SdwStyle> ();
       }
 
       /// <summary>
@@ -25,6 +27,7 @@ namespace SeekDeepWithin.Models
       {
          this.Headers = new List<SdwItem> ();
          this.Footers = new List<SdwItem> ();
+         this.Styles = new List <SdwStyle> ();
          this.Update(truth);
       }
 
@@ -45,10 +48,13 @@ namespace SeekDeepWithin.Models
       public void Update (Truth truth)
       {
          this.TruthId = truth.Id;
-         this.Id = truth.Light.Id;
          this.Order = truth.Order;
          this.Number = truth.Number;
-         this.Text = truth.Light.Text;
+         if (truth.Light != null) {
+            this.Id = truth.Light.Id;
+            this.Text = truth.Light.Text;
+            this.Styles.AddRange (truth.Styles.Select(s => new SdwStyle (s)));
+         }
       }
 
       public string Title { get; set; }
@@ -112,5 +118,10 @@ namespace SeekDeepWithin.Models
       /// Gets the list of footers.
       /// </summary>
       public List<SdwItem> Footers { get; private set; }
+
+      /// <summary>
+      /// Gets the list of styles.
+      /// </summary>
+      public List<SdwStyle> Styles { get; private set; }
    }
 }

@@ -1,0 +1,72 @@
+﻿@using SeekDeepWithin.Pocos
+<div class="row column mTopBig"><h3>Edit Database</h3></div>
+<div class="row column callout">
+   <div class="small-12 medium-8 large-10 column">
+      <input type="text" id="editLightSearch" />
+   </div>
+   <div class="small-6 medium-2 large-1 column">
+      <a href="javasript:void(0;)" onclick="SdwEdit.lightAddItem();" class="sdw-button white expand tiny">Edit</a>
+   </div>
+   <div class="small-6 medium-2 large-1 column">
+      <a href="javasript:void(0;)" onclick="SdwEdit.lightAddLinkItem();" class="sdw-button white expand tiny">Link</a>
+   </div>
+   <div id="editLights" class="row column"></div>
+</div>
+<div class="row">
+   <div class="small-12 medium-6 large-6 column">
+      <div class="row column">Data for importing<textarea rows="5" id="addTruthText"></textarea></div>
+      <div class="row column" id="addTruthLinks"></div>
+      <div class="row column" id="addVersionLinks"></div>
+      <div class="row column">
+         <a href="javascript:void(0)" class="sdw-button add expand" onclick="SdwEdit.truthCreate();">Add</a>
+      </div>
+      <div class="row column">Text<input type="text" id="addTruthAppendText" /></div>
+      <div class="row">
+         <div class="small-12 medium-6 large-6 column">Order<input type="number" id="addTruthAppendOrder" /></div>
+         <div class="small-12 medium-6 large-6 column">Number<input type="number" id="addTruthAppendNumber" /></div>
+      </div>
+      <div class="row">
+         <div class="small-12 column"><a href="javascript:void(0);" onclick="SdwEdit.truthAppend();" class="sdw-button reg expand tiny">Append &uArr;</a></div>
+      </div>
+      <div class="row column">Format text for importing<textarea rows="5" id="addTruthFormatText"></textarea></div>
+      <div class="row column">Regular Expression to use for importing<input type="text" id="addTruthFormatRegex" /></div>
+      <div class="row column">
+         Current Regular Expressions
+         <select id="addTruthCurrentRegex">
+            @foreach (FormatRegex regex in ViewBag.Regexs) {
+               <option value="@regex.Id">@(regex.Regex)</option>}
+         </select>
+      </div>
+      <div class="row">
+         <div class="small-12 medium-6 large-6 column">Start Order<input type="number" id="addTruthFormatOrder" /></div>
+         <div class="small-12 medium-6 large-6 column">Start Number<input type="number" id="addTruthFormatNumber" /></div>
+      </div>
+      <div class="row column">
+         <a href="javascript:void(0)" class="sdw-button reg tiny expand" onclick="SdwEdit.truthFormat();">Format</a>
+      </div>
+   </div>
+   <div class="small-12 medium-6 large-6 column">
+      <div class="row column" id="linkArea"></div>
+      <div class="row column">
+         <a href="javascript:void(0);" onclick="SdwEdit.loveAddAsTruth();" class="sdw-button white expand" id="addLove">Add Love as Truth</a>
+      </div>
+      <div class="row column" id="linkTruths"></div>
+      <div class="row column" id="currentTruth"></div>
+   </div>
+</div>
+<div class="callout secondary mTop">
+   <div class="row column secondary" id="editArea"></div>
+</div>
+@if (User.IsInRole ("Creator")) {
+   <div class="row callout secondary">
+      <div class="small-12 medium-9 large-10 column">
+         <label>New Light<input type="text" id="textNewLight" /></label>
+      </div>
+      <div class="small-12 medium-3 large-2 column">
+         <a href="javascript:void(0);" onclick=" SdwEdit.lightCreate(); " class="sdw-button add tiny expand">Create</a>
+      </div>
+   </div>
+}
+@section scripts  {
+   @(Scripts.Render ("~/bundles/sdw/edit"))
+}

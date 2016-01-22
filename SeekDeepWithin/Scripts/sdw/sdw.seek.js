@@ -8,12 +8,8 @@
          id = item.data('l');
          parents = item.data('p');
          history = item.data('h');
-         var light = item.closest('.callout');
+         var light = item.closest('.light');
          light.toggleClass('selected');
-         if (window.isEditable) {
-            SdwEdit.lightAdd(id);
-            SdwEdit.truthEdit(item.data('t'));
-         }
          var isClicked = item.data('c');
          if (!light.hasClass('selected') || isClicked == 1) { return; }
          item.data('c', 1);
@@ -38,7 +34,7 @@
       SdwCommon.loadStart();
       SdwCommon.get('/Seek/Search', { text: $('#searchText').val() }, function (d) {
          var container = $('#lightList');
-         var last = container.children().last().find('.callout').first();
+         var last = container.children().last().find('.light').first();
          container.append(d);
          container.masonry('reloadItems');
          container.masonry('layout').one('layoutComplete', function () {
@@ -51,15 +47,10 @@
 
 $(document).foundation();
 $(document).ready(function () {
-   $('#menuSearchText').velocity('transition.fadeOut', false, false);
-   window.isEditable = $('#editable').length > 0;
+   window.loadOnScroll = $('#loadOnScroll').val();
+   $('.top-menu-search').velocity('transition.fadeOut', false, false);
    $('#lightList').masonry({ itemSelector: '.column' });
-   var page = $('#pageId').val();
-   if (page == 'index') {
-      sdw.love();
-   } else {
-      SdwCommon.loadStop();
-   }
+   sdw.love();
    setSearch($('#searchText'));
    setSearch($('#menuSearchText'));
    window.menusearch = false;
@@ -68,13 +59,13 @@ $(document).ready(function () {
       var searchTop = $('#searchText').offset().top;
       if (!window.menusearch && top > searchTop) {
          window.menusearch = true;
-         $('#menuSearchText').velocity('transition.fadeIn', false, false);
+         $('.top-menu-search').velocity('transition.fadeIn', false, false);
       } else if (window.menusearch && top < searchTop) {
          window.menusearch = false;
-         $('#menuSearchText').velocity('transition.fadeOut', false, false);
+         $('.top-menu-search').velocity('transition.fadeOut', false, false);
       }
       if (top == $(document).height() - $(window).height()) {
-         if (!window.isEditable) {
+         if (!window.loadOnScroll) {
             sdw.love();
          }
       }
@@ -84,7 +75,9 @@ $(document).ready(function () {
 function setSearch(search) {
    search.autocomplete({
       serviceUrl: '/Seek/AutoComplete',
-      paramName: 'text'
+      paramName: 'text',
+      noCache: true,
+      triggerSelectOnValidInput:true
    });
    search.keypress(function (e) {
       var keycode = (e.keyCode ? e.keyCode : e.which);
@@ -93,4 +86,5 @@ function setSearch(search) {
          sdw.search();
       }
    });
+   search.autocomplete('clearCache');
 }

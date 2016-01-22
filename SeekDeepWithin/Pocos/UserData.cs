@@ -15,9 +15,9 @@ namespace SeekDeepWithin.Pocos
       public bool? ShowEditActions { get; set; }
 
       /// <summary>
-      /// Gets or Sets if we should highlight alernating rows while reading.
+      /// Gets or Sets if we should load more light at the bottom of the page, or show a button to load more.
       /// </summary>
-      public bool? HighlightAlternatingRows { get; set; }
+      public bool? LoadOnScroll { get; set; }
 
       /// <summary>
       /// Get or Sets the associated user profile.

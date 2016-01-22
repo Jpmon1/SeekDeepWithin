@@ -1,9 +1,0 @@
-﻿@model List <SeekDeepWithin.Pocos.Love>
-@foreach (var love in Model) {
-   <div class="row mTop">
-      <div class="small-2 medium-1 large-1 column"><input type="checkbox" class="truthLink" data-l="@(love.Id)" /></div>
-      <div class="small-10 medium-11 large-11 column">
-         @(love.Peaces.Aggregate (string.Empty, (current, peace) => current + (peace.Light.Text + " | ")).TrimEnd('|', ' '))
-      </div>
-   </div>
-}

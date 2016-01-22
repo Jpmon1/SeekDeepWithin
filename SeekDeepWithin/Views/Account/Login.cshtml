@@ -1,5 +1,4 @@
 ﻿@model SeekDeepWithin.Models.LoginViewModel
-@{ ViewBag.IsLogin = true; }
 @{var scheme = Request.Url == null ? string.Empty : Request.Url.Scheme;}
 @using (Html.BeginForm(new { ViewBag.ReturnUrl })) {
    @Html.AntiForgeryToken()
@@ -16,7 +15,7 @@
                <input type="submit" value="Login" class="sdw-button expand reg mBottom" />
             </div>
          </div>
-         <div class="callout" style="padding: 1rem;">
+         <div class="callout secondary">
             <a href="@Url.Action("Register", "Account", null, scheme)" style="color: #346789;">Register</a> if you don't have an account.
          </div>
       </div>

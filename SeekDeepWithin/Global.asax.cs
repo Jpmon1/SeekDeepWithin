@@ -27,7 +27,7 @@ namespace SeekDeepWithin
          AuthConfig.RegisterAuth ();
       }
 
-      protected void Application_Error (object sender, EventArgs e)
+      /*protected void Application_Error (object sender, EventArgs e)
       {
          var lastError = Server.GetLastError ();
          Server.ClearError ();
@@ -43,6 +43,6 @@ namespace SeekDeepWithin
          var requestContext = new RequestContext (contextWrapper, routeData);
          controller.Execute (requestContext);
          Response.End ();
-      }
+      }*/
    }
 }

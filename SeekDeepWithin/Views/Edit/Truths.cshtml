@@ -1,0 +1,40 @@
+﻿@using SeekDeepWithin.Pocos
+@model List<SeekDeepWithin.Pocos.Truth>
+@if (Model.Count > 0) {
+   <div class="row column mTop"><em>Current Truth:</em></div>
+}
+@{
+   var color = "white";
+   var otherLoves = (Dictionary<int, Love>) ViewBag.OtherLoves;
+}
+@foreach (var truth in Model.OrderBy(t => t.Order ?? 0)) {
+   color = color == "white" ? "#C0C0C0" : "white";
+   var text = truth.Light != null ? truth.Light.Text : string.Empty;
+   if (string.IsNullOrEmpty (text) && truth.ParentId.HasValue) {
+      var parent = otherLoves.FirstOrDefault (kvp => kvp.Key == truth.ParentId).Value;
+      if (parent != null) {
+         text = parent.Peaces.Aggregate (string.Empty, (current, peace) => current + (peace.Light.Text + " | ")).TrimEnd ('|', ' ');
+      }
+   } else if (string.IsNullOrEmpty (text)) {
+      text = string.Format ("Unknown truth: '{0}' in love: '{1}'", truth.Id, truth.Love.Id);
+   }
+   <div class="row" id="currentTruth@(truth.Id)" style="background-color: @(color); padding: 0.25rem;">
+      <div class="small-8 column" style="font-size: x-small;">@(text)</div>
+      <div class="small-2 column">
+         <a href="javascript:void(0);" class="sdw-button alt expand tiny" onclick="SdwEdit.truthEdit(@(truth.Id));" title="Edit">
+            <img src="~/Images/editw.png" width="16" height="16" alt="Edit"/>
+         </a>
+      </div>
+      @if (ViewBag.IsLink) {
+         <div class="small-2 column">
+            <a href="javascript:void(0);" class="sdw-button white expand tiny" onclick="SdwEdit.truthAddAsTruth(@(truth.Id));" title="Edit">Link</a>
+         </div>
+      } else {
+         <div class="small-2 column">
+            <a href="javascript:void(0);" class="sdw-button err expand tiny" onclick="SdwEdit.truthRemove(@(truth.Id));" title="Remove">
+               <img src="~/Images/trashw.png" width="16" height="16" alt="Remove" />
+            </a>
+         </div>
+      }
+   </div>
+}
