@@ -18,7 +18,7 @@
       <a href="javascript:void(0);" onclick="SdwEdit.truthSave();" class="sdw-button reg expand tiny">Save Truth</a>
    </div>
    <div class="small-2 column">
-      <span style="color: green;" id="editTruthOk">OK</span>
+      <span style="color: green;" id="editTruthOk">OK</span><span id="footerIndex"></span>
    </div>
    <div class="small-5 column">
       @if (Model.Light != null) {
@@ -32,11 +32,21 @@
    <div class="row column text-center mTop"><em style="font-size: 18px;">Edit Truth Style</em></div>
    <div class="row">
       <div class="small-12 medium-6 large-6 column">
-         <div class="row column">Start Style<textarea id="editStyleStart" rows="2"></textarea></div>
-         <div class="row column">End Style<textarea id="editStyleEnd" rows="2"></textarea></div>
-         <div class="row column">Start Index<input type="number" id="editStyleStartIndex" /></div>
-         <div class="row column">End Index<input type="number" id="editStyleEndIndex" /></div>
-         <div class="row column"><a href="javascript:void(0);" onclick="SdwEdit.styleAdd();" class="sdw-button add tiny expand">Add Style</a></div>
+         <div class="row column">
+            <div class="small-12 medium-6 large-6 column">Start Style<textarea id="editStyleStart" rows="2"></textarea></div>
+            <div class="small-12 medium-6 large-6 column">End Style<textarea id="editStyleEnd" rows="2"></textarea></div>
+         </div>
+         <div class="row column">
+            <div class="small-12 medium-6 large-6 column">Start Index<input type="number" id="editStyleStartIndex" /></div>
+            <div class="small-12 medium-6 large-6 column">End Index<input type="number" id="editStyleEndIndex" /></div>
+         </div>
+         <div class="row column">
+            <div class="small-12 medium-6 large-6 column">
+               <a href="javascript:void(0);" onclick="SdwEdit.styleAdd();" class="sdw-button add tiny expand">Add Style</a>
+            </div>
+            <div class="small-12 medium-6 large-6 column">
+               <a href="javascript:void(0);" onclick="SdwEdit.getIndexes();" class="sdw-button add tiny expand">Set Index</a></div>
+         </div>
       </div>
       <div class="small-12 medium-6 large-6 column">
          @foreach (var style in Model.Styles) {

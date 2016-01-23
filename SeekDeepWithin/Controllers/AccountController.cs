@@ -184,9 +184,16 @@ namespace SeekDeepWithin.Controllers
              : message == ManageMessageId.SetPasswordSuccess ? "Your password has been set."
              : message == ManageMessageId.RemoveLoginSuccess ? "The external login was removed."
              : "";
-         ViewBag.HasLocalPassword = OAuthWebSecurity.HasLocalAccount (WebSecurity.GetUserId (User.Identity.Name));
+         var userId = WebSecurity.GetUserId (User.Identity.Name);
+         bool hasLocalAccount = OAuthWebSecurity.HasLocalAccount (userId);
+         ViewBag.HasLocalPassword = hasLocalAccount;
          ViewBag.ReturnUrl = Url.Action ("Manage");
-         return View ();
+         var model = new ManageModel ();
+         if (hasLocalAccount) {
+            var user = this.m_Db.UserProfiles.Find (userId);
+            model.LoadOnScroll = user.UserData.LoadOnScroll ?? true;
+         }
+         return View (model);
       }
 
       //
@@ -194,15 +201,18 @@ namespace SeekDeepWithin.Controllers
 
       [HttpPost]
       [ValidateAntiForgeryToken]
-      public ActionResult Manage (LocalPasswordModel model)
+      public ActionResult Manage (ManageModel model)
       {
-         bool hasLocalAccount = OAuthWebSecurity.HasLocalAccount (WebSecurity.GetUserId (User.Identity.Name));
+         var userId = WebSecurity.GetUserId (User.Identity.Name);
+         bool hasLocalAccount = OAuthWebSecurity.HasLocalAccount (userId);
          ViewBag.HasLocalPassword = hasLocalAccount;
          ViewBag.ReturnUrl = Url.Action ("Manage");
          if (hasLocalAccount)
          {
-            if (ModelState.IsValid)
-            {
+            if (ModelState.IsValid) {
+               var user = this.m_Db.UserProfiles.Find (userId);
+               user.UserData.LoadOnScroll = model.LoadOnScroll;
+               this.m_Db.SaveChanges ();
                // ChangePassword will throw an exception rather than return false in certain failure scenarios.
                bool changePasswordSucceeded;
                try

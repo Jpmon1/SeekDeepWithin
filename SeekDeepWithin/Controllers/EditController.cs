@@ -223,7 +223,7 @@ namespace SeekDeepWithin.Controllers
             }
             items.Add(hashId, text);
          }
-         if (lightIds.Count > 1) {
+         if (lightIds.Count > 2) {
             var permus = GetPermutations (lightIds, lightIds.Count);
             foreach (var perm in permus) {
                perm.Insert (0, 0);

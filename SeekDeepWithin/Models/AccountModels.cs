@@ -19,7 +19,7 @@ namespace SeekDeepWithin.Models
       public string ProviderUserId { get; set; }
    }
 
-   public class LocalPasswordModel
+   public class ManageModel
    {
       [Required]
       [DataType (DataType.Password)]
@@ -36,5 +36,7 @@ namespace SeekDeepWithin.Models
       [Display (Name = "Confirm new password")]
       [Compare ("NewPassword", ErrorMessage = "The new password and confirmation password do not match.")]
       public string ConfirmPassword { get; set; }
+
+      public bool LoadOnScroll { get; set; }
    }
 }

@@ -33,6 +33,7 @@ namespace SeekDeepWithin
          /************************ EDIT SCRIPTS ************************/
          bundles.Add (new ScriptBundle ("~/bundles/sdw/edit").Include (//"~/Scripts/Base64.js",
             "~/Scripts/hashids.js",
+            "~/Scripts/sdw/selection.js",
             "~/Scripts/sdw/sdw.edit.js"));
       }
    }

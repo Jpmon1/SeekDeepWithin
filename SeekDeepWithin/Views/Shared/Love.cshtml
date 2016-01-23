@@ -17,7 +17,7 @@
          } else {
             @(Html.Raw(text))
          }
-         @foreach (var footer in item.Footers) { <div style="font-size: x-small" class="mTop">@(Html.Raw (renderer.Render (footer)))</div> }
+         @foreach (var footer in item.Footers) { <div style="font-size: x-small" class="mTop"><sup>@(footer.Number)</sup>@(Html.Raw (renderer.Render (footer)))</div> }
          @if (!string.IsNullOrEmpty (item.Title)) { <div style="font-size: x-small" class="mNone">@(item.Title)</div> }
       </div>
    </div>

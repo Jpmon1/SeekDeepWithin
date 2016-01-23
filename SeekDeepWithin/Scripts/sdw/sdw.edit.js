@@ -139,7 +139,7 @@
 
    truthSave: function () {
       SdwCommon.loadStart();
-      SdwEdit._post('/Edit/EditTruth', {
+      SdwEdit._post('/Edit/TruthEdit', {
          id: $('#editTruthId').val(),
          order: $('#editTruthOrder').val(),
          number: $('#editTruthNumber').val()
@@ -150,7 +150,7 @@
    },
 
    truthIndex: function() {
-      $('#editTruthOrder').val(-parseInt($('#editLightText').get_selection().start));
+      $('#footerIndex').text(-parseInt($('#editLightText').get_selection().start));
    },
 
    truthAddAsTruth: function (id) {
@@ -195,6 +195,12 @@
          $('#addTruthText').velocity('scroll', { duration: 300 });
          SdwCommon.loadStop();
       });
+   },
+
+   getIndexes: function () {
+      var sel = $('#editLightText').get_selection();
+      $('#editStyleStartIndex').val(sel.start);
+      $('#editStyleEndIndex').val(sel.end);
    },
 
    styleAdd: function () {
@@ -272,6 +278,7 @@
             $('#linkTruths').html(d).velocity('transition.fadeIn');
          });
       } else {
+         $('#editArea').html();
          $('#addLove').hide();
          $('#linkTruths').html('');
       }
