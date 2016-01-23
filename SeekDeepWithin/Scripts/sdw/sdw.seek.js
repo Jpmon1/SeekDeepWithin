@@ -65,7 +65,7 @@ $(document).ready(function () {
          $('.top-menu-search').velocity('transition.fadeOut', false, false);
       }
       if (top == $(document).height() - $(window).height()) {
-         if (!window.loadOnScroll) {
+         if (!window.loadOnScroll == 1) {
             sdw.love();
          }
       }
