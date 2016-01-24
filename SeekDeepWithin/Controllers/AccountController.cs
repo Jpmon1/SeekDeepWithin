@@ -196,6 +196,16 @@ namespace SeekDeepWithin.Controllers
          return View (model);
       }
 
+      [HttpPost]
+      public ActionResult SaveSettings (ManageModel model)
+      {
+         var userId = WebSecurity.GetUserId (User.Identity.Name);
+         var user = this.m_Db.UserProfiles.Find (userId);
+         user.UserData.LoadOnScroll = model.LoadOnScroll;
+         this.m_Db.SaveChanges ();
+         return Json (new { status = "success", messaeg = "Changes saved." }, JsonRequestBehavior.AllowGet);
+      }
+
       //
       // POST: /Account/Manage
 
@@ -210,9 +220,6 @@ namespace SeekDeepWithin.Controllers
          if (hasLocalAccount)
          {
             if (ModelState.IsValid) {
-               var user = this.m_Db.UserProfiles.Find (userId);
-               user.UserData.LoadOnScroll = model.LoadOnScroll;
-               this.m_Db.SaveChanges ();
                // ChangePassword will throw an exception rather than return false in certain failure scenarios.
                bool changePasswordSucceeded;
                try

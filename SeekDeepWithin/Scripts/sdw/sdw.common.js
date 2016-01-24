@@ -5,7 +5,7 @@
    },
 
    get: function(url, data, success) {
-      $.ajax({ url: url, data: data }).done(function (d) {
+      $.ajax({ url: "http://" + location.host + url, data: data }).done(function (d) {
          var ok = true;
          if (d.status) {
             if (d.status == 'fail') {
@@ -35,6 +35,21 @@
 
    loadStop: function() {
       $('.loader').velocity("stop").velocity('transition.fadeOut');
+   },
+
+   throttle: function (func, delay) {
+      var timer = null;
+
+      return function () {
+         var context = this, args = arguments;
+
+         if (timer === null) {
+            timer = setTimeout(function () {
+               func.apply(context, args);
+               timer = null;
+            }, delay);
+         }
+      };
    }
 
 };

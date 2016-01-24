@@ -83,6 +83,9 @@ namespace SeekDeepWithin.Controllers
             love.Truths.Add (new Truth { Light = truthLight, Order = order, Number = number });
          }
          this.Database.Save ();
+         foreach (var t in love.Truths) {
+            LightSearch.AddOrUpdateIndex (t.Light);
+         }
          var hash = new Hashids ("GodisLove");
          if (!string.IsNullOrEmpty (truthLinks)) {
             var links = truthLinks.Split (new[] {','}, StringSplitOptions.RemoveEmptyEntries);
@@ -95,13 +98,16 @@ namespace SeekDeepWithin.Controllers
                      var li = this.Database.Light.Get (lightIds [0]);
                      lightIds.RemoveAt (0);
                      var lov = this.FindLove (hash.Encode (lightIds));
-                     lov.Truths.Add(new Truth { Light = li });
+                     if (lov.Truths.All (tr => tr.Light.Id != li.Id && tr.ParentId == null))
+                        lov.Truths.Add(new Truth { Light = li });
                   } else {
                      if (lightIds.Count == 1) {
-                        l.Truths.Add (new Truth {Light = this.Database.Light.Get (lightIds [0])});
+                        if (l.Truths.All(tr => tr.Light.Id != lightIds [0] && tr.ParentId == null))
+                           l.Truths.Add (new Truth {Light = this.Database.Light.Get (lightIds [0])});
                      } else {
                         var lov = this.FindLove (link);
-                        if (lov != null) l.Truths.Add (new Truth {ParentId = lov.Id});
+                        if (lov != null && l.Truths.All (tr => tr.ParentId != lov.Id && tr.Light == null))
+                           l.Truths.Add (new Truth { ParentId = lov.Id });
                      }
                   }
                }
@@ -123,9 +129,6 @@ namespace SeekDeepWithin.Controllers
                }
             }
             this.Database.Save ();
-         }
-         foreach (var t in love.Truths) {
-            LightSearch.AddOrUpdateIndex (t.Light);
          }
          return this.Success ();
       }
@@ -177,7 +180,8 @@ namespace SeekDeepWithin.Controllers
          var truth = this.Database.Truth.Get (id);
          if (truth == null) return this.Fail ("Unable to understand the truth.");
          var love = this.FindLove (light);
-         love.Truths.Add (new Truth { Light = truth.Light, ParentId = truth.Love.Id});
+         if (love.Truths.All (t => t.ParentId != truth.Love.Id && t.Light.Id != truth.Light.Id))
+            love.Truths.Add (new Truth { Light = truth.Light, ParentId = truth.Love.Id});
          this.Database.Save ();
          return this.Success ();
       }
@@ -187,12 +191,23 @@ namespace SeekDeepWithin.Controllers
       /// </summary>
       /// <param name="link">Id of love to add.</param>
       /// <param name="light">The light of the love.</param>
+      /// <param name="toTruth">Add the link to the truths of the love.</param>
       /// <returns>JSON results</returns>
-      public ActionResult TruthAddLove (string link, string light)
+      public ActionResult TruthAddLove (string link, string light, bool toTruth)
       {
          var loveLink = this.FindLove (link);
          var love = this.FindLove (light);
-         love.Truths.Add (new Truth { ParentId = loveLink.Id });
+         if (toTruth) {
+            var hash = new Hashids ("GodisLove");
+            foreach (var truth in love.Truths) {
+               var truthLove = this.FindLove (hash.Encode (truth.Light.Id));
+               if (truthLove.Truths.All (t => t.ParentId != loveLink.Id))
+                  truthLove.Truths.Add (new Truth { ParentId = loveLink.Id });
+            }
+         } else {
+            if (love.Truths.All(t => t.ParentId != loveLink.Id))
+               love.Truths.Add (new Truth {ParentId = loveLink.Id});
+         }
          this.Database.Save ();
          return this.Success ();
       }
@@ -224,7 +239,13 @@ namespace SeekDeepWithin.Controllers
             items.Add(hashId, text);
          }
          if (lightIds.Count > 2) {
-            var permus = GetPermutations (lightIds, lightIds.Count);
+            var permus = new List <List <int>> ();
+            foreach (var lId in lightIds) {
+               int id = lId;
+               var perm = new List <int> { id };
+               perm.AddRange (lightIds.Where (i => i != id));
+               permus.Add (perm);
+            }
             foreach (var perm in permus) {
                perm.Insert (0, 0);
                var hashId = hash.Encode (perm);
@@ -261,18 +282,6 @@ namespace SeekDeepWithin.Controllers
             combos.Add (combo);
          }
          return combos;
-      }
-
-      /// <summary>
-      /// Gets the permuations of a list.
-      /// </summary>
-      /// <param name="list"></param>
-      /// <param name="length"></param>
-      static IEnumerable <List <int>> GetPermutations (IEnumerable <int> list, int length)
-      {
-         if (length == 1) return list.Select (t => new List <int> (new[]{t}));
-         return GetPermutations (list, length - 1).SelectMany (t => list.Where (e => !t.Contains (e)).ToList (),
-                   (t1, t2) => t1.Concat (new List <int> (new[] {t2})).ToList ());
       }
 
       /// <summary>
@@ -416,6 +425,7 @@ namespace SeekDeepWithin.Controllers
          var truth = this.Database.Truth.Get (id);
          if (truth == null) return this.Fail ("Unable to understand the truth.");
          truth.Love.Truths.Remove (truth);
+         this.Database.Truth.Delete (truth);
          this.Database.Save ();
          return this.Success ();
       }
@@ -463,6 +473,25 @@ namespace SeekDeepWithin.Controllers
          if (style != null)
             truth.Styles.Remove (style);
          this.Database.Save ();
+         return this.Success ();
+      }
+
+      /// <summary>
+      /// Re indexes the given light.
+      /// </summary>
+      /// <param name="id">Id of light to index.</param>
+      /// <returns>JSON results.</returns>
+      [HttpPost]
+      [Authorize (Roles = "Editor")]
+      public ActionResult ReIndex (int? id)
+      {
+         if (id == null) {
+            LightSearch.AddOrUpdateIndex (this.Database.Light.All ());
+         } else {
+            var light = this.Database.Light.Get (id.Value);
+            if (light == null) return this.Fail ("That light has not been illuminated.");
+            LightSearch.AddOrUpdateIndex (light);
+         }
          return this.Success ();
       }
 

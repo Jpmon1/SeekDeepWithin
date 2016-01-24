@@ -5,14 +5,6 @@
    <div class="small-12 medium-6 large-6 column">Order<input type="number" id="editTruthOrder" value="@(Model.Order)"/></div>
    <div class="small-12 medium-6 large-6 column">Number<input type="number" id="editTruthNumber" value="@(Model.Number)" /></div>
 </div>
-<div class="row column">
-   <div class="callout small text-center warning">
-      <em style="font-size:smaller;">
-         For Headers and Footers, the number will be that of which truth the header/footer belongs to.<br />
-         For Headers, the order will be 0.<br />
-         For Footers, the order will be the negative index of where it should be.
-      </em>
-   </div></div>
 <div class="row mBottom">
    <div class="small-5 column">
       <a href="javascript:void(0);" onclick="SdwEdit.truthSave();" class="sdw-button reg expand tiny">Save Truth</a>

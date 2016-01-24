@@ -5,19 +5,40 @@
    var id = Guid.NewGuid ().ToString ().Replace ("-", "");
    var text = renderer.Render (item);
    var mSpan = item.Number.HasValue ? 12 : 4;
+   if (renderer.IsImage) {mSpan = 6;}
 <div class="small-12 medium-@(mSpan) large-@(mSpan) column" id="c@(id)">
    <div class="light@(item.IsSelected?" selected":string.Empty)" id="l@(id)">
       <div class="truth" onclick="sdw.love(this);" data-l="@(item.Id)" data-t="@(item.TruthId)" data-p="@(item.Parents)" data-h="@(item.History)">
-         @foreach (var header in item.Headers) { <div>@(Html.Raw (renderer.Render (header)))</div> }
          @if (item.Number.HasValue) {
+            if (item.Headers.Count > 0) {
+               <div class="row">
+                  <div class="small-10 small-offset-2 large-11 large-offset-1 columns">
+                     @foreach (var header in item.Headers) {
+                        <div>@(Html.Raw (renderer.Render (header)))</div>
+                     }
+                  </div>
+               </div>
+            }
             <div class="row">
-               <div class="small-2 large-1 columns text-right">@(item.Number.Value)</div>
-               <div class="small-10 large-11 columns text-left">@(Html.Raw (text))</div>
+               @if (item.Number > 0) {
+                  <div class="small-2 large-1 columns text-right">@(item.Number.Value)</div>
+                  <div class="small-10 large-11 columns text-left">@(Html.Raw (text))</div>
+               } else {
+                  <div class="small-12 columns">@(Html.Raw (text))</div>
+               }
             </div>
+            if (item.Footers.Count > 0) {
+               <div class="row mTopSml">
+                  <div class="small-10 small-offset-2 large-11 large-offset-1 columns text-left">
+                     @foreach (var footer in item.Footers) {
+                        <div style="font-size: x-small"><sup>(@(footer.Number))</sup> @(Html.Raw (renderer.Render (footer)))</div>
+                     }
+                  </div>
+               </div>
+            }
          } else {
             @(Html.Raw(text))
          }
-         @foreach (var footer in item.Footers) { <div style="font-size: x-small" class="mTop"><sup>@(footer.Number)</sup>@(Html.Raw (renderer.Render (footer)))</div> }
          @if (!string.IsNullOrEmpty (item.Title)) { <div style="font-size: x-small" class="mNone">@(item.Title)</div> }
       </div>
    </div>

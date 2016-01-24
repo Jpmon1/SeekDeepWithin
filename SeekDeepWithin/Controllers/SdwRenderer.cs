@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using SeekDeepWithin.Models;
 
 namespace SeekDeepWithin.Controllers
@@ -18,17 +19,51 @@ namespace SeekDeepWithin.Controllers
       public string SearchText { get; set; }
 
       /// <summary>
+      /// Gets or Sets if the current item is an image or not.
+      /// </summary>
+      public bool IsImage { get; set; }
+
+      /// <summary>
+      /// Gets or Sets if the current item is an external link.
+      /// </summary>
+      public bool IsLink { get; set; }
+
+      /// <summary>
       /// Renders the passage entry.
       /// </summary>
       /// <returns>The rendered html of the passage entry.</returns>
       public string Render (SdwItem item)
       {
+         this.IsLink = false;
+         this.IsImage = false;
          this.m_Insertions.Clear ();
          this.m_Html = item.Text;
 
-         //ViewBag.Search == null ? item.Text : item.Text.Highlight((IEnumerable <string>)ViewBag.Search);
+         if (item.Text.StartsWith ("URL|")) {
+            // URL|NAME|PATH
+            this.IsLink = true;
+            var info = item.Text.Split ('|');
+            m_Html = string.Format ("<a href=\"{1}\" target=\"_blank\">{0}</a>", info[1], info[2]);
+            return m_Html;
+         }
+         if (m_Html.StartsWith ("IMG|")) {
+            // IMG|ALT|PATH
+            this.IsImage = true;
+            var info = item.Text.Split ('|');
+            m_Html = string.Format ("<img src=\"{1}\" alt=\"{0}\" />", info [1], info [2]);
+            return m_Html;
+         }
+
          foreach (var style in item.Styles)
             this.Insert (style.Start, style.StartIndex, style.End, style.EndIndex);
+
+         if (!string.IsNullOrEmpty (this.SearchText)) {
+            var hilite = Regex.Escape (this.SearchText);
+            var matches = Regex.Matches (item.Text, hilite, RegexOptions.IgnoreCase);
+            foreach (Match match in matches) {
+               this.Insert ("<span style=\"background-color:#A0D3E8\">", match.Index, "</span>", match.Length);
+            }
+         }
 
          foreach (var footer in item.Footers) {
             if (footer.Order.HasValue) {

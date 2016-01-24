@@ -19,7 +19,11 @@
       text = string.Format ("Unknown truth: '{0}' in love: '{1}'", truth.Id, truth.Love.Id);
    }
    <div class="row" id="currentTruth@(truth.Id)" style="background-color: @(color); padding: 0.25rem;">
-      <div class="small-8 column" style="font-size: x-small;">@(text)</div>
+      <div class="small-8 column" style="font-size: x-small;">
+         @if (truth.Number.HasValue) {<span>N(@(truth.Number.Value)) | </span>}
+         @if (truth.Order.HasValue) {<span>O(@(truth.Order.Value)) | </span>}
+         @(text)
+      </div>
       <div class="small-2 column">
          <a href="javascript:void(0);" class="sdw-button alt expand tiny" onclick="SdwEdit.truthEdit(@(truth.Id));" title="Edit">
             <img src="~/Images/editw.png" width="16" height="16" alt="Edit"/>

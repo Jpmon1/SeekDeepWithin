@@ -57,8 +57,9 @@ namespace SeekDeepWithin.Controllers
                         truthLove = this.Database.Love.Get (truth.ParentId.Value);
                         truthIds.AddRange (truthLove.Peaces.Select (p => p.Light.Id));
                      }
-                     if ((truthLove == null && truthIds.All (ids.Contains)) || (truth.Light !=null && model.ToAdd.Any (i => i.Id == truth.Light.Id)) ||
-                        (truthIds.All (histIds.Contains) && !truth.Number.HasValue))
+                     if ((truthLove == null && truthIds.All (ids.Contains))||
+                         (truthIds.All (histIds.Contains) && !truth.Number.HasValue) ||
+                         (truth.Light !=null && truth.Order == null && model.ToAdd.Any (i => i.Id == truth.Light.Id)) )
                         continue;
 
                      if (truthLove == null && truthIds.Count <= 0)
@@ -153,17 +154,27 @@ namespace SeekDeepWithin.Controllers
       private static void SetHeadersAndFooters (LoveModel model)
       {
          var remove = new List<SdwItem> ();
+         // Alias => Order = the order of the corresponding item; Number = -1.
+         foreach (var alias in model.ToAdd.Where (li => li.Order.HasValue && li.Number.HasValue && li.Number == -1)) {
+            var item = model.ToAdd.FirstOrDefault (li => li.Order == alias.Order && li.Id != alias.Id);
+            if (item != null) {
+               item.Text = alias.Text;
+               remove.Add (alias);
+            }
+         }
+         // Headers => Order = 0; Number = The corresponding item.
          foreach (var header in model.ToAdd.Where (li => li.Order.HasValue && li.Order == 0 && li.Number.HasValue)) {
-            var passage = model.ToAdd.FirstOrDefault (li => li.Number == header.Number && li.Id != header.Id);
-            if (passage != null) {
-               passage.Headers.Add (header);
+            var item = model.ToAdd.FirstOrDefault (li => li.Number == header.Number && li.Id != header.Id);
+            if (item != null) {
+               item.Headers.Add (header);
                remove.Add (header);
             }
          }
+         // Footers => Order = the negative index of the footer; Number = The corresponding item.
          foreach (var footer in model.ToAdd.Where (li => li.Order.HasValue && li.Order < 0 && li.Number.HasValue)) {
-            var passage = model.ToAdd.FirstOrDefault (li => li.Number == footer.Number);
-            if (passage != null) {
-               passage.Footers.Add (footer);
+            var item = model.ToAdd.FirstOrDefault (li => li.Number == footer.Number && li.Id != footer.Id);
+            if (item != null) {
+               item.Footers.Add (footer);
                remove.Add (footer);
             }
          }

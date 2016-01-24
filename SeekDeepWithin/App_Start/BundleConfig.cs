@@ -10,7 +10,7 @@ namespace SeekDeepWithin
          /************************ COMMON SCRIPTS ************************/
          bundles.Add (new ScriptBundle ("~/bundles/jquery").Include ("~/Scripts/jquery-1.11.2.js",
             "~/Scripts/jquery.autocomplete.js",
-            "~/Scripts/jquery.history.js",
+            //"~/Scripts/jquery.history.js",
             "~/Scripts/fastclick.js",
             "~/Scripts/velocity.js",
             "~/Scripts/velocity.ui.js",
@@ -26,8 +26,7 @@ namespace SeekDeepWithin
             "~/Content/sdw/sdw.button.css"));
 
          /************************ SEEK SCRIPTS ************************/
-         bundles.Add (new ScriptBundle ("~/bundles/sdw/seek").Include ("~/Scripts/foundation.js",
-            "~/Scripts/masonry.pkgd.js",
+         bundles.Add (new ScriptBundle ("~/bundles/sdw/seek").Include ("~/Scripts/masonry.pkgd.js",
             "~/Scripts/sdw/sdw.seek.js"));
 
          /************************ EDIT SCRIPTS ************************/

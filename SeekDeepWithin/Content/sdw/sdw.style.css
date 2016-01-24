@@ -8,8 +8,11 @@ fieldset, form, label, legend,
 table, caption, tbody, tfoot, thead, tr, th, td {
    font-family: 'Merriweather Sans', sans-serif;
 }
-em{ font-weight: 300;font-style: italic; }
+em{ font-weight: 300; }
+.bold{ font-weight: bold;}
+.italic{ font-style: italic;}
 .mTop {margin-top: 1.125rem;}
+.mTopSml {margin-top: 0.825rem;}
 .mTopBig {margin-top: 5.333rem;}
 .mLeft {margin-left: 1.125rem;}
 .mRight {margin-right: 1.125rem;}

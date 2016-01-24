@@ -1,11 +1,9 @@
-Add a way to change user settings.
-Alias
-Images
 URL sources...
 Amazon Items
-Roles
 Passage Parser
 ???History....
+???Images
+Roles
 Light Item Menu:
    Edit Header/Footer
    Heart (fav)
