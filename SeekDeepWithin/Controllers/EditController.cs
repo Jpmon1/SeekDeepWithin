@@ -317,12 +317,14 @@ namespace SeekDeepWithin.Controllers
       /// <param name="id">Id of light to get view for.</param>
       /// <param name="link">Gets or Sets if the this is a link edit.</param>
       /// <returns>The edit view or json error.</returns>
+      [HttpPost]
       [Authorize (Roles = "Editor")]
-      public ActionResult Light (int id, bool? link)
+      public ActionResult GetLightItem (int id, int link)
       {
-         ViewBag.IsLink = link ?? false;
+         ViewBag.IsLink = link == 1;
          var light = this.Database.Light.Get (id);
-         return light == null ? this.Fail ("That light has not yet been illuminated.") : PartialView (light);
+         if (light == null) return this.Fail ("That light has not yet been illuminated.");
+         return this.PartialView (light);
       }
 
       /// <summary>

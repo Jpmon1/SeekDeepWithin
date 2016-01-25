@@ -6,15 +6,19 @@
          <input type="text" id="editLightSearch" />
       </div>
       <div class="small-6 medium-2 large-1 column">
-         <a href="javasript:void(0);" onclick="SdwEdit.lightAddItem();" class="sdw-button white expand tiny">Edit</a>
+         <a href="javasript:void(0);" onclick="SdwEdit.lightAddEditItem();" class="sdw-button alt expand tiny">Edit</a>
       </div>
       <div class="small-6 medium-2 large-1 column">
-         <a href="javasript:void(0);" onclick="SdwEdit.lightAddLinkItem();" class="sdw-button white expand tiny">Link</a>
+         <a href="javasript:void(0);" onclick="SdwEdit.lightAddLinkItem();" class="sdw-button alt expand tiny">Link</a>
       </div>
    </div>
    <div id="editLights" class="row column"></div>
 </div>
 <div class="row">
+   <div class="small-6 column"><a href="javascript:void(0);" class="sdw-button white expand small" onclick="SdwEdit.showTruths();">Truths</a></div>
+   <div class="small-6 column"><a href="javascript:void(0);" class="sdw-button white expand small" onclick="SdwEdit.showLinks();">Links</a></div>
+</div>
+<div class="row" id="editTruthArea">
    <div class="small-12 medium-6 large-6 column">
       <div class="row column">Data for importing<textarea rows="5" id="addTruthText"></textarea></div>
       <div class="row column" id="addTruthLinks"></div>
@@ -57,16 +61,22 @@
       </div>
    </div>
    <div class="small-12 medium-6 large-6 column">
-      <div class="row column" id="linkArea"></div>
-      <div class="row column">
-         <a href="javascript:void(0);" onclick="SdwEdit.loveAddAsTruth(0);" class="sdw-button white expand" id="addLove">Add Love as Truth</a>
-      </div>
-      <div class="row column">
-         <a href="javascript:void(0);" onclick="SdwEdit.loveAddAsTruth(1);" class="sdw-button white expand" id="addLoveTruth">Add Love to Truth</a>
-      </div>
-      <div class="row column" id="linkTruths"></div>
       <div class="row column" id="currentTruth"></div>
    </div>
+</div>
+<div class="row" id="editLinkArea">
+   <div class="row column" id="linkArea"></div>
+   <div class="row" id="linkButtons">
+      <div class="small-6 column">
+         <a href="javascript:void(0);" onclick="SdwEdit.loveAddAsTruth(0);" class="sdw-button white expand" id="addLove">Add Love as Truth</a>
+         <div class="callout small warning">Adds the link lights as a truth of the edit lights.</div>
+      </div>
+      <div class="small-6 column">
+         <a href="javascript:void(0);" onclick="SdwEdit.loveAddAsTruth(1);" class="sdw-button white expand" id="addLoveTruth">Add Love to Truth</a>
+         <div class="callout small warning">Adds the link lights to all of the truths of the edit lights.</div>
+      </div>
+   </div>
+   <div class="row column" id="linkTruths"></div>
 </div>
 <div class="callout secondary mTop">
    <div class="row column secondary" id="editArea"></div>

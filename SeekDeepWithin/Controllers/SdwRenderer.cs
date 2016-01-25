@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using SeekDeepWithin.Models;
 
@@ -39,18 +40,18 @@ namespace SeekDeepWithin.Controllers
          this.m_Insertions.Clear ();
          this.m_Html = item.Text;
 
-         if (item.Text.StartsWith ("URL|")) {
-            // URL|NAME|PATH
+         if (item.Text.StartsWith ("{URL}")) {
+            // {URL}NAME{URL}PATH
             this.IsLink = true;
-            var info = item.Text.Split ('|');
-            m_Html = string.Format ("<a href=\"{1}\" target=\"_blank\">{0}</a>", info[1], info[2]);
+            var info = item.Text.Split (new [] {"{URL}"}, StringSplitOptions.RemoveEmptyEntries);
+            m_Html = string.Format ("<a href=\"{1}\" target=\"_blank\">{0}</a>", info[0], info[1]);
             return m_Html;
          }
-         if (m_Html.StartsWith ("IMG|")) {
-            // IMG|ALT|PATH
+         if (m_Html.StartsWith ("{IMG}")) {
+            // {IMG}ALT{IMG}PATH
             this.IsImage = true;
-            var info = item.Text.Split ('|');
-            m_Html = string.Format ("<img src=\"{1}\" alt=\"{0}\" />", info [1], info [2]);
+            var info = item.Text.Split (new [] { "{IMG}" }, StringSplitOptions.RemoveEmptyEntries);
+            m_Html = string.Format ("<img src=\"{1}\" alt=\"{0}\" />", info [0], info [1]);
             return m_Html;
          }
 

@@ -5,6 +5,7 @@
          serviceUrl: '/Seek/AutoComplete',
          paramName: 'text',
          noCache: true,
+         deferRequestBy:500,
          onSelect: function(suggestion) {
             $('#addTruthAppendText').val(suggestion.value);
             $('#addTruthAppendText').data('lightId', suggestion.data);
@@ -14,6 +15,7 @@
          serviceUrl: '/Seek/AutoComplete',
          paramName: 'text',
          noCache: true,
+         deferRequestBy: 500,
          onSelect: function (suggestion) {
             $('#editLightSearch').val(suggestion.value);
             $('#editLightSearch').data('lightId', suggestion.data);
@@ -32,31 +34,32 @@
       SdwEdit._post('/Edit/Illuminate', { text: $('#textNewLight').val() }, function (d) {
          $('#textNewLight').val('');
          SdwCommon.loadStop();
-         SdwEdit.lightGetItem(d.id);
+         SdwEdit.lightGet(d.id);
       });
    },
 
-   lightAddItem: function () {
+   lightAddEditItem: function () {
       var id = $('#editLightSearch').data('lightId');
       $('#editLightSearch').val('');
       $('#editLightSearch').data('lightId', '');
-      SdwEdit.lightGetItem(id);
+      SdwEdit.lightGet(id);
    },
 
    lightAddLinkItem: function () {
       SdwCommon.loadStart();
       var id = $('#editLightSearch').data('lightId');
-      SdwCommon.get('/Edit/Light', { id: id, link: true }, function (html) {
-         $('#linkArea').append(html).velocity('transition.fadeIn');
+      SdwEdit._post('/Edit/GetLightItem', { id: parseInt(id), link: 1 }, function (html) {
+         $('#linkArea').append(html);
          SdwCommon.loadStop();
          SdwEdit._getLinkTruths();
       });
    },
 
-   lightGetItem: function (id) {
+   lightGet: function (id) {
       SdwCommon.loadStart();
-      SdwCommon.get('/Edit/Light', { id: id }, function (html) {
-         $('#editLights').append(html).velocity('transition.fadeIn');
+      SdwEdit._post('/Edit/GetLightItem', { id: parseInt(id), link: 0 }, function (html) {
+         alert(html);
+         $('#editLights').append(html);
          SdwCommon.loadStop();
          SdwEdit._getLinks();
       });
@@ -65,7 +68,7 @@
    lightEdit: function (id) {
       SdwCommon.loadStart();
       SdwCommon.get('/Edit/LightEdit', { id: id }, function (html) {
-         $('#editArea').html(html).velocity('transition.fadeIn').velocity('scroll', { duration: 300 });
+         $('#editArea').html(html).velocity('scroll', { duration: 300 });
          $('#editLightOk').velocity('transition.fadeOut');
          SdwCommon.loadStop();
       });
@@ -130,7 +133,7 @@
    truthEdit: function (id) {
       SdwCommon.loadStart();
       SdwCommon.get('/Edit/TruthEdit', { id: id }, function (html) {
-         $('#editArea').html(html).velocity('transition.fadeIn').velocity('scroll', { duration: 300 });
+         $('#editArea').html(html).velocity('scroll', { duration: 300 });
          $('#editLightOk').velocity('transition.fadeOut');
          $('#editTruthOk').velocity('transition.fadeOut');
          SdwCommon.loadStop();
@@ -188,7 +191,6 @@
    },
 
    truthFormat: function () {
-      //var uuid = _uuid();
       SdwCommon.loadStart();
       var regex = $('#addTruthFormatRegex').val();
       SdwEdit._post('/Edit/Format', {
@@ -201,7 +203,7 @@
             $('#addTruthCurrentRegex').append($("<option></option>").attr("value", d.regexId).text(decodeURIComponent(d.regexText)));
          }
          $('#addTruthText').val(d.items);
-         $('#addTruthText').velocity('scroll', { duration: 300 });
+         $('#editLights').velocity('scroll', { duration: 300 });
          SdwCommon.loadStop();
       });
    },
@@ -234,6 +236,16 @@
       });
    },
 
+   showTruths: function () {
+      $('#editLinkArea').hide();
+      $('#editTruthArea').show();
+   },
+
+   showLinks: function () {
+      $('#editTruthArea').hide();
+      $('#editLinkArea').show();
+   },
+
    _getLinkLight: function () {
       var lights = [];
       $('#linkTruths').html('Loading...');
@@ -262,13 +274,13 @@
       if (lights.length > 0) {
          var hash = hashId.encode(lights);
          SdwCommon.get('/Edit/TruthLinks', { lights: hash }, function(d) {
-            $('#addTruthLinks').html(d).velocity('transition.fadeIn');
+            $('#addTruthLinks').html(d);
          });
          SdwCommon.get('/Edit/VersionLinks', { lights: hash }, function(d) {
-            $('#addVersionLinks').html(d).velocity('transition.fadeIn');
+            $('#addVersionLinks').html(d);
          });
          SdwCommon.get('/Edit/Truths', { lights: hash }, function(d) {
-            $('#currentTruth').html(d).velocity('transition.fadeIn');
+            $('#currentTruth').html(d);
          });
       } else {
          $('#currentTruth').html('');
@@ -281,29 +293,20 @@
       var lights = SdwEdit._getLinkLight();
       var hashId = new Hashids('GodisLove');
       if (lights.length > 0) {
-         $('#addLove').show();
-         $('#addLoveTruth').show();
+         $('#linkButtons').show();
          var hash = hashId.encode(lights);
          SdwCommon.get('/Edit/Truths', { lights: hash, link: true }, function(d) {
-            $('#linkTruths').html(d).velocity('transition.fadeIn');
+            $('#linkTruths').html(d);
          });
       } else {
          $('#editArea').html();
-         $('#addLove').hide();
-         $('#addLoveTruth').hide();
+         $('#linkButtons').hide();
          $('#linkTruths').html('');
       }
    },
 
-   _uuid:function() {
-      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-         var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-         return v.toString(16);
-      });
-   },
-
    _post: function (url, data, success) {
-      $.ajax({ type: 'POST', url: "http://" + location.host + url, data: data }).done(function (d) {
+      $.ajax({ type: 'POST', url: 'http://' + location.host + url, data: data }).done(function (d) {
          var ok = true;
          if (d.status) {
             if (d.status == 'fail') {
@@ -319,6 +322,8 @@
          SdwCommon.loadStop();
          if (d.message) {
             alert(d.message);
+         } else {
+            alert(url + ': ' + JSON.stringify(d));
          }
       });
    },

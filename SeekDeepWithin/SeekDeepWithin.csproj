@@ -356,7 +356,7 @@
     <Content Include="Views\Error\Index.cshtml" />
     <Content Include="Views\Style\Edit.cshtml" />
     <Content Include="Views\Account\Token.cshtml" />
-    <Content Include="Views\Edit\Light.cshtml" />
+    <Content Include="Views\Edit\GetLightItem.cshtml" />
     <Content Include="Views\Shared\Love.cshtml" />
     <Content Include="Views\Edit\VersionLinks.cshtml" />
     <Content Include="Views\Edit\Truths.cshtml" />

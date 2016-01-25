@@ -76,6 +76,7 @@ function setSearch(search) {
       serviceUrl: '/Seek/AutoComplete',
       paramName: 'text',
       noCache: true,
+      deferRequestBy: 500,
       triggerSelectOnValidInput:true
    });
    search.keypress(function (e) {
