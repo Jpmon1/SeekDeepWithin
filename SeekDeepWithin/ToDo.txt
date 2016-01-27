@@ -1,11 +1,9 @@
-Better loading animation
+Color code each train of light
 Amazon Items
 Passage Parser
-???History....
-???Images
 Roles
+???History....
 Light Item Menu:
-   Edit Header/Footer
    Heart (fav)
    ???Close/Remove
    Link to here - Share

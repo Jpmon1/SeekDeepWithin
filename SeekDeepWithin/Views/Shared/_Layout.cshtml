@@ -15,9 +15,6 @@
    </head>
 <body>
    <div class="sticky is-stuck top-menu-container">
-      @if (ViewBag.IsIndex != null || Request.FilePath.EndsWith ("Edit")) {
-         <div class="loader">LOADING...</div>
-      }
       <div class="expanded row">
          <div class="small-12 medium-6 large-6 column">
             <img src="~/Images/icon_24w.png" alt="Seek Deep Within" />
@@ -41,18 +38,13 @@
                <a href="@Url.Action("Index", "Edit", null, scheme)" class="top-menu-item" title="Register"><img src="~/Images/editw.png" alt="Register" /></a>
             }
          </div>
-         <div class="small-8 medium-4 large-5 column">
-            @if (ViewBag.IsIndex != null) {
-               <input type="search" placeholder="Search" id="menuSearchText" class="top-menu-search">
-            }
-         </div>
-         <div class="small-4 medium-2 large-1 column">
-            @if (ViewBag.IsIndex != null) {
-               <a href="javascript:void(0);" onclick=" sdw.search(); " class="sdw-button white expand tiny top-menu-search" style="padding: 0.33rem">Search</a>
-            }
-         </div>
+         <div class="small-8 medium-4 large-5 column" id="menuSearch"></div>
+         <div class="small-4 medium-2 large-1 column" id="menuBtnSearch"></div>
       </div>
    </div>
+   @if (ViewBag.IsIndex != null || Request.FilePath.EndsWith ("Edit")) {
+      <div class="loader">LOADING...</div>
+   }
    <div class="pBottom">
       @(RenderSection ("featured", false))
       <div class="row column">

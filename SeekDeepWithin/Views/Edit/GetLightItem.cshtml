@@ -1,9 +1,17 @@
 ﻿@model SeekDeepWithin.Pocos.Light
-@{ var span = ViewBag.IsLink ? 6 : 3; }
-<div class="small-12 medium-@(span) large-@(span) column end" id="editLight@(Model.Id)">
-   <div class="callout small warning">
-      @(Model.Text)
-      <a href="javascript:void(0)" onclick="SdwEdit.lightEdit(@(Model.Id));" class="sdw-button white expand tiny">Edit</a>
-      <a href="javascript:void(0)" onclick="$('#editLight@(Model.Id)').remove();SdwEdit._getLinks();SdwEdit._getLinkTruths();" class="sdw-button err expand tiny">Remove</a>
+@{ var id = string.Format ("{0}l{1}", ViewBag.IsLink ? "l" : "e", Model.Id); }
+<div class="small-12 medium-3 large-3 columns end" id="@(id)">
+   <div class="callout secondary small">
+      <div class="row column">
+         <textarea id="txt@(id)">@(Model.Text)</textarea>
+      </div>
+      <div class="row">
+         <div class="small-6 column">
+            <a id="save@(id)" class="sdw-button reg expand tiny" title="Save Light">Save</a>
+         </div>
+         <div class="small-6 column">
+            <a id="remove@(id)" class="sdw-button alt expand tiny" title="Remove from edit">Remove</a>
+         </div>
+      </div>
    </div>
 </div>

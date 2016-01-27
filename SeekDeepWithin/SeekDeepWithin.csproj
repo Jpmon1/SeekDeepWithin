@@ -317,6 +317,7 @@
     <Content Include="Scripts\jquery.nouislider.all.js" />
     <Content Include="Scripts\jquery.qtip.js" />
     <Content Include="Scripts\jquery.qtip.min.js" />
+    <Content Include="Scripts\jquery.touchSwipe.js" />
     <Content Include="Scripts\jsPlumb-2.0.5.js" />
     <Content Include="Scripts\masonry.pkgd.js" />
     <Content Include="Scripts\masonry.pkgd.min.js" />
@@ -325,6 +326,7 @@
     <Content Include="Scripts\sdw\sdw.edit.js" />
     <Content Include="Scripts\sdw\sdw.seek.js" />
     <Content Include="Scripts\sdw\sdw.style.js" />
+    <Content Include="Scripts\sdw\sdw.user.js" />
     <Content Include="Scripts\sdw\selection.js" />
     <Content Include="Scripts\velocity.js" />
     <Content Include="Scripts\velocity.min.js" />
@@ -372,9 +374,7 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Views\Seek\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

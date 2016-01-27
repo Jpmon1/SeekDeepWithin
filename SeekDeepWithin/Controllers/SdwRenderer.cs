@@ -62,7 +62,7 @@ namespace SeekDeepWithin.Controllers
             var hilite = Regex.Escape (this.SearchText);
             var matches = Regex.Matches (item.Text, hilite, RegexOptions.IgnoreCase);
             foreach (Match match in matches) {
-               this.Insert ("<span style=\"background-color:#A0D3E8\">", match.Index, "</span>", match.Length);
+               this.Insert ("<span style=\"background-color:#A0D3E8\">", match.Index, "</span>", match.Index + match.Length);
             }
          }
 

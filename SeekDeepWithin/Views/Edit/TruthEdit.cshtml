@@ -1,57 +1,89 @@
 ﻿@model SeekDeepWithin.Pocos.Truth
-<input type="hidden" id="editTruthId" value="@(Model.Id)" />
-<div class="row column text-center"><em style="font-size: 18px;">Edit Truth</em></div>
-<div class="row">
-   <div class="small-12 medium-6 large-6 column">Order<input type="number" id="editTruthOrder" value="@(Model.Order)"/></div>
-   <div class="small-12 medium-6 large-6 column">Number<input type="number" id="editTruthNumber" value="@(Model.Number)" /></div>
-</div>
-<div class="row mBottom">
-   <div class="small-5 column">
-      <a href="javascript:void(0);" onclick="SdwEdit.truthSave();" class="sdw-button reg expand tiny">Save Truth</a>
-   </div>
-   <div class="small-2 column">
-      <span style="color: green;" id="editTruthOk">OK</span><span id="footerIndex"></span>
-   </div>
-   <div class="small-5 column">
-      @if (Model.Light != null) {
-         <a href="javascript:void(0);" onclick=" SdwEdit.truthIndex(); " class="sdw-button reg expand tiny">Set Footer Index</a>
-      }
-   </div>
-</div>
-@if (Model.Light != null) {
-   @(Html.Partial ("_EditLight", Model.Light))
-   var color = "white";
-   <div class="row column text-center mTop"><em style="font-size: 18px;">Edit Truth Style</em></div>
+<div class="row column callout secondary" style="padding: 1rem;" id="et@(Model.Id)">
    <div class="row">
-      <div class="small-12 medium-6 large-6 column">
-         <div class="row column">
-            <div class="small-12 medium-6 large-6 column">Start Style<textarea id="editStyleStart" rows="2"></textarea></div>
-            <div class="small-12 medium-6 large-6 column">End Style<textarea id="editStyleEnd" rows="2"></textarea></div>
-         </div>
-         <div class="row column">
-            <div class="small-12 medium-6 large-6 column">Start Index<input type="number" id="editStyleStartIndex" /></div>
-            <div class="small-12 medium-6 large-6 column">End Index<input type="number" id="editStyleEndIndex" /></div>
-         </div>
-         <div class="row column">
-            <div class="small-12 medium-6 large-6 column">
-               <a href="javascript:void(0);" onclick="SdwEdit.styleAdd();" class="sdw-button add tiny expand">Add Style</a>
-            </div>
-            <div class="small-12 medium-6 large-6 column">
-               <a href="javascript:void(0);" onclick="SdwEdit.getIndexes();" class="sdw-button add tiny expand">Set Index</a></div>
-         </div>
-      </div>
-      <div class="small-12 medium-6 large-6 column">
-         @foreach (var style in Model.Styles) {
-            color = color == "white" ? "#C0C0C0" : "white";
-            <div class="row" id="style@(style.Id)" style="background-color: @(color); padding: 0.25rem;">
-               <div class="small-10 column">@(style.Style.Start) | @(style.Style.End) | {@(style.StartIndex), @(style.EndIndex)}</div>
-               <div class="small-2 column">
-                  <a href="javascript:void(0);" class="sdw-button err expand tiny" onclick="SdwEdit.styleRemove(@(style.Id));" title="Remove">
-                     <img src="~/Images/trashw.png" width="16" height="16" alt="Remove" />
-                  </a>
-               </div>
-            </div>
+      <div class="small-3 column">
+         @if (Model.Light != null) {
+            <a id="addE" data-l="@(Model.Light.Id)" class="sdw-button add expand tiny" title="Add to edit lights">Add to Edit</a>
          }
       </div>
+      <div class="small-3 column">
+         @if (Model.Light != null) {
+            <a id="addL" data-l="@(Model.Light.Id)" class="sdw-button add expand tiny" title="Add to link lights">Add to Link</a>
+         }
+      </div>
+      <div class="small-3 column"><a id="del" class="sdw-button err expand tiny" title="Remove">Delete</a></div>
+      <div class="small-3 column"><a id="hide" class="sdw-button alt expand tiny" title="Cancel">Close</a></div>
    </div>
-}
+   <div class="row mTop">
+      <div class="small-4 column">Order</div>
+      <div class="small-4 column end">Number</div>
+   </div>
+   <div class="row">
+      <div class="small-4 column"><input type="number" id="order@(Model.Id)" value="@(Model.Order)" /></div>
+      <div class="small-4 column"><input type="number" id="number@(Model.Id)" value="@(Model.Number)" /></div>
+      <div class="small-4 column"><a id="saveT" class="sdw-button reg expand tiny">Save</a></div>
+   </div>
+   @if (Model.Light != null) {
+      var color = "white";
+      <div class="row column">
+         <div class="input-group">
+            <span class="input-group-label">Alias</span>
+            <input class="input-group-field" type="text" id="alias@(Model.Id)" />
+            <a id="addA" data-l="@(Model.Light.Id)" class="input-group-button button">Add</a>
+         </div>
+      </div>
+      <div class="row column">
+         <div class="input-group">
+            <span class="input-group-label">Header</span>
+            <input class="input-group-field" type="text" id="header@(Model.Id)" />
+            <a id="addH" class="input-group-button button">Add</a>
+         </div>
+      </div>
+      <div class="row column">Text<textarea rows="2" id="txtL@(Model.Light.Id)">@(Model.Light.Text)</textarea></div>
+      <div class="row">
+         <div class="small-6 column">
+            <a id="saveL" data-l="@(Model.Light.Id)" class="sdw-button reg expand tiny">Save</a>
+         </div>
+         <div class="small-6 column">
+            <a id="index" data-l="@(Model.Light.Id)" class="sdw-button alt tiny expand">Set Index</a>
+         </div>
+      </div>
+      <div class="row column">
+         <div class="input-group mTop">
+            <span class="input-group-label">Footer</span><input type="hidden" id="fI@(Model.Id)" />
+            <input class="input-group-field" type="text" id="footer@(Model.Id)" />
+            <a id="addF" class="input-group-button button">Add</a>
+         </div>
+      </div>
+      <div class="row">
+         <div class="small-12 medium-6 large-6 column">
+            <div class="row">
+               <div class="small-6 column">Start Style<textarea id="sS@(Model.Id)" rows="2"></textarea></div>
+               <div class="small-6 column">End Style<textarea id="sE@(Model.Id)" rows="2"></textarea></div>
+            </div>
+            <div class="row">
+               <div class="small-4 column">Start Index</div>
+               <div class="small-4 column end">End Index</div>
+            </div>
+            <div class="row">
+               <div class="small-4 column"><input type="number" id="sI@(Model.Id)" /></div>
+               <div class="small-4 column"><input type="number" id="eI@(Model.Id)" /></div>
+               <div class="small-4 column"><a id="addS" class="sdw-button add tiny expand">Add Style</a></div>
+            </div>
+         </div>
+         <div class="small-12 medium-6 large-6 column">
+            @foreach (var style in Model.Styles) {
+               color = color == "white" ? "#C0C0C0" : "white";
+               <div class="row" id="style@(style.Id)" style="background-color: @(color); padding: 0.25rem;">
+                  <div class="small-10 column">@(style.Style.Start) | @(style.Style.End) | {@(style.StartIndex), @(style.EndIndex)}</div>
+                  <div class="small-2 column">
+                     <a id="delS" data-s="@(style.Id)" class="sdw-button err expand tiny" title="Remove">
+                        <img src="~/Images/trashw.png" width="16" height="16" alt="Remove" />
+                     </a>
+                  </div>
+               </div>
+            }
+         </div>
+      </div>
+   }
+</div>

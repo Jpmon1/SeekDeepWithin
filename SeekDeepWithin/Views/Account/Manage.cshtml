@@ -1,7 +1,7 @@
 ﻿@model SeekDeepWithin.Models.ManageModel
 <p class="mTopBig">
    Hello <em>@(User.Identity.Name)</em>, use this page to change information about your account.
-   <a href="#" onclick="document.getElementById('logoutForm').submit()" title="Log out" style="color: #346789;">Log out here.</a>
+   <a id="btnLogout" title="Log out" style="color: #346789;">Log out here.</a>
 </p>
 @using (Html.BeginForm ("Manage", "Account")) {
    @(Html.AntiForgeryToken ())
@@ -31,7 +31,7 @@
             <div class="small-10 columns">Load more items upon reaching the bottom of the page, otherwise a button will load more items.</div>
          </div>
          <div class="row column">
-            <a href="javascript:void(0);" class="sdw-button reg" onclick="save();">Save Changes</a><span style="color: green;" id="saveOk">SAVED</span>
+            <a id="btnSave" class="sdw-button reg">Save Changes</a><span style="color: green;" id="saveOk">SAVED</span>
          </div>
       </div>
    </div>
@@ -41,16 +41,5 @@
 </div>
 
 @section scripts {
-   <script type="text/javascript">
-      $('#saveOk').velocity('transition.fadeOut');
-      function save() {
-         $.ajax({ type: 'POST', url: "http://" + location.host + "/Account/SaveSettings", data: {
-            LoadOnScroll: $('#LoadOnScroll').prop('checked')
-         }}).done(function () {
-            $('#saveOk').velocity('transition.fadeIn').velocity('transition.fadeOut');
-         }).fail(function (d) {
-            alert(d.responseText);
-         });
-      }
-   </script>
+   @(Scripts.Render ("~/bundles/sdw/user"))
 }

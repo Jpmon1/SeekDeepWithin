@@ -1,8 +1,5 @@
 ﻿@using SeekDeepWithin.Pocos
 @model List<SeekDeepWithin.Pocos.Truth>
-@if (Model.Count > 0) {
-   <div class="row column mTop"><em>Current Truth:</em></div>
-}
 @{
    var color = "white";
    var otherLoves = (Dictionary<int, Love>) ViewBag.OtherLoves;
@@ -18,26 +15,24 @@
    } else if (string.IsNullOrEmpty (text)) {
       text = string.Format ("Unknown truth: '{0}' in love: '{1}'", truth.Id, truth.Love.Id);
    }
-   <div class="row" id="currentTruth@(truth.Id)" style="background-color: @(color); padding: 0.25rem;">
-      <div class="small-8 column" style="font-size: x-small;">
+   <div class="row" id="ct@(truth.Id)" style="background-color: @(color); padding: 0.25rem;">
+      @{
+         var sSpan = ViewBag.IsLink ? 8 : 10;
+         var lSpan = ViewBag.IsLink ? 10 : 11;
+      }
+      <div class="small-@(sSpan) medium-@(lSpan) large-@(lSpan) column" style="font-size: x-small;">
          @if (truth.Number.HasValue) {<span>N(@(truth.Number.Value)) | </span>}
          @if (truth.Order.HasValue) {<span>O(@(truth.Order.Value)) | </span>}
          @(text)
       </div>
-      <div class="small-2 column">
-         <a href="javascript:void(0);" class="sdw-button alt expand tiny" onclick="SdwEdit.truthEdit(@(truth.Id));" title="Edit">
+      <div class="small-2 large-1 column">
+         <a id="edit" class="sdw-button alt expand tiny" title="Edit">
             <img src="~/Images/editw.png" width="16" height="16" alt="Edit"/>
          </a>
       </div>
       @if (ViewBag.IsLink) {
-         <div class="small-2 column">
-            <a href="javascript:void(0);" class="sdw-button white expand tiny" onclick="SdwEdit.truthAddAsTruth(@(truth.Id));" title="Edit">Link</a>
-         </div>
-      } else {
-         <div class="small-2 column">
-            <a href="javascript:void(0);" class="sdw-button err expand tiny" onclick="SdwEdit.truthRemove(@(truth.Id));" title="Remove">
-               <img src="~/Images/trashw.png" width="16" height="16" alt="Remove" />
-            </a>
+         <div class="small-2 large-1 column">
+            <a id="addAs" class="sdw-button white expand tiny" title="Edit">Link</a>
          </div>
       }
    </div>

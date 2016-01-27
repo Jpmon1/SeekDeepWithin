@@ -1,12 +1,12 @@
 ﻿@model List <SeekDeepWithin.Pocos.Love>
 @if (Model.Count > 0) {
-   <div class="row column"><em class="mTop">Add the following links:</em></div>
+   <div class="row column"><em class="mTop">Link to the (possible) versions:</em></div>
 }
 @foreach (var love in Model) {
    <div class="row">
       <div class="small-2 medium-1 large-1 column">
          <div class="switch tiny" style="margin: 0;">
-            <input type="checkbox" class="switch-input versionLink" id="vl@(love.Id)" data-l="@(love.Id)" />
+            <input type="checkbox" class="switch-input" id="vl@(love.Id)" data-l="@(love.Id)" />
             <label class="switch-paddle" for="vl@(love.Id)"></label>
          </div>
       </div>

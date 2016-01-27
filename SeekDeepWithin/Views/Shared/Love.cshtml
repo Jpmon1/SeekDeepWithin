@@ -8,7 +8,7 @@
    if (renderer.IsImage) {mSpan = 6;}
 <div class="small-12 medium-@(mSpan) large-@(mSpan) column" id="c@(id)">
    <div class="light@(item.IsSelected?" selected":string.Empty)" id="l@(id)">
-      <div class="truth" onclick="sdw.love(this);" data-l="@(item.Id)" data-t="@(item.TruthId)" data-p="@(item.Parents)" data-h="@(item.History)">
+      <div class="truth" data-l="@(item.Id)" data-t="@(item.TruthId)" data-p="@(item.Parents)" data-h="@(item.History)">
          @if (item.Number.HasValue) {
             if (item.Headers.Count > 0) {
                <div class="row">
