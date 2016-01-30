@@ -31,14 +31,19 @@ namespace SeekDeepWithin.DataAccess
       IRepository<Peace> Peace { get; }
 
       /// <summary>
-      /// Gets the repository for formatting regular expressions.
-      /// </summary>
-      IRepository<FormatRegex> RegexFormats { get; }
-
-      /// <summary>
       /// Gets the repository for styles.
       /// </summary>
       IRepository<Style> Styles { get; }
+
+      /// <summary>
+      /// Gets the repository for truth styles.
+      /// </summary>
+      IRepository<TruthStyle> TruthStyles { get; }
+
+      /// <summary>
+      /// Gets the repository for formatting regular expressions.
+      /// </summary>
+      IRepository<FormatRegex> RegexFormats { get; }
 
       /// <summary>
       /// Saves all changes.

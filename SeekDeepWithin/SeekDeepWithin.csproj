@@ -232,7 +232,6 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\HtmlSanitizer.cs" />
     <Compile Include="Controllers\RolesController.cs" />
-    <Compile Include="Controllers\StyleController.cs" />
     <Compile Include="DataAccess\IRepository.cs" />
     <Compile Include="DataAccess\ISdwDatabase.cs" />
     <Compile Include="DataAccess\PassageParser.cs" />
@@ -356,16 +355,13 @@
     <Content Include="Views\Roles\Create.cshtml" />
     <Content Include="Views\Roles\Assign.cshtml" />
     <Content Include="Views\Error\Index.cshtml" />
-    <Content Include="Views\Style\Edit.cshtml" />
     <Content Include="Views\Account\Token.cshtml" />
     <Content Include="Views\Edit\GetLightItem.cshtml" />
     <Content Include="Views\Shared\Love.cshtml" />
     <Content Include="Views\Edit\VersionLinks.cshtml" />
     <Content Include="Views\Edit\Truths.cshtml" />
     <Content Include="Views\Edit\TruthLinks.cshtml" />
-    <Content Include="Views\Edit\LightEdit.cshtml" />
     <Content Include="Views\Edit\TruthEdit.cshtml" />
-    <Content Include="Views\Shared\_EditLight.cshtml" />
     <Content Include="Views\Edit\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>

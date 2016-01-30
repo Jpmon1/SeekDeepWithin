@@ -43,6 +43,11 @@ namespace SeekDeepWithin.DataAccess
       public DbSet<Style> Styles { get; set; }
 
       /// <summary>
+      /// Gets or sets the truth styles.
+      /// </summary>
+      public DbSet<TruthStyle> TruthStyles { get; set; }
+
+      /// <summary>
       /// Gets or sets the regexes used for formatting.
       /// </summary>
       public DbSet<FormatRegex> FormatRegexes { get; set; }

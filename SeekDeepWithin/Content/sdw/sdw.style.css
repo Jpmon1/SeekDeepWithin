@@ -89,6 +89,7 @@ a:hover{ text-decoration: underline; }
    border:2px solid #346789;
 }
 .love{ padding: 0;margin: 0;}
+.edit {padding: 1rem;}
 .truth {
    padding: 1rem;
    cursor:pointer;

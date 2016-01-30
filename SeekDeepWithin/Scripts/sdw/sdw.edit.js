@@ -93,9 +93,10 @@
    },
 
    lightCreate: function () {
-      SdwEdit._post('/Edit/Illuminate', { text: $('#textNewLight').val() }, function (d) {
-         $('#textNewLight').val('');
-         SdwEdit.lightGet(d.id);
+      $('#btnCreateLight').hide();
+      SdwEdit._post('/Edit/Illuminate', { text: $('#txtNewLight').val() }, function (d) {
+         $('#txtNewLight').val('');
+         $('#btnCreateLight').show();
       });
    },
 
@@ -218,7 +219,7 @@
                } else if (lId == 'addS') {
                   SdwEdit.styleAdd(id);
                } else if (lId == 'delS') {
-                  SdwEdit.styleRemove(id, link.data('s'));
+                  SdwEdit.styleRemove(link.data('s'));
                }
             });
          });
@@ -306,9 +307,9 @@
       });
    },
 
-   styleRemove: function (id, sId) {
-      SdwEdit._post('/Edit/TruthRemoveStyle', { id: id, sId: sId }, function () {
-         $('#style' + sId).remove();
+   styleRemove: function (id) {
+      SdwEdit._post('/Edit/TruthRemoveStyle', { id: id }, function () {
+         $('#style' + id).remove();
       });
    },
 

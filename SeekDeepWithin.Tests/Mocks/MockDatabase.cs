@@ -14,6 +14,7 @@ namespace SeekDeepWithin.Tests.Mocks
       private IRepository<Truth> m_Truths;
       private IRepository<Peace> m_Peaces;
       private IRepository<Style> m_Styles;
+      private IRepository<TruthStyle> m_TruthStyles;
       private IRepository<FormatRegex> m_RegexFormats;
 
       /// <summary>
@@ -70,6 +71,14 @@ namespace SeekDeepWithin.Tests.Mocks
       public IRepository<Style> Styles
       {
          get { return this.m_Styles ?? (this.m_Styles = new MockRepository<Style> ()); }
+      }
+
+      /// <summary>
+      /// Gets the repository for truth styles.
+      /// </summary>
+      public IRepository<TruthStyle> TruthStyles
+      {
+         get { return this.m_TruthStyles ?? (this.m_TruthStyles = new MockRepository<TruthStyle> ()); }
       }
 
       /// <summary>

@@ -93,6 +93,10 @@ namespace SeekDeepWithin.Controllers
                   }
                }
                SetHeadersAndFooters (model);
+               if (User.IsInRole ("Editor")) {
+                  ViewBag.EditItem = id;
+                  ViewBag.EditItemText = light.Text;
+               }
             }
          }
          return PartialView (model);

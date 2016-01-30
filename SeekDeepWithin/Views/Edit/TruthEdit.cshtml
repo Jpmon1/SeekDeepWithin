@@ -39,51 +39,44 @@
             <a id="addH" class="input-group-button button">Add</a>
          </div>
       </div>
-      <div class="row column">Text<textarea rows="2" id="txtL@(Model.Light.Id)">@(Model.Light.Text)</textarea></div>
-      <div class="row">
-         <div class="small-6 column">
-            <a id="saveL" data-l="@(Model.Light.Id)" class="sdw-button reg expand tiny">Save</a>
-         </div>
-         <div class="small-6 column">
-            <a id="index" data-l="@(Model.Light.Id)" class="sdw-button alt tiny expand">Set Index</a>
+      <div class="row column">
+         <div class="input-group">
+            <span class="input-group-label">Text</span>
+            <input type="text" class="input-group-field" id="txtL@(Model.Light.Id)" value="@(Model.Light.Text)" />
+            <a id="save" data-l="@(Model.Light.Id)" class="input-group-button button">Save</a>
+            <a id="index" data-l="@(Model.Light.Id)" class="input-group-button secondary button">Get Index</a>
          </div>
       </div>
       <div class="row column">
-         <div class="input-group mTop">
+         <div class="input-group">
             <span class="input-group-label">Footer</span><input type="hidden" id="fI@(Model.Id)" />
             <input class="input-group-field" type="text" id="footer@(Model.Id)" />
             <a id="addF" class="input-group-button button">Add</a>
          </div>
       </div>
       <div class="row">
-         <div class="small-12 medium-6 large-6 column">
-            <div class="row">
-               <div class="small-6 column">Start Style<textarea id="sS@(Model.Id)" rows="2"></textarea></div>
-               <div class="small-6 column">End Style<textarea id="sE@(Model.Id)" rows="2"></textarea></div>
-            </div>
-            <div class="row">
-               <div class="small-4 column">Start Index</div>
-               <div class="small-4 column end">End Index</div>
-            </div>
-            <div class="row">
-               <div class="small-4 column"><input type="number" id="sI@(Model.Id)" /></div>
-               <div class="small-4 column"><input type="number" id="eI@(Model.Id)" /></div>
-               <div class="small-4 column"><a id="addS" class="sdw-button add tiny expand">Add Style</a></div>
+         <div class="small-8 large-4 column">Start Style<input type="text" id="sS@(Model.Id)" /></div>
+         <div class="small-4 large-2 column">Index<input type="number" id="sI@(Model.Id)" /></div>
+         <div class="small-6 large-4 column">End Style<input type="text" id="sE@(Model.Id)" /></div>
+         <div class="small-6 large-2 column">Index
+            <div class="input-group">
+               <input class="input-group-field" type="number" id="eI@(Model.Id)" />
+               <a id="addS" class="input-group-button button">Add Style</a>
             </div>
          </div>
-         <div class="small-12 medium-6 large-6 column">
-            @foreach (var style in Model.Styles) {
-               color = color == "white" ? "#C0C0C0" : "white";
-               <div class="row" id="style@(style.Id)" style="background-color: @(color); padding: 0.25rem;">
-                  <div class="small-10 column">@(style.Style.Start) | @(style.Style.End) | {@(style.StartIndex), @(style.EndIndex)}</div>
-                  <div class="small-2 column">
-                     <a id="delS" data-s="@(style.Id)" class="sdw-button err expand tiny" title="Remove">
-                        <img src="~/Images/trashw.png" width="16" height="16" alt="Remove" />
-                     </a>
-                  </div>
+      </div>
+      <div class="row column">
+         @foreach (var style in Model.Styles) {
+            color = color == "white" ? "#C0C0C0" : "white";
+            <div class="row" id="style@(style.Id)" style="background-color: @(color); padding: 0.25rem;">
+               <div class="small-10 column">@(style.Style.Start) | @(style.Style.End) | {@(style.StartIndex), @(style.EndIndex)}</div>
+               <div class="small-2 column">
+                  <a id="delS" data-s="@(style.Id)" class="sdw-button err expand tiny" title="Remove">
+                     <img src="~/Images/trashw.png" width="16" height="16" alt="Remove" />
+                  </a>
                </div>
-            }
-         </div>
+            </div>
+         }
       </div>
    }
 </div>

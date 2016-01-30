@@ -1,3 +1,5 @@
+Move edit out of sdw.seek.js.
+Update Edit pages, add history
 Color code each train of light
 Amazon Items
 Passage Parser

@@ -15,6 +15,7 @@ namespace SeekDeepWithin.DataAccess
       private IRepository<Truth> m_Truths;
       private IRepository<Peace> m_Peaces;
       private IRepository<Style> m_Styles;
+      private IRepository<TruthStyle> m_TruthStyles;
       private IRepository<FormatRegex> m_RegexFormats;
       private readonly SdwDbContext m_Db = new SdwDbContext ();
 
@@ -72,6 +73,14 @@ namespace SeekDeepWithin.DataAccess
       public IRepository<Style> Styles
       {
          get { return this.m_Styles ?? (this.m_Styles = new Repository<Style> (m_Db)); }
+      }
+
+      /// <summary>
+      /// Gets the repository for truth styles.
+      /// </summary>
+      public IRepository<TruthStyle> TruthStyles
+      {
+         get { return this.m_TruthStyles ?? (this.m_TruthStyles = new Repository<TruthStyle> (m_Db)); }
       }
 
       /// <summary>

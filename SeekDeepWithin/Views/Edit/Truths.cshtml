@@ -12,28 +12,22 @@
       if (parent != null) {
          text = parent.Peaces.Aggregate (string.Empty, (current, peace) => current + (peace.Light.Text + " | ")).TrimEnd ('|', ' ');
       }
-   } else if (string.IsNullOrEmpty (text)) {
+   }
+   if (string.IsNullOrEmpty (text)) {
       text = string.Format ("Unknown truth: '{0}' in love: '{1}'", truth.Id, truth.Love.Id);
    }
    <div class="row" id="ct@(truth.Id)" style="background-color: @(color); padding: 0.25rem;">
-      @{
-         var sSpan = ViewBag.IsLink ? 8 : 10;
-         var lSpan = ViewBag.IsLink ? 10 : 11;
-      }
-      <div class="small-@(sSpan) medium-@(lSpan) large-@(lSpan) column" style="font-size: x-small;">
+      <div class="small-10 medium-11 large-11 column" style="font-size: x-small;">
          @if (truth.Number.HasValue) {<span>N(@(truth.Number.Value)) | </span>}
          @if (truth.Order.HasValue) {<span>O(@(truth.Order.Value)) | </span>}
          @(text)
       </div>
-      <div class="small-2 large-1 column">
-         <a id="edit" class="sdw-button alt expand tiny" title="Edit">
-            <img src="~/Images/editw.png" width="16" height="16" alt="Edit"/>
-         </a>
+      <div class="small-2 medium-1 large-1 column">
+         @if (ViewBag.IsLink) {
+            <a id="addAs" class="sdw-button white expand tiny" title="Link">&prop;</a>
+         } else {
+            <a id="edit" class="sdw-button alt expand tiny" title="Edit">&or;</a>
+         }
       </div>
-      @if (ViewBag.IsLink) {
-         <div class="small-2 large-1 column">
-            <a id="addAs" class="sdw-button white expand tiny" title="Edit">Link</a>
-         </div>
-      }
    </div>
 }

@@ -11,7 +11,7 @@ namespace SeekDeepWithin
          bundles.Add (new ScriptBundle ("~/bundles/jquery").Include ("~/Scripts/jquery-1.11.2.js",
             "~/Scripts/jquery.autocomplete.js",
             //"~/Scripts/jquery.history.js",
-            //"~/Scripts/fastclick.js",
+            "~/Scripts/fastclick.js",
             "~/Scripts/velocity.js",
             "~/Scripts/velocity.ui.js",
             //"~/Scripts/jsPlumb-2.0.5.js",

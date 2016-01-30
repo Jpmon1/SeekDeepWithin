@@ -218,6 +218,24 @@ namespace SeekDeepWithin.Controllers
       }
 
       /// <summary>
+      /// Adds a light as a truth to another light.
+      /// </summary>
+      /// <param name="id">Id of light to add truth to.</param>
+      /// <param name="truth">Id of light to as a truth.</param>
+      /// <returns>JSON results</returns>
+      [HttpPost]
+      public ActionResult LightAddLight (int id, string truth)
+      {
+         var hash = new Hashids ("GodisLove");
+         var light = this.Database.Light.Get (l => l.Text == truth).FirstOrDefault() ?? new Light {Text = truth, Modified = DateTime.Now};
+         var love = this.FindLove (hash.Encode (id));
+         if (!love.Truths.Any (t => t.Light != null && t.Light.Id == id))
+            love.Truths.Add(new Truth { Light = light});
+         this.Database.Save ();
+         return this.Success ();
+      }
+
+      /// <summary>
       /// Adds a specific truth as a link.
       /// </summary>
       /// <param name="id">Id of light to add.</param>
@@ -360,18 +378,6 @@ namespace SeekDeepWithin.Controllers
       }
 
       /// <summary>
-      /// Gets the edit page for a light.
-      /// </summary>
-      /// <param name="id">Id of light to edit.</param>
-      /// <returns>The edit page for the light.</returns>
-      public ActionResult LightEdit (int id)
-      {
-         var light = this.Database.Light.Get (id);
-         if (light == null) return this.Fail ("That light has not yet been illuminated.");
-         return this.PartialView (light);
-      }
-
-      /// <summary>
       /// Edits light.
       /// </summary>
       /// <param name="id">The id of the light to edit.</param>
@@ -493,18 +499,17 @@ namespace SeekDeepWithin.Controllers
       /// <summary>
       /// Removes the given style from the given truth.
       /// </summary>
-      /// <param name="id">Id of truth.</param>
-      /// <param name="sId">Id of style.</param>
+      /// <param name="id">Id of truth style.</param>
       /// <returns>The results.</returns>
       [HttpPost]
       [Authorize (Roles = "Editor")]
-      public ActionResult TruthRemoveStyle (int id, int sId)
+      public ActionResult TruthRemoveStyle (int id)
       {
-         var truth = this.Database.Truth.Get (id);
-         if (truth == null) return this.Fail ("Unable to understand the truth.");
-         var style = truth.Styles.FirstOrDefault (s => s.Id == sId);
-         if (style != null)
-            truth.Styles.Remove (style);
+         var style = this.Database.TruthStyles.Get (id);
+         if (style == null) return this.Fail ("Unable to find the style.");
+         if (style.Truth != null)
+            style.Truth.Styles.Remove (style);
+         this.Database.TruthStyles.Delete (style);
          this.Database.Save ();
          return this.Success ();
       }

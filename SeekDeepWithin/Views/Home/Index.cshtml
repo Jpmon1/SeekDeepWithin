@@ -25,4 +25,7 @@
 }
 @section scripts  {
    @(Scripts.Render ("~/bundles/sdw/seek"))
+   @if (User.IsInRole ("Editor")) {
+      @(Scripts.Render ("~/bundles/sdw/edit"))
+   }
 }
