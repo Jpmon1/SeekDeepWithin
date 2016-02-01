@@ -24,12 +24,13 @@
       <div class="small-4 column"><a id="saveT" class="sdw-button reg expand tiny">Save</a></div>
    </div>
    @if (Model.Light != null) {
-      var color = "white";
-      <div class="row column">
-         <div class="input-group">
-            <span class="input-group-label">Alias</span>
-            <input class="input-group-field" type="text" id="alias@(Model.Id)" />
-            <a id="addA" data-l="@(Model.Light.Id)" class="input-group-button button">Add</a>
+      <div class="row">
+         <div class="small-12 medium-10 large-10 column">
+            <textarea id="txtL@(Model.Light.Id)" rows="3">@(Model.Light.Text)</textarea>
+         </div>
+         <div class="small-12 medium-2 large-2 column">
+            <a id="saveL" data-l="@(Model.Light.Id)" class="sdw-button reg tiny expand">Save</a>
+            <a id="index" data-l="@(Model.Light.Id)" class="sdw-button alt tiny expand">Get Index</a>
          </div>
       </div>
       <div class="row column">
@@ -37,14 +38,6 @@
             <span class="input-group-label">Header</span>
             <input class="input-group-field" type="text" id="header@(Model.Id)" />
             <a id="addH" class="input-group-button button">Add</a>
-         </div>
-      </div>
-      <div class="row column">
-         <div class="input-group">
-            <span class="input-group-label">Text</span>
-            <input type="text" class="input-group-field" id="txtL@(Model.Light.Id)" value="@(Model.Light.Text)" />
-            <a id="save" data-l="@(Model.Light.Id)" class="input-group-button button">Save</a>
-            <a id="index" data-l="@(Model.Light.Id)" class="input-group-button secondary button">Get Index</a>
          </div>
       </div>
       <div class="row column">
@@ -65,18 +58,22 @@
             </div>
          </div>
       </div>
-      <div class="row column">
-         @foreach (var style in Model.Styles) {
-            color = color == "white" ? "#C0C0C0" : "white";
-            <div class="row" id="style@(style.Id)" style="background-color: @(color); padding: 0.25rem;">
-               <div class="small-10 column">@(style.Style.Start) | @(style.Style.End) | {@(style.StartIndex), @(style.EndIndex)}</div>
-               <div class="small-2 column">
-                  <a id="delS" data-s="@(style.Id)" class="sdw-button err expand tiny" title="Remove">
-                     <img src="~/Images/trashw.png" width="16" height="16" alt="Remove" />
-                  </a>
-               </div>
+      foreach (var style in Model.Styles) {
+         <div class="row" id="style@(style.Id)" style="padding: 0.25rem;">
+            <div class="small-10 column">@(style.Style.Start) | @(style.Style.End) | {@(style.StartIndex), @(style.EndIndex)}</div>
+            <div class="small-2 column">
+               <a id="delS" data-s="@(style.Id)" class="sdw-button err expand tiny" title="Remove">
+                  <img src="~/Images/trashw.png" width="16" height="16" alt="Remove" />
+               </a>
             </div>
-         }
+         </div>
+      }
+      <div class="row column">
+         <div class="input-group">
+            <span class="input-group-label">Link</span>
+            <input class="input-group-field" type="text" id="txtLink" />
+            <a id="link" data-l="@(Model.Light.Id)" class="input-group-button button">Add</a>
+         </div>
       </div>
    }
 </div>

@@ -93,10 +93,6 @@ namespace SeekDeepWithin.Controllers
                   }
                }
                SetHeadersAndFooters (model);
-               if (User.IsInRole ("Editor")) {
-                  ViewBag.EditItem = id;
-                  ViewBag.EditItemText = light.Text;
-               }
             }
          }
          return PartialView (model);
@@ -158,14 +154,6 @@ namespace SeekDeepWithin.Controllers
       private static void SetHeadersAndFooters (LoveModel model)
       {
          var remove = new List<SdwItem> ();
-         // Alias => Order = the order of the corresponding item; Number = -1.
-         foreach (var alias in model.ToAdd.Where (li => li.Order.HasValue && li.Number.HasValue && li.Number == -1)) {
-            var item = model.ToAdd.FirstOrDefault (li => li.Order == alias.Order && li.Id != alias.Id);
-            if (item != null) {
-               item.Text = alias.Text;
-               remove.Add (alias);
-            }
-         }
          // Headers => Order = 0; Number = The corresponding item.
          foreach (var header in model.ToAdd.Where (li => li.Order.HasValue && li.Order == 0 && li.Number.HasValue)) {
             var item = model.ToAdd.FirstOrDefault (li => li.Number == header.Number && li.Id != header.Id);

@@ -13,7 +13,7 @@ namespace SeekDeepWithin
             //"~/Scripts/jquery.history.js",
             "~/Scripts/fastclick.js",
             "~/Scripts/velocity.js",
-            "~/Scripts/velocity.ui.js",
+            //"~/Scripts/velocity.ui.js",
             //"~/Scripts/jsPlumb-2.0.5.js",
             "~/Scripts/sdw/sdw.common.js"));
 

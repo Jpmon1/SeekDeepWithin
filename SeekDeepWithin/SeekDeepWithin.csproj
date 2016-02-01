@@ -277,6 +277,8 @@
     <Content Include="..\README.md">
       <Link>README.md</Link>
     </Content>
+    <None Include="Properties\PublishProfiles\Azure.pubxml" />
+    <None Include="Properties\PublishProfiles\SeekDeepWithin %282%29.pubxml" />
     <None Include="Properties\PublishProfiles\SeekDeepWithin.pubxml" />
     <Content Include="Images\about.png" />
     <Content Include="Images\aboutw.png" />

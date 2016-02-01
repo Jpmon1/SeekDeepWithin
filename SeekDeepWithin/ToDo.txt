@@ -1,4 +1,3 @@
-Move edit out of sdw.seek.js.
 Update Edit pages, add history
 Color code each train of light
 Amazon Items
@@ -9,49 +8,21 @@ Light Item Menu:
    Heart (fav)
    ???Close/Remove
    Link to here - Share
-   Facebook/Twitter post - Share
+   Facebook/Twitter post - Share/Email
 Verify:
    Tags
-   Footers
    Authors
    Sources
 
 Comments
 Filtered search
 Filter books/terms by tags, etc.
-Edit number and order of chapter
 Notes
-Images...
 Save books to PDF/XPS/TXT/DOC
-View sources from glossary instead of having to go to the item and then select the source.
 Treasury of Scripture Knowledge (References)
-Read - View paragraph and numbers.
-View Search as List/Tree
-View books a list
-Facebook/twitter/email share
-Adiminstration Page
-View for Roles
-Bookmarks
-Favorites
-Sub book alias
-User preferences
-   View footers at end or after verse
-   if editor show edit item
-   Highlight alternating rows
-Sub book details should show different versions of sub book.
 Glossary Entry voting
-Book on amazon links
 Read multiple books
-Search while reading
-Search headers/footers.
-Definitions (Glossary entry ballons)
 Google/Facebook login
-Random Verse - Change to Daily
-Daily devotionals
 Android/iOS app
 Help
 Api
-News/Updates
-Convert all action links to url.action with absolute uri
-Remove code duplication between glossary entries and reading passages.
-Add tags and authors to terms with the same name.

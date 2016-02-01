@@ -1,28 +1,10 @@
 ﻿var SdwEdit = {
 
    init: function () {
-      $('#addArea').hide();
+      $('#formatArea').hide();
       $('#linkArea').hide();
-      $('#addTruthAppendText').autocomplete({
-         serviceUrl: '/Seek/AutoComplete',
-         paramName: 'text',
-         noCache: true,
-         deferRequestBy:500,
-         onSelect: function(suggestion) {
-            $('#addTruthAppendText').val(suggestion.value);
-            $('#addTruthAppendText').data('lightId', suggestion.data);
-         }
-      });
-      $('#editLightSearch').autocomplete({
-         serviceUrl: '/Seek/AutoComplete',
-         paramName: 'text',
-         noCache: true,
-         deferRequestBy: 500,
-         onSelect: function (suggestion) {
-            $('#editLightSearch').val(suggestion.value);
-            $('#editLightSearch').data('lightId', suggestion.data);
-         }
-      });
+      SdwEdit._initAC($('#addTruthAppendText'));
+      SdwEdit._initAC($('#editLightSearch'));
       $('#addTruthFormatRegex').val($("#addTruthCurrentRegex option:selected").text());
       $('#addTruthCurrentRegex').change(function() {
          $('#addTruthFormatRegex').val($("#addTruthCurrentRegex option:selected").text());
@@ -40,22 +22,29 @@
          var id = $('#editLightSearch').data('lightId');
          SdwEdit.lightGet(id, 1);
       });
-      $('#btnAdd').click(function(e) {
+      $('#btnViewFormat').click(function (e) {
          e.preventDefault();
          $('#editArea').hide();
          $('#linkArea').hide();
-         $('#addArea').show();
+         $('#formatArea').show();
       });
       $('#btnEdit').click(function (e) {
          e.preventDefault();
          $('#linkArea').hide();
-         $('#addArea').hide();
+         $('#formatArea').hide();
+         $('#editArea').show();
+      });
+      $('#btnCopy').click(function (e) {
+         e.preventDefault();
+         $('#addTruthText').val($('#formattedText').val());
+         $('#linkArea').hide();
+         $('#formatArea').hide();
          $('#editArea').show();
       });
       $('#btnLink').click(function (e) {
          e.preventDefault();
          $('#editArea').hide();
-         $('#addArea').hide();
+         $('#formatArea').hide();
          $('#linkArea').show();
       });
       $('#btnCreateTruth').click(function(e) {
@@ -170,10 +159,10 @@
    },
 
    truthAppend: function() {
-      var text = $('#addTruthText').val();
+      var text = $('#formattedText').val();
       if (text != '') { text += '\n'; }
       text += $('#addTruthAppendOrder').val() + '|' + $('#addTruthAppendNumber').val() + '|' + $('#addTruthAppendText').val();
-      $('#addTruthText').val(text);
+      $('#formattedText').val(text);
    },
 
    truthEdit: function (id) {
@@ -202,17 +191,12 @@
                   $('#fI' + id).val(-sel.start);
                   $('#sI' + id).val(sel.start);
                   $('#eI' + id).val(sel.end);
-               } else if (lId == 'addA') {
-                  $('#addTruthText').val($('#order' + id).val() + '|-1|' + $('#alias' + id).val());
-                  SdwEdit.truthCreate();
                } else if (lId == 'addH') {
                   $('#addTruthText').val('0|' + $('#number' + id).val() + '|' + $('#header' + id).val());
-                  SdwEdit.truthCreate();
                } else if (lId == 'addF') {
                   var fIndex = $('#fI' + id).val();
                   if (fIndex != '' && fIndex != undefined) {
                      $('#addTruthText').val($('#fI' + id).val() + '|' + $('#number' + id).val() + '|' + $('#footer' + id).val());
-                     SdwEdit.truthCreate();
                   } else {
                      alert('Set the index first!');
                   }
@@ -220,9 +204,13 @@
                   SdwEdit.styleAdd(id);
                } else if (lId == 'delS') {
                   SdwEdit.styleRemove(link.data('s'));
+               } else if (lId == 'link') {
+                  var input = link.prev('input');
+                  SdwEdit._post('/Edit/LightAddLight', { id: link.data('l'), truth: input.val() }, function () { input.val(''); });
                }
             });
          });
+         SdwEdit._initAC(added.find('#txtLink').first());
          $('#ct' + id).after(added);
       });
    },
@@ -284,8 +272,7 @@
          if ($("#addTruthCurrentRegex option[value='" + d.regexId + "']").length <= 0) {
             $('#addTruthCurrentRegex').append($("<option></option>").attr("value", d.regexId).text(decodeURIComponent(d.regexText)));
          }
-         $('#addTruthText').val(d.items);
-         $('#editLove').velocity('scroll', { duration: 300 });
+         $('#formattedText').val(d.items);
       });
    },
 
@@ -296,12 +283,23 @@
    },
 
    styleAdd: function (id) {
+      var end = $('#sE' + id).val();
+      var start = $('#sS' + id).val();
+      var endI = $('#eI' + id).val();
+      var startI = $('#sI' + id).val();
+      if ((end == undefined || end == '') ||
+          (start == undefined || start == '') ||
+          (endI == undefined || endI == '') ||
+          (startI == undefined || startI == '')) {
+         alert('Please add all style info.');
+         return;
+      }
       SdwEdit._post('/Edit/TruthAddStyle', {
          id: id,
-         startIndex: $('#sI' + id).val(),
-         endIndex: $('#eI' + id).val(),
-         start: encodeURIComponent($('#sS' + id).val()),
-         end: encodeURIComponent($('#sE' + id).val())
+         startIndex: startI,
+         endIndex: endI,
+         start: encodeURIComponent(start),
+         end: encodeURIComponent(end)
       }, function () {
          SdwEdit.truthEdit(id);
       });
@@ -416,6 +414,19 @@
             console.log(url + ': ' + JSON.stringify(d));
          });
       }, 300);
+   },
+
+   _initAC:function(item) {
+      item.autocomplete({
+         serviceUrl: '/Seek/AutoComplete',
+         paramName: 'text',
+         noCache: true,
+         deferRequestBy:500,
+         onSelect: function(suggestion) {
+            item.val(suggestion.value);
+            item.data('lightId', suggestion.data);
+         }
+      });
    },
 
 };

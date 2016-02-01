@@ -13,6 +13,8 @@
 .pRight {padding-right: 1.125rem;}
 .pBottom {padding-bottom: 1.125rem;}
 .pNone { padding: 0; }
+.small-text{ font-size: small;}
+.smaller-text{ font-size: x-small;}
 a, a:hover, a:visited {
    color: black;
    text-decoration: none;
@@ -28,6 +30,7 @@ a, a:hover, a:visited {
    z-index: 3000;
    padding: 1rem 0.5rem;
    background-color: #32373b;
+   position: fixed;
 }
 .top-menu-search {
    margin: 0;

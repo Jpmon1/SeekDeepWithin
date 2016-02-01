@@ -20,14 +20,6 @@
                sdw.love(e.currentTarget);
             });
          });
-         added.find('a').each(function (i, o) {
-            var input = $(o).prev('input');
-            setSearch(input);
-            $(o).click(function (e) {
-               e.preventDefault();
-               SdwEdit._post('/Edit/LightAddLight', { id: $(e.currentTarget).data('l'), truth: input.val() }, function () { input.val(''); });
-            });
-         });
          var container = $('#lightList');
          if (clicked && isNaN(clicked)) {
             var column = item.closest('.column');
@@ -54,7 +46,8 @@
          container.append(added);
          container.masonry('reloadItems');
          container.masonry('layout').one('layoutComplete', function () {
-            last.velocity('scroll', { duration: 1000 });
+            //window.scroll(0, last.offset().top);
+            last.velocity('scroll', { duration: 700 });
          });
          SdwCommon.loadStop();
       });
@@ -86,7 +79,7 @@ $(document).ready(function () {
          $('#btnSearch').detach()
             .addClass('top-menu-search white')
             .removeClass('alt')
-            .css({ 'padding': '0.333rem' })
+            .css({ 'padding': '0.333rem', 'margin': 0 })
             .appendTo('#menuBtnSearch');
          $('#mainSearch').html('<input type="text" placeholder="Search" />');
       } else if (window.menusearch && top < searchTop) {
@@ -96,7 +89,8 @@ $(document).ready(function () {
             .removeClass('top-menu-search').appendTo('#mainSearch');
          $('#btnSearch').detach()
             .removeClass('top-menu-search white')
-            .addClass('alt').css({ 'padding': '0.625rem 1.25rem 0.6875rem 1.25rem' })
+            .addClass('alt')
+            .css({ 'padding': '0.625rem 1.25rem 0.6875rem 1.25rem', 'margin': '0 0 1rem;' })
             .appendTo('#mainBtnSearch');
       }
       if (top == $(document).height() - $(window).height()) {

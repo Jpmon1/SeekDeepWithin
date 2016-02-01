@@ -232,6 +232,7 @@ namespace SeekDeepWithin.Controllers
          if (!love.Truths.Any (t => t.Light != null && t.Light.Id == id))
             love.Truths.Add(new Truth { Light = light});
          this.Database.Save ();
+         LightSearch.AddOrUpdateIndex (light);
          return this.Success ();
       }
 

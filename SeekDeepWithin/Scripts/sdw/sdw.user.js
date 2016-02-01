@@ -1,5 +1,5 @@
 ﻿$(document).ready(function() {
-   $('#saveOk').velocity('transition.fadeOut');
+   $('#saveOk').hide();
    $('#btnSave').click(function(e) {
       e.preventDefault();
       $.ajax({
@@ -8,8 +8,9 @@
          data: {
             LoadOnScroll: $('#LoadOnScroll').prop('checked')
          }
-      }).done(function() {
-         $('#saveOk').velocity('transition.fadeIn').velocity('transition.fadeOut');
+      }).done(function () {
+         $('#saveOk').show();
+         setTimeout(function() {$('#saveOk').hide();}, 700);
       }).fail(function(d) {
          alert(d.responseText);
       });

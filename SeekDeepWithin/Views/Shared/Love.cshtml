@@ -1,18 +1,6 @@
 ﻿@using SeekDeepWithin.Controllers
 @model SeekDeepWithin.Models.LoveModel
 @{ var renderer = new SdwRenderer { SearchText = ViewBag.Search };}
-@if (ViewBag.EditItem != null) {
-   <div class="small-12 medium-4 large-4 column">
-      <div class="light edit">
-         <div style="font-size: x-small">@(ViewBag.EditItemText)</div>
-         <div class="input-group">
-            <span class="input-group-label">Link</span>
-            <input class="input-group-field" type="text" />
-            <a data-l="@(ViewBag.EditItem)" class="input-group-button button">Add</a>
-         </div>
-      </div>
-   </div>
-}
 @foreach (var item in Model.ToAdd.OrderBy (i => i.Order ?? 0)) {
    var id = Guid.NewGuid ().ToString ().Replace ("-", "");
    var text = renderer.Render (item);
@@ -43,7 +31,7 @@
                <div class="row mTopSml">
                   <div class="small-10 small-offset-2 large-11 large-offset-1 columns text-left">
                      @foreach (var footer in item.Footers) {
-                        <div style="font-size: x-small"><sup>(@(footer.Number))</sup> @(Html.Raw (renderer.Render (footer)))</div>
+                        <div class="smaller-text"><sup>(@(footer.Number))</sup> @(Html.Raw (renderer.Render (footer)))</div>
                      }
                   </div>
                </div>
@@ -51,7 +39,7 @@
          } else {
             @(Html.Raw(text))
          }
-         @if (!string.IsNullOrEmpty (item.Title)) { <div style="font-size: x-small" class="mNone">@(item.Title)</div> }
+         @if (!string.IsNullOrEmpty (item.Title)) { <div class="smaller-text mNone">@(item.Title)</div> }
       </div>
       @*<div style="float: left; width: 0; max-width: 20%;"><a class="sdw-button err expand">H</a></div>*@
    </div>

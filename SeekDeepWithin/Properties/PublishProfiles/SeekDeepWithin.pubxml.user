@@ -14,13 +14,13 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>10/19/2014 06:18:05</publishTime>
     </File>
     <File Include="bin/App_global.asax.compiled">
-      <publishTime>01/27/2016 06:56:23</publishTime>
+      <publishTime>01/30/2016 10:29:39</publishTime>
     </File>
     <File Include="bin/App_global.asax.dll">
-      <publishTime>01/27/2016 06:56:23</publishTime>
+      <publishTime>01/30/2016 10:29:39</publishTime>
     </File>
     <File Include="bin/App_global.asax.pdb">
-      <publishTime>01/27/2016 06:56:23</publishTime>
+      <publishTime>01/30/2016 10:29:39</publishTime>
     </File>
     <File Include="bin/DataAnnotationsExtensions.dll">
       <publishTime>01/15/2015 10:05:51</publishTime>
@@ -146,7 +146,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>10/19/2014 06:18:02</publishTime>
     </File>
     <File Include="bin/SeekDeepWithin.dll">
-      <publishTime>01/26/2016 14:39:11</publishTime>
+      <publishTime>01/30/2016 10:29:24</publishTime>
     </File>
     <File Include="bin/SeekDeepWithin.Domain.dll">
       <publishTime>12/11/2014 10:43:19</publishTime>
@@ -335,7 +335,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>06/03/2015 11:47:03</publishTime>
     </File>
     <File Include="Content/sdw/sdw.autocomplete.css">
-      <publishTime>01/12/2016 13:05:27</publishTime>
+      <publishTime>01/29/2016 12:59:16</publishTime>
     </File>
     <File Include="Content/sdw/sdw.base.css">
       <publishTime>07/03/2015 11:12:31</publishTime>
@@ -350,7 +350,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>06/05/2015 08:34:25</publishTime>
     </File>
     <File Include="Content/sdw/sdw.style.css">
-      <publishTime>01/27/2016 06:52:03</publishTime>
+      <publishTime>01/28/2016 10:42:50</publishTime>
     </File>
     <File Include="Content/sdw/sdw.switch.css">
       <publishTime>06/09/2015 11:58:15</publishTime>
@@ -707,7 +707,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>06/09/2015 12:01:07</publishTime>
     </File>
     <File Include="PrecompiledApp.config">
-      <publishTime>01/27/2016 06:56:20</publishTime>
+      <publishTime>01/30/2016 10:29:35</publishTime>
     </File>
     <File Include="README.md">
       <publishTime>12/18/2014 08:28:50</publishTime>
@@ -971,7 +971,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>04/29/2015 06:40:09</publishTime>
     </File>
     <File Include="Scripts/sdw/sdw.edit.js">
-      <publishTime>01/27/2016 06:10:18</publishTime>
+      <publishTime>01/28/2016 14:49:34</publishTime>
     </File>
     <File Include="Scripts/sdw/sdw.editchapter.js">
       <publishTime>03/23/2015 07:26:26</publishTime>
@@ -1022,7 +1022,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>06/30/2015 14:20:12</publishTime>
     </File>
     <File Include="Scripts/sdw/sdw.seek.js">
-      <publishTime>01/27/2016 06:09:53</publishTime>
+      <publishTime>01/30/2016 10:28:25</publishTime>
     </File>
     <File Include="Scripts/sdw/sdw.select.js">
       <publishTime>06/26/2015 09:37:21</publishTime>
@@ -1061,7 +1061,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>12/18/2014 08:19:27</publishTime>
     </File>
     <File Include="ToDo.txt">
-      <publishTime>01/26/2016 13:39:51</publishTime>
+      <publishTime>01/28/2016 14:52:02</publishTime>
     </File>
     <File Include="Views/Account/ExternalLoginConfirmation.cshtml">
       <publishTime>12/18/2014 08:19:27</publishTime>
@@ -1148,7 +1148,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>01/26/2016 08:55:26</publishTime>
     </File>
     <File Include="Views/Edit/Index.cshtml">
-      <publishTime>01/26/2016 14:29:36</publishTime>
+      <publishTime>01/28/2016 06:56:17</publishTime>
     </File>
     <File Include="Views/Edit/Light.cshtml">
       <publishTime>01/25/2016 06:59:06</publishTime>
@@ -1163,13 +1163,13 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>01/21/2016 11:50:15</publishTime>
     </File>
     <File Include="Views/Edit/TruthEdit.cshtml">
-      <publishTime>01/26/2016 13:13:27</publishTime>
+      <publishTime>01/28/2016 08:49:03</publishTime>
     </File>
     <File Include="Views/Edit/TruthLinks.cshtml">
       <publishTime>01/22/2016 14:41:57</publishTime>
     </File>
     <File Include="Views/Edit/Truths.cshtml">
-      <publishTime>01/26/2016 10:25:02</publishTime>
+      <publishTime>01/28/2016 06:47:08</publishTime>
     </File>
     <File Include="Views/Edit/VersionLinks.cshtml">
       <publishTime>01/25/2016 08:08:35</publishTime>
@@ -1223,7 +1223,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>01/21/2016 14:42:58</publishTime>
     </File>
     <File Include="Views/Home/Index.cshtml">
-      <publishTime>01/25/2016 10:20:01</publishTime>
+      <publishTime>01/28/2016 14:34:36</publishTime>
     </File>
     <File Include="Views/Light/Edit.cshtml">
       <publishTime>01/14/2016 07:08:51</publishTime>
@@ -1292,7 +1292,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>12/18/2014 08:19:27</publishTime>
     </File>
     <File Include="Views/Shared/Love.cshtml">
-      <publishTime>01/25/2016 13:01:57</publishTime>
+      <publishTime>01/30/2016 10:21:44</publishTime>
     </File>
     <File Include="Views/Shared/_AddEntries.cshtml">
       <publishTime>07/06/2015 06:58:41</publishTime>

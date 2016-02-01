@@ -52,3 +52,7 @@ Temporary Items
 SeekDeepWithin/Web.config
 SeekDeepWithin/Web.Release.config
 *.config
+*.user
+*.pdat
+*.sql
+*.pubxml

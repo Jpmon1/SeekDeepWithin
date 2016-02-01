@@ -17,18 +17,14 @@
 <div class="row">
    <div class="small-4 column"><a id="btnEdit" class="sdw-button white expand small">Edit</a></div>
    <div class="small-4 column"><a id="btnLink" class="sdw-button white expand small">Link</a></div>
-   <div class="small-4 column"><a id="btnAdd" class="sdw-button white expand small">Add</a></div>
+   <div class="small-4 column"><a id="btnViewFormat" class="sdw-button white expand small">Format</a></div>
 </div>
-<div id="addArea" class="row">
+<div id="formatArea" class="row">
    <div class="small-12 medium-6 large-6 column">
-      <div class="row column">Data for importing<textarea rows="5" id="addTruthText"></textarea></div>
-      <div class="row column" id="addTruthLinks"></div>
-      <div class="row column" id="addVersionLinks"></div>
+      <div class="row column">Formatted Data<textarea rows="10" id="formattedText"></textarea></div>
       <div class="row column">
-         <a id="btnCreateTruth" class="sdw-button add expand">Add</a>
+         <a id="btnCopy" class="sdw-button reg tiny expand">Copy to Add</a>
       </div>
-   </div>
-   <div class="small-12 medium-6 large-6 column">
       <div class="row column">Text<input type="text" id="addTruthAppendText" /></div>
       <div class="row">
          <div class="small-12 medium-6 large-6 column">Order<input type="number" id="addTruthAppendOrder" /></div>
@@ -37,7 +33,6 @@
       <div class="row column">
          <div class="callout small text-center warning">
             <em style="font-size:smaller;">
-               Alias => Order = the order of the corresponding item; Number = -1.<br />
                Headers => Order = 0; Number = The corresponding item.<br />
                Footers => Order = the negative index of the footer; Number = The corresponding item.
             </em>
@@ -46,7 +41,9 @@
       <div class="row">
          <div class="small-12 column"><a id="btnAppendTruth" class="sdw-button reg expand tiny">Append &uArr;</a></div>
       </div>
-      <div class="row column">Format text for importing<textarea rows="5" id="addTruthFormatText"></textarea></div>
+   </div>
+   <div class="small-12 medium-6 large-6 column">
+      <div class="row column">Format text for importing<textarea rows="10" id="addTruthFormatText"></textarea></div>
       <div class="row column">Regular Expression to use for importing<input type="text" id="addTruthFormatRegex" /></div>
       <div class="row column">
          Current Regular Expressions
@@ -66,7 +63,15 @@
 </div>
 <div id="editArea">
    <div class="row column mTop"><em>Current Truth:</em></div>
-   <div id="truthArea"></div>
+   <div class="row column" id="truthArea"></div>
+   <div class="row column">Data for importing<textarea rows="5" id="addTruthText"></textarea></div>
+   <div class="row column">
+      <div class="small-12 medium-6 large-6 column" id="addTruthLinks"></div>
+      <div class="small-12 medium-6 large-6 column" id="addVersionLinks"></div>
+   </div>
+   <div class="row column">
+      <a id="btnCreateTruth" class="sdw-button add expand">Add</a>
+   </div>
 </div>
 <div id="linkArea">
    <div class="row column callout" id="linkLove"></div>
