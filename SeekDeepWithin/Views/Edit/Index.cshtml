@@ -15,51 +15,8 @@
    <div id="editLove" class="row column"></div>
 </div>
 <div class="row">
-   <div class="small-4 column"><a id="btnEdit" class="sdw-button white expand small">Edit</a></div>
-   <div class="small-4 column"><a id="btnLink" class="sdw-button white expand small">Link</a></div>
-   <div class="small-4 column"><a id="btnViewFormat" class="sdw-button white expand small">Format</a></div>
-</div>
-<div id="formatArea" class="row">
-   <div class="small-12 medium-6 large-6 column">
-      <div class="row column">Formatted Data<textarea rows="10" id="formattedText"></textarea></div>
-      <div class="row column">
-         <a id="btnCopy" class="sdw-button reg tiny expand">Copy to Add</a>
-      </div>
-      <div class="row column">Text<input type="text" id="addTruthAppendText" /></div>
-      <div class="row">
-         <div class="small-12 medium-6 large-6 column">Order<input type="number" id="addTruthAppendOrder" /></div>
-         <div class="small-12 medium-6 large-6 column">Number<input type="number" id="addTruthAppendNumber" /></div>
-      </div>
-      <div class="row column">
-         <div class="callout small text-center warning">
-            <em style="font-size:smaller;">
-               Headers => Order = 0; Number = The corresponding item.<br />
-               Footers => Order = the negative index of the footer; Number = The corresponding item.
-            </em>
-         </div>
-      </div>
-      <div class="row">
-         <div class="small-12 column"><a id="btnAppendTruth" class="sdw-button reg expand tiny">Append &uArr;</a></div>
-      </div>
-   </div>
-   <div class="small-12 medium-6 large-6 column">
-      <div class="row column">Format text for importing<textarea rows="10" id="addTruthFormatText"></textarea></div>
-      <div class="row column">Regular Expression to use for importing<input type="text" id="addTruthFormatRegex" /></div>
-      <div class="row column">
-         Current Regular Expressions
-         <select id="addTruthCurrentRegex">
-            @foreach (FormatRegex regex in ViewBag.Regexs) {
-               <option value="@regex.Id">@(regex.Regex)</option>}
-         </select>
-      </div>
-      <div class="row">
-         <div class="small-12 medium-6 large-6 column">Start Order<input type="number" id="addTruthFormatOrder" /></div>
-         <div class="small-12 medium-6 large-6 column">Start Number<input type="number" id="addTruthFormatNumber" /></div>
-      </div>
-      <div class="row column">
-         <a id="btnFormat" class="sdw-button reg tiny expand">Format</a>
-      </div>
-   </div>
+   <div class="small-6 column"><a id="btnEdit" class="sdw-button white expand small">Edit</a></div>
+   <div class="small-6 column"><a id="btnLink" class="sdw-button white expand small">Link</a></div>
 </div>
 <div id="editArea">
    <div class="row column mTop"><em>Current Truth:</em></div>
@@ -71,6 +28,36 @@
    </div>
    <div class="row column">
       <a id="btnCreateTruth" class="sdw-button add expand">Add</a>
+   </div>
+   <div class="row column">Format text for importing<textarea rows="10" id="addTruthFormatText"></textarea></div>
+   <div class="row">
+      <div class="small-12 medium-6 large-6 column">
+         Regular Expression to use for importing<input type="text" id="addTruthFormatRegex" />
+      </div>
+      <div class="small-12 medium-6 large-6 column">
+         Known Regular Expressions
+         <select id="addTruthCurrentRegex">
+            @foreach (FormatRegex regex in ViewBag.Regexs) {
+               <option value="@regex.Id">@(regex.Regex)</option>}
+         </select>
+      </div>
+   </div>
+   <div class="row">
+      <div class="small-4 column">Start Order</div>
+      <div class="small-4 column end">Start Number</div>
+   </div>
+   <div class="row">
+      <div class="small-4 column"><input type="number" id="addTruthFormatOrder" /></div>
+      <div class="small-4 column"><input type="number" id="addTruthFormatNumber" /></div>
+      <div class="small-4 column"><a id="btnFormat" class="sdw-button reg tiny expand">Format</a></div>
+   </div>
+   <div class="row column">
+      <div class="callout small text-center warning">
+         <em style="font-size:smaller;">
+            Headers => Order = 0; Number = The corresponding item.<br />
+            Footers => Order = the negative index of the footer; Number = The corresponding item.
+         </em>
+      </div>
    </div>
 </div>
 <div id="linkArea">

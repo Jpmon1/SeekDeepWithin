@@ -45,6 +45,10 @@ namespace SeekDeepWithin.Controllers
             var loves = (from peace in light.Peaces
                          where peace.Love.Peaces.All (p => ids.Contains (p.Light.Id))
                          select peace.Love).ToList ();
+            /*var histLoves = (from peace in light.Peaces
+                         where peace.Love.Peaces.All (p => histIds.Contains (p.Light.Id) || p.Light.Id == id)
+                         select peace.Love).ToList ();
+            loves.AddRange(histLoves.Where (l => loves.All (lo => lo.PeaceId != l.PeaceId)));*/
             if (loves.Count > 0) {
                var max = loves.Where(l => l.Truths.Any ()).Max (l => l.Peaces.Count);
                foreach (var love in loves.Where (l => l.Peaces.Count == max)) {
@@ -57,10 +61,11 @@ namespace SeekDeepWithin.Controllers
                         truthLove = this.Database.Love.Get (truth.ParentId.Value);
                         truthIds.AddRange (truthLove.Peaces.Select (p => p.Light.Id));
                      }
-                     if ((truthLove == null && truthIds.All (ids.Contains))||
+                     if ((truthLove == null && truthIds.All (ids.Contains)) ||
                          (truthIds.All (histIds.Contains) && !truth.Number.HasValue) ||
-                         (truth.Light !=null && truth.Order == null && model.ToAdd.Any (i => i.Id == truth.Light.Id)) )
+                         (truth.Light != null && truth.Order == null && model.ToAdd.Any (i => i.Id == truth.Light.Id))) {
                         continue;
+                     }
 
                      if (truthLove == null && truthIds.Count <= 0)
                         continue;
@@ -88,6 +93,7 @@ namespace SeekDeepWithin.Controllers
                         item.Parents = hash.Encode (parentIds);
                         item.IsSelected = histIds.Contains (truth.Light.Id);
                         item.Title = GetTitle ((parents.Count > 0) ? parents : truth.Number.HasValue ? love.Peaces : new List <Peace> ());
+                        if (string.IsNullOrEmpty (item.Title)) item.History = string.Empty;
                      }
                      model.ToAdd.Add (item);
                   }

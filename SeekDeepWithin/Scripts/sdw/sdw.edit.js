@@ -1,9 +1,7 @@
 ﻿var SdwEdit = {
 
    init: function () {
-      $('#formatArea').hide();
       $('#linkArea').hide();
-      SdwEdit._initAC($('#addTruthAppendText'));
       SdwEdit._initAC($('#editLightSearch'));
       $('#addTruthFormatRegex').val($("#addTruthCurrentRegex option:selected").text());
       $('#addTruthCurrentRegex').change(function() {
@@ -22,29 +20,14 @@
          var id = $('#editLightSearch').data('lightId');
          SdwEdit.lightGet(id, 1);
       });
-      $('#btnViewFormat').click(function (e) {
-         e.preventDefault();
-         $('#editArea').hide();
-         $('#linkArea').hide();
-         $('#formatArea').show();
-      });
       $('#btnEdit').click(function (e) {
          e.preventDefault();
          $('#linkArea').hide();
-         $('#formatArea').hide();
-         $('#editArea').show();
-      });
-      $('#btnCopy').click(function (e) {
-         e.preventDefault();
-         $('#addTruthText').val($('#formattedText').val());
-         $('#linkArea').hide();
-         $('#formatArea').hide();
          $('#editArea').show();
       });
       $('#btnLink').click(function (e) {
          e.preventDefault();
          $('#editArea').hide();
-         $('#formatArea').hide();
          $('#linkArea').show();
       });
       $('#btnCreateTruth').click(function(e) {
@@ -158,22 +141,16 @@
       });
    },
 
-   truthAppend: function() {
-      var text = $('#formattedText').val();
-      if (text != '') { text += '\n'; }
-      text += $('#addTruthAppendOrder').val() + '|' + $('#addTruthAppendNumber').val() + '|' + $('#addTruthAppendText').val();
-      $('#formattedText').val(text);
-   },
-
    truthEdit: function (id) {
       var curr = $('#et' + id);
       if (curr.length > 0) { curr.remove(); }
       SdwCommon.get('/Edit/TruthEdit', { id: id }, function (html) {
          var added = $(html);
          added.find('a').each(function (i, l) {
-            var link = $(l);
+            var link = $(l), input, text;
             var lId = link.attr('id');
-            link.click(function () {
+            link.click(function (e) {
+               e.preventDefault();
                if (lId == 'addE') {
                   SdwEdit.lightGet(link.data('l'), 0);
                } else if (lId == 'addL') {
@@ -192,25 +169,70 @@
                   $('#sI' + id).val(sel.start);
                   $('#eI' + id).val(sel.end);
                } else if (lId == 'addH') {
-                  $('#addTruthText').val('0|' + $('#number' + id).val() + '|' + $('#header' + id).val());
+                  input = link.prev('input');
+                  text = $('#addTruthText').val();
+                  if (text != '') { text += '\n'; }
+                  text += '0|' + $('#number' + id).val() + '|' + input.val();
+                  $('#addTruthText').val(text);
                } else if (lId == 'addF') {
+                  input = link.prev('input');
                   var fIndex = $('#fI' + id).val();
-                  if (fIndex != '' && fIndex != undefined) {
-                     $('#addTruthText').val($('#fI' + id).val() + '|' + $('#number' + id).val() + '|' + $('#footer' + id).val());
-                  } else {
-                     alert('Set the index first!');
-                  }
+                  text = $('#addTruthText').val();
+                  if (text != '') { text += '\n'; }
+                  text += fIndex + '|' + $('#number' + id).val() + '|' + input.val();
+                  $('#addTruthText').val(text);
                } else if (lId == 'addS') {
                   SdwEdit.styleAdd(id);
                } else if (lId == 'delS') {
                   SdwEdit.styleRemove(link.data('s'));
                } else if (lId == 'link') {
-                  var input = link.prev('input');
+                  input = link.prev('input');
                   SdwEdit._post('/Edit/LightAddLight', { id: link.data('l'), truth: input.val() }, function () { input.val(''); });
+               } else if (lId == 'btnB') {
+                  $('#sS' + id).val('<strong>');
+                  $('#sE' + id).val('</strong>');
+               } else if (lId == 'btnI') {
+                  $('#sS' + id).val('<em>');
+                  $('#sE' + id).val('</em>');
+               } else if (lId == 'btnL') {
+                  $('#sS' + id).val('<div class="text-left">');
+                  $('#sE' + id).val('</div>');
+               } else if (lId == 'btnC') {
+                  $('#sS' + id).val('<div class="text-center">');
+                  $('#sE' + id).val('</div>');
+               } else if (lId == 'btnR') {
+                  $('#sS' + id).val('<div class="text-right">');
+                  $('#sE' + id).val('</div>');
+               } else if (lId == 'btnD') {
+                  $('#sS' + id).val('<div>');
+                  $('#sE' + id).val('</div>');
+               } else if (lId == 'btnQ') {
+                  $('#sS' + id).val('<blockquote>');
+                  $('#sE' + id).val('</blockquote>');
+               } else if (lId == 'btnS') {
+                  $('#sS' + id).val('<div class="small-text">');
+                  $('#sE' + id).val('</div>');
+               } else if (lId == 'btnXS') {
+                  $('#sS' + id).val('<div class="smaller-text">');
+                  $('#sE' + id).val('</div>');
+               } else if (lId == 'btnOL') {
+                  $('#sS' + id).val('<ol>');
+                  $('#sE' + id).val('</ol>');
+               } else if (lId == 'btnUL') {
+                  $('#sS' + id).val('<ul>');
+                  $('#sE' + id).val('</ul>');
+               } else if (lId == 'btnLI') {
+                  $('#sS' + id).val('<li>');
+                  $('#sE' + id).val('</li>');
+               } else if (lId == 'btnDI') {
+                  $('#sS' + id).val('<div class="italic">');
+                  $('#sE' + id).val('</div>');
                }
             });
          });
          SdwEdit._initAC(added.find('#txtLink').first());
+         SdwEdit._initAC(added.find('#txtHeader').first());
+         SdwEdit._initAC(added.find('#txtFooter').first());
          $('#ct' + id).after(added);
       });
    },
@@ -272,7 +294,7 @@
          if ($("#addTruthCurrentRegex option[value='" + d.regexId + "']").length <= 0) {
             $('#addTruthCurrentRegex').append($("<option></option>").attr("value", d.regexId).text(decodeURIComponent(d.regexText)));
          }
-         $('#formattedText').val(d.items);
+         $('#addTruthText').val(d.items);
       });
    },
 
