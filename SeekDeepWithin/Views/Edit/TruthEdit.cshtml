@@ -24,27 +24,29 @@
       <div class="small-4 column"><a id="saveT" class="sdw-button reg expand tiny">Save</a></div>
    </div>
    @if (Model.Light != null) {
+      <div class="row column">
+         <div class="input-group">
+            <span class="input-group-label">Link</span>
+            <input class="input-group-field" type="text" id="txtLink" />
+            <a id="link" data-l="@(Model.Light.Id)" class="input-group-button button">Add</a>
+         </div>
+      </div>
       <div class="row">
          <div class="small-12 medium-10 large-10 column">
-            <textarea id="txtL@(Model.Light.Id)" rows="3">@(Model.Light.Text)</textarea>
+            <textarea id="txtLight" rows="3">@(Model.Light.Text)</textarea>
          </div>
          <div class="small-12 medium-2 large-2 column">
             <a id="saveL" data-l="@(Model.Light.Id)" class="sdw-button reg tiny expand">Save</a>
             <a id="index" data-l="@(Model.Light.Id)" class="sdw-button alt tiny expand">Get Index</a>
          </div>
       </div>
-      <div class="row column">
-         <div class="input-group">
-            <span class="input-group-label">Header</span>
-            <input class="input-group-field" type="text" id="txtHeader" />
-            <a id="addH" class="input-group-button button">Add</a>
+      <div class="row">
+         <div class="small-12 medium-10 large-10 column">
+            <textarea id="txtHF" rows="3"></textarea>
          </div>
-      </div>
-      <div class="row column">
-         <div class="input-group">
-            <span class="input-group-label">Footer</span><input type="hidden" id="fI@(Model.Id)" />
-            <input class="input-group-field" type="text" id="txtFooter" />
-            <a id="addF" class="input-group-button button">Add</a>
+         <div class="small-12 medium-2 large-2 column">
+            <a id="addH" class="sdw-button reg tiny expand">Header</a>
+            <a id="addF" class="sdw-button alt tiny expand">Footer</a>
          </div>
       </div>
       <div class="row column">
@@ -83,12 +85,5 @@
             </div>
          </div>
       }
-      <div class="row column">
-         <div class="input-group">
-            <span class="input-group-label">Link</span>
-            <input class="input-group-field" type="text" id="txtLink" />
-            <a id="link" data-l="@(Model.Light.Id)" class="input-group-button button">Add</a>
-         </div>
-      </div>
    }
 </div>

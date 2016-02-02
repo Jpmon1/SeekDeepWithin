@@ -19,7 +19,6 @@
             if (ok && success) {
                success(d);
             }
-            SdwCommon.loadStop();
          }).fail(function(d) {
             SdwCommon.loadStop(true);
             console.log(url + ': ' + JSON.stringify(d));

@@ -92,7 +92,7 @@ namespace SeekDeepWithin.Controllers
                         var parentIds = parents.Select (p => p.Light.Id).ToList ();
                         item.Parents = hash.Encode (parentIds);
                         item.IsSelected = histIds.Contains (truth.Light.Id);
-                        item.Title = GetTitle ((parents.Count > 0) ? parents : truth.Number.HasValue ? love.Peaces : new List <Peace> ());
+                        item.Title = GetTitle ((parents.Count > 0) ? parents : truth.Number.HasValue || love.Peaces.Count > 1 ? love.Peaces : new List <Peace> ());
                         if (string.IsNullOrEmpty (item.Title)) item.History = string.Empty;
                      }
                      model.ToAdd.Add (item);
@@ -164,6 +164,7 @@ namespace SeekDeepWithin.Controllers
          foreach (var header in model.ToAdd.Where (li => li.Order.HasValue && li.Order == 0 && li.Number.HasValue)) {
             var item = model.ToAdd.FirstOrDefault (li => li.Number == header.Number && li.Id != header.Id);
             if (item != null) {
+               if (header.IsSelected) item.IsSelected = true;
                item.Headers.Add (header);
                remove.Add (header);
             }
@@ -172,6 +173,7 @@ namespace SeekDeepWithin.Controllers
          foreach (var footer in model.ToAdd.Where (li => li.Order.HasValue && li.Order < 0 && li.Number.HasValue)) {
             var item = model.ToAdd.FirstOrDefault (li => li.Number == footer.Number && li.Id != footer.Id);
             if (item != null) {
+               if (footer.IsSelected) item.IsSelected = true;
                item.Footers.Add (footer);
                remove.Add (footer);
             }

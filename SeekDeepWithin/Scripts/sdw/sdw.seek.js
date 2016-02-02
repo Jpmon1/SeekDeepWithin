@@ -29,7 +29,11 @@
          }
          container.masonry('reloadItems');
          container.masonry('layout');
-         SdwCommon.loadStop();
+         if (added.length == 1) {
+            sdw.love(added.find('.truth').first());
+         } else {
+            SdwCommon.loadStop();
+         }
       });
    },
 
@@ -47,9 +51,9 @@
          container.masonry('reloadItems');
          container.masonry('layout').one('layoutComplete', function () {
             //window.scroll(0, last.offset().top);
+            SdwCommon.loadStop();
             last.velocity('scroll', { duration: 700 });
          });
-         SdwCommon.loadStop();
       });
    },
 }

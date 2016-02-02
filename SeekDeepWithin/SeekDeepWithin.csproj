@@ -326,7 +326,6 @@
     <Content Include="Scripts\sdw\sdw.common.js" />
     <Content Include="Scripts\sdw\sdw.edit.js" />
     <Content Include="Scripts\sdw\sdw.seek.js" />
-    <Content Include="Scripts\sdw\sdw.style.js" />
     <Content Include="Scripts\sdw\sdw.user.js" />
     <Content Include="Scripts\sdw\selection.js" />
     <Content Include="Scripts\velocity.js" />
