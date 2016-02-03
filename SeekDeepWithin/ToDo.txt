@@ -1,9 +1,10 @@
-Update Edit pages, add history
+Add order and number for link truths.
 Color code each train of light
 Amazon Items
 Passage Parser
 Roles
 ???History....
+Re-add version links
 Light Item Menu:
    Heart (fav)
    ???Close/Remove

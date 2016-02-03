@@ -2,6 +2,7 @@
 
    init: function () {
       $('#linkArea').hide();
+      SdwEdit._initAC($('#txtNewLight'));
       SdwEdit._initAC($('#editLightSearch'));
       $('#addTruthFormatRegex').val($("#addTruthCurrentRegex option:selected").text());
       $('#addTruthCurrentRegex').change(function() {
@@ -13,12 +14,12 @@
       $('#btnAddToEdit').click(function (e) {
          e.preventDefault();
          var id = $('#editLightSearch').data('lightId');
-         SdwEdit.lightGet(id, 0);
+         SdwEdit._addToHist(0, id);
       });
       $('#btnAddToLink').click(function (e) {
          e.preventDefault();
          var id = $('#editLightSearch').data('lightId');
-         SdwEdit.lightGet(id, 1);
+         SdwEdit._addToHist(1, id);
       });
       $('#btnEdit').click(function (e) {
          e.preventDefault();
@@ -37,10 +38,6 @@
       $('#btnCreateLight').click(function(e) {
          e.preventDefault();
          SdwEdit.lightCreate();
-      });
-      $('#btnAppendTruth').click(function(e) {
-         e.preventDefault();
-         SdwEdit.truthAppend();
       });
       $('#btnFormat').click(function (e) {
          e.preventDefault();
@@ -62,6 +59,7 @@
          e.preventDefault();
          SdwEdit.lightAdd(1);
       });
+      SdwEdit._histChange();
    },
 
    lightCreate: function () {
@@ -82,7 +80,8 @@
             });
             $('#removell' + id).click(function(e) {
                e.preventDefault();
-               $('#ll' + id).remove();
+               SdwEdit._removeFromHist(1, id);
+               //$('#ll' + id).remove();
                SdwEdit._getForLink();
             });
             SdwEdit._getForLink();
@@ -94,7 +93,8 @@
             });
             $('#removeel' + id).click(function (e) {
                e.preventDefault();
-               $('#el' + id).remove();
+               SdwEdit._removeFromHist(0, id);
+               //$('#el' + id).remove();
                SdwEdit._getForEdit();
             });
             SdwEdit._getForEdit();
@@ -150,11 +150,11 @@
             link.click(function (e) {
                e.preventDefault();
                if (lId == 'addE') {
-                  SdwEdit.lightGet(link.data('l'), 0);
+                  SdwEdit._addToHist(0, link.data('l'));
                } else if (lId == 'addL') {
-                  SdwEdit.lightGet(link.data('l'), 1);
+                  SdwEdit._addToHist(1, link.data('l'));
                } else if (lId == 'saveL') {
-                  SdwEdit._post('/Edit/LightEdit', {id: link.data('l'), text: lightText.valueOf()});
+                  SdwEdit._post('/Edit/LightEdit', {id: link.data('l'), text: lightText.val()});
                } else if (lId == 'del') {
                   SdwEdit.truthRemove(id);
                } else if (lId == 'hide') {
@@ -190,16 +190,16 @@
                   $('#eI' +id).val(sel.end);
                   $('#sS' + id).val('<strong>');
                   $('#sE' + id).val('</strong>');
-                  } else if (lId == 'btnI') {
-                     sel = lightText.get_selection();
+               } else if (lId == 'btnI') {
+                  sel = lightText.get_selection();
                   $('#sI' +id).val(sel.start);
                   $('#eI' +id).val(sel.end);
                   $('#sS' + id).val('<em>');
                   $('#sE' + id).val('</em>');
-                  } else if (lId == 'btnL') {
-                     sel = lightText.get_selection();
-                     $('#sI' +id).val(sel.start);
-                     $('#eI' +id).val(sel.end);
+               } else if (lId == 'btnL') {
+                  sel = lightText.get_selection();
+                  $('#sI' +id).val(sel.start);
+                  $('#eI' +id).val(sel.end);
                   $('#sS' + id).val('<div class="text-left">');
                   $('#sE' + id).val('</div>');
                } else if (lId == 'btnC') {
@@ -393,18 +393,12 @@
       var hashId = new Hashids('GodisLove');
       $('#truthArea').empty();
       $('#addTruthLinks').empty();
-      $('#addVersionLinks').empty();
       if (lights.length > 0) {
          $('#truthArea').html('Loading...');
          $('#addTruthLinks').html('Loading...');
-         $('#addVersionLinks').html('Loading...');
          var hash = hashId.encode(lights);
          SdwCommon.get('/Edit/TruthLinks', { lights: hash }, function(d) {
             $('#addTruthLinks').html(d);
-            SdwCommon.loadStop();
-         });
-         SdwCommon.get('/Edit/VersionLinks', { lights: hash }, function(d) {
-            $('#addVersionLinks').html(d);
             SdwCommon.loadStop();
          });
          SdwCommon.get('/Edit/Truths', { lights: hash, link: 0 }, function (d) {
@@ -434,15 +428,7 @@
             added.find('.row').each(function (i, row) {
                var truthId = $(row).attr('id').substr(2);
                $(row).find('a').each(function (index, l) {
-                  var link = $(l);
-                  var id = link.attr('id');
-                  link.click(function () {
-                     if (id == 'edit') {
-                        SdwEdit.truthEdit(truthId);
-                     } else if (id == 'addAs') {
-                        SdwEdit.truthAddAsTruth(truthId);
-                     }
-                  });
+                  $(l).click(function () { SdwEdit.truthAddAsTruth(truthId); });
                });
             });
             $('#linkTruths').html(added);
@@ -484,6 +470,7 @@
          paramName: 'text',
          noCache: true,
          deferRequestBy:500,
+         triggerSelectOnValidInput: false,
          onSelect: function(suggestion) {
             item.val(suggestion.value);
             item.data('lightId', suggestion.data);
@@ -491,8 +478,89 @@
       });
    },
 
+   _histChange:function() {
+      var currEdit = SdwEdit._getEditLight();
+      var currLink = SdwEdit._getLinkLight();
+      var editParam = SdwCommon.getParam('edit');
+      var linkParam = SdwCommon.getParam('link');
+      var hash = new Hashids('GodisLove');
+      var urlEdit = hash.decode(editParam);
+      var urlLink = hash.decode(linkParam);
+      var editChanged = false;
+      var linkChanged = false;
+      SdwEdit._testLight(currEdit, urlEdit, function(id) {
+          $('#el' +id).remove();
+         editChanged = true;
+      });
+      SdwEdit._testLight(urlEdit, currEdit, function(id) {
+          SdwEdit.lightGet(id, 0);
+         editChanged = true;
+      });
+      SdwEdit._testLight(currLink, urlLink, function(id) {
+          $('#ll' + id).remove();
+         linkChanged = true;
+      });
+      SdwEdit._testLight(urlLink, currLink, function(id) {
+          SdwEdit.lightGet(id, 1);
+         linkChanged = true;
+      });
+      if (editChanged) {SdwEdit._getForEdit(); }
+      if (linkChanged) {SdwEdit._getForLink(); }
+   },
+
+   _testLight:function(a, b, notFound) {
+      for (var i = 0; i < a.length; i++) {
+         var found = false;
+         for (var j = 0; j < b.length; j++) {
+            if (b[j] == a[i]) {
+               found = true;
+               break;
+            }
+         }
+         if (!found) {
+            notFound(a[i]);
+         }
+      }
+   },
+
+   _addToHist:function(type, id) {
+      var hash = new Hashids('GodisLove');
+      var editParam = SdwCommon.getParam('edit');
+      var linkParam = SdwCommon.getParam('link');
+      if (type == 0) {
+         var urlEdit = hash.decode(editParam);
+         urlEdit.push(id);
+         editParam = hash.encode(urlEdit);
+      } else {
+         var urlLink = hash.decode(linkParam);
+         urlLink.push(id);
+         linkParam = hash.encode(urlLink);
+      }
+      History.pushState('Seek Deep Within', 'Seek Deep Within', '?edit=' + editParam + '&link=' + linkParam);
+   },
+
+   _removeFromHist:function(type, id) {
+      var index;
+      var hash = new Hashids('GodisLove');
+      var editParam = SdwCommon.getParam('edit');
+      var linkParam = SdwCommon.getParam('link');
+      if (type == 0) {
+         var urlEdit = hash.decode(editParam);
+         index = urlEdit.indexOf(id);
+         urlEdit.splice(index, 1);
+         editParam = hash.encode(urlEdit);
+      } else {
+         var urlLink = hash.decode(linkParam);
+         index = urlLink.indexOf(id);
+         urlLink.splice(index, 1);
+         linkParam = hash.encode(urlLink);
+      }
+      History.pushState('Seek Deep Within', 'Seek Deep Within', '?edit=' + editParam + '&link=' + linkParam);
+   },
+
 };
 $(document).ready(function () {
    SdwCommon.loadStop();
    SdwEdit.init();
+   History.Adapter.bind(window, 'statechange', SdwEdit._histChange);
 });

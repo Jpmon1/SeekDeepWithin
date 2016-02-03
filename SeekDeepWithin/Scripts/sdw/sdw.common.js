@@ -1,7 +1,7 @@
 ﻿var SdwCommon = {
 
    getParam: function(name) {
-      return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [, ""])[1].replace(/\+/g, '%20')) || null;
+      return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [, ""])[1].replace(/\+/g, '%20')) || '';
    },
 
    get: function (url, data, success) {
@@ -27,19 +27,15 @@
    },
 
    loadStart: function () {
-      $('.loader').text('LOADING...').css({ 'background-color': '#78b823' })
-         .show().velocity({left: 0},{duration:0}).velocity({ left: "80%" }, {
-         duration: 2000, loop: true,
-         easing: [0.750, 0.000, 0.500, 1.000]
-      });
+      $('.loader').text('LOADING...').css({ 'background-color': '#78b823' }).show();
    },
 
    loadStop: function (err) {
       if (err) {
-         $('.loader').css({ 'background-color': 'darkred' }).velocity("stop").text('ERROR!');
+         $('.loader').css({ 'background-color': 'darkred' }).text('ERROR!');
          setTimeout(function () { $('.loader').hide(); }, 1000);
       } else {
-         $('.loader').velocity("stop").text('COMPLETE!');
+         $('.loader').text('COMPLETE!');
          setTimeout(function () { $('.loader').hide(); }, 500);
       }
    },

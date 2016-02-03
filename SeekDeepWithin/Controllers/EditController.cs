@@ -29,7 +29,7 @@ namespace SeekDeepWithin.Controllers
       /// Gets the edit index page.
       /// </summary>
       /// <returns></returns>
-      public ActionResult Index ()
+      public ActionResult Index (string edit, string link)
       {
          if (User.IsInRole ("Creator")) {
             ViewBag.Regexs = this.Database.RegexFormats.All ();
@@ -185,7 +185,7 @@ namespace SeekDeepWithin.Controllers
          var truth = this.Database.Truth.Get (id);
          if (truth == null) return this.Fail ("Unable to understand the truth.");
          var love = this.FindLove (light);
-         if (love.Truths.All (t => t.ParentId != truth.Love.Id && t.Light.Id != truth.Light.Id))
+         if (!love.Truths.Any (t => t.ParentId.HasValue && t.ParentId == truth.Love.Id && t.Light != null && t.Light.Id != truth.Light.Id))
             love.Truths.Add (new Truth { Light = truth.Light, ParentId = truth.Love.Id});
          this.Database.Save ();
          return this.Success ();

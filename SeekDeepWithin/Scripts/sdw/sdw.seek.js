@@ -50,9 +50,9 @@
          container.append(added);
          container.masonry('reloadItems');
          container.masonry('layout').one('layoutComplete', function () {
-            //window.scroll(0, last.offset().top);
+            window.scroll(0, last.offset().top);
             SdwCommon.loadStop();
-            last.velocity('scroll', { duration: 700 });
+            //last.velocity('scroll', { duration: 700 });
          });
       });
    },
@@ -111,7 +111,7 @@ function setSearch(search) {
       paramName: 'text',
       noCache: true,
       deferRequestBy: 500,
-      triggerSelectOnValidInput: true
+      triggerSelectOnValidInput: false
    });
    search.keypress(function (e) {
       var keycode = (e.keyCode ? e.keyCode : e.which);

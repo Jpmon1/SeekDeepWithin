@@ -13,9 +13,7 @@
             if (item.Headers.Count > 0) {
                <div class="row">
                   <div class="small-10 small-offset-2 large-11 large-offset-1 columns">
-                     @foreach (var header in item.Headers) {
-                        <div>@(Html.Raw (renderer.Render (header)))</div>
-                     }
+                     @foreach (var header in item.Headers) { <div>@(Html.Raw (renderer.Render (header)))</div> }
                   </div>
                </div>
             }
@@ -37,11 +35,10 @@
                </div>
             }
          } else {
-            @(Html.Raw(text))
+            @(Html.Raw (text))
          }
          @if (!string.IsNullOrEmpty (item.Title)) { <div class="smaller-text mNone">@(item.Title)</div> }
       </div>
-      @*<div style="float: left; width: 0; max-width: 20%;"><a class="sdw-button err expand">H</a></div>*@
    </div>
 </div>
 }
