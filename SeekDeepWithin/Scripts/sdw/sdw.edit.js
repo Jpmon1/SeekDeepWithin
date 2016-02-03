@@ -103,17 +103,10 @@
       });
    },
 
-   lightSave: function (id, text) {
-      SdwEdit._post('/Edit/LightEdit', { id: id, text: text });
-   },
-
-   lightReIndex: function () {
-      SdwEdit._post('/Edit/ReIndex', { id: $('#editLightId').val() });
-   },
-
    truthCreate: function() {
       var versions = [];
       var truthLinks = '';
+      $('#btnCreateTruth').hide();
       var lights = SdwEdit._getEditLight();
       var hashId = new Hashids('GodisLove');
       $('#addVersionLinks').find('.switch-input').each(function (i, o) {
@@ -138,6 +131,8 @@
          truthLinks: truthLinks
       }, function() {
          $('#addTruthText').val('');
+         $('#addTruthFormatText').val('');
+         $('#btnCreateTruth').show();
          SdwEdit._getForEdit();
       });
    },
