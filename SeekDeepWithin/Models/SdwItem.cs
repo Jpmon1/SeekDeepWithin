@@ -39,6 +39,9 @@ namespace SeekDeepWithin.Models
       {
          this.Id = light.Id;
          this.Text = light.Text;
+         if (light.Truths.Count == 1) {
+            this.Styles.AddRange (light.Truths.First().Styles.Select (s => new SdwStyle (s)));
+         }
       }
 
       /// <summary>
@@ -108,6 +111,11 @@ namespace SeekDeepWithin.Models
       /// Gets or Sets the history hash.
       /// </summary>
       public string History { get; set; }
+
+      /// <summary>
+      /// Gets or Sets if this is a link or not.
+      /// </summary>
+      public bool IsLink { get; set; }
 
       /// <summary>
       /// Gets the list of headers.

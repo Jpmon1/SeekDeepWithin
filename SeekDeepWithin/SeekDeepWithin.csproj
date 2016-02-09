@@ -214,9 +214,7 @@
     <Compile Include="Controllers\EditController.cs" />
     <Compile Include="Models\SdwItem.cs" />
     <Compile Include="Models\LoveModel.cs" />
-    <Compile Include="Models\PagedViewModel.cs" />
     <Compile Include="Models\SdwStyle.cs" />
-    <Compile Include="Models\SoulItem.cs" />
     <Compile Include="Pocos\FormatRegex.cs" />
     <Compile Include="Pocos\Light.cs" />
     <Compile Include="Pocos\Love.cs" />

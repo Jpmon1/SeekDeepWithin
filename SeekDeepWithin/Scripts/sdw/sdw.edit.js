@@ -291,10 +291,7 @@
    truthAddAsTruth: function (id) {
       var lights = SdwEdit._getEditLight();
       var hashId = new Hashids('GodisLove');
-      SdwEdit._post('/Edit/TruthAddTruth', {
-         id:id,
-         light: hashId.encode(lights)
-      });
+      SdwEdit._post('/Edit/TruthAddTruth', {id:id,light: hashId.encode(lights)});
    },
 
    loveAdd: function (toTruth) {
@@ -425,9 +422,9 @@
          var hash = hashId.encode(lights);
          SdwCommon.get('/Edit/Truths', { lights: hash, link: 1 }, function (d) {
             var added = $(d);
-            added.find('.row').each(function (i, row) {
-               var truthId = $(row).attr('id').substr(2);
+            added.each(function (i, row) {
                $(row).find('a').each(function (index, l) {
+                  var truthId = $(row).attr('id').substr(2);
                   $(l).click(function () { SdwEdit.truthAddAsTruth(truthId); });
                });
             });

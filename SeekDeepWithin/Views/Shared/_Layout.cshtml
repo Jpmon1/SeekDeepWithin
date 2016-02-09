@@ -20,21 +20,21 @@
             <img src="~/Images/icon_24w.png" alt="Seek Deep Within" />
             <a href="@Url.Action("Index", "Home", null, scheme)" class="top-menu-item">SEEK DEEP WITHIN</a>
             @if (Request.IsAuthenticated) {
-               if (!Request.FilePath.EndsWith ("Manage")) {
+               if (!Request.FilePath.Contains ("Manage")) {
                   <a href="@Url.Action("Manage", "Account", null, scheme)" class="top-menu-item" title="Manage Account"><img src="~/Images/userw.png" alt="Account Settings" /></a>
                }
             } else {
-               if (!Request.FilePath.EndsWith ("Register")) {
+               if (!Request.FilePath.Contains ("Register")) {
                   <a href="@Url.Action("Register", "Account", null, scheme)" class="top-menu-item" title="Register"><img src="~/Images/registerw.png" alt="Register" /></a>
                }
-               if (!Request.FilePath.EndsWith ("Login")) {
+               if (!Request.FilePath.Contains ("Login")) {
                   <a href="@Url.Action("Login", "Account", null, scheme)" class="top-menu-item" title="Login"><img src="~/Images/loginw.png" alt="Login" /></a>
                }
             }
-            @if (!Request.FilePath.EndsWith ("About")) {
+            @if (!Request.FilePath.Contains ("About")) {
                <a href="@Url.Action("About", "Home", null, scheme)" class="top-menu-item" title="About"><img src="~/Images/aboutw.png" alt="About Seek Deep Within" /></a>
             }
-            @if (Request.IsAuthenticated && User.IsInRole ("Editor") && !Request.FilePath.EndsWith("Edit")) {
+            @if (Request.IsAuthenticated && User.IsInRole ("Editor")) {
                <a href="@Url.Action("Index", "Edit", null, scheme)" class="top-menu-item" title="Register"><img src="~/Images/editw.png" alt="Register" /></a>
             }
          </div>
@@ -42,7 +42,8 @@
          <div class="small-4 medium-2 large-1 column" id="menuBtnSearch"></div>
       </div>
    </div>
-   @if (ViewBag.IsIndex != null || Request.FilePath.EndsWith ("Edit")) {
+   @if (!Request.FilePath.Contains ("About") && !Request.FilePath.Contains ("Register") &&
+        !Request.FilePath.Contains ("Login") && !Request.FilePath.Contains ("Manage")) {
       <div class="loader">LOADING...</div>
    }
    <div class="pBottom">

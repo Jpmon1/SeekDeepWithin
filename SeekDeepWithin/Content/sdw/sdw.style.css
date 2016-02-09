@@ -81,6 +81,9 @@ a:hover{ text-decoration: underline; }
    -ms-transition: box-shadow 0.25s ease-in;
    transition: box-shadow 0.25s ease-in;
 }
+.light.link {
+   margin: 0.5rem 1.825rem;
+}
 .light:hover {
    -ms-box-shadow: 2px 2px 19px #444;
    -o-box-shadow: 2px 2px 19px #444;
@@ -100,3 +103,4 @@ a:hover{ text-decoration: underline; }
 .truth.selected {
    cursor:text;
 }
+blockquote{ color: black; }

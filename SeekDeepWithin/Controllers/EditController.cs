@@ -185,8 +185,10 @@ namespace SeekDeepWithin.Controllers
          var truth = this.Database.Truth.Get (id);
          if (truth == null) return this.Fail ("Unable to understand the truth.");
          var love = this.FindLove (light);
-         if (!love.Truths.Any (t => t.ParentId.HasValue && t.ParentId == truth.Love.Id && t.Light != null && t.Light.Id != truth.Light.Id))
-            love.Truths.Add (new Truth { Light = truth.Light, ParentId = truth.Love.Id});
+         if (!love.Truths.Any (t => t.ParentId.HasValue && t.ParentId == truth.Love.Id && t.Light != null && t.Light.Id == truth.Light.Id))
+            love.Truths.Add (new Truth { Light = truth.Light, ParentId = truth.Love.Id, Number = truth.Number });
+         else
+            return this.Fail("Truth is already known.");
          this.Database.Save ();
          return this.Success ();
       }
@@ -339,6 +341,18 @@ namespace SeekDeepWithin.Controllers
       /// <summary>
       /// Finds or creates the love with the given peaces.
       /// </summary>
+      /// <param name="lights">The list of light ids.</param>
+      /// <param name="create">True (default) to create a new love if non-existant, otherwise false.</param>
+      /// <returns>The love.</returns>
+      private Love FindLove (IEnumerable <int> lights, bool create = true)
+      {
+         var hash = new Hashids ("GodisLove");
+         return this.FindLove (hash.Encode (lights), create);
+      }
+
+      /// <summary>
+      /// Finds or creates the love with the given peaces.
+      /// </summary>
       /// <param name="light">The hash list of lights.</param>
       /// <param name="create">True (default) to create a new love if non-existant, otherwise false.</param>
       /// <returns>The love.</returns>
@@ -411,13 +425,8 @@ namespace SeekDeepWithin.Controllers
          ViewBag.IsLink = link == 1;
          var love = this.FindLove (lights, false);
          var truths = love == null ? new List <Truth> () : love.Truths.ToList ();
-         var otherLoves = new Dictionary <int, Love> ();
-         foreach (var truth in truths) {
-            if (truth.ParentId.HasValue && !otherLoves.ContainsKey (truth.ParentId.Value)) {
-               otherLoves.Add (truth.ParentId.Value, this.Database.Love.Get (truth.ParentId.Value));
-            }
-         }
-         ViewBag.OtherLoves = otherLoves;
+         if (love != null)
+            GetOtherLoves (love);
          return PartialView (truths);
       }
 
@@ -429,9 +438,32 @@ namespace SeekDeepWithin.Controllers
       [Authorize (Roles = "Editor")]
       public ActionResult TruthEdit (int id)
       {
+         ViewBag.IsLink = false;
          var truth = this.Database.Truth.Get (id);
          if (truth == null) return this.Fail ("Unable to understand the truth.");
+         if (truth.Light != null) {
+            var love = this.FindLove (new [] {truth.Light.Id}, false);
+            if (love != null) {
+               ViewBag.Love = love;
+               GetOtherLoves (love);
+            }
+         }
          return this.PartialView (truth);
+      }
+
+      /// <summary>
+      /// Gets the list of other loves in the given truths.
+      /// </summary>
+      /// <param name="love">Love with truths to check.</param>
+      private void GetOtherLoves (Love love)
+      {
+         var otherLoves = new Dictionary <int, Love> ();
+         foreach (var t in love.Truths) {
+            if (t.ParentId.HasValue && !otherLoves.ContainsKey (t.ParentId.Value)) {
+               otherLoves.Add (t.ParentId.Value, this.Database.Love.Get (t.ParentId.Value));
+            }
+         }
+         ViewBag.OtherLoves = otherLoves;
       }
 
       /// <summary>
@@ -464,8 +496,17 @@ namespace SeekDeepWithin.Controllers
       {
          var truth = this.Database.Truth.Get (id);
          if (truth == null) return this.Fail ("Unable to understand the truth.");
-         truth.Love.Truths.Remove (truth);
+         var love = truth.Love;
+         love.Truths.Remove (truth);
          this.Database.Truth.Delete (truth);
+         if (love.Truths.Count == 0) {
+            var count = love.Peaces.Count;
+            var peaceList = love.Peaces.ToList ();
+            for (int i = count - 1; i >= 0; i--) {
+               this.Database.Peace.Delete (peaceList[i]);
+            }
+            this.Database.Love.Delete (love);
+         }
          this.Database.Save ();
          return this.Success ();
       }

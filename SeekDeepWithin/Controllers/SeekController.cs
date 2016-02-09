@@ -71,6 +71,7 @@ namespace SeekDeepWithin.Controllers
                         continue;
                      var item = new SdwItem (truth) { History = history };
                      if (truthLove != null) {
+                        item.IsLink = true;
                         var text = GetTitle (truthLove.Peaces);
                         if (truth.Light != null)
                            item.Title = text;
