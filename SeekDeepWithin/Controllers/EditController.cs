@@ -185,8 +185,10 @@ namespace SeekDeepWithin.Controllers
          var truth = this.Database.Truth.Get (id);
          if (truth == null) return this.Fail ("Unable to understand the truth.");
          var love = this.FindLove (light);
-         if (!love.Truths.Any (t => t.ParentId.HasValue && t.ParentId == truth.Love.Id && t.Light != null && t.Light.Id == truth.Light.Id))
-            love.Truths.Add (new Truth { Light = truth.Light, ParentId = truth.Love.Id, Number = truth.Number });
+         if (!love.Truths.Any (t => t.ParentId.HasValue && t.ParentId == truth.Love.Id && t.Light != null && t.Light.Id == truth.Light.Id)) {
+            var order = love.Truths.Max (t => t.Order ?? 0) + 1;
+            love.Truths.Add (new Truth { Light = truth.Light, ParentId = truth.Love.Id, Number = truth.Number, Order = order });
+         }
          else
             return this.Fail("Truth is already known.");
          this.Database.Save ();
@@ -235,6 +237,33 @@ namespace SeekDeepWithin.Controllers
             love.Truths.Add(new Truth { Light = light});
          this.Database.Save ();
          LightSearch.AddOrUpdateIndex (light);
+         return this.Success ();
+      }
+
+      /// <summary>
+      /// Adds a header to the given truth.
+      /// </summary>
+      /// <param name="id">The id of the truth to add a header to.</param>
+      /// <param name="text">The header's text.</param>
+      /// <param name="index">The index to use for footers.</param>
+      /// <returns>The result.</returns>
+      public ActionResult CreateHeaderFooter (int id, string text, int? index)
+      {
+         var truth = this.Database.Truth.Get (id);
+         if (truth == null) return this.Fail ("Unable to understand the truth.");
+         var light = this.Database.Light.Get (l => l.Text == text).FirstOrDefault ();
+         if (light == null) {
+            light = new Light {Text = text, Modified = DateTime.Now};
+            this.Database.Save ();
+            LightSearch.AddOrUpdateIndex (light);
+         }
+         if (!truth.Love.Truths.Any (t => t.ParentId.HasValue && t.ParentId == id && t.Light != null && t.Light.Id == light.Id)) {
+            var headerFooter = new Truth {Light = light, ParentId = id, Order = index ?? 0};
+            truth.Love.Truths.Add (headerFooter);
+            var hLove = this.FindLove (light.Id);
+            hLove.Truths.Add (new Truth { ParentId = truth.Love.Id });
+         }
+         this.Database.Save ();
          return this.Success ();
       }
 
@@ -339,6 +368,17 @@ namespace SeekDeepWithin.Controllers
       }
 
       /// <summary>
+      /// Finds or creates the love with the given peace.
+      /// </summary>
+      /// <param name="light">The id of the light.</param>
+      /// <param name="create">True (default) to create a new love if non-existant, otherwise false.</param>
+      /// <returns>The love.</returns>
+      private Love FindLove (int light, bool create = true)
+      {
+         return this.FindLove (new [] {light}, create);
+      }
+
+      /// <summary>
       /// Finds or creates the love with the given peaces.
       /// </summary>
       /// <param name="lights">The list of light ids.</param>
@@ -438,7 +478,6 @@ namespace SeekDeepWithin.Controllers
       [Authorize (Roles = "Editor")]
       public ActionResult TruthEdit (int id)
       {
-         ViewBag.IsLink = false;
          var truth = this.Database.Truth.Get (id);
          if (truth == null) return this.Fail ("Unable to understand the truth.");
          if (truth.Light != null) {
@@ -498,9 +537,16 @@ namespace SeekDeepWithin.Controllers
          if (truth == null) return this.Fail ("Unable to understand the truth.");
          var love = truth.Love;
          love.Truths.Remove (truth);
+         var count = truth.Styles.Count;
+         if (count > 0) {
+            var list = truth.Styles.ToList ();
+            for (int i = count - 1; i >= 0; i--) {
+               this.Database.TruthStyles.Delete (list [i]);
+            }
+         }
          this.Database.Truth.Delete (truth);
          if (love.Truths.Count == 0) {
-            var count = love.Peaces.Count;
+            count = love.Peaces.Count;
             var peaceList = love.Peaces.ToList ();
             for (int i = count - 1; i >= 0; i--) {
                this.Database.Peace.Delete (peaceList[i]);
@@ -614,6 +660,20 @@ namespace SeekDeepWithin.Controllers
          }
 
          return Json (new { status = SUCCESS, items = itemList.Trim (), regexId = dbRegex.Id, regexText = HttpUtility.UrlEncode (regex) });
+      }
+
+      /// <summary>
+      /// Updates something.
+      /// </summary>
+      /// <returns>JSON result.</returns>
+      [HttpPost]
+      public ActionResult Update (string key)
+      {
+         if (string.IsNullOrWhiteSpace (key)) return this.Fail ();
+         var k = Helper.Base64Decode (key);
+         if (k == "GodisLove") {
+         }
+         return this.Fail ();
       }
    }
 }

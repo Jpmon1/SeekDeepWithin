@@ -145,10 +145,15 @@
          var hfText = added.find('#txtHF').first();
          var lightText = added.find('#txtLight').first();
          added.find('a').each(function (i, l) {
-            var link = $(l), text, sel;
+            var link = $(l), sel;
             var lId = link.attr('id');
             link.click(function (e) {
                e.preventDefault();
+               if (lightText.length > 0) {
+                  sel = lightText.get_selection();
+                  $('#sI' + id).val(sel.start);
+                  $('#eI' + id).val(sel.end);
+               }
                if (lId == 'addE') {
                   SdwEdit._addToHist(0, link.data('l'));
                } else if (lId == 'addL') {
@@ -161,22 +166,11 @@
                   $('#et' + id).remove();
                } else if (lId == 'saveT') {
                   SdwEdit.truthSave(id);
-               } else if (lId == 'index') {
-                  sel = lightText.get_selection();
-                  $('#sI' + id).val(sel.start);
-                  $('#eI' + id).val(sel.end);
                } else if (lId == 'addH') {
-                  text = $('#addTruthText').val();
-                  if (text != '') { text += '\n'; }
-                  text += '0|' + $('#number' +id).val() + '|' +hfText.val();
-                  $('#addTruthText').val(text);
+                  SdwEdit._post('/Edit/CreateHeaderFooter', { id: id, text: hfText.val() }, function() { hfText.val(''); });
                } else if (lId == 'addF') {
-                  sel = lightText.get_selection();
                   var fIndex = -sel.start;
-                  text = $('#addTruthText').val();
-                  if (text != '') { text += '\n'; }
-                  text += fIndex + '|' +$('#number' +id).val() + '|' + hfText.val();
-                  $('#addTruthText').val(text);
+                  SdwEdit._post('/Edit/CreateHeaderFooter', { id: id, text: hfText.val(), index: fIndex }, function () { hfText.val(''); });
                } else if (lId == 'addS') {
                   SdwEdit.styleAdd(id);
                } else if (lId == 'delS') {
@@ -185,81 +179,42 @@
                   var input = link.prev('input');
                   SdwEdit._post('/Edit/LightAddLight', { id: link.data('l'), truth: input.val() }, function () { input.val(''); });
                } else if (lId == 'btnB') {
-                  sel = lightText.get_selection();
-                  $('#sI' +id).val(sel.start);
-                  $('#eI' +id).val(sel.end);
                   $('#sS' + id).val('<strong>');
                   $('#sE' + id).val('</strong>');
                } else if (lId == 'btnI') {
-                  sel = lightText.get_selection();
-                  $('#sI' +id).val(sel.start);
-                  $('#eI' +id).val(sel.end);
                   $('#sS' + id).val('<em>');
                   $('#sE' + id).val('</em>');
                } else if (lId == 'btnL') {
-                  sel = lightText.get_selection();
-                  $('#sI' +id).val(sel.start);
-                  $('#eI' +id).val(sel.end);
                   $('#sS' + id).val('<div class="text-left">');
                   $('#sE' + id).val('</div>');
                } else if (lId == 'btnC') {
-                  sel = lightText.get_selection();
-                  $('#sI' +id).val(sel.start);
-                  $('#eI' +id).val(sel.end);
                   $('#sS' + id).val('<div class="text-center">');
                   $('#sE' + id).val('</div>');
                } else if (lId == 'btnR') {
-                  sel = lightText.get_selection();
-                  $('#sI' +id).val(sel.start);
-                  $('#eI' +id).val(sel.end);
                   $('#sS' + id).val('<div class="text-right">');
                   $('#sE' + id).val('</div>');
                } else if (lId == 'btnD') {
-                  sel = lightText.get_selection();
-                  $('#sI' +id).val(sel.start);
-                  $('#eI' +id).val(sel.end);
                   $('#sS' + id).val('<div>');
                   $('#sE' + id).val('</div>');
                } else if (lId == 'btnQ') {
-                  sel = lightText.get_selection();
-                  $('#sI' +id).val(sel.start);
-                  $('#eI' +id).val(sel.end);
                   $('#sS' + id).val('<blockquote>');
                   $('#sE' + id).val('</blockquote>');
                } else if (lId == 'btnS') {
-                  sel = lightText.get_selection();
-                  $('#sI' +id).val(sel.start);
-                  $('#eI' + id).val(sel.end);
                   $('#sS' + id).val('<div class="small-text">');
                   $('#sE' + id).val('</div>');
                } else if (lId == 'btnXS') {
-                  sel = lightText.get_selection();
-                  $('#sI' +id).val(sel.start);
-                  $('#eI' + id).val(sel.end);
                   $('#sS' + id).val('<div class="smaller-text">');
                   $('#sE' + id).val('</div>');
                } else if (lId == 'btnOL') {
-                  sel = lightText.get_selection();
-                  $('#sI' +id).val(sel.start);
-                  $('#eI' + id).val(sel.end);
                   $('#sS' + id).val('<ol>');
                   $('#sE' + id).val('</ol>');
                } else if (lId == 'btnUL') {
-                  sel = lightText.get_selection();
-                  $('#sI' +id).val(sel.start);
-                  $('#eI' +id).val(sel.end);
                   $('#sS' + id).val('<ul>');
                   $('#sE' + id).val('</ul>');
                } else if(lId == 'btnLI') {
-                  sel = lightText.get_selection();
-                  $('#sI' + id).val(sel.start);
-                  $('#eI' +id).val(sel.end);
                   $('#sS' + id).val('<li>');
                   $('#sE' + id).val('</li>');
                } else if (lId == 'btnDI') {
-                  sel = lightText.get_selection();
-                  $('#sI' +id).val(sel.start);
-                  $('#eI' + id).val(sel.end);
                   $('#sS' + id).val('<div class="italic">');
                   $('#sE' + id).val('</div>');
                }

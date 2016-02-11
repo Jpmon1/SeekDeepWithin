@@ -23,10 +23,12 @@
          @(text)
       </div>
       <div class="small-2 medium-1 large-1 column">
-         @if (ViewBag.IsLink) {
-            <a id="addAs" class="sdw-button white expand tiny" title="Link">&prop;</a>
-         } else {
-            <a id="edit" class="sdw-button alt expand tiny" title="Edit">&or;</a>
+         @if (ViewBag.IsLink != null) {
+            if (ViewBag.IsLink) {
+                <a id="addAs" class="sdw-button white expand tiny" title="Link">&prop;</a>
+             } else {
+                <a id="edit" class="sdw-button alt expand tiny" title="Edit">&or;</a>
+             }
          }
       </div>
    </div>

@@ -1,3 +1,6 @@
+Edit auto complete Add "|" and parse for auto complete.
+Maybe add a 'span' to truth, instead of span b/c Number.HasValue == true; This could be a boolean/int -- not sure...
+
 Color code each train of light
 Amazon Items
 Passage Parser

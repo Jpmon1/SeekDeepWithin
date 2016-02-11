@@ -45,10 +45,6 @@ namespace SeekDeepWithin.Controllers
             var loves = (from peace in light.Peaces
                          where peace.Love.Peaces.All (p => ids.Contains (p.Light.Id))
                          select peace.Love).ToList ();
-            /*var histLoves = (from peace in light.Peaces
-                         where peace.Love.Peaces.All (p => histIds.Contains (p.Light.Id) || p.Light.Id == id)
-                         select peace.Love).ToList ();
-            loves.AddRange(histLoves.Where (l => loves.All (lo => lo.PeaceId != l.PeaceId)));*/
             if (loves.Count > 0) {
                var max = loves.Where(l => l.Truths.Any ()).Max (l => l.Peaces.Count);
                foreach (var love in loves.Where (l => l.Peaces.Count == max)) {
@@ -57,12 +53,12 @@ namespace SeekDeepWithin.Controllers
                      var truthIds = new List <int> ();
                      if (truth.Light != null)
                         truthIds.Add(truth.Light.Id);
-                     if (truth.ParentId.HasValue) {
+                     if (truth.ParentId.HasValue && (!truth.Order.HasValue || truth.Order.Value > 0)) {
                         truthLove = this.Database.Love.Get (truth.ParentId.Value);
                         truthIds.AddRange (truthLove.Peaces.Select (p => p.Light.Id));
                      }
                      if ((truthLove == null && truthIds.All (ids.Contains)) ||
-                         (truthIds.All (histIds.Contains) && !truth.Number.HasValue) ||
+                         (truthIds.All (histIds.Contains) && !truth.Number.HasValue && (!truth.Order.HasValue || truth.Order.Value > 0)) ||
                          (truth.Light != null && truth.Order == null && model.ToAdd.Any (i => i.Id == truth.Light.Id))) {
                         continue;
                      }
@@ -162,8 +158,8 @@ namespace SeekDeepWithin.Controllers
       {
          var remove = new List<SdwItem> ();
          // Headers => Order = 0; Number = The corresponding item.
-         foreach (var header in model.ToAdd.Where (li => li.Order.HasValue && li.Order == 0 && li.Number.HasValue)) {
-            var item = model.ToAdd.FirstOrDefault (li => li.Number == header.Number && li.Id != header.Id);
+         foreach (var header in model.ToAdd.Where (li => li.Order.HasValue && li.Order == 0 && li.ParentId.HasValue)) {
+            var item = model.ToAdd.FirstOrDefault (li => li.TruthId == header.ParentId);
             if (item != null) {
                if (header.IsSelected) item.IsSelected = true;
                item.Headers.Add (header);
@@ -171,8 +167,8 @@ namespace SeekDeepWithin.Controllers
             }
          }
          // Footers => Order = the negative index of the footer; Number = The corresponding item.
-         foreach (var footer in model.ToAdd.Where (li => li.Order.HasValue && li.Order < 0 && li.Number.HasValue)) {
-            var item = model.ToAdd.FirstOrDefault (li => li.Number == footer.Number && li.Id != footer.Id);
+         foreach (var footer in model.ToAdd.Where (li => li.Order.HasValue && li.Order < 0 && li.ParentId.HasValue)) {
+            var item = model.ToAdd.FirstOrDefault (li => li.TruthId == footer.ParentId);
             if (item != null) {
                if (footer.IsSelected) item.IsSelected = true;
                item.Footers.Add (footer);

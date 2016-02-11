@@ -53,6 +53,7 @@ namespace SeekDeepWithin.Models
          this.TruthId = truth.Id;
          this.Order = truth.Order;
          this.Number = truth.Number;
+         this.ParentId = truth.ParentId;
          if (truth.Light != null) {
             this.Id = truth.Light.Id;
             this.Text = truth.Light.Text;
@@ -131,5 +132,10 @@ namespace SeekDeepWithin.Models
       /// Gets the list of styles.
       /// </summary>
       public List<SdwStyle> Styles { get; private set; }
+
+      /// <summary>
+      /// Gets or Sets a parent id.
+      /// </summary>
+      public int? ParentId { get; set; }
    }
 }

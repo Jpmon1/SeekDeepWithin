@@ -34,7 +34,9 @@
       </div>
       if (ViewBag.Love != null) {
          var love = (Love) ViewBag.Love;
-         Html.RenderPartial ("Truths", love.Truths.ToList ());
+         <div style="padding: 0 2rem;">
+            @{ Html.RenderPartial ("Truths", love.Truths.ToList ()); }
+         </div>
       }
       <div class="row">
          <div class="small-12 medium-10 large-10 column">
