@@ -18,8 +18,8 @@
    }
    <div class="row" id="ct@(truth.Id)" style="background-color: @(color); padding: 0.25rem;">
       <div class="small-10 medium-11 large-11 column" style="font-size: x-small;">
-         @if (truth.Number.HasValue) {<span>N(@(truth.Number.Value)) | </span>}
          @if (truth.Order.HasValue) {<span>O(@(truth.Order.Value)) | </span>}
+         @if (truth.Number.HasValue) {<span>N(@(truth.Number.Value)) | </span>}
          @(text)
       </div>
       <div class="small-2 medium-1 large-1 column">

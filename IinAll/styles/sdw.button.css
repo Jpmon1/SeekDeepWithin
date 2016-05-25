@@ -1,0 +1,108 @@
+﻿button, .sdw-button {
+   border: 0;
+   -ms-border-radius: 3px;
+   border-radius: 3px;
+   border-bottom: solid 2px #005F7C;
+   background: #66A7C5;
+   color: #feffff;
+   display: inline-block;
+   padding: 1rem 2rem;
+   text-align: center;
+   font-weight: normal;
+   line-height: normal;
+   position: relative;
+   margin: 0 0 1rem;
+   text-decoration: none;
+   -webkit-appearance: none;
+   -moz-appearance: none;
+   -webkit-transition: background-color 300ms ease-out;
+   -moz-transition: background-color 300ms ease-out;
+   -ms-transition: background-color 300ms ease-out;
+   -o-transition: background-color 300ms ease-out;
+   transition: background-color 300ms ease-out;
+}
+
+button.large, .sdw-button.large {
+   padding: 1.125rem 2.25rem 1.1875rem 2.25rem;
+   font-size: 1.25rem;
+}
+
+button.small, .sdw-button.small {
+   padding: 0.875rem 1.75rem 0.9375rem 1.75rem;
+   font-size: 0.8125rem;
+}
+
+button.tiny, .sdw-button.tiny {
+   padding: 0.625rem 1.25rem 0.6875rem 1.25rem;
+   font-size: 0.6875rem;
+}
+
+button.icon, .sdw-button.icon {
+   padding: 5px 10px;
+   font-size: 0.6875rem;
+}
+
+button.expand, .sdw-button.expand {
+   padding-right: 0;
+   padding-left: 0;
+   width: 100%;
+}
+
+button.reg:hover, .sdw-button.reg:hover, button.reg:focus, .sdw-button.reg:focus {
+   color: #feffff;
+   background: #80c8e8;
+}
+
+button.add, .sdw-button.add {
+   border-bottom: solid 2px #377b00;
+   background-color: #48a000;
+}
+
+button.add:hover, .sdw-button.add:hover, button.add:focus, .sdw-button.add:focus {
+   color: #feffff;
+   background-color: #5cce00;
+}
+
+button.err, .sdw-button.err {
+   border-bottom: solid 2px #a00f00;
+   background-color: #bf1200;
+}
+
+button.err:hover, .sdw-button.err:hover, button.err:focus, .sdw-button.err:focus {
+   color: #feffff;
+   background-color: #e92e00;
+}
+
+button.alt, .sdw-button.alt {
+   border-bottom: solid 2px #32373b;
+   background-color: #6C7476;
+}
+
+button.alt:hover, .sdw-button.alt:hover, button.alt:focus, .sdw-button.alt:focus {
+   color: #feffff;
+   background-color: #798385;
+}
+
+button.white, .sdw-button.white {
+   border-bottom: 0;
+   background-color: #FFFFFF;
+   color: black;
+}
+
+button.white.active, button.white:hover, .sdw-button.white.active, .sdw-button.white:hover, button.white:focus, .sdw-button.white:focus {
+   background-color: #e7e7e7;
+   color: black;
+}
+
+button.grey, .sdw-button.grey {
+   border-bottom: solid 1px white;
+   -ms-border-radius: 0;
+   border-radius: 0;
+   background-color: #F2F2F2;
+   color: black;
+}
+
+button.grey.active, button.grey:hover, .sdw-button.grey.active, .sdw-button.grey:hover, button.grey:focus, .sdw-button.grey:focus {
+   background-color: #d3d3d3;
+   color: black;
+}

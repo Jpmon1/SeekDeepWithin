@@ -70,7 +70,7 @@ namespace SeekDeepWithin.Controllers
       public ActionResult Love (string light, string truth, string versions, string truthLinks)
       {
          if (string.IsNullOrWhiteSpace (truth)) return this.Fail ("No truth given");
-         var love = FindLove (light);
+         var love = Helper.FindLove (this.Database, light);
          if (love == null) return this.Fail ("No light given");
          var truths = truth.Trim ().Split (new [] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
          foreach (var t in truths) {
@@ -90,14 +90,14 @@ namespace SeekDeepWithin.Controllers
          if (!string.IsNullOrEmpty (truthLinks)) {
             var links = truthLinks.Split (new[] {','}, StringSplitOptions.RemoveEmptyEntries);
             foreach (var t in love.Truths) {
-               var l = this.FindLove (hash.Encode (t.Light.Id));
+               var l = Helper.FindLove (this.Database, t.Light.Id);
                foreach (var link in links) {
                   var lightIds = hash.Decode (link).ToList ();
                   if (lightIds [0] == 0) {
                      lightIds.RemoveAt (0);
                      var li = this.Database.Light.Get (lightIds [0]);
                      lightIds.RemoveAt (0);
-                     var lov = this.FindLove (hash.Encode (lightIds));
+                     var lov = Helper.FindLove (this.Database, lightIds);
                      if (lov.Truths.Any (tr => tr.Light != null && tr.Light.Id == li.Id && !tr.ParentId.HasValue))
                         continue;
                      lov.Truths.Add(new Truth { Light = li });
@@ -107,7 +107,7 @@ namespace SeekDeepWithin.Controllers
                            continue;
                         l.Truths.Add (new Truth {Light = this.Database.Light.Get (lightIds [0])});
                      } else {
-                        var lov = this.FindLove (link);
+                        var lov = Helper.FindLove (this.Database, link);
                         if (l.Truths.Any (tr => tr.Light == null && tr.ParentId.HasValue && tr.ParentId == lov.Id))
                            continue;
                         l.Truths.Add (new Truth { ParentId = lov.Id });
@@ -125,9 +125,9 @@ namespace SeekDeepWithin.Controllers
                   foreach (var addTruth in love.Truths.Where (t => t.Number.HasValue)) {
                      var lt = linkedLove.Truths.FirstOrDefault (tr => tr.Number == addTruth.Number);
                      if (lt != null) {
-                        var truthLove = this.FindLove (hash.Encode (lt.Light.Id));
+                        var truthLove = Helper.FindLove (this.Database, lt.Light.Id);
                         truthLove.Truths.Add (new Truth {Light = addTruth.Light, ParentId = love.Id});
-                        truthLove = this.FindLove (hash.Encode (addTruth.Light.Id));
+                        truthLove = Helper.FindLove (this.Database, addTruth.Light.Id);
                         truthLove.Truths.Add (new Truth {Light = lt.Light, ParentId = linkedLove.Id});
                      }
                   }
@@ -184,10 +184,17 @@ namespace SeekDeepWithin.Controllers
       {
          var truth = this.Database.Truth.Get (id);
          if (truth == null) return this.Fail ("Unable to understand the truth.");
-         var love = this.FindLove (light);
-         if (!love.Truths.Any (t => t.ParentId.HasValue && t.ParentId == truth.Love.Id && t.Light != null && t.Light.Id == truth.Light.Id)) {
-            var order = love.Truths.Max (t => t.Order ?? 0) + 1;
-            love.Truths.Add (new Truth { Light = truth.Light, ParentId = truth.Love.Id, Number = truth.Number, Order = order });
+         var love = Helper.FindLove (this.Database, light);
+         var order = love.Truths.Max (t => t.Order ?? 0) + 1;
+         if (!love.Truths.Any (t => t.ParentId.HasValue && t.ParentId == truth.Love.Id &&
+                                    t.Light != null && t.Light.Id == truth.Light.Id &&
+                                    t.Order.HasValue && t.Order == order)) {
+            love.Truths.Add (new Truth {
+               Light = truth.Light,
+               ParentId = truth.Love.Id,
+               Number = truth.Number,
+               Order = order
+            });
          }
          else
             return this.Fail("Truth is already known.");
@@ -204,12 +211,11 @@ namespace SeekDeepWithin.Controllers
       /// <returns>JSON results</returns>
       public ActionResult TruthAddLove (string link, string light, int toTruth)
       {
-         var loveLink = this.FindLove (link);
-         var love = this.FindLove (light);
+         var loveLink = Helper.FindLove (this.Database, link);
+         var love = Helper.FindLove (this.Database, light);
          if (toTruth == 1) {
-            var hash = new Hashids ("GodisLove");
             foreach (var truth in love.Truths) {
-               var truthLove = this.FindLove (hash.Encode (truth.Light.Id));
+               var truthLove = Helper.FindLove (this.Database, truth.Light.Id);
                if (!truthLove.Truths.Any (t => t.ParentId.HasValue && t.ParentId.Value == loveLink.Id))
                   truthLove.Truths.Add (new Truth { ParentId = loveLink.Id });
             }
@@ -230,9 +236,8 @@ namespace SeekDeepWithin.Controllers
       [HttpPost]
       public ActionResult LightAddLight (int id, string truth)
       {
-         var hash = new Hashids ("GodisLove");
          var light = this.Database.Light.Get (l => l.Text == truth).FirstOrDefault() ?? new Light {Text = truth, Modified = DateTime.Now};
-         var love = this.FindLove (hash.Encode (id));
+         var love = Helper.FindLove (this.Database, id);
          if (!love.Truths.Any (t => t.Light != null && t.Light.Id == id))
             love.Truths.Add(new Truth { Light = light});
          this.Database.Save ();
@@ -260,7 +265,7 @@ namespace SeekDeepWithin.Controllers
          if (!truth.Love.Truths.Any (t => t.ParentId.HasValue && t.ParentId == id && t.Light != null && t.Light.Id == light.Id)) {
             var headerFooter = new Truth {Light = light, ParentId = id, Order = index ?? 0};
             truth.Love.Truths.Add (headerFooter);
-            var hLove = this.FindLove (light.Id);
+            var hLove = Helper.FindLove (this.Database, light.Id);
             hLove.Truths.Add (new Truth { ParentId = truth.Love.Id });
          }
          this.Database.Save ();
@@ -278,11 +283,10 @@ namespace SeekDeepWithin.Controllers
       {
          var l = this.Database.Light.Get (id);
          if (l == null) return this.Fail ("That light has not yet been illuminated.");
-         var love = this.FindLove (light);
+         var love = Helper.FindLove (this.Database, light);
          if (toTruth == 1) {
-            var hash = new Hashids ("GodisLove");
             foreach (var truth in love.Truths) {
-               var truthLove = this.FindLove (hash.Encode (truth.Light.Id));
+               var truthLove = Helper.FindLove (this.Database, truth.Light.Id);
                if (truthLove.Truths.Any (t => t.Light != null && t.Light.Id == id))
                   continue;
                truthLove.Truths.Add (new Truth { Light = l});
@@ -368,57 +372,6 @@ namespace SeekDeepWithin.Controllers
       }
 
       /// <summary>
-      /// Finds or creates the love with the given peace.
-      /// </summary>
-      /// <param name="light">The id of the light.</param>
-      /// <param name="create">True (default) to create a new love if non-existant, otherwise false.</param>
-      /// <returns>The love.</returns>
-      private Love FindLove (int light, bool create = true)
-      {
-         return this.FindLove (new [] {light}, create);
-      }
-
-      /// <summary>
-      /// Finds or creates the love with the given peaces.
-      /// </summary>
-      /// <param name="lights">The list of light ids.</param>
-      /// <param name="create">True (default) to create a new love if non-existant, otherwise false.</param>
-      /// <returns>The love.</returns>
-      private Love FindLove (IEnumerable <int> lights, bool create = true)
-      {
-         var hash = new Hashids ("GodisLove");
-         return this.FindLove (hash.Encode (lights), create);
-      }
-
-      /// <summary>
-      /// Finds or creates the love with the given peaces.
-      /// </summary>
-      /// <param name="light">The hash list of lights.</param>
-      /// <param name="create">True (default) to create a new love if non-existant, otherwise false.</param>
-      /// <returns>The love.</returns>
-      private Love FindLove (string light, bool create = true)
-      {
-         var hash = new Hashids ("GodisLove");
-         var peaces = hash.Decode (light);
-         if (peaces.Length <= 0) return null;
-         hash.Order = true;
-         var orderPeace = hash.Encode (peaces);
-         var love = this.Database.Love.Get (l => l.PeaceId == orderPeace).FirstOrDefault ();
-         if (love == null && create) {
-            love = new Love { Modified = DateTime.Now, PeaceId = orderPeace, Truths = new HashSet<Truth> (), Peaces = new HashSet <Peace> ()};
-            int index = 0;
-            foreach (var p in peaces) {
-               love.Peaces.Add (new Peace { Order = index, Light = this.Database.Light.Get (p) });
-               index++;
-            }
-            this.Database.Love.Insert (love);
-            this.Database.Save();
-         }
-         if (love != null && love.Truths == null) love.Truths = new HashSet <Truth> ();
-         return love;
-      }
-
-      /// <summary>
       /// Gets the edit view for the given light.
       /// </summary>
       /// <param name="id">Id of light to get view for.</param>
@@ -463,7 +416,7 @@ namespace SeekDeepWithin.Controllers
       public ActionResult Truths (string lights, int link)
       {
          ViewBag.IsLink = link == 1;
-         var love = this.FindLove (lights, false);
+         var love = Helper.FindLove (this.Database, lights, false);
          var truths = love == null ? new List <Truth> () : love.Truths.ToList ();
          if (love != null)
             GetOtherLoves (love);
@@ -481,7 +434,7 @@ namespace SeekDeepWithin.Controllers
          var truth = this.Database.Truth.Get (id);
          if (truth == null) return this.Fail ("Unable to understand the truth.");
          if (truth.Light != null) {
-            var love = this.FindLove (new [] {truth.Light.Id}, false);
+            var love = Helper.FindLove (this.Database, truth.Light.Id, false);
             if (love != null) {
                ViewBag.Love = love;
                GetOtherLoves (love);
@@ -656,7 +609,10 @@ namespace SeekDeepWithin.Controllers
             );
             itemList += Environment.NewLine;
             if (startOrder.HasValue) startOrder++;
-            if (startNumber.HasValue) startNumber++;
+            if (startNumber.HasValue) {
+               if (startNumber < 0) startNumber--;
+               else startNumber++;
+            }
          }
 
          return Json (new { status = SUCCESS, items = itemList.Trim (), regexId = dbRegex.Id, regexText = HttpUtility.UrlEncode (regex) });

@@ -1,5 +1,7 @@
 Edit auto complete Add "|" and parse for auto complete.
 Maybe add a 'span' to truth, instead of span b/c Number.HasValue == true; This could be a boolean/int -- not sure...
+Switch to an Asynchronous model - http://www.asp.net/mvc/overview/performance/using-asynchronous-methods-in-aspnet-mvc-4
+Add link for bubble of perceptions in Ecopsychology to Bhagavad Gita with commentaries - commentary - ethical - order:54 number:-9
 
 Color code each train of light
 Amazon Items

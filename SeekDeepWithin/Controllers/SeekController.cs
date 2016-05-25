@@ -128,7 +128,43 @@ namespace SeekDeepWithin.Controllers
       [AllowAnonymous]
       public ActionResult AutoComplete (string text)
       {
-         var query = LightSearch.AutoComplete (text);
+         Dictionary <int, string> query;
+         if (text.Contains ('|')) {
+            query = new Dictionary<int, string> ();
+            var items = text.Split ('|');
+            var lights = new List <Light> ();
+            for (int i = 0; i < items.Length - 1; i++) {
+               var t = items [i];
+               var light = this.Database.Light.Get (l => l.Text == t).FirstOrDefault ();
+               if (light != null) lights.Add (light);
+            }
+            var ids = new List <int> ();
+            var loves = new List <Love> ();
+            foreach (var light in lights) {
+               ids.Add (light.Id);
+               loves.Add (Helper.FindLove (this.Database, ids, false));
+            }
+            var last = items [items.Length - 1];
+            int number;
+            if (Int32.TryParse (last, out number)) {
+               foreach (var love in loves) {
+                  var title = love.Peaces.Aggregate (string.Empty, (current, peace) => current + (peace.Light.Text + "|"));
+                  foreach (var truth in love.Truths) {
+                     if (truth.Number.HasValue && truth.Number == number) {
+                        query.Add (truth.Id, title + truth.Light.Text);
+                     }
+                  }
+               }
+            } else {
+               foreach (var love in loves) {
+                  foreach (var truth in love.Truths.Where (t => t.Light.Text.Contains (last))) {
+                     query.Add (truth.Id, truth.Light.Text);
+                  }
+               }
+            }
+         } else {
+            query = LightSearch.AutoComplete (text);
+         }
          var result = new { suggestions = query.Select (kvp => new { value = kvp.Value, data = kvp.Key }) };
          return Json (result, JsonRequestBehavior.AllowGet);
       }
@@ -143,7 +179,7 @@ namespace SeekDeepWithin.Controllers
          if (peaces.Count > 0) {
             foreach (var peace in peaces.OrderBy (p => p.Order)) {
                if (!string.IsNullOrEmpty (title))
-                  title += "|";
+                  title += " | ";
                title += peace.Light.Text;
             }
          }

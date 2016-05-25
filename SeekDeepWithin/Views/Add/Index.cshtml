@@ -1,0 +1,73 @@
+﻿@using SeekDeepWithin.Pocos
+<div class="row column mTopBig"><h3>Add to Database</h3></div>
+<div class="callout">
+   <h5>1. Select Love</h5>
+   <div class="row column"><input type="text" id="lightSearch" /></div>
+   <div id="love" class="row column"></div>
+</div>
+<div class="callout">
+   <h5>2. Select Links for the Added Truths</h5>
+   <div class="small-12 medium-6 large-6 column" id="addTruthLinks"></div>
+</div>
+<div class="callout">
+   <h5>3. Add Related Versions</h5>
+   <div class="small-12 medium-6 large-6 column" id="addVersionLinks"></div>
+</div>
+<div class="callout">
+   <h5>4. Format Text for Importing</h5>
+   <div class="row column">
+      <textarea rows="10" id="addTruthFormatText"></textarea>
+   </div>
+   <div class="row">
+      <div class="small-12 medium-6 large-6 column">
+         Regular Expression to use for importing<input type="text" id="addTruthFormatRegex" />
+      </div>
+      <div class="small-12 medium-6 large-6 column">
+         Known Regular Expressions
+         <select id="addTruthCurrentRegex">
+            @foreach (FormatRegex regex in ViewBag.Regexs) {<option value="@regex.Id">@(regex.Regex)</option>}
+         </select>
+      </div>
+   </div>
+   <div class="row">
+      <div class="small-4 column">Start Order</div>
+      <div class="small-4 column end">Start Number</div>
+   </div>
+   <div class="row">
+      <div class="small-4 column"><input type="number" id="addTruthFormatOrder" /></div>
+      <div class="small-4 column"><input type="number" id="addTruthFormatNumber" /></div>
+      <div class="small-4 column"><a id="btnFormat" class="sdw-button reg tiny expand">Format</a></div>
+   </div>
+</div>
+<div class="callout">
+   <h5>5. Edit Data</h5>
+   <div id="addGroups"></div>
+   <div class="callout small text-center warning">
+      <em style="font-size:smaller;">
+         Headers => Order = 0; Number = The corresponding item.<br />
+         Footers => Order = the negative index of the footer; Number = The corresponding item.
+      </em>
+   </div>
+</div>
+<div class="callout">
+   <h5>6. Add</h5>
+   <div class="row column">
+      <a id="btnCreateTruth" class="sdw-button add expand">Add</a>
+   </div>
+</div>
+<div class="row column">
+   <div class="callout secondary">
+      <div class="row column">New Light</div>
+      <div class="row">
+         <div class="small-12 medium-9 large-10 column">
+            <input type="text" id="txtNewLight" />
+         </div>
+         <div class="small-12 medium-3 large-2 column">
+            <a id="btnCreateLight" class="sdw-button add tiny expand">Create</a>
+         </div>
+      </div>
+   </div>
+</div>
+@section scripts  {
+   @(Scripts.Render ("~/bundles/sdw/add"))
+}

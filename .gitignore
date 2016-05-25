@@ -48,7 +48,12 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+.htaccess
+.ftpquota
+error_log
 
+IinAll/.idea
+IinAll/loveforgiving
 SeekDeepWithin/Web.config
 SeekDeepWithin/Web.Release.config
 *.config
@@ -56,3 +61,4 @@ SeekDeepWithin/Web.Release.config
 *.pdat
 *.sql
 *.pubxml
+/SeekDeepWithin/sdw_lucene/light
