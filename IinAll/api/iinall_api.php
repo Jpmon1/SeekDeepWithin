@@ -1,62 +1,174 @@
 <?php
 
 $dir = dirname (__FILE__) . '/';
-require_once($dir . 'include/Params.php');
-require_once($dir . 'api_base.php');
-require_once($dir . 'include/IinAllDb.php');
+require_once ($dir . 'User.php');
+require_once ($dir . 'api_base.php');
+require_once ($dir . 'IinAllDb.php');
 
 class IinAllApi extends Api
 {
    public function __construct ($request, $origin)
    {
-      parent::__construct($request);
-      /*// Abstracted out for example
-      $APIKey = new Models\APIKey();
-      $User = new Models\User();
+      parent::__construct ($request);
+   }
 
-      if (!array_key_exists('apiKey', $this->request)) {
-            throw new Exception('No API Key provided');
-      } else if (!$APIKey->verifyKey($this->request['apiKey'], $origin)) {
-            throw new Exception('Invalid API Key');
-      } else if (array_key_exists('token', $this->request) &&
-             !$User->get('token', $this->request['token'])) {
-            throw new Exception('Invalid User Token');
+   /**
+    * Logs a user into the server.
+    * @param $params array The passed in parameters.
+    * @return array The results.
+    * @throws Exception Error when unknown action is requested.
+    */
+   protected function Login ($params)
+   {
+      if ($this->method == 'POST') {
+         $email = $params["email"];
+         if (empty ($email)) {
+            throw new Exception ("You must provide an email address.");
+         }
+         $data = array();
+         $user = new User ();
+         if ($user->isUserLoggedIn ()) {
+            if ($user->getUserEmail () == $email) {
+               return array('status' => 'error', 'message' => 'User is already logged in.');
+            } else {
+               $user->logOut ();
+            }
+         }
+         $hash = $params["hash"];
+         if (empty ($hash)) {
+            throw new Exception ("You must provide a password.");
+         }
+         $result = $user->logIn ($email, $hash);
+         if ($result === true) {
+            return $this->CheckUser ($params, $user);
+         }
+         $data['status'] = 'fail';
+         $data['message'] = $result;
+         return $data;
       }
-      $this->User = $User;*/
+      throw new Exception ("An unknown error occurred.");
+   }
+
+   /**
+    * Registers a new user.
+    * @param $params array The passed in parameters.
+    * @return array The results.
+    * @throws Exception Error when unknown action is requested.
+    */
+   protected function Register ($params)
+   {
+      if ($this->method == 'POST') {
+         $email = $params["email"];
+         $name = $params["name"];
+         $hash = $params["hash"];
+         if (empty ($email)) { throw new Exception ("You must provide an email address."); }
+         if (empty ($name))  { throw new Exception ("You must provide a name."); }
+         if (empty ($hash))  { throw new Exception ("You must provide a password."); }
+         $data = array();
+         $user = new User ();
+         $result = $user->register ($name, $email, $hash);
+         if ($result === true){
+            return $this->CheckUser ($params, $user);
+         }
+         $data['status'] = 'fail';
+         $data['message'] = $result;
+         return $data;
+      }
+      throw new Exception ("An unknown error occurred.");
+   }
+
+   /**
+    * Checks if there is a current user.
+    * @param $params array The passed in parameters.
+    * @return array The results.
+    * @throws Exception Error when unknown action is requested.
+    */
+   protected function CheckUser ($params, $user = null)
+   {
+      if ($user == null) {
+         $user = new User ();
+      }
+      if ($user->isUserLoggedIn ()) {
+         return array('status' => 'success',
+                      'id' => $user->getUserId (),
+                      'name' => $user->getUserName (),
+                      'email' => $user->getUserEmail (),
+                      'token' => $user->getEditToken (),
+                      'level' => $user->getLevel ());
+      }
+      return array('status' => 'fail', 'message' => 'The user is not logged in.');
+   }
+
+   /**
+    * Logs a user out of the server.
+    * @param $params array The passed in parameters.
+    * @return array The results.
+    * @throws Exception Error when unknown action is requested.
+    */
+   protected function Logout ()
+   {
+      $user = new User ();
+      $user->logout ();
+      return array('status' => 'success');
    }
 
    /**
     * Get a random number of lights.
-    * @param $params The passed in parameters.
+    * @param $params array The passed in parameters.
     * @return array The results.
     * @throws Exception Error when unknown action is requested.
     */
    protected function Light ($params)
    {
-      if ($this->method == 'GET') {
-         $db = new IinAllDb ();
-         $light = $db->getRandomLight (25);
+      $data = array();
+      $db = new IinAllDb ();
+      try {
+         if ($this->method == 'GET') {
+            $data = $db->getRandomLight(25);
+         } else {
+            $db = new UserDb ();
+            //$verify = $db->verifyToken ($params['user'], $params['token']);
+            if (!$db->verifyToken ($params['user'], $params['token'])) {
+                  throw new Exception ('Invalid User.');
+            }
+            if ($this->method == 'POST') {
+               $light = $params["text"];
+               if (empty ($light)) {
+                  throw new Exception('No light given');
+               }
+               $data['status'] = 'success';
+               $data['id'] = $db->createLight($light);
+            } elseif ($this->method == 'PUT') {
+               $db = new IinAllDb ();
+               $light = $params["text"];
+               $id = $params["id"];
+               if (empty ($light)) {
+                  throw new Exception('No light given');
+               } elseif (empty ($id)) {
+                  throw new Exception('No id given');
+               }
+               //$success = $db->editLight ($light);
+               throw new Exception('The put has not been implemented yet.');
+            } elseif ($this->method == 'DEL') {
+               throw new Exception('The del has not been implemented yet.');
+            }
+            if (!empty($data)) {
+               return $data;
+            }
+         }
+      } catch (Exception $ex) {
+         throw $ex;
+      } finally {
          $db->close ();
-         return $light;
-      } elseif ($this->method == 'POST') {
-         $light = $params["l"];
-         $key = $params["m"];
-         if ($key != "GodisAllLove") { throw new Exception('An unknown error occurred.'); }
-         if (empty ($light)) { throw new Exception('No light given'); }
-         $db = new IinAllDb ();
-         $id = $db->createLight ($light);
-         $db->close ();
-         return Array('status' => 'success', 'id' => $id);
-      } elseif ($this->method == 'PUT') {
-
-      } elseif ($this->method == 'DEL') {
-
       }
       throw new Exception('An unknown error occurred.');
    }
-   
+
    /**
     * Gets the truth for the given light.
+    * @param $params array The passed in parameters.
+    * @return array The results.
+    * @throws Exception Error when unknown action is requested.
     */
    protected function truth ($params)
    {
@@ -78,22 +190,6 @@ class IinAllApi extends Api
       }
       throw new Exception('An unknown error occurred.');
    }
-
-   /**
-    * Creates a new light.
-    */
-   protected function createLight ($params)
-   {
-      if ($this->method == 'GET'){ throw new Exception('An unknown error occurred.'); }
-      $light = $params["l"];
-      $key = $params["m"];
-      if ($key != "GodisAllLove") { throw new Exception('An unknown error occurred.'); }
-      if (empty ($light)) { throw new Exception('No light given'); }      
-      $db = new IinAllDb ();
-      $id = $db->createLight ($light);
-      $db->close ();
-      return Array('status' => 'success', 'id' => $id);
-   }
    
    /**
     * Creates a new love.
@@ -103,11 +199,13 @@ class IinAllApi extends Api
       if ($this->method == 'GET'){
          throw new Exception('An unknown error occured.');
       }
-      $key = $params["m"];
-      if ($key != "GodisAllLove") { throw new Exception('An unknown error occured.'); }
+      $userDb = new UserDb ();
+      if (!$userDb->verifyToken ($params['user'], $params['token'])) {
+         throw new Exception ('Invalid User.');
+      }
+      $db = new IinAllDb ();
       $light = $params["light"];
       if (empty ($light)) throw new Exception('No light given');
-      $db = new IinAllDb ();
       $id = $db->createLove ($light);
       $db->close ();
       return Array('status' => 'success', 'id' => $id);
@@ -121,10 +219,11 @@ class IinAllApi extends Api
       if ($this->method == 'GET') {
          throw new Exception('An unknown error occurred.');
       }
-      $key = $params["m"];
-      if ($key != "GodisAllLove") { throw new Exception('An unknown error occurred.'); }
-      $data = $params["d"];
       $db = new IinAllDb ();
+      $key = $params["m"];
+      $motto = $db->getMotto();
+      if ($key != $motto) { throw new Exception('An unknown error occurred.'); }
+      $data = $params["d"];
       $log = $db->createTruth ($data);
       $db->close ();
       return Array('status' => 'success', 'log' => $log);
@@ -134,7 +233,11 @@ class IinAllApi extends Api
    {
       if ($this->method == 'GET') {
          throw new Exception('An unknown error occurred.');
-      }      
+      }
+      $userDb = new UserDb ();
+      if (!$userDb->verifyToken ($params['user'], $params['token'])) {
+         throw new Exception ('Invalid User.');
+      }
       $love = $params["l"];
       $data = $params["d"];
       $regex = $params["r"];
@@ -151,7 +254,7 @@ class IinAllApi extends Api
    /**
     * Get suggestions for the given token.
     */
-   protected function suggest ($params)
+   protected function Suggest ($params)
    {
       $light = Array();
       $token = $params["t"];

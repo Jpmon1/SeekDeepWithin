@@ -10,6 +10,6 @@ try {
     $api = new IinAllApi($_REQUEST['request'], $_SERVER['HTTP_ORIGIN']);
     echo $api->process();
 } catch (Exception $e) {
-    echo Array('status' => 'fail', 'message' => $e->getMessage());
+    echo json_encode(Array('status' => 'fail', 'message' => $e->getMessage()));
 }
 ?>

@@ -71,7 +71,10 @@ class IinAllDb extends Database
       $loveId = $this->getLoveId ($light);
       if ($loveId === -1) {
          $truths = array();
-         $stmt = $this->prepare ("SELECT `truth`.`id`, `truth`.`order`, `truth`.`number`, `truth`.`light_id`, `light`.`text` FROM `truth` INNER JOIN `light` ON `truth`.`light_id`=`light`.`id` WHERE `love_id`=?;");
+         $stmt = $this->prepare ("SELECT `truth`.`id`, `truth`.`order`, `truth`.`number`, `truth`.`light_id`, `light`.`text` 
+                                  FROM `truth` 
+                                  INNER JOIN `light` ON `truth`.`light_id`=`light`.`id` 
+                                  WHERE `love_id`=?;");
          $stmt->bind_param ("i", $loveId);
          $stmt->execute ();
          $stmt->bind_result ($id, $order, $number, $lightId, $text);
