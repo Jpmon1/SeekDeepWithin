@@ -3,10 +3,34 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:IinAll.Edit.Views"
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
-            
-    </Grid>
+             xmlns:dragAndDrop="clr-namespace:IinAll.Edit.DragAndDrop"
+             xmlns:logic="clr-namespace:IinAll.Edit.Logic"
+             mc:Ignorable="d"
+             d:DesignHeight="300"
+             d:DesignWidth="300" d:DataContext="{d:DesignInstance logic:BlissViewModel}">
+   <UserControl.Resources>
+      <dragAndDrop:LightDropController x:Key="LightDropController" />
+   </UserControl.Resources>
+   <Grid>
+      <Grid.RowDefinitions>
+         <RowDefinition Height="Auto" />
+         <RowDefinition Height="*" />
+      </Grid.RowDefinitions>
+
+      <ScrollViewer Grid.Row="0"
+                    VerticalScrollBarVisibility="Hidden"
+                    HorizontalScrollBarVisibility="Auto">
+         <ItemsControl Height="150"
+                       Background="DarkGray"
+                       ItemsSource="{Binding Path=Light}"
+                       dragAndDrop:DragNDrop.IsDropTarget="True"
+                       dragAndDrop:DragNDrop.DropController="{StaticResource LightDropController}">
+            <ItemsControl.ItemsPanel>
+               <ItemsPanelTemplate>
+                  <StackPanel Orientation="Horizontal" />
+               </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+         </ItemsControl>
+      </ScrollViewer>
+   </Grid>
 </UserControl>

@@ -105,25 +105,23 @@ namespace IinAll.Edit.Logic
       {
          this.m_IsGetting = true;
          while (this.m_IsPosting) { await Task.Run (() => Thread.Sleep (10)); }
-         while (true)
-         {
-            string responseText;
+         while (true) {
+            dynamic responseJObj;
+            string responseText = string.Empty;
             var data = this.m_GetQueue.Dequeue ();
-            try 
-            {
+            try {
                responseText = await this.m_WebClient.DownloadStringTaskAsync (new Uri (BASE_ADDRESS + data.Url));
-            }
-            catch (Exception ex)
-            {
-               MessageBox.Show (Application.Current.MainWindow, ex.Message, "I in All",
+               responseJObj = JObject.Parse (responseText);
+            } catch (Exception ex) {
+               MessageBox.Show (Application.Current.MainWindow, ex.Message + "\n" + responseText, "I in All",
                   MessageBoxButton.OK, MessageBoxImage.Error);
                if (this.m_GetQueue.Count > 0)
                   continue;
                break;
             }
-            dynamic responseJObj = JObject.Parse (responseText);
             if (responseJObj.status == Constants.FAIL) {
-               MessageBox.Show (Application.Current.MainWindow, responseJObj.message, "I in All",
+               string message = responseJObj.message ?? string.Empty;
+               MessageBox.Show (Application.Current.MainWindow, message, "I in All",
                   MessageBoxButton.OK, MessageBoxImage.Error);
             } else {
                if (data.Success != null)
@@ -145,25 +143,22 @@ namespace IinAll.Edit.Logic
          while (this.m_IsGetting) { await Task.Run (() => Thread.Sleep (10)); }
          while (true)
          {
-            string responseText;
+            dynamic responseJObj;
+            string responseText = string.Empty;
             var postData = this.m_PostQueue.Dequeue ();
-            try
-            {
+            try {
                byte[] response = await this.m_WebClient.UploadValuesTaskAsync (new Uri (BASE_ADDRESS + postData.Url),
                   "POST", postData.Parameters);
                responseText = Encoding.UTF8.GetString (response);
-            }
-            catch (Exception ex)
-            {
-               MessageBox.Show (Application.Current.MainWindow, ex.Message, "I in All",
+               responseJObj = JObject.Parse (responseText);
+            } catch (Exception ex) {
+               MessageBox.Show (Application.Current.MainWindow, ex.Message + "\n" + responseText, "I in All",
                   MessageBoxButton.OK, MessageBoxImage.Error);
                if (this.m_PostQueue.Count > 0)
                   continue;
                break;
             }
-            dynamic responseJObj = JObject.Parse (responseText);
-            if (postData.Url == Constants.URL_LOGIN_REQUEST && responseJObj.status == Constants.SUCCESS)
-            {
+            if (postData.Url == Constants.URL_LOGIN_REQUEST && responseJObj.status == Constants.SUCCESS) {
                this.UserId = responseJObj.id;
                this.Token = responseJObj.token;
                this.UserName = responseJObj.name;
@@ -173,7 +168,8 @@ namespace IinAll.Edit.Logic
                CommandManager.InvalidateRequerySuggested ();
             }
             if (responseJObj.status == Constants.FAIL) {
-               MessageBox.Show (Application.Current.MainWindow, responseJObj.message, "I in All",
+               string message = responseJObj.message ?? string.Empty;
+               MessageBox.Show (Application.Current.MainWindow, message, "I in All",
                   MessageBoxButton.OK, MessageBoxImage.Error);
             } else {
                if (postData.Success != null)

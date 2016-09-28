@@ -1,9 +1,9 @@
 ﻿namespace IinAll.Edit.Data
 {
    /// <summary>
-   /// Represents a truth.
+   /// Model for peace.
    /// </summary>
-   public class Truth
+   public class Peace
    {
       /// <summary>
       /// Gets or Sets the id.
@@ -16,8 +16,13 @@
       public Love Love { get; set; }
 
       /// <summary>
-      /// Gets or Sets the corresponding light.
+      /// Get or Sets the light of the peace.
       /// </summary>
       public Light Light { get; set; }
+
+      /// <summary>
+      /// Gets or Sets the order.
+      /// </summary>
+      public int Order { get; set; }
    }
 }

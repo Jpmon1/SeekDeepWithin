@@ -61,10 +61,26 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Data\Bliss.cs" />
     <Compile Include="Data\Light.cs" />
+    <Compile Include="Data\Love.cs" />
+    <Compile Include="Data\Peace.cs" />
     <Compile Include="Data\Truth.cs" />
+    <Compile Include="DragAndDrop\Adorners\DataTemplateAdorner.cs" />
+    <Compile Include="DragAndDrop\Adorners\DragNDropAdorner.cs" />
+    <Compile Include="DragAndDrop\Adorners\InsertAdorner.cs" />
+    <Compile Include="DragAndDrop\DependencyObjectHelper.cs" />
+    <Compile Include="DragAndDrop\DragController.cs" />
+    <Compile Include="DragAndDrop\DragNDrop.cs" />
+    <Compile Include="DragAndDrop\DropController.cs" />
+    <Compile Include="DragAndDrop\ItemControlHelpers.cs" />
+    <Compile Include="DragAndDrop\LightDropController.cs" />
+    <Compile Include="DragAndDrop\VisualHelpers.cs" />
+    <Compile Include="Logic\BaseTabItem.cs" />
+    <Compile Include="Logic\BaseViewModel.cs" />
     <Compile Include="Logic\BlissViewModel.cs" />
     <Compile Include="Logic\EditViewModel.cs" />
+    <Compile Include="Logic\ILightContainer.cs" />
     <Compile Include="Logic\LightViewModel.cs" />
     <Compile Include="Logic\TruthViewModel.cs" />
     <Compile Include="Views\BlissView.xaml.cs">
@@ -99,6 +115,50 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Themes\Button.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\CheckBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\ComboBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Default.Light.Colors.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Light.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\LightColors.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\RadioButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\ScrollViewer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\TextBlock.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\TextBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\ToggleButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\BlissView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

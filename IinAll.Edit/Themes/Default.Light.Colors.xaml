@@ -1,0 +1,49 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+   <Color x:Key="NormalBorderColor">#B9B9B9</Color>
+   <Color x:Key="NormalTextColor">#282828</Color>
+   <SolidColorBrush x:Key="NormalBorder"
+                    Color="{StaticResource NormalBorderColor}"/>
+   <SolidColorBrush x:Key="NormalText"
+                    Color="{StaticResource NormalTextColor}"/>
+
+   <Color x:Key="AltColor">#0074FF</Color>
+   <SolidColorBrush x:Key="AltBorder"
+                     Color="{StaticResource AltColor}"/>
+   <SolidColorBrush x:Key="AltText"
+                     Color="{StaticResource AltColor}"/>
+
+   <Color x:Key="DisabledColor">#BBBBBB</Color>
+   <SolidColorBrush x:Key="DisabledBorder"
+                     Color="{StaticResource DisabledColor}"/>
+   <SolidColorBrush x:Key="DisabledText"
+                     Color="{StaticResource DisabledColor}"/>
+
+   <Color x:Key="SuccessColor">DarkGreen</Color>
+   <SolidColorBrush x:Key="SuccessBorder"
+                     Color="{StaticResource SuccessColor}"/>
+   <SolidColorBrush x:Key="SuccessText"
+                     Color="{StaticResource SuccessColor}"/>
+
+   <Color x:Key="ErrorColor">DarkRed</Color>
+   <SolidColorBrush x:Key="ErrorBorder"
+                     Color="{StaticResource ErrorColor}"/>
+   <SolidColorBrush x:Key="ErrorText"
+                     Color="{StaticResource ErrorColor}"/>
+
+   <Color x:Key="WarningColor">DarkOrange</Color>
+   <SolidColorBrush x:Key="WarningBorder"
+                     Color="{StaticResource WarningColor}"/>
+   <SolidColorBrush x:Key="WarningText"
+                     Color="{StaticResource WarningColor}"/>
+
+   <Color x:Key="InputColor">#CCCCCC</Color>
+   <Color x:Key="InputBgColor">#FFFFFF</Color>
+   <Color x:Key="InputBgColorDisabled">#AAAAAA</Color>
+   <SolidColorBrush x:Key="InputBorder"
+                     Color="{StaticResource DisabledColor}"/>
+   <SolidColorBrush x:Key="InputBackground"
+                     Color="{StaticResource InputBgColor}"/>
+   
+</ResourceDictionary>

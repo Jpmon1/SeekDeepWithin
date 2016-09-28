@@ -4,13 +4,17 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:logic="clr-namespace:IinAll.Edit.Logic"
+             xmlns:dnd="clr-namespace:IinAll.Edit.DragAndDrop"
              mc:Ignorable="d"
              d:DesignHeight="300"
              d:DesignWidth="300"
              d:DataContext="{d:DesignInstance logic:LightViewModel}">
+   <UserControl.Resources>
+      <dnd:LightDropController x:Key="LightDropController" />
+   </UserControl.Resources>
    <Grid>
       <Grid.RowDefinitions>
-         <RowDefinition Height="*" />
+         <RowDefinition Height="250" />
          <RowDefinition Height="*" />
       </Grid.RowDefinitions>
       <Grid>
@@ -18,7 +22,6 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
          </Grid.RowDefinitions>
          <TextBox Text="{Binding Path=SearchText, UpdateSourceTrigger=PropertyChanged}"
                   Grid.Row="0" />
@@ -26,56 +29,28 @@
                  Content="Search"
                  Command="{Binding Path=SearchCommand}" />
          <ListBox Grid.Row="2"
+                  SelectionMode="Single"
                   DisplayMemberPath="Text"
+                  dnd:DragNDrop.IsDragSource="True"
                   ItemsSource="{Binding Path=SearchResults}"
                   SelectedValue="{Binding Path=SelectedSearchResult}" />
-         <Button Grid.Row="3"
-                 Content="Stage"
-                 Command="{Binding Path=StageLightCommand}" />
       </Grid>
 
       <ScrollViewer Grid.Row="1"
                     VerticalScrollBarVisibility="Auto"
                     HorizontalScrollBarVisibility="Hidden">
-         <ItemsControl ItemsSource="{Binding Path=Light}">
+         <ItemsControl HorizontalAlignment="Stretch"
+                       VerticalAlignment="Stretch"
+                       Background="DarkGray"
+                       ItemsSource="{Binding Path=Light}"
+                       dnd:DragNDrop.IsDragSource="True"
+                       dnd:DragNDrop.IsDropTarget="True"
+                       dnd:DragNDrop.DropController="{StaticResource LightDropController}">
             <ItemsControl.ItemsPanel>
                <ItemsPanelTemplate>
                   <StackPanel Orientation="Vertical" />
                </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
-
-            <ItemsControl.ItemTemplate>
-               <DataTemplate>
-                  <Border Margin="5"
-                          Padding="5"
-                          Height="125"
-                          BorderBrush="DarkGray"
-                          BorderThickness="1"
-                          Background="LightGray">
-                     <Grid>
-                        <Grid.RowDefinitions>
-                           <RowDefinition Height="*" />
-                           <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <TextBox Text="{Binding Path=Text}"
-                                 Grid.Row="0"
-                                 Margin="0,0,0,5"
-                                 TextWrapping="WrapWithOverflow" />
-                        <Grid Grid.Row="1">
-                           <Grid.ColumnDefinitions>
-                              <ColumnDefinition Width="* " />
-                              <ColumnDefinition Width="* " />
-                           </Grid.ColumnDefinitions>
-                           <Button Content="Remove"
-                                   Grid.Column="0"
-                                   Command="{Binding Path=RemoveCommand}" />
-                           <Button Content="Save"
-                                   Grid.Column="1" />
-                        </Grid>
-                     </Grid>
-                  </Border>
-               </DataTemplate>
-            </ItemsControl.ItemTemplate>
          </ItemsControl>
       </ScrollViewer>
    </Grid>

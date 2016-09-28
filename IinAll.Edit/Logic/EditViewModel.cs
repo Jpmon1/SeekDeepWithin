@@ -223,9 +223,6 @@ namespace IinAll.Edit.Logic
          var url = Constants.URL_GET_TRUTH + HttpUtility.UrlEncode (love);
          WebQueue.Instance.Get (url, this.OnGetTruths);
          if (e.NewItems != null) {
-            foreach (var newItem in e.NewItems.Cast <Light>()) {
-               newItem.Edit = this;
-            }
          }
       }
 
@@ -255,8 +252,6 @@ namespace IinAll.Edit.Logic
          foreach (var truth in result.truths) {
             this.Truths.Add(new Truth {
                Id = truth.id,
-               Order = truth.o,
-               Number = truth.n,
                Light = new Light {
                   Id = truth.lid,
                   Text = truth.t

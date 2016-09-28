@@ -23,7 +23,7 @@ namespace IinAll.Edit.Data
       /// <summary>
       /// Gets or Sets the parent edit model.
       /// </summary>
-      public EditViewModel Edit { get; set; }
+      public ILightContainer Parent { get; set; }
 
       /// <summary>
       /// Gets the remove light command.
@@ -39,7 +39,7 @@ namespace IinAll.Edit.Data
       /// <param name="obj">Command Parameter, not used.</param>
       private bool CanRemove (object obj)
       {
-         return this.Edit != null;
+         return this.Parent != null;
       }
 
       /// <summary>
@@ -48,7 +48,7 @@ namespace IinAll.Edit.Data
       /// <param name="obj">Command parameter, not used.</param>
       private void OnRemove (object obj)
       {
-         this.Edit.RemoveLight (this);
+         this.Parent.RemoveLight (this);
       }
    }
 }

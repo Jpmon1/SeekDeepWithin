@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -15,9 +16,13 @@ namespace IinAll.Edit.Logic
    /// </summary>
    public class MainViewModel : INotifyPropertyChanged
    {
+      private bool m_IsWaiting;
       private string m_UserName;
-      private RelayCommand m_CmdLogin;
-      private RelayCommand m_CmdEditLight;
+      private RelayCommand m_LoginCommand;
+      private RelayCommand m_NewTruthCommand;
+      private RelayCommand m_NewBlissCommand;
+      private TruthViewModel m_SelectedTruth;
+      private BlissViewModel m_SelectedBliss;
 
       /// <summary>
       /// Propert changed event.
@@ -29,8 +34,9 @@ namespace IinAll.Edit.Logic
       /// </summary>
       public MainViewModel ()
       {
-         this.Edit = new EditViewModel ();
          this.Light = new LightViewModel ();
+         this.Truth = new ObservableCollection <TruthViewModel> ();
+         this.Bliss = new ObservableCollection <BlissViewModel> ();
       }
 
       /// <summary>
@@ -52,38 +58,86 @@ namespace IinAll.Edit.Logic
       public string Password { get; set; }
 
       /// <summary>
-      /// Gets or Sets the edit view model.
-      /// </summary>
-      public EditViewModel Edit { get; private set; }
-
-      /// <summary>
       /// Gets or Sets the light view model.
       /// </summary>
       public LightViewModel Light { get; set; }
+
+      /// <summary>
+      /// Gets the collection of truth.
+      /// </summary>
+      public ObservableCollection <TruthViewModel> Truth { get; }
+
+      /// <summary>
+      /// Gets the collection of bliss.
+      /// </summary>
+      public ObservableCollection <BlissViewModel> Bliss { get; }
+
+      /// <summary>
+      /// Gets or Sets the selected truth.
+      /// </summary>
+      public TruthViewModel SelectedTruth
+      {
+         get { return this.m_SelectedTruth; }
+         set
+         {
+            this.m_SelectedTruth = value;
+            this.OnPropertyChanged ();
+         }
+      }
+
+      /// <summary>
+      /// Gets or Sets the selected biss.
+      /// </summary>
+      public BlissViewModel SelectedBliss
+      {
+         get { return this.m_SelectedBliss; }
+         set
+         {
+            this.m_SelectedBliss = value;
+            this.OnPropertyChanged ();
+         }
+      }
 
       /// <summary>
       /// Gets the login command.
       /// </summary>
       public ICommand LoginCommand
       {
-         get { return this.m_CmdLogin ?? (this.m_CmdLogin = new RelayCommand (this.OnLogin, this.CanLogin)); }
+         get { return this.m_LoginCommand ?? (this.m_LoginCommand = new RelayCommand (this.OnLogin, this.CanLogin)); }
       }
 
       /// <summary>
-      /// Gets the edit light command.
+      /// Gets the command for a new truth.
       /// </summary>
-      public ICommand EditLightCommand
+      public ICommand NewTruthCommand
       {
-         get { return this.m_CmdEditLight ?? (this.m_CmdEditLight = new RelayCommand (this.OnEditLight)); }
+         get { return this.m_NewTruthCommand ?? (this.m_NewTruthCommand = new RelayCommand (this.OnNewTruth)); }
       }
 
       /// <summary>
-      /// Adds the selected light to the edit list.
+      /// Gets the command for a new bliss.
+      /// </summary>
+      public ICommand NewBlissCommand
+      {
+         get { return this.m_NewBlissCommand ?? (this.m_NewBlissCommand = new RelayCommand (this.OnNewBliss)); }
+      }
+
+      /// <summary>
+      /// Execution of the new truth command.
       /// </summary>
       /// <param name="obj">Command Parameter, not used.</param>
-      private void OnEditLight (object obj)
+      private void OnNewTruth (object obj)
       {
-         //this.Edit.Lights.Add (this.SelectedSearchResult);
+         this.Truth.Add(new TruthViewModel { IsSelected = true });
+      }
+
+      /// <summary>
+      /// Execution of the new truth command.
+      /// </summary>
+      /// <param name="obj">Command Parameter, not used.</param>
+      private void OnNewBliss (object obj)
+      {
+         this.Bliss.Add (new BlissViewModel { IsSelected = true });
       }
 
       /// <summary>
@@ -95,7 +149,8 @@ namespace IinAll.Edit.Logic
       {
          return !string.IsNullOrWhiteSpace(this.UserName) &&
             !string.IsNullOrWhiteSpace (this.Password) &&
-            !WebQueue.Instance.IsAuthenticated;
+            !WebQueue.Instance.IsAuthenticated &&
+            !this.m_IsWaiting;
       }
 
       /// <summary>
@@ -105,6 +160,7 @@ namespace IinAll.Edit.Logic
       private void OnLogin (object obj)
       {
          byte[] passHash;
+         this.m_IsWaiting = true;
          var data = Encoding.UTF8.GetBytes (this.Password);
          using (SHA512 shaM = new SHA512Managed ())
             passHash = shaM.ComputeHash (data);
@@ -112,7 +168,7 @@ namespace IinAll.Edit.Logic
             {"email", this.UserName},
             {"hash", BitConverter.ToString (passHash).Replace("-", "").ToLower ()}
          };
-         WebQueue.Instance.Post (Constants.URL_LOGIN_REQUEST, values);
+         WebQueue.Instance.Post (Constants.URL_LOGIN_REQUEST, values, (d, r) => this.m_IsWaiting = false);
       }
 
       /// <summary>

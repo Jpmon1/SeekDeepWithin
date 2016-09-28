@@ -2,11 +2,161 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:IinAll.Edit.Views"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:dnd="clr-namespace:IinAll.Edit.DragAndDrop"
+             xmlns:logic="clr-namespace:IinAll.Edit.Logic"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance logic:TruthViewModel}">
+   <UserControl.Resources>
+      <dnd:LightDropController x:Key="LightDropController" />
+   </UserControl.Resources>
    <Grid>
+      <Grid.RowDefinitions>
+         <RowDefinition Height="Auto"/>
+         <RowDefinition Height="*" />
+      </Grid.RowDefinitions>
 
+      <ScrollViewer Grid.Row="0"
+                    VerticalScrollBarVisibility="Hidden"
+                    HorizontalScrollBarVisibility="Auto">
+         <ItemsControl Height="150"
+                       Background="DarkGray"
+                       ItemsSource="{Binding Path=Light}"
+                       dnd:DragNDrop.IsDropTarget="True"
+                       dnd:DragNDrop.DropController="{StaticResource LightDropController}">
+            <ItemsControl.ItemsPanel>
+               <ItemsPanelTemplate>
+                  <StackPanel Orientation="Horizontal" />
+               </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+         </ItemsControl>
+      </ScrollViewer>
+
+      <TabControl Grid.Row="1">
+         <TabItem Header="Current Truth"
+                  IsSelected="True">
+            <ScrollViewer HorizontalScrollBarVisibility="Hidden"
+                          VerticalScrollBarVisibility="Auto">
+               <ItemsControl ItemsSource="{Binding Path=Truth}">
+                  <ItemsControl.ItemsPanel>
+                     <ItemsPanelTemplate>
+                        <StackPanel Orientation="Vertical" />
+                     </ItemsPanelTemplate>
+                  </ItemsControl.ItemsPanel>
+
+                  <ItemsControl.ItemTemplate>
+                     <DataTemplate>
+                        <Border Margin="5"
+                                Padding="5"
+                                BorderBrush="DarkGray"
+                                BorderThickness="1"
+                                Background="LightGray">
+                           <Grid>
+                              <Grid.ColumnDefinitions>
+                                 <ColumnDefinition Width="25" />
+                                 <ColumnDefinition Width="*" />
+                              </Grid.ColumnDefinitions>
+                              <TextBlock Text="{Binding Path=Id}"
+                                         Grid.Column="0"
+                                         VerticalAlignment="Center" />
+                              <TextBox Text="{Binding Path=Light.Text}"
+                                       Grid.Column="1" />
+                           </Grid>
+                        </Border>
+                     </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+               </ItemsControl>
+            </ScrollViewer>
+         </TabItem>
+         <TabItem Header="Add Truth">
+            <Grid>
+               <Grid.RowDefinitions>
+                  <RowDefinition Height="175" />
+                  <RowDefinition Height="*" />
+                  <RowDefinition Height="Auto" />
+               </Grid.RowDefinitions>
+               <Grid Grid.Row="0">
+                  <Grid.ColumnDefinitions>
+                     <ColumnDefinition Width="*" />
+                     <ColumnDefinition Width="*" />
+                  </Grid.ColumnDefinitions>
+                  <Grid.RowDefinitions>
+                     <RowDefinition Height="Auto" />
+                     <RowDefinition Height="*" />
+                  </Grid.RowDefinitions>
+                  <TextBlock Grid.Row="0"
+                             Grid.Column="0"
+                             Text="Text to Format:" />
+                  <TextBox Grid.Row="1"
+                           Grid.Column="0"
+                           AcceptsReturn="True"
+                           TextWrapping="WrapWithOverflow"
+                           VerticalScrollBarVisibility="Auto"
+                           HorizontalScrollBarVisibility="Auto"
+                           Text="{Binding Path=TextToFormat, UpdateSourceTrigger=PropertyChanged}" />
+                  <TextBlock Grid.Row="0"
+                             Grid.Column="1"
+                             Text="Current Regular Expressions:" />
+                  <Grid Grid.Row="1"
+                        Grid.Column="1"
+                        Margin="5,0,0,0">
+                     <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                     </Grid.RowDefinitions>
+                     <ComboBox Grid.Row="0"
+                               SelectedValue="{Binding Path=CurrentRegex}"
+                               ItemsSource="{Binding Path=Regexes}" />
+                     <TextBlock Grid.Row="1"
+                                Text="Regular Expression to use:" />
+                     <TextBox Grid.Row="2"
+                              Text="{Binding Path=CurrentRegex}" />
+                     <Grid Grid.Row="3">
+                        <Grid.ColumnDefinitions>
+                           <ColumnDefinition Width="*" />
+                           <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                           <RowDefinition Height="Auto" />
+                           <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0"
+                                   Grid.Column="0"
+                                   Text="Start Order:" />
+                        <TextBox Grid.Column="0"
+                                 Grid.Row="1"
+                                 HorizontalContentAlignment="Right"
+                                 Text="{Binding Path=StartOrder}" />
+                        <TextBlock Grid.Row="0"
+                                   Grid.Column="1"
+                                   Text="Start Number:" />
+                        <TextBox Grid.Column="1"
+                                 Grid.Row="1"
+                                 HorizontalContentAlignment="Right"
+                                 Text="{Binding Path=StartNumber}" />
+                     </Grid>
+                     <Button Grid.Row="4"
+                             Margin="0,5,0,0"
+                             Content="Format"
+                             Command="{Binding Path=FormatCommand}" />
+                  </Grid>
+               </Grid>
+               <TextBox Grid.Row="1"
+                        Margin="0,5"
+                        AcceptsReturn="True"
+                        TextWrapping="WrapWithOverflow"
+                        VerticalScrollBarVisibility="Auto"
+                        HorizontalScrollBarVisibility="Auto"
+                        Text="{Binding Path=JsonText, UpdateSourceTrigger=PropertyChanged}" />
+               <Button Grid.Row="2"
+                       Content="Send To Server"
+                       Width="175"
+                       Command="{Binding Path=SaveCommand}" />
+            </Grid>
+         </TabItem>
+      </TabControl>
    </Grid>
 </UserControl>
