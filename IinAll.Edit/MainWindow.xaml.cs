@@ -1,6 +1,8 @@
-﻿using System.Windows;
+﻿using System.ComponentModel;
+using System.Windows;
 using System.Windows.Input;
 using IinAll.Edit.Logic;
+using IinAll.Edit.Properties;
 
 namespace IinAll.Edit
 {
@@ -31,6 +33,14 @@ namespace IinAll.Edit
          if (this.m_ViewModel != null) {
             this.m_ViewModel.Password = this.PasswordBox.Password;
          }
+      }
+
+      /// <summary>Raises the <see cref="E:System.Windows.Window.Closing" /> event.</summary>
+      /// <param name="e">A <see cref="T:System.ComponentModel.CancelEventArgs" /> that contains the event data.</param>
+      protected override void OnClosing (CancelEventArgs e)
+      {
+         base.OnClosing (e);
+         Settings.Default.Save ();
       }
    }
 }

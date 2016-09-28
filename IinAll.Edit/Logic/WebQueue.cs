@@ -4,6 +4,8 @@ using System.Collections.Specialized;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
 using IinAll.Edit.Data;
 using Newtonsoft.Json.Linq;
 
@@ -75,10 +77,9 @@ namespace IinAll.Edit.Logic
       /// </summary>
       /// <param name="url">Url to request data from.</param>
       /// <param name="success">An action to perform on successful return.</param>
-      /// <param name="fail">An action to perform on failed return.</param>
-      public void Get (string url, Action<NameValueCollection, dynamic> success = null, Action<NameValueCollection, string> fail = null)
+      public void Get (string url, Action<NameValueCollection, dynamic> success = null)
       {
-         this.m_GetQueue.Enqueue (new RequestData { Url = url, Success = success, Fail = fail });
+         this.m_GetQueue.Enqueue (new RequestData { Url = url, Success = success });
          if (!this.m_IsGetting)
             this.GetAll ();
       }
@@ -89,11 +90,10 @@ namespace IinAll.Edit.Logic
       /// <param name="url">Url to request data from.</param>
       /// <param name="parameters">The list of parameters to send.</param>
       /// <param name="success">An action to perform on successful return.</param>
-      /// <param name="fail">An action to perform on failed return.</param>
       public void Post (string url, NameValueCollection parameters, 
-         Action<NameValueCollection, dynamic> success = null, Action<NameValueCollection, string> fail = null)
+         Action<NameValueCollection, dynamic> success = null)
       {
-         this.m_PostQueue.Enqueue (new RequestData {Url = url, Parameters = parameters, Success = success, Fail = fail});
+         this.m_PostQueue.Enqueue (new RequestData {Url = url, Parameters = parameters, Success = success});
          if (!this.m_IsPosting)
             this.PostAll ();
       }
@@ -115,18 +115,16 @@ namespace IinAll.Edit.Logic
             }
             catch (Exception ex)
             {
-               Console.Error.WriteLine (ex.Message);
-               if (data.Fail != null)
-                  data.Fail (data.Parameters, ex.Message);
+               MessageBox.Show (Application.Current.MainWindow, ex.Message, "I in All",
+                  MessageBoxButton.OK, MessageBoxImage.Error);
                if (this.m_GetQueue.Count > 0)
                   continue;
                break;
             }
             dynamic responseJObj = JObject.Parse (responseText);
             if (responseJObj.status == Constants.FAIL) {
-               Console.Error.WriteLine (responseJObj.message);
-               if (data.Fail != null)
-                  data.Fail (data.Parameters, responseJObj.message);
+               MessageBox.Show (Application.Current.MainWindow, responseJObj.message, "I in All",
+                  MessageBoxButton.OK, MessageBoxImage.Error);
             } else {
                if (data.Success != null)
                   data.Success (data.Parameters, responseJObj);
@@ -157,9 +155,8 @@ namespace IinAll.Edit.Logic
             }
             catch (Exception ex)
             {
-               Console.Error.WriteLine (ex.Message);
-               if (postData.Fail != null)
-                  postData.Fail (postData.Parameters, ex.Message);
+               MessageBox.Show (Application.Current.MainWindow, ex.Message, "I in All",
+                  MessageBoxButton.OK, MessageBoxImage.Error);
                if (this.m_PostQueue.Count > 0)
                   continue;
                break;
@@ -173,11 +170,11 @@ namespace IinAll.Edit.Logic
                this.UserEmail = responseJObj.email;
                this.EditLevel = responseJObj.level;
                this.IsAuthenticated = true;
+               CommandManager.InvalidateRequerySuggested ();
             }
             if (responseJObj.status == Constants.FAIL) {
-               Console.Error.WriteLine (responseJObj.message);
-               if (postData.Fail != null)
-                  postData.Fail (postData.Parameters, responseJObj.message);
+               MessageBox.Show (Application.Current.MainWindow, responseJObj.message, "I in All",
+                  MessageBoxButton.OK, MessageBoxImage.Error);
             } else {
                if (postData.Success != null)
                   postData.Success (postData.Parameters, responseJObj);
@@ -216,11 +213,6 @@ namespace IinAll.Edit.Logic
          /// Gets or Sets a action to call on success.
          /// </summary>
          public Action<NameValueCollection, dynamic> Success { get; set; }
-
-         /// <summary>
-         /// Gets or Sets a action to call on fail.
-         /// </summary>
-         public Action<NameValueCollection, string> Fail { get; set; }
       }
    }
 }

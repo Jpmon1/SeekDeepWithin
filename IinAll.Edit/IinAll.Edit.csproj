@@ -62,9 +62,22 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Data\Light.cs" />
+    <Compile Include="Data\Truth.cs" />
+    <Compile Include="Logic\BlissViewModel.cs" />
     <Compile Include="Logic\EditViewModel.cs" />
+    <Compile Include="Logic\LightViewModel.cs" />
+    <Compile Include="Logic\TruthViewModel.cs" />
+    <Compile Include="Views\BlissView.xaml.cs">
+      <DependentUpon>BlissView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\EditView.xaml.cs">
       <DependentUpon>EditView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\LightView.xaml.cs">
+      <DependentUpon>LightView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TruthView.xaml.cs">
+      <DependentUpon>TruthView.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -86,7 +99,19 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\BlissView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\EditView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\LightView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\TruthView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

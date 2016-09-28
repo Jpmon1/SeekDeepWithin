@@ -16,6 +16,16 @@
       public const string URL_SEARCH = "api/api.php?request=Suggest&t=";
 
       /// <summary>
+      /// The search url.
+      /// </summary>
+      public const string URL_GET_TRUTH = "api/api.php?request=Truth&l=";
+
+      /// <summary>
+      /// The search url.
+      /// </summary>
+      public const string URL_TRUTH = "api/api.php?request=Truth";
+
+      /// <summary>
       /// Success response (success).
       /// </summary>
       public const string SUCCESS = "success";
