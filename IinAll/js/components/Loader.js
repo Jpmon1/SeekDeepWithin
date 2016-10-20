@@ -12,21 +12,11 @@ export default class Loader extends React.Component {
     * Renders the Component.
     */
   render () {
-    var classnames = "ui ";
-    classnames += (this.props.isLoading) ? "active " : "disabled "
-    classnames += "page dimmer";
-    return (
-      <div className={classnames}>
-        <div className="content">
-          <div className="center">
-            <h2 className="ui inverted icon header">
-              <i className="heart icon"></i>
-              Loading...
-            </h2>
-          </div>
-        </div>
-      </div>
-    );
+    var loader = null;
+    if (this.props.isLoading){
+      loader = <div className="loader">Loading...</div>;
+    }
+    return (<div>{loader}</div>);
   }   
 }
 

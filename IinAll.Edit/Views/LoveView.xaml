@@ -1,0 +1,313 @@
+﻿<UserControl x:Class="IinAll.Edit.Views.LoveView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:dnd="clr-namespace:IinAll.Edit.DragAndDrop"
+             xmlns:logic="clr-namespace:IinAll.Edit.Logic"
+             mc:Ignorable="d" 
+             d:DesignHeight="500" d:DesignWidth="600" d:DataContext="{d:DesignInstance logic:LoveViewModel}">
+   <UserControl.Resources>
+      <dnd:LightDropController x:Key="LightDropController" />
+   </UserControl.Resources>
+   <Grid>
+      <Grid.RowDefinitions>
+         <RowDefinition Height="Auto" />
+         <RowDefinition Height="Auto"/>
+         <RowDefinition Height="*" />
+      </Grid.RowDefinitions>
+
+      <Grid Grid.Row="0">
+         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+         </Grid.ColumnDefinitions>
+         <TextBlock Text="Love ID: "
+                    Grid.Column="0" />
+         <TextBlock Text="{Binding Path=LoveId}"
+                    Grid.Column="1" />
+         <Button Grid.Column="3"
+                 Padding="0"
+                 Content="x"
+                 Command="{Binding Path=CloseCommand}"/>
+      </Grid>
+      <ScrollViewer Grid.Row="1"
+                    VerticalScrollBarVisibility="Hidden"
+                    HorizontalScrollBarVisibility="Auto">
+         <ItemsControl Height="150"
+                       Background="DarkGray"
+                       ItemsSource="{Binding Path=Light}"
+                       dnd:DragNDrop.IsDropTarget="True"
+                       dnd:DragNDrop.IsDragSource="True"
+                       dnd:DragNDrop.DropController="{StaticResource LightDropController}">
+            <ItemsControl.ItemsPanel>
+               <ItemsPanelTemplate>
+                  <StackPanel Orientation="Horizontal" />
+               </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+         </ItemsControl>
+      </ScrollViewer>
+
+      <TabControl Grid.Row="2">
+         <TabItem Header="Current Truth"
+                  IsSelected="True">
+            <Grid>
+               <Grid.RowDefinitions>
+                  <RowDefinition Height="*" />
+                  <RowDefinition Height="Auto" />
+                  <RowDefinition Height="Auto" />
+               </Grid.RowDefinitions>
+               <ScrollViewer HorizontalScrollBarVisibility="Hidden"
+                             VerticalScrollBarVisibility="Auto">
+                  <ItemsControl ItemsSource="{Binding Path=Truth}"
+                                dnd:DragNDrop.IsDropTarget="True"
+                                dnd:DragNDrop.IsDragSource="True">
+                     <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                           <StackPanel Orientation="Vertical" />
+                        </ItemsPanelTemplate>
+                     </ItemsControl.ItemsPanel>
+
+                     <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                           <Border Margin="5"
+                                   Padding="5"
+                                   BorderBrush="DarkGray"
+                                   BorderThickness="1"
+                                   Background="LightGray">
+                              <Grid>
+                                 <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width=".3*" />
+                                    <ColumnDefinition Width=".4*" />
+                                    <ColumnDefinition Width=".3*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                 </Grid.ColumnDefinitions>
+                                 <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                 </Grid.RowDefinitions>
+                                 <ItemsControl Grid.Row="0"
+                                               Grid.Column="0"
+                                               Grid.ColumnSpan="4"
+                                               Margin="0,0,0,4"
+                                               ItemsSource="{Binding Path=Love.Peace}">
+                                    <ItemsControl.ItemsPanel>
+                                       <ItemsPanelTemplate>
+                                          <StackPanel Orientation="Horizontal" />
+                                       </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                       <DataTemplate>
+                                          <Grid Margin="2,0">
+                                             <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="Auto" />
+                                             </Grid.ColumnDefinitions>
+                                             <TextBlock Text="{Binding Path=Text}"
+                                                        VerticalAlignment="Center"
+                                                        FontSize="10" />
+                                             <Button Content="X"
+                                                     Padding="0"
+                                                     FontSize="8"
+                                                     Margin="2,0,0,0"
+                                                     Grid.Column="1"
+                                                     Command="{Binding Path=RemoveCommand}" />
+                                          </Grid>
+                                       </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                 </ItemsControl>
+                                 <TextBlock Text="{Binding Path=Alias}"
+                                            Grid.Row="1"
+                                            Grid.Column="5" />
+                                 <TextBlock Text="{Binding Path=Love.Id}"
+                                            Grid.Row="1"
+                                            Grid.Column="0"
+                                            VerticalAlignment="Center" />
+                                 <TextBlock Text="{Binding Path=Order}"
+                                            Grid.Row="2"
+                                            Grid.Column="0"
+                                            VerticalAlignment="Center" />
+                                 <TextBox Margin="0,0,4,0"
+                                          Grid.Row="1"
+                                          Grid.Column="2"
+                                          Grid.ColumnSpan="3"
+                                          Text="{Binding Path=Header}" />
+                                 <TextBox Text="{Binding Path=Left}"
+                                          Margin="0,2"
+                                          MinWidth="23"
+                                          Grid.Row="2"
+                                          Grid.Column="2" />
+                                 <TextBlock Text="{Binding Path=Love.Light.Text}"
+                                            TextWrapping="Wrap"
+                                            Grid.Row="2"
+                                            Grid.Column="3"
+                                            Margin="4,0" />
+                                 <TextBox Text="{Binding Path=Right}"
+                                          Grid.Row="2"
+                                          Grid.Column="4"
+                                          Margin="0,2,4,2" />
+                                 <TextBox Margin="0,0,4,0"
+                                          Grid.Row="3"
+                                          Grid.Column="2"
+                                          Grid.ColumnSpan="2"
+                                          Text="{Binding Path=Footer}" />
+                                 <TextBlock Text="Index:"
+                                            Grid.Row="3"
+                                            Grid.Column="4"
+                                            VerticalAlignment="Center" />
+                                 <TextBox Text="{Binding Path=FooterIndex}"
+                                          Grid.Row="3"
+                                          Grid.Column="4"
+                                          Margin="40,0,4,0"/>
+                                 <Button Content="Alias"
+                                         Grid.Row="2"
+                                         Grid.Column="5"
+                                         Command="{Binding Path=LinkEditCommand}" />
+                                 <Button Content="Edit"
+                                         Grid.Row="2"
+                                         Grid.Column="6"
+                                         Command="{Binding Path=EditCommand}" />
+                              </Grid>
+                           </Border>
+                        </DataTemplate>
+                     </ItemsControl.ItemTemplate>
+                  </ItemsControl>
+               </ScrollViewer>
+
+               <Grid Grid.Row="1">
+                  <Grid.ColumnDefinitions>
+                     <ColumnDefinition Width="Auto" />
+                     <ColumnDefinition Width="*" />
+                     <ColumnDefinition Width="Auto" />
+                  </Grid.ColumnDefinitions>
+                  <TextBlock VerticalAlignment="Center"
+                             Text="{Binding Path=EditLoveId}"/>
+                  <ScrollViewer Grid.Column="1"
+                                Margin="5,0"
+                                VerticalScrollBarVisibility="Hidden"
+                                HorizontalScrollBarVisibility="Auto">
+                     <ItemsControl Height="30"
+                                   Background="DarkGray"
+                                   ItemsSource="{Binding Path=EditLight}"
+                                   dnd:DragNDrop.IsDropTarget="True"
+                                   dnd:DragNDrop.IsDragSource="True"
+                                   dnd:DragNDrop.DropController="{StaticResource LightDropController}">
+                        <ItemsControl.ItemsPanel>
+                           <ItemsPanelTemplate>
+                              <StackPanel Orientation="Horizontal" />
+                           </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                           <DataTemplate>
+                           <Grid Margin="2,0">
+                              <Grid.ColumnDefinitions>
+                                 <ColumnDefinition Width="Auto" />
+                                 <ColumnDefinition Width="Auto" />
+                              </Grid.ColumnDefinitions>
+                              <TextBlock Text="{Binding Path=Text}"
+                                         VerticalAlignment="Center"
+                                         FontSize="12" />
+                              <Button Content="X"
+                                      Padding="0"
+                                      FontSize="8"
+                                      Margin="2,0,0,0"
+                                      Grid.Column="1"
+                                      Command="{Binding Path=RemoveCommand}" />
+                           </Grid>
+                           </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                     </ItemsControl>
+                  </ScrollViewer>
+                  <Button Grid.Column="2"
+                          Content="Add"
+                          Command="{Binding Path=AddEditLightCommand}"/>
+               </Grid>
+               <Button Grid.Row="2"
+                       Content="Send To Server"
+                       Width="175"
+                       Command="{Binding Path=SaveCommand}" />
+            </Grid>
+         </TabItem>
+         <TabItem Header="Add Truth">
+            <Grid>
+               <Grid Grid.Row="0">
+                  <Grid.ColumnDefinitions>
+                     <ColumnDefinition Width="*" />
+                     <ColumnDefinition Width="*" />
+                  </Grid.ColumnDefinitions>
+                  <Grid.RowDefinitions>
+                     <RowDefinition Height="Auto" />
+                     <RowDefinition Height="*" />
+                  </Grid.RowDefinitions>
+                  <TextBlock Grid.Row="0"
+                             Grid.Column="0"
+                             Text="Text to Format:" />
+                  <TextBox Grid.Row="1"
+                           Grid.Column="0"
+                           AcceptsReturn="True"
+                           TextWrapping="WrapWithOverflow"
+                           VerticalScrollBarVisibility="Auto"
+                           HorizontalScrollBarVisibility="Auto"
+                           Text="{Binding Path=TextToFormat, UpdateSourceTrigger=PropertyChanged}" />
+                  <TextBlock Grid.Row="0"
+                             Grid.Column="1"
+                             Text="Current Regular Expressions:" />
+                  <Grid Grid.Row="1"
+                        Grid.Column="1"
+                        Margin="5,0,0,0">
+                     <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                     </Grid.RowDefinitions>
+                     <ComboBox Grid.Row="0"
+                               SelectedValue="{Binding Path=CurrentRegex}"
+                               ItemsSource="{Binding Path=Regexes}" />
+                     <TextBlock Grid.Row="1"
+                                Text="Regular Expression to use:" />
+                     <TextBox Grid.Row="2"
+                              Text="{Binding Path=CurrentRegex}" />
+                     <Grid Grid.Row="3">
+                        <Grid.ColumnDefinitions>
+                           <ColumnDefinition Width="*" />
+                           <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                           <RowDefinition Height="Auto" />
+                           <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <!--<TextBlock Grid.Row="0"
+                                   Grid.Column="0"
+                                   Text="Start Order:" />
+                        <TextBox Grid.Column="0"
+                                 Grid.Row="1"
+                                 HorizontalContentAlignment="Right"
+                                 Text="{Binding Path=StartOrder}" />-->
+                        <TextBlock Grid.Row="0"
+                                   Grid.Column="1"
+                                   Text="Start Number:" />
+                        <TextBox Grid.Column="1"
+                                 Grid.Row="1"
+                                 HorizontalContentAlignment="Right"
+                                 Text="{Binding Path=StartNumber}" />
+                     </Grid>
+                     <Button Grid.Row="4"
+                             Margin="0,5,0,0"
+                             Content="Format"
+                             Command="{Binding Path=FormatCommand}" />
+                  </Grid>
+               </Grid>
+            </Grid>
+         </TabItem>
+      </TabControl>
+   </Grid>
+</UserControl>

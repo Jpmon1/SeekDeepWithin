@@ -501,48 +501,6 @@ h1, h2, h3{
 body{
    background-color: #F0ECEB;
 }
-.ui.cards > .card > .content .share.icon,
-.ui.card > .content .share.icon {
-  cursor: pointer;
-  opacity: 0.75;
-  -webkit-transition: color 0.1s ease;
-  transition: color 0.1s ease;
-}
-
-.ui.cards > .card > .content .share.icon:hover,
-.ui.card > .content .share.icon:hover {
-  opacity: 1;
-  color: #A3D6F5;
-}
-
-.ui.cards > .card > .content .active.share.icon,
-.ui.card > .content .active.share.icon {
-  color: #A3D6F5;
-}
-
-.ui.cards > .card > .content .edit.icon,
-.ui.card > .content .edit.icon {
-  cursor: pointer;
-  opacity: 0.75;
-  -webkit-transition: color 0.1s ease;
-  transition: color 0.1s ease;
-}
-
-.ui.cards > .card > .content .edit.icon:hover,
-.ui.card > .content .edit.icon:hover {
-  opacity: 1;
-  color: #324B6E;
-}
-
-.ui.cards > .card > .content .active.edit.icon,
-.ui.card > .content .active.edit.icon {
-  color: #A3D6F5;
-}
-
-#love {
-   padding-top: 2rem;
-   padding-bottom: 2rem;
-}
 .main-content, #edit-stuff{
    background-color: #F0ECEB;
 }
@@ -610,39 +568,53 @@ a.top-menu-item {
    margin-left: 0.5rem;
 }
 a:hover{ text-decoration: underline; }
-.light {
+.love {
    padding: 0;
-   margin: 1rem 0;
+   margin: 0.75rem 0;
    text-align: center;
-   border:2px solid white;
-   -ms-box-shadow: 2px 2px 19px #aaa;
-   -o-box-shadow: 2px 2px 19px #aaa;
-   -webkit-box-shadow: 2px 2px 19px #aaa;
-   -moz-box-shadow: 2px 2px 19px #aaa;
-   box-shadow: 2px 2px 19px #aaa;
-   -moz-border-radius:0.5em;
-   -ms-border-radius:0.5em;
-   border-radius:0.5em;
-   -webkit-transition: -webkit-box-shadow 0.25s ease-in;
-   -moz-transition: -moz-box-shadow 0.25s ease-in;
-   -o-transition: -o-box-shadow 0.25s ease-in;
-   -ms-transition: box-shadow 0.25s ease-in;
-   transition: box-shadow 0.25s ease-in;
+   border:1px solid #F3F3F3;
+   background-color: white;
+   -ms-box-shadow: 2px 2px 2px #aaa;
+   -o-box-shadow: 2px 2px 2px #aaa;
+   -webkit-box-shadow: 2px 2px 2px #aaa;
+   -moz-box-shadow: 2px 2px 2px #aaa;
+   box-shadow: 2px 2px 2px #aaa;
+   -moz-border-radius:0.25em;
+   -ms-border-radius:0.25em;
+   border-radius:0.25em;
+   -webkit-transition: -webkit-box-shadow 0.15s ease-in;
+   -moz-transition: -moz-box-shadow 0.15s ease-in;
+   -o-transition: -o-box-shadow 0.15s ease-in;
+   -ms-transition: box-shadow 0.15s ease-in;
+   transition: box-shadow 0.15s ease-in;
 }
-.light.link {
+.love > .content {
+  padding:.5rem;
+}
+.love > .content > .header {
+  font-weight: 500;
+}
+.love > .content > .description {
+   text-align: left;
+}
+.love > .extra.content {
+  border-top: 1px solid #F3F3F3;
+  color: #BBBBBB;
+  font-size: smaller;
+}
+.love.link {
    margin: 0.5rem 1.825rem;
 }
-.light:hover {
-   -ms-box-shadow: 2px 2px 19px #444;
-   -o-box-shadow: 2px 2px 19px #444;
-    -webkit-box-shadow: 2px 2px 19px #444;
-    -moz-box-shadow: 2px 2px 19px #fff;
-   box-shadow: 2px 2px 19px #444;
+.love:hover {
+   -ms-box-shadow: 2px 2px 2px #444;
+   -o-box-shadow: 2px 2px 2px #444;
+    -webkit-box-shadow: 2px 2px 2px #444;
+    -moz-box-shadow: 2px 2px 2px #fff;
+   box-shadow: 2px 2px 2px #444;
 }
-.light:hover, .light.selected {
-   border:2px solid #A3D6F5;
+.love.selected {
+   border:2px solid #444;
 }
-.love{ padding: 0;margin: 0;}
 .edit {padding: 1rem;}
 .truth {
    padding: 1rem;
@@ -652,3 +624,9 @@ a:hover{ text-decoration: underline; }
    cursor:text;
 }
 blockquote{ color: black; }
+.loveContainer{
+-webkit-transition:all 0.5s ease-out;
+-moz-transition:all 0.5s ease-out;
+-o-transition:all 0.5s ease-out;
+transition:all 0.5s ease-out
+}

@@ -61,10 +61,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Data\Bliss.cs" />
     <Compile Include="Data\Light.cs" />
+    <Compile Include="Data\LightType.cs" />
     <Compile Include="Data\Love.cs" />
-    <Compile Include="Data\Peace.cs" />
     <Compile Include="Data\Truth.cs" />
     <Compile Include="DragAndDrop\Adorners\DataTemplateAdorner.cs" />
     <Compile Include="DragAndDrop\Adorners\DragNDropAdorner.cs" />
@@ -78,22 +77,17 @@
     <Compile Include="DragAndDrop\VisualHelpers.cs" />
     <Compile Include="Logic\BaseTabItem.cs" />
     <Compile Include="Logic\BaseViewModel.cs" />
-    <Compile Include="Logic\BlissViewModel.cs" />
-    <Compile Include="Logic\EditViewModel.cs" />
     <Compile Include="Logic\ILightContainer.cs" />
     <Compile Include="Logic\LightViewModel.cs" />
-    <Compile Include="Logic\TruthViewModel.cs" />
-    <Compile Include="Views\BlissView.xaml.cs">
-      <DependentUpon>BlissView.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="Logic\LoveViewModel.cs" />
     <Compile Include="Views\EditView.xaml.cs">
       <DependentUpon>EditView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\LightView.xaml.cs">
       <DependentUpon>LightView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\TruthView.xaml.cs">
-      <DependentUpon>TruthView.xaml</DependentUpon>
+    <Compile Include="Views\LoveView.xaml.cs">
+      <DependentUpon>LoveView.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -159,10 +153,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\BlissView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\EditView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -171,7 +161,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\TruthView.xaml">
+    <Page Include="Views\LoveView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

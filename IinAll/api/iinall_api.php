@@ -4,12 +4,25 @@ $dir = dirname (__FILE__) . '/';
 require_once ($dir . 'User.php');
 require_once ($dir . 'api_base.php');
 require_once ($dir . 'IinAllDb.php');
+require_once ($dir . 'LoveController.php');
+require_once ($dir . 'LightController.php');
+require_once ($dir . 'TruthController.php');
 
 class IinAllApi extends Api
 {
    public function __construct ($request, $origin)
    {
       parent::__construct ($request);
+      if ($this->method !== 'GET' && $this->endpoint !== 'Login' && $this->endpoint !== 'Register') {
+         $userDb = new UserDb ();
+         try {
+            if (!$userDb->verifyToken ($this->params['user'], $this->params['token'])) {
+               throw new Exception ('Invalid User.');
+            }
+         } finally {
+            $userDb->disconnect ();
+         }
+      }
    }
 
    /**
@@ -113,7 +126,7 @@ class IinAllApi extends Api
    }
 
    /**
-    * Get a random number of lights.
+    * Light operations.
     * @param $params array The passed in parameters.
     * @return array The results.
     * @throws Exception Error when unknown action is requested.
@@ -121,74 +134,139 @@ class IinAllApi extends Api
    protected function Light ($params)
    {
       $data = array();
-      $db = new IinAllDb ();
+      $controller = new LightController ();
       try {
          if ($this->method == 'GET') {
-            $data = $db->getRandomLight(25);
-         } else {
-            $db = new UserDb ();
-            //$verify = $db->verifyToken ($params['user'], $params['token']);
-            if (!$db->verifyToken ($params['user'], $params['token'])) {
-                  throw new Exception ('Invalid User.');
+            $data = $controller->Get (25);
+         } elseif ($this->method == 'POST') {
+            $light = $params["l"];
+            if (empty ($light)) { throw new Exception ('No light given'); }
+            $data['status'] = 'success';
+            $data['id'] = $controller->Create ($light);
+         } elseif ($this->method == 'PUT') {
+            $lightId = $params["text"];
+            $id = $params["id"];
+            if (empty ($lightId)) {
+               throw new Exception ('No light given');
+            } elseif (empty ($id)) {
+               throw new Exception ('No id given');
             }
-            if ($this->method == 'POST') {
-               $light = $params["text"];
-               if (empty ($light)) {
-                  throw new Exception('No light given');
-               }
-               $data['status'] = 'success';
-               $data['id'] = $db->createLight($light);
-            } elseif ($this->method == 'PUT') {
-               $db = new IinAllDb ();
-               $light = $params["text"];
-               $id = $params["id"];
-               if (empty ($light)) {
-                  throw new Exception('No light given');
-               } elseif (empty ($id)) {
-                  throw new Exception('No id given');
-               }
-               //$success = $db->editLight ($light);
-               throw new Exception('The put has not been implemented yet.');
-            } elseif ($this->method == 'DEL') {
-               throw new Exception('The del has not been implemented yet.');
-            }
-            if (!empty($data)) {
-               return $data;
-            }
+            $data['status'] = 'success';
+            $controller->Update ($id, $lightId);
+         } elseif ($this->method == 'DEL') {
+            throw new Exception ('The del has not been implemented yet.');
          }
       } catch (Exception $ex) {
          throw $ex;
       } finally {
-         $db->close ();
+         $controller->close ();
+      }
+      if (!empty($data)) {
+         return $data;
       }
       throw new Exception('An unknown error occurred.');
    }
 
    /**
-    * Gets the truth for the given light.
+    * Truth operations.
     * @param $params array The passed in parameters.
     * @return array The results.
     * @throws Exception Error when unknown action is requested.
     */
-   protected function truth ($params)
+   protected function Truth ($params)
    {
-      if ($this->method == 'GET') {
-         $light = $params["l"];
-         if (empty ($light)) {
-            throw new Exception('No light given');
+      $data = array();
+      $controller = new TruthController ();
+      try {
+         if ($this->method == 'GET') {
+            $light = null;
+            if (array_key_exists ("light", $params)) {
+               $light = $params["light"];
+            }
+            $love = null;
+            if (array_key_exists ("love", $params)) {
+               $love = $params["love"];
+            }
+            if (empty ($light) && empty ($love)) { throw new Exception ('No data given'); }
+            $truths = $controller->Get ($light, $love);
+            $data["status"] = "success";
+            $data = array_merge($data, $truths);
+         } elseif ($this->method == 'POST') {
+            $tData = $params["d"];
+            if (empty ($tData)) { throw new Exception ('No data given'); }
+            $controller->Create ($tData);
+            $data["status"] = "success";
+         } elseif ($this->method == 'PUT') {
+            $tData = $params["d"];
+            if (empty ($tData)) { throw new Exception ('No data given'); }
+            $controller->Update ($tData);
+            $data["status"] = "success";
+         } elseif ($this->method == 'DEL') {
+   
          }
-         $db = new IinAllDb ();
-         $truths = $db->getTruth($light);
-         $db->close();
-         return Array('status' => 'success', 'truth' => $truths);
-      } elseif ($this->method == 'POST') {
-
-      } elseif ($this->method == 'PUT') {
-
-      } elseif ($this->method == 'DEL') {
-
+      } catch (Exception $ex) {
+         throw $ex;
+      } finally {
+         $controller->close ();
+      }
+      if (!empty($data)) {
+         return $data;
       }
       throw new Exception('An unknown error occurred.');
+   }
+
+   /**
+    * Love operations.
+    * @param $params array The passed in parameters.
+    * @return array The results.
+    * @throws Exception Error when unknown action is requested.
+    */
+   protected function Love ($params)
+   {
+      $data = array();
+      $controller = new LoveController ();
+      try {
+         if ($this->method == 'GET') {
+            $peaceIds = $params["p"];
+            if (empty ($peaceIds)) { throw new Exception('No peace given'); }
+            $love = $controller->Get ($peaceIds);
+            $data["status"] = "success";
+            $data["love"] = $love;
+         } elseif ($this->method == 'POST') {
+            $data = $params["d"];
+            //$log = $controller->Create ($data);
+            $data["status"] = "success";
+            $data["log"] = $log;
+         } elseif ($this->method == 'PUT') {
+   
+         } elseif ($this->method == 'DEL') {
+   
+         }
+      } catch (Exception $ex) {
+         throw $ex;
+      } finally {
+         $controller->close ();
+      }
+      if (!empty($data)) {
+         return $data;
+      }
+      throw new Exception('An unknown error occurred.');
+   }
+
+   /**
+    * Random operations.
+    * @param $params array The passed in parameters.
+    * @return array The results.
+    * @throws Exception Error when unknown action is requested.
+    */
+   protected function Random ($params)
+   {
+      $data = array();
+      $controller = new LoveController ();
+      $love = $controller->Get ("");
+      $data['status'] = 'success';
+      $data['love'] = $love;
+      return $data;
    }
    
    /**
@@ -204,29 +282,11 @@ class IinAllApi extends Api
          throw new Exception ('Invalid User.');
       }
       $db = new IinAllDb ();
-      $light = $params["light"];
-      if (empty ($light)) throw new Exception('No light given');
-      $id = $db->createLove ($light);
+      $lightId = $params["light"];
+      if (empty ($lightId)) throw new Exception('No light given');
+      $id = $db->createLove ($lightId);
       $db->close ();
       return Array('status' => 'success', 'id' => $id);
-   }
-   
-   /**
-    * Creates truth.
-    */
-   protected function createTruth ($params)
-   {
-      if ($this->method == 'GET') {
-         throw new Exception('An unknown error occurred.');
-      }
-      $db = new IinAllDb ();
-      $key = $params["m"];
-      $motto = $db->getMotto();
-      if ($key != $motto) { throw new Exception('An unknown error occurred.'); }
-      $data = $params["d"];
-      $log = $db->createTruth ($data);
-      $db->close ();
-      return Array('status' => 'success', 'log' => $log);
    }
    
    public function format ($params)
@@ -256,14 +316,14 @@ class IinAllApi extends Api
     */
    protected function Suggest ($params)
    {
-      $light = Array();
+      $lightId = Array();
       $token = $params["t"];
       if (!empty ($token)) {
          $db = new IinAllDb ();
-         $light = $db->suggest ($token);
+         $lightId = $db->suggest ($token);
          $db->close ();
       }
-      return Array('suggestions' => $light);
+      return Array('suggestions' => $lightId);
    }
 }
 ?>

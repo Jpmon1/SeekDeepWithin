@@ -16,13 +16,10 @@ namespace IinAll.Edit.Logic
    /// </summary>
    public class MainViewModel : INotifyPropertyChanged
    {
-      private bool m_IsWaiting;
       private string m_UserName;
       private RelayCommand m_LoginCommand;
-      private RelayCommand m_NewTruthCommand;
-      private RelayCommand m_NewBlissCommand;
-      private TruthViewModel m_SelectedTruth;
-      private BlissViewModel m_SelectedBliss;
+      private RelayCommand m_NewLoveCommand;
+      private LoveViewModel m_SelectedLove;
 
       /// <summary>
       /// Propert changed event.
@@ -35,9 +32,14 @@ namespace IinAll.Edit.Logic
       public MainViewModel ()
       {
          this.Light = new LightViewModel ();
-         this.Truth = new ObservableCollection <TruthViewModel> ();
-         this.Bliss = new ObservableCollection <BlissViewModel> ();
+         this.Love = new ObservableCollection <LoveViewModel> ();
+         Instance = this;
       }
+
+      /// <summary>
+      /// Gets the main view model instance.
+      /// </summary>
+      public static MainViewModel Instance { get; private set; }
 
       /// <summary>
       /// Gets or Sets the user name.
@@ -63,37 +65,19 @@ namespace IinAll.Edit.Logic
       public LightViewModel Light { get; set; }
 
       /// <summary>
-      /// Gets the collection of truth.
+      /// Gets the collection of Love.
       /// </summary>
-      public ObservableCollection <TruthViewModel> Truth { get; }
+      public ObservableCollection <LoveViewModel> Love { get; }
 
       /// <summary>
-      /// Gets the collection of bliss.
+      /// Gets or Sets the selected Love.
       /// </summary>
-      public ObservableCollection <BlissViewModel> Bliss { get; }
-
-      /// <summary>
-      /// Gets or Sets the selected truth.
-      /// </summary>
-      public TruthViewModel SelectedTruth
+      public LoveViewModel SelectedLove
       {
-         get { return this.m_SelectedTruth; }
+         get { return this.m_SelectedLove; }
          set
          {
-            this.m_SelectedTruth = value;
-            this.OnPropertyChanged ();
-         }
-      }
-
-      /// <summary>
-      /// Gets or Sets the selected biss.
-      /// </summary>
-      public BlissViewModel SelectedBliss
-      {
-         get { return this.m_SelectedBliss; }
-         set
-         {
-            this.m_SelectedBliss = value;
+            this.m_SelectedLove = value;
             this.OnPropertyChanged ();
          }
       }
@@ -107,37 +91,43 @@ namespace IinAll.Edit.Logic
       }
 
       /// <summary>
-      /// Gets the command for a new truth.
+      /// Gets the command for a new love.
       /// </summary>
-      public ICommand NewTruthCommand
+      public ICommand NewLoveCommand
       {
-         get { return this.m_NewTruthCommand ?? (this.m_NewTruthCommand = new RelayCommand (this.OnNewTruth)); }
+         get { return this.m_NewLoveCommand ?? (this.m_NewLoveCommand = new RelayCommand (this.OnNewLove)); }
       }
 
       /// <summary>
-      /// Gets the command for a new bliss.
-      /// </summary>
-      public ICommand NewBlissCommand
-      {
-         get { return this.m_NewBlissCommand ?? (this.m_NewBlissCommand = new RelayCommand (this.OnNewBliss)); }
-      }
-
-      /// <summary>
-      /// Execution of the new truth command.
+      /// Execution of the new love command.
       /// </summary>
       /// <param name="obj">Command Parameter, not used.</param>
-      private void OnNewTruth (object obj)
+      private void OnNewLove (object obj)
       {
-         this.Truth.Add(new TruthViewModel { IsSelected = true });
+         this.Love.Add(new LoveViewModel { IsSelected = true });
       }
 
       /// <summary>
-      /// Execution of the new truth command.
+      /// Closes the given love.
       /// </summary>
-      /// <param name="obj">Command Parameter, not used.</param>
-      private void OnNewBliss (object obj)
+      /// <param name="love">The love to close.</param>
+      public void CloseLove (LoveViewModel love)
       {
-         this.Bliss.Add (new BlissViewModel { IsSelected = true });
+         this.Love.Remove (love);
+      }
+
+      /// <summary>
+      /// Edits the love of the given truth.
+      /// </summary>
+      /// <param name="truth">Truth to edit.</param>
+      public void EditTruth (Truth truth)
+      {
+         var love = new LoveViewModel { IsUpdating = true, IsSelected = true };
+         foreach (var light in truth.Love.Peace)
+            love.Light.Add (new Light (light));
+         love.IsUpdating = false;
+         love.Light.Add (truth.Love.Light);
+         this.Love.Add (love);
       }
 
       /// <summary>
@@ -149,8 +139,7 @@ namespace IinAll.Edit.Logic
       {
          return !string.IsNullOrWhiteSpace(this.UserName) &&
             !string.IsNullOrWhiteSpace (this.Password) &&
-            !WebQueue.Instance.IsAuthenticated &&
-            !this.m_IsWaiting;
+            !WebQueue.Instance.IsAuthenticated;
       }
 
       /// <summary>
@@ -160,7 +149,6 @@ namespace IinAll.Edit.Logic
       private void OnLogin (object obj)
       {
          byte[] passHash;
-         this.m_IsWaiting = true;
          var data = Encoding.UTF8.GetBytes (this.Password);
          using (SHA512 shaM = new SHA512Managed ())
             passHash = shaM.ComputeHash (data);
@@ -168,7 +156,7 @@ namespace IinAll.Edit.Logic
             {"email", this.UserName},
             {"hash", BitConverter.ToString (passHash).Replace("-", "").ToLower ()}
          };
-         WebQueue.Instance.Post (Constants.URL_LOGIN_REQUEST, values, (d, r) => this.m_IsWaiting = false);
+         WebQueue.Instance.Post (Constants.URL_LOGIN_REQUEST, values);
       }
 
       /// <summary>

@@ -21,7 +21,7 @@ namespace IinAll.Edit.DragAndDrop
       #region Fields
 
       private static DragController s_DragController;
-      private static readonly DataFormat s_Format = DataFormats.GetDataFormat ("Peter.Common.DragAndDrop");
+      private static readonly DataFormat s_Format = DataFormats.GetDataFormat ("IinAll.DragAndDrop");
 
       #endregion
 

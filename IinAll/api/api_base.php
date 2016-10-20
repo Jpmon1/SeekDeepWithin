@@ -68,7 +68,14 @@ abstract class Api
         case 'PUT':
             //$this->params = $this->_cleanInputs($_GET);
             $this->file = file_get_contents("php://input");
+            //$this->file = urldecode ($this->file);
             $this->params = json_decode($this->file, TRUE);
+            if ($this->params == null) {
+                parse_str($this->file, $put_variables);
+                if (count($put_variables)) {
+                    $this->params = $put_variables;
+                }
+            }
             break;
         default:
             $this->_response('Invalid Method', 405);

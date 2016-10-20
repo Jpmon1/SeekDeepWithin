@@ -6,6 +6,7 @@
    public class BaseTabItem : BaseViewModel
    {
       private string m_Title;
+      private string m_ToolTip;
       private bool m_IsSelected;
 
       /// <summary>
@@ -17,6 +18,19 @@
          protected set
          {
             this.m_Title = value;
+            this.OnPropertyChanged ();
+         }
+      }
+
+      /// <summary>
+      /// Gets or Sets the Tool Tip
+      /// </summary>
+      public string ToolTip
+      {
+         get { return this.m_ToolTip; }
+         protected set
+         {
+            this.m_ToolTip = value;
             this.OnPropertyChanged ();
          }
       }

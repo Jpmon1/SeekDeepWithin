@@ -15,6 +15,7 @@ namespace IinAll.Edit.Logic
       private string m_SearchText;
       private Light m_SelectedSearchResult;
       private RelayCommand m_SearchCommand;
+      private RelayCommand m_CreateCommand;
 
       /// <summary>
       /// Propert changed event.
@@ -90,6 +91,51 @@ namespace IinAll.Edit.Logic
       }
 
       /// <summary>
+      /// Gets the create command.
+      /// </summary>
+      public ICommand CreateCommand
+      {
+         get { return this.m_CreateCommand ?? (this.m_CreateCommand = new RelayCommand (this.OnCreate, this.CanCreate)); }
+      }
+
+      /// <summary>
+      /// Verifies if the create light command can execute.
+      /// </summary>
+      /// <param name="obj">Command Parameter (not used).</param>
+      /// <returns>True if can execute, otherwise false.</returns>
+      private bool CanCreate (object obj)
+      {
+         return !string.IsNullOrWhiteSpace (this.SearchText) && WebQueue.Instance.IsAuthenticated;
+      }
+
+      /// <summary>
+      /// Create a new light on the server.
+      /// </summary>
+      /// <param name="obj"></param>
+      private void OnCreate (object obj)
+      {
+         var data = new NameValueCollection {
+            { "l", this.SearchText },
+            { "user", WebQueue.Instance.UserId.ToString () },
+            { "token", WebQueue.Instance.Token}
+         };
+         WebQueue.Instance.Post (Constants.URL_LIGHT, data, this.OnLightCreated);
+      }
+
+      /// <summary>
+      /// Callback for when a light is created.
+      /// </summary>
+      /// <param name="parameters">The parameters passed.</param>
+      /// <param name="result">The result of the creation.</param>
+      private void OnLightCreated (NameValueCollection parameters, dynamic result)
+      {
+         this.Light.Add (new Light {
+            Id = result.id,
+            Text = parameters ["l"]
+         });
+      }
+
+      /// <summary>
       /// Checks to see if we can search.
       /// </summary>
       /// <param name="obj">Command Parameter, not used.</param>
@@ -129,7 +175,8 @@ namespace IinAll.Edit.Logic
       /// Removes the given light.
       /// </summary>
       /// <param name="light">Light to remove.</param>
-      public void RemoveLight (Light light)
+      /// <param name="type"></param>
+      public void RemoveLight (Light light, LightType type)
       {
          this.Light.Remove (light);
       }

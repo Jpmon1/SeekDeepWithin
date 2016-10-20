@@ -93,7 +93,21 @@ namespace IinAll.Edit.Logic
       public void Post (string url, NameValueCollection parameters, 
          Action<NameValueCollection, dynamic> success = null)
       {
-         this.m_PostQueue.Enqueue (new RequestData {Url = url, Parameters = parameters, Success = success});
+         this.m_PostQueue.Enqueue (new RequestData {Url = url, Parameters = parameters, Success = success, RequestType = "POST"});
+         if (!this.m_IsPosting)
+            this.PostAll ();
+      }
+
+      /// <summary>
+      /// Queues the given url for data retrieval.
+      /// </summary>
+      /// <param name="url">Url to request data from.</param>
+      /// <param name="parameters">The list of parameters to send.</param>
+      /// <param name="success">An action to perform on successful return.</param>
+      public void Put (string url, NameValueCollection parameters,
+         Action<NameValueCollection, dynamic> success = null)
+      {
+         this.m_PostQueue.Enqueue (new RequestData { Url = url, Parameters = parameters, Success = success, RequestType = "PUT" });
          if (!this.m_IsPosting)
             this.PostAll ();
       }
@@ -148,7 +162,7 @@ namespace IinAll.Edit.Logic
             var postData = this.m_PostQueue.Dequeue ();
             try {
                byte[] response = await this.m_WebClient.UploadValuesTaskAsync (new Uri (BASE_ADDRESS + postData.Url),
-                  "POST", postData.Parameters);
+                  postData.RequestType, postData.Parameters);
                responseText = Encoding.UTF8.GetString (response);
                responseJObj = JObject.Parse (responseText);
             } catch (Exception ex) {
@@ -209,6 +223,11 @@ namespace IinAll.Edit.Logic
          /// Gets or Sets a action to call on success.
          /// </summary>
          public Action<NameValueCollection, dynamic> Success { get; set; }
+
+         /// <summary>
+         /// Gets or Sets the request type.
+         /// </summary>
+         public string RequestType { get; set; }
       }
    }
 }

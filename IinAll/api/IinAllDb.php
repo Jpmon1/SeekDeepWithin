@@ -69,42 +69,24 @@ class IinAllDb extends Database
    function getTruth($light)
    {
       $loveId = $this->getLoveId ($light);
-      if ($loveId === -1) {
-         $truths = array();
+      if ($loveId != -1) {
+         $truths = Array();
          $stmt = $this->prepare ("SELECT `truth`.`id`, `truth`.`order`, `truth`.`number`, `truth`.`light_id`, `light`.`text` 
                                   FROM `truth` 
                                   INNER JOIN `light` ON `truth`.`light_id`=`light`.`id` 
-                                  WHERE `love_id`=?;");
+                                  WHERE `truth`.`love_id`=?
+                                  ORDER BY `truth`.`order`;");
          $stmt->bind_param ("i", $loveId);
          $stmt->execute ();
          $stmt->bind_result ($id, $order, $number, $lightId, $text);
          while ($stmt->fetch ()) {
-            $truths[$id] = array ("o" => $order, "n" => $number, "t" => $text, "lid" => $lightId);
+            $truths[] = array ("id" => $id, "o" => $order, "n" => $number, "t" => $text, "lid" => $lightId);
          }
          $stmt->free_result ();
          $stmt->close ();
          return $truths;
       }
       return Array ();
-   }
-   
-   /**
-    * Adds the given light to the database.
-    * @param string $light The light to add.
-    * @return int The ID of the added light.
-    */
-   function createLight ($light)
-   {
-      $light = trim ($light);
-      $id = $this->getLightId ($light);
-      if ($id === -1) {
-         $stmt = $this->prepare ("INSERT INTO light (text) VALUES (?);");
-         $stmt->bind_param ("s", $light);
-         $stmt->execute ();
-         $id = $this->getLastInsertId ();
-         $stmt->close ();
-      }
-      return $id;
    }
 
    /**
@@ -310,21 +292,6 @@ class IinAllDb extends Database
       $stmt->free_result ();
       $stmt->close ();
       return $regexes;
-   }
-
-   /**
-    * Gets the motto.
-    * @return string The motto.
-    */
-   function getMotto ()
-   {
-      $stmt = $this->prepare ("SELECT `data`.`value` FROM `data` WHERE `key`='motto';");
-      $stmt->execute ();
-      $stmt->bind_result ($motto);
-      $stmt->fetch ();
-      $stmt->free_result ();
-      $stmt->close ();
-      return $motto;
    }
    
    /**

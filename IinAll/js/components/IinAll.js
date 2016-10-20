@@ -1,10 +1,10 @@
 import React from 'react';
 import Header from './Header';
-import LightList from './LightList';
+import LoveList from './LoveList';
 import Footer from './Footer';
 import Loader from './Loader';
-import LightStore from '../stores/LightStore';
-import { getRandomApi } from '../api/LightApi';
+import DataStore from '../stores/DataStore';
+import { getRandom } from '../api/DataApi';
 import { checkUser } from '../api/AccountApi';
 import AccountStore from '../stores/AccountStore';
 
@@ -14,23 +14,23 @@ export default class IinAll extends React.Component {
       super(props);
   
       checkUser ();
-      getRandomApi ();
+      getRandom ();
       this._onChange = this._onChange.bind(this);
-      this.state = { lightData: LightStore.getData (), userData: AccountStore.getData () };
+      this.state = { Data: DataStore.getData (), userData: AccountStore.getData () };
    }
 
    componentDidMount() {
-      LightStore.addChangeListener(this._onChange);
+      DataStore.addChangeListener(this._onChange);
       AccountStore.addChangeListener(this._onChange);
    }
 
    componentWillUnmount() {
-      LightStore.removeChangeListener(this._onChange);
+      DataStore.removeChangeListener(this._onChange);
       AccountStore.removeChangeListener(this._onChange);
    }
 
    _onChange() {
-      this.setState({ lightData: LightStore.getData(), userData: AccountStore.getData () });
+      this.setState({ Data: DataStore.getData(), userData: AccountStore.getData () });
    }
 
    render () {
@@ -38,10 +38,10 @@ export default class IinAll extends React.Component {
       return (
          <div>
             <Header userData={this.state.userData} />
-            <Loader isLoading={this.state.lightData.isLoading} />
+            <Loader isLoading={this.state.Data.isLoading} />
             <div className="main-content pTop pBottomBig">
-               <LightList children={this.state.lightData.list}
-                          userData={this.state.userData} />
+               <LoveList children={this.state.Data.list}
+                         userData={this.state.userData} />
             </div>
             <Footer />
          </div>
