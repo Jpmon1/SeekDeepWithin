@@ -70,6 +70,9 @@
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
          </Grid.ColumnDefinitions>
          <TextBlock Text="User Name: "
                     Grid.Column="0"
@@ -94,6 +97,16 @@
                  Margin="5,5"
                  Width="150"
                  Command="{Binding Path=LoginCommand}"/>
+
+         <CheckBox Content="Local"
+                   Grid.Column="6"
+                   Height="23"
+                   IsChecked="{Binding Path=UseLocal}"/>
+         <CheckBox Content="Production"
+                   Margin="5,0"
+                   Grid.Column="7"
+                   Height="23"
+                   IsChecked="{Binding Path=UseProduction}"/>
       </Grid>
    </Grid>
 </Window>

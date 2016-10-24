@@ -5,6 +5,7 @@ require_once ($dir . 'User.php');
 require_once ($dir . 'api_base.php');
 require_once ($dir . 'IinAllDb.php');
 require_once ($dir . 'LoveController.php');
+require_once ($dir . 'BodyController.php');
 require_once ($dir . 'LightController.php');
 require_once ($dir . 'TruthController.php');
 
@@ -153,8 +154,8 @@ class IinAllApi extends Api
             }
             $data['status'] = 'success';
             $controller->Update ($id, $lightId);
-         } elseif ($this->method == 'DEL') {
-            throw new Exception ('The del has not been implemented yet.');
+         } elseif ($this->method == 'DELETE') {
+            throw new Exception ('The delete has not been implemented yet.');
          }
       } catch (Exception $ex) {
          throw $ex;
@@ -201,7 +202,7 @@ class IinAllApi extends Api
             if (empty ($tData)) { throw new Exception ('No data given'); }
             $controller->Update ($tData);
             $data["status"] = "success";
-         } elseif ($this->method == 'DEL') {
+         } elseif ($this->method == 'DELETE') {
    
          }
       } catch (Exception $ex) {
@@ -239,8 +240,45 @@ class IinAllApi extends Api
             $data["log"] = $log;
          } elseif ($this->method == 'PUT') {
    
-         } elseif ($this->method == 'DEL') {
+         } elseif ($this->method == 'DELETE') {
    
+         }
+      } catch (Exception $ex) {
+         throw $ex;
+      } finally {
+         $controller->close ();
+      }
+      if (!empty($data)) {
+         return $data;
+      }
+      throw new Exception('An unknown error occurred.');
+   }
+
+   /**
+    * Body operations.
+    * @param $params array The passed in parameters.
+    * @return array The results.
+    * @throws Exception Error when unknown action is requested.
+    */
+   protected function Body ($params)
+   {
+      $data = array();
+      $controller = new BodyController ();
+      try {
+         if ($this->method == 'GET') {
+         } elseif ($this->method == 'POST') {
+            $position = $params["p"];
+            $text = $params["t"];
+            $loveId = $params["l"];
+            $id = $controller->Create ($position, $text, $loveId);
+            $data["status"] = "success";
+            $data["id"] = $id;
+         } elseif ($this->method == 'PUT') {
+   
+         } elseif ($this->method == 'DELETE') {
+            $id = $params["id"];
+            $controller->Delete ($id);
+            $data["status"] = "success";
          }
       } catch (Exception $ex) {
          throw $ex;

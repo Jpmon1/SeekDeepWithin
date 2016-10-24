@@ -1,4 +1,5 @@
 import request from 'superagent';
+import { IinAllConstants } from '../constants/IinAllConstants';
 import { receiveRandom, receiveTruth } from '../actions/DataActions';
 
 /**
@@ -6,7 +7,7 @@ import { receiveRandom, receiveTruth } from '../actions/DataActions';
  */
 export function getRandom ()
 {
-  request.get ('/IinAllDev/api/api.php?request=Random')
+  request.get (IinAllConstants.BASE_SITE + '/api/api.php?request=Random')
     .set ('Accept', 'application/json')
     .end ((err, response) => {
       if (err) return console.error (err);
@@ -19,7 +20,7 @@ export function getRandom ()
  */
 export function getTruth (love, index)
 {
-  request.get ('/IinAllDev/api/api.php?request=Truth&love=' + love)
+  request.get (IinAllConstants.BASE_SITE + '/api/api.php?request=Truth&love=' + love)
     .set ('Accept', 'application/json')
     .end ((err, response) => {
       if (err) return console.error (err);

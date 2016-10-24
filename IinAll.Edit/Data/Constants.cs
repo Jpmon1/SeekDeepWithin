@@ -36,6 +36,11 @@
       public const string URL_LIGHT = "api/api.php?request=Light";
 
       /// <summary>
+      /// The light url.
+      /// </summary>
+      public const string URL_BODY = "api/api.php?request=Body";
+
+      /// <summary>
       /// Success response (success).
       /// </summary>
       public const string SUCCESS = "success";

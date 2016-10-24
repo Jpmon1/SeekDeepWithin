@@ -1,6 +1,6 @@
 import React from 'react';
-//import sizeMe from 'react-sizeme';
 import LoveItem from './LoveItem';
+import { Throttle } from '../api/Utils';
 
 class LoveList extends React.Component {
   /**
@@ -10,7 +10,8 @@ class LoveList extends React.Component {
     super(props);
     this.items = [];
     this.columns = [];
-    window.onresize = () => this.componentDidUpdate();
+    this.transform = this.getSupportedTransform ();
+    window.onresize = () => Throttle (this.componentDidUpdate(), 300);
   }
 
   componentDidMount () {
@@ -25,13 +26,16 @@ class LoveList extends React.Component {
     setTimeout(function () { window.requestAnimationFrame(callback) }, 0);
   }
 
-  /*componentWillReceiveProps (newProps) {
-    if (newProps.size != null) {
-      if ((this.props.size.width != newProps.size.width) && (newProps.size.width > 0)) {
-        this.layoutItems();
+  getSupportedTransform() {
+    var prefixes = 'transform WebkitTransform MozTransform OTransform msTransform'.split(' ');
+    var div = document.createElement('div');
+    for(var i = 0; i < prefixes.length; i++) {
+      if(div && div.style[prefixes[i]] !== undefined) {
+        return prefixes[i];
       }
     }
-  }*/
+    return false;
+  }
 
   layoutItems (){
     var i = 0;
@@ -48,12 +52,15 @@ class LoveList extends React.Component {
       if (width <=0 || height <= 0)
         console.log("width or height is zero");
       domEl.style.position = 'absolute';
-      //domEl.style.top = postion.top + 'px';
-      //domEl.style.left = postion.left + 'px';
-      if (domEl.className.indexOf("loveContainer") == -1) {
-        domEl.className += " loveContainer";
+      if (this.transform === false) {
+        domEl.style.top = postion.top + 'px';
+        domEl.style.left = postion.left + 'px';
+      } else {
+        if (domEl.className.indexOf("loveContainer") == -1) {
+          domEl.className += " loveContainer";
+        }
+        domEl.style.transform = "translate3d(" + postion.left +"px, " + postion.top + "px, 0)";
       }
-      domEl.style.transform = "translate3d(" + postion.left +"px, " + postion.top + "px, 0)";
       totalHeight = postion.top + height;
       i++;
     }
@@ -64,8 +71,69 @@ class LoveList extends React.Component {
   }
 
   getPosition (width, height, totalWidth) {
-    var columnIndex = this.checkColumn (width, height, totalWidth);
+    var orderedColumns = this.columns.slice(0);
+    orderedColumns.sort (function (a, b) {
+      if (a.bottom < b.bottom) { return -1; }
+      if (a.bottom > b.bottom) { return 1; }
+      return 0;
+    });
+    var result, columnIndex = -1;
+    var columnCount = orderedColumns.length;
+    for (var i = 0; i < columnCount; i++) {
+      var column = orderedColumns[i];
+      columnIndex = column.index;
+      result = this.sideSearch (1, width, column, columnCount);
+      if (!result.fits) { result = this.sideSearch (-1, width, column, columnCount); }
+      if (result.fits) { break; }
+      columnIndex = -1;
+    }
+    if (columnIndex == -1) {
+      var lowestColumn = orderedColumns[columnCount - 1];
+      columnIndex = 0;
+      columnCount = 1;
+      this.columns = [{top: lowestColumn.bottom, left: 0, right: totalWidth, bottom: lowestColumn.bottom, width: totalWidth, index: 0}];
+    }
     var column = this.columns[columnIndex];
+    if (result.span > 1 && result.fits) {
+      var removed = result.span - 1;
+      if (result.dir == -1) {
+        columnIndex -= removed;
+        this.columns[columnIndex].bottom = column.bottom;
+        column = this.columns[columnIndex];
+      }
+      if (column.left + width < this.columns[columnIndex + removed].right) {
+        this.columns[columnIndex + removed].left = column.left + width;
+        removed--;
+      }
+      this.columns.splice (columnIndex + 1, removed);
+      for (var a = columnIndex + 1; a < columnCount - removed; a++) {
+        this.columns[a].index -= removed;
+      }
+    } else if (width < column.width) {
+      for (var a = columnIndex + 1; a < columnCount; a++) {
+        this.columns[a].index++;
+      }
+      var newColumn = {
+        top: column.top,
+        left: column.left + width,
+        right: column.right,
+        bottom: column.bottom,
+        index: columnIndex + 1,
+        width: column.width - width
+      };
+      column.width = width;
+      column.right = column.left + width;
+      this.columns.splice (columnIndex + 1, 0, newColumn);
+    }
+    this.columns[columnIndex] = {
+      top: column.bottom,
+      left: column.left,
+      right: column.left + width,
+      bottom: column.bottom + height,
+      index: columnIndex,
+      width: width
+    };
+    column = this.columns[columnIndex];
     return {top: column.top, left: column.left};
   }
 
@@ -93,7 +161,7 @@ class LoveList extends React.Component {
       this.columns = [{top: lowestColumn.bottom, left: 0, right: totalWidth, bottom: lowestColumn.bottom, width: totalWidth, index: 0}];
     }
     var column = this.columns[columnIndex];
-    if (result.span > 1) {
+    if (result.span > 1 && result.fits) {
       var removed = result.span - 1;
       if (result.dir == -1) {
         columnIndex -= removed;
@@ -189,4 +257,4 @@ LoveList.propTypes = {
   userData: React.PropTypes.object
 };
 
-export default /*sizeMe ()(*/LoveList;//);
+export default LoveList;

@@ -51,13 +51,18 @@ class TruthController extends BaseController
          $stmt->free_result ();
          $stmt->close ();
 
-         $alias = $this->GetAlias ($loveIds);
-         foreach ($alias as $key => $value) {
-            $truths[$key]["a"] = $value;
-         }
-         $body = $this->GetBody ($loveIds);
-         foreach ($body as $key => $value) {
-            $truths[$key]["b"] = $value;
+         $count = count ($loveIds);
+         if ($count > 0) {
+            $alias = $this->GetAlias ($loveIds);
+            foreach ($alias as $key => $value) {
+                $truths[$key]["a"] = $value;
+            }
+            $body = $this->GetBody ($loveIds);
+            foreach ($body as $key => $value) {
+                $truths[$key]["b"] = $value;
+            }
+         } else {
+            $this->addNoData ($loveId);
          }
       }
       return Array ("love" => $loveId, "truths" => $truths);
@@ -77,6 +82,7 @@ class TruthController extends BaseController
       $aliasQuery = "INSERT INTO `iinallco_data`.`alias` (`love_id`, `alias`) VALUES ";
       $bodyQuery = "INSERT INTO `iinallco_data`.`body` (`position`, `love_id`, `light_id`) VALUES ";
       $loveId = $this->createLove ($data->love);
+      $this->removeNoData ($loveId);
       $itemCount = count ($data->truth);
       for ($j = 0; $j < $itemCount; $j++) {
          $item = $data->truth[$j];
@@ -84,25 +90,15 @@ class TruthController extends BaseController
          $order = $item->order;
          $truthId = $this->createLoveText ($love);
          $truthQuery .= "('".$loveId."','".$truthId."','".$order."'),";
-         if ($item->left != null) {
+         if ($item->body != null) {
             $hasBody = true;
-            $lightId = $this->createLight ($item->left);
-            $bodyQuery .= "('-1','".$truthId."','".$lightId."'),";
-         }
-         if ($item->head != null) {
-            $hasBody = true;
-            $lightId = $this->createLight ($item->head);
-            $bodyQuery .= "('-2','".$truthId."','".$lightId."'),";
-         }
-         if ($item->right != null) {
-            $hasBody = true;
-            $lightId = $this->createLight ($item->right);
-            $bodyQuery .= "('-3','".$truthId."','".$lightId."'),";
-         }
-         if ($item->foot != null) {
-            $hasBody = true;
-            $lightId = $this->createLight ($item->foot);
-            $bodyQuery .= "('".$item->footindex."','" .$truthId."','".$lightId."'),";
+            $bodyCount = count ($item->body);
+            for ($i = 0; $i < $bodyCount; $i++) {
+              $body = $item->body[$i];
+              $pos = $body->pos;
+              $lightId = $this->createLight ($body->text);
+              $bodyQuery .= "('".$pos."','".$truthId."','".$lightId."'),";
+            }
          }
          if ($item->alias != null) {
             $hasAlias = true;

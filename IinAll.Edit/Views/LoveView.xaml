@@ -5,10 +5,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:dnd="clr-namespace:IinAll.Edit.DragAndDrop"
              xmlns:logic="clr-namespace:IinAll.Edit.Logic"
+             xmlns:views="clr-namespace:IinAll.Edit.Views"
              mc:Ignorable="d" 
              d:DesignHeight="500" d:DesignWidth="600" d:DataContext="{d:DesignInstance logic:LoveViewModel}">
    <UserControl.Resources>
       <dnd:LightDropController x:Key="LightDropController" />
+      <dnd:LightTextDropController x:Key="LightTextDropController" />
    </UserControl.Resources>
    <Grid>
       <Grid.RowDefinitions>
@@ -72,110 +74,7 @@
 
                      <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                           <Border Margin="5"
-                                   Padding="5"
-                                   BorderBrush="DarkGray"
-                                   BorderThickness="1"
-                                   Background="LightGray">
-                              <Grid>
-                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width=".3*" />
-                                    <ColumnDefinition Width=".4*" />
-                                    <ColumnDefinition Width=".3*" />
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="Auto" />
-                                 </Grid.ColumnDefinitions>
-                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                 </Grid.RowDefinitions>
-                                 <ItemsControl Grid.Row="0"
-                                               Grid.Column="0"
-                                               Grid.ColumnSpan="4"
-                                               Margin="0,0,0,4"
-                                               ItemsSource="{Binding Path=Love.Peace}">
-                                    <ItemsControl.ItemsPanel>
-                                       <ItemsPanelTemplate>
-                                          <StackPanel Orientation="Horizontal" />
-                                       </ItemsPanelTemplate>
-                                    </ItemsControl.ItemsPanel>
-                                    <ItemsControl.ItemTemplate>
-                                       <DataTemplate>
-                                          <Grid Margin="2,0">
-                                             <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto" />
-                                                <ColumnDefinition Width="Auto" />
-                                             </Grid.ColumnDefinitions>
-                                             <TextBlock Text="{Binding Path=Text}"
-                                                        VerticalAlignment="Center"
-                                                        FontSize="10" />
-                                             <Button Content="X"
-                                                     Padding="0"
-                                                     FontSize="8"
-                                                     Margin="2,0,0,0"
-                                                     Grid.Column="1"
-                                                     Command="{Binding Path=RemoveCommand}" />
-                                          </Grid>
-                                       </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                 </ItemsControl>
-                                 <TextBlock Text="{Binding Path=Alias}"
-                                            Grid.Row="1"
-                                            Grid.Column="5" />
-                                 <TextBlock Text="{Binding Path=Love.Id}"
-                                            Grid.Row="1"
-                                            Grid.Column="0"
-                                            VerticalAlignment="Center" />
-                                 <TextBlock Text="{Binding Path=Order}"
-                                            Grid.Row="2"
-                                            Grid.Column="0"
-                                            VerticalAlignment="Center" />
-                                 <TextBox Margin="0,0,4,0"
-                                          Grid.Row="1"
-                                          Grid.Column="2"
-                                          Grid.ColumnSpan="3"
-                                          Text="{Binding Path=Header}" />
-                                 <TextBox Text="{Binding Path=Left}"
-                                          Margin="0,2"
-                                          MinWidth="23"
-                                          Grid.Row="2"
-                                          Grid.Column="2" />
-                                 <TextBlock Text="{Binding Path=Love.Light.Text}"
-                                            TextWrapping="Wrap"
-                                            Grid.Row="2"
-                                            Grid.Column="3"
-                                            Margin="4,0" />
-                                 <TextBox Text="{Binding Path=Right}"
-                                          Grid.Row="2"
-                                          Grid.Column="4"
-                                          Margin="0,2,4,2" />
-                                 <TextBox Margin="0,0,4,0"
-                                          Grid.Row="3"
-                                          Grid.Column="2"
-                                          Grid.ColumnSpan="2"
-                                          Text="{Binding Path=Footer}" />
-                                 <TextBlock Text="Index:"
-                                            Grid.Row="3"
-                                            Grid.Column="4"
-                                            VerticalAlignment="Center" />
-                                 <TextBox Text="{Binding Path=FooterIndex}"
-                                          Grid.Row="3"
-                                          Grid.Column="4"
-                                          Margin="40,0,4,0"/>
-                                 <Button Content="Alias"
-                                         Grid.Row="2"
-                                         Grid.Column="5"
-                                         Command="{Binding Path=LinkEditCommand}" />
-                                 <Button Content="Edit"
-                                         Grid.Row="2"
-                                         Grid.Column="6"
-                                         Command="{Binding Path=EditCommand}" />
-                              </Grid>
-                           </Border>
+                           <views:TruthView />
                         </DataTemplate>
                      </ItemsControl.ItemTemplate>
                   </ItemsControl>
@@ -255,6 +154,8 @@
                            TextWrapping="WrapWithOverflow"
                            VerticalScrollBarVisibility="Auto"
                            HorizontalScrollBarVisibility="Auto"
+                           dnd:DragNDrop.IsDropTarget="True"
+                           dnd:DragNDrop.DropController="{StaticResource LightTextDropController}"
                            Text="{Binding Path=TextToFormat, UpdateSourceTrigger=PropertyChanged}" />
                   <TextBlock Grid.Row="0"
                              Grid.Column="1"

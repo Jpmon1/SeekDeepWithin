@@ -20,6 +20,8 @@ namespace IinAll.Edit.Logic
       private RelayCommand m_LoginCommand;
       private RelayCommand m_NewLoveCommand;
       private LoveViewModel m_SelectedLove;
+      private bool m_UseProduction;
+      private bool m_UseLocal;
 
       /// <summary>
       /// Propert changed event.
@@ -31,6 +33,7 @@ namespace IinAll.Edit.Logic
       /// </summary>
       public MainViewModel ()
       {
+         this.UseLocal = true;
          this.Light = new LightViewModel ();
          this.Love = new ObservableCollection <LoveViewModel> ();
          Instance = this;
@@ -96,6 +99,39 @@ namespace IinAll.Edit.Logic
       public ICommand NewLoveCommand
       {
          get { return this.m_NewLoveCommand ?? (this.m_NewLoveCommand = new RelayCommand (this.OnNewLove)); }
+      }
+
+      /// <summary>
+      /// Gets or Sets if we are using local databases.
+      /// </summary>
+      public bool UseLocal
+      {
+         get { return m_UseLocal; }
+         set
+         {
+            if (this.m_UseLocal != value) {
+               this.m_UseLocal = value;
+               this.OnPropertyChanged ();
+               this.UseProduction = !this.m_UseLocal;
+            }
+         }
+      }
+
+      /// <summary>
+      /// Gets or Sets if we are using production databases.
+      /// </summary>
+      public bool UseProduction
+      {
+         get { return m_UseProduction; }
+         set
+         {
+            if (this.m_UseProduction != value) {
+               this.m_UseProduction = value;
+               this.OnPropertyChanged ();
+               this.UseLocal = !this.m_UseProduction;
+               WebQueue.Instance.UseProduction (this.m_UseProduction);
+            }
+         }
       }
 
       /// <summary>

@@ -3,8 +3,9 @@ import Header from './Header';
 import LoveList from './LoveList';
 import Footer from './Footer';
 import Loader from './Loader';
+import { Throttle } from '../api/Utils';
 import DataStore from '../stores/DataStore';
-import { getRandom } from '../api/DataApi';
+import { requestRandom } from '../actions/DataActions';
 import { checkUser } from '../api/AccountApi';
 import AccountStore from '../stores/AccountStore';
 
@@ -14,9 +15,18 @@ export default class IinAll extends React.Component {
       super(props);
   
       checkUser ();
-      getRandom ();
+      requestRandom ();
       this._onChange = this._onChange.bind(this);
       this.state = { Data: DataStore.getData (), userData: AccountStore.getData () };
+      window.onscroll = Throttle (()=>this.checkLoadMore(), 300)
+   }
+
+   checkLoadMore () {
+      var windowHeight = window.innerHeight;
+      var body = (document.body) ? document.body : document.documentElement;
+      if (body.scrollTop >= body.offsetHeight - windowHeight) {
+         requestRandom ();
+      }
    }
 
    componentDidMount() {

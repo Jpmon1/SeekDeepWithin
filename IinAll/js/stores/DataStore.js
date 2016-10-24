@@ -25,6 +25,7 @@ AppDispatcher.register ((payload) => {
   const action = payload.action;
   switch (action.actionType) {
 
+    case IinAllConstants.GET_RANDOM:
     case IinAllConstants.GET_TRUTH:
       _dataStore.isLoading = true;
       DataStore.emit (CHANGE_EVENT);

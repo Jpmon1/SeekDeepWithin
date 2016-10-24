@@ -259,6 +259,22 @@ class BaseController extends Database
       }
       return $body;
    }
+
+   function addNoData ($loveId)
+   {
+      $stmt = $this->prepare ("REPLACE INTO `no_data` (`love_id`) VALUES (?);");
+      $stmt->bind_param ("i", $loveId);
+      $stmt->execute ();
+      $stmt->close ();
+   }
+
+   function removeNoData ($loveId)
+   {
+      $stmt = $this->prepare ("DELETE FROM `no_data` WHERE `love_id`=?;");
+      $stmt->bind_param ("i", $loveId);
+      $stmt->execute ();
+      $stmt->close ();
+   }
    
    /**
     * Closes the underlying connection.

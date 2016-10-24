@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Windows.Input;
 using IinAll.Edit.Logic;
 
@@ -9,15 +10,11 @@ namespace IinAll.Edit.Data
    /// </summary>
    public class Truth : BaseViewModel
    {
-      private RelayCommand m_EditCommand;
-      private RelayCommand m_LinkEditCommand;
       private int m_Order;
-      private string m_Left;
-      private string m_Right;
-      private string m_Header;
-      private string m_Footer;
       private int? m_Alias;
-      private int m_FooterIndex;
+      private RelayCommand m_EditCommand;
+      private RelayCommand m_AddBodyCommand;
+      private RelayCommand m_LinkEditCommand;
 
       /// <summary>
       /// Initializes a new truth model.
@@ -30,6 +27,7 @@ namespace IinAll.Edit.Data
             throw new ArgumentNullException (nameof (parent), @"Parent of a truth cannot be null.");
          this.Id = id;
          this.Parent = parent;
+         this.Bodies = new ObservableCollection <Body> ();
       }
 
       /// <summary>
@@ -85,94 +83,14 @@ namespace IinAll.Edit.Data
       }
 
       /// <summary>
-      /// Gets or Sets the data for the left.
-      /// </summary>
-      public string Left
-      {
-         get { return this.m_Left; }
-         set
-         {
-            if (this.m_Left != value) {
-               this.m_Left = value;
-               this.OnPropertyChanged ();
-               this.IsModified = true;
-            }
-         }
-      }
-
-      /// <summary>
-      /// Gets or Sets the data for the right.
-      /// </summary>
-      public string Right
-      {
-         get { return this.m_Right; }
-         set
-         {
-            if (this.m_Right != value)
-            {
-               this.m_Right = value;
-               this.OnPropertyChanged ();
-               this.IsModified = true;
-            }
-         }
-      }
-
-      /// <summary>
-      /// Gets or Sets the data for the header.
-      /// </summary>
-      public string Header
-      {
-         get { return this.m_Header; }
-         set
-         {
-            if (this.m_Header != value)
-            {
-               this.m_Header = value;
-               this.OnPropertyChanged ();
-               this.IsModified = true;
-            }
-         }
-      }
-
-      /// <summary>
-      /// Gets or Sets the data for the footer.
-      /// </summary>
-      public string Footer
-      {
-         get { return this.m_Footer; }
-         set
-         {
-            if (this.m_Footer != value)
-            {
-               this.m_Footer = value;
-               this.OnPropertyChanged ();
-               this.IsModified = true;
-            }
-         }
-      }
-
-      /// <summary>
-      /// Gets or Sets the foot index.
-      /// </summary>
-      public int FooterIndex
-      {
-         get { return this.m_FooterIndex; }
-         set
-         {
-            if (this.m_FooterIndex != value)
-            {
-               this.m_FooterIndex = value;
-               this.OnPropertyChanged ();
-               if (!string.IsNullOrWhiteSpace (this.Footer))
-                  this.IsModified = true;
-            }
-         }
-      }
-
-      /// <summary>
       /// Gets if this truth has been modified.
       /// </summary>
       public bool IsModified { get; set; }
+
+      /// <summary>
+      /// Gets the list of bodies.
+      /// </summary>
+      public ObservableCollection <Body> Bodies { get; }
 
       /// <summary>
       /// Gets the edit command.
@@ -182,11 +100,40 @@ namespace IinAll.Edit.Data
          get { return this.m_EditCommand ?? (this.m_EditCommand = new RelayCommand (this.OnEdit, this.CanEdit)); }
       }
 
+      /// <summary>
+      /// Gets or Sets the command used to grab the alias.
+      /// </summary>
       public ICommand LinkEditCommand
       {
          get { return this.m_LinkEditCommand ?? (this.m_LinkEditCommand = new RelayCommand (this.OnAddLink, this.CanAddLink)); }
       }
 
+      /// <summary>
+      /// Gets or Sets the command used to add a body.
+      /// </summary>
+      public ICommand AddBodyCommand
+      {
+         get { return this.m_AddBodyCommand ?? (this.m_AddBodyCommand = new RelayCommand (this.OnAddBody, this.CanAddBody)); }
+      }
+
+      /// <summary>
+      /// Verifies if the add body command can execute.
+      /// </summary>
+      /// <param name="obj">Command Parameter, not used.</param>
+      /// <returns>True if we can, otherwise false.</returns>
+      private bool CanAddBody (object obj)
+      {
+         return this.Id != -1;
+      }
+
+      /// <summary>
+      /// Executes the add body command.
+      /// </summary>
+      /// <param name="obj">Command Parameter, not used.</param>
+      private void OnAddBody (object obj)
+      {
+         this.Bodies.Add(new Body (this, this.Love.Id));
+      }
 
       /// <summary>
       /// Verifies if the add link command can execute.
@@ -224,6 +171,15 @@ namespace IinAll.Edit.Data
       private void OnEdit (object obj)
       {
          MainViewModel.Instance.EditTruth (this);
+      }
+
+      /// <summary>
+      /// Removes a body from the bodies.
+      /// </summary>
+      /// <param name="body">The body to remove.</param>
+      internal void RemoveBody (Body body)
+      {
+         this.Bodies.Remove (body);
       }
 
       /// <summary>

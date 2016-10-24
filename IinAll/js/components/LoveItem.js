@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
 import sizeMe from 'react-sizeme';
 import { requestTruth } from '../actions/DataActions';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 class LoveItem extends React.Component {
   constructor(props) {
@@ -43,7 +42,7 @@ class LoveItem extends React.Component {
     }
     let footers = [];
     var header = null;
-    var columns = "small-12 medium-4 large-3";
+    var columns = "small-12 medium-4";
     var body = this.props.item.body;
     if (body != null) {
       for (var b = 0; b < body.length; b++) {
@@ -104,15 +103,3 @@ LoveItem.propTypes = {
 };
 
 export default sizeMe()(LoveItem);
-
-/*const LoveItemComponent = sizeMe()(LoveItem);
-
-// We create this wrapper component so that our size aware rendering
-// will have a handle on the 'className'.
-function LoveItemWrapper(props) {
-  return (
-    <LoveItemComponent className={cssStyles.foo} {...props} />
-  );
-}
-
-export default LoveItemWrapper;*/

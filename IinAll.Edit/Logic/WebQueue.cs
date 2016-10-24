@@ -22,7 +22,7 @@ namespace IinAll.Edit.Logic
       private readonly CookieAwareWebClient m_WebClient;
       private readonly Queue<RequestData> m_GetQueue = new Queue<RequestData> ();
       private readonly Queue<RequestData> m_PostQueue = new Queue<RequestData> ();
-      private const string BASE_ADDRESS = "http://localhost/IinAllDev/";
+      private string m_BaseAddress = "http://localhost/IinAllDev/";
 
       /// <summary>
       /// Initializes a new web queue.
@@ -32,6 +32,11 @@ namespace IinAll.Edit.Logic
          this.m_IsGetting = false;
          this.m_IsPosting = false;
          this.m_WebClient = new CookieAwareWebClient ();
+      }
+
+      public void UseProduction (bool use)
+      {
+         this.m_BaseAddress = use ? "http://iinall.com/" : "http://localhost/IinAllDev/";
       }
 
       /// <summary>
@@ -113,6 +118,20 @@ namespace IinAll.Edit.Logic
       }
 
       /// <summary>
+      /// Queues the given url for data retrieval.
+      /// </summary>
+      /// <param name="url">Url to request data from.</param>
+      /// <param name="parameters">The list of parameters to send.</param>
+      /// <param name="success">An action to perform on successful return.</param>
+      public void Delete (string url, NameValueCollection parameters,
+         Action<NameValueCollection, dynamic> success = null)
+      {
+         this.m_PostQueue.Enqueue (new RequestData { Url = url, Parameters = parameters, Success = success, RequestType = "DELETE" });
+         if (!this.m_IsPosting)
+            this.PostAll ();
+      }
+
+      /// <summary>
       /// Performs all requests in the queue.
       /// </summary>
       private async void GetAll ()
@@ -124,7 +143,7 @@ namespace IinAll.Edit.Logic
             string responseText = string.Empty;
             var data = this.m_GetQueue.Dequeue ();
             try {
-               responseText = await this.m_WebClient.DownloadStringTaskAsync (new Uri (BASE_ADDRESS + data.Url));
+               responseText = await this.m_WebClient.DownloadStringTaskAsync (new Uri (m_BaseAddress + data.Url));
                responseJObj = JObject.Parse (responseText);
             } catch (Exception ex) {
                MessageBox.Show (Application.Current.MainWindow, ex.Message + "\n" + responseText, "I in All",
@@ -161,7 +180,7 @@ namespace IinAll.Edit.Logic
             string responseText = string.Empty;
             var postData = this.m_PostQueue.Dequeue ();
             try {
-               byte[] response = await this.m_WebClient.UploadValuesTaskAsync (new Uri (BASE_ADDRESS + postData.Url),
+               byte[] response = await this.m_WebClient.UploadValuesTaskAsync (new Uri (m_BaseAddress + postData.Url),
                   postData.RequestType, postData.Parameters);
                responseText = Encoding.UTF8.GetString (response);
                responseJObj = JObject.Parse (responseText);

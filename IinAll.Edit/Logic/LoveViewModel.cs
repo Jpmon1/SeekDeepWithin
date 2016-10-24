@@ -279,16 +279,22 @@ namespace IinAll.Edit.Logic
       {
          var truth = new JArray ();
          foreach (var t in this.Truth.Where (tr => tr.IsNew)) {
-            truth.Add (new JObject {
+            var tObj = new JObject {
                ["order"] = t.Order,
                ["love"] = t.GetLove (),
-               ["left"] = t.Left,
-               ["right"] = t.Right,
-               ["head"] = t.Header,
-               ["foot"] = t.Footer,
-               ["alias"] = t.Alias,
-               ["footindex"] = t.FooterIndex
-            });
+               ["alias"] = t.Alias
+            };
+            if (t.Bodies.Count > 0) {
+               var bodies = new JArray ();
+               foreach (var body in t.Bodies) {
+                  bodies.Add (new JObject {
+                     ["pos"] = body.GetPosition (),
+                     ["text"] = body.Text
+                  });
+               }
+               tObj ["body"] = bodies;
+            }
+            truth.Add (tObj);
          }
          if (truth.Count > 0) {
             var data = new JObject {["love"] = this.GetLove (), ["truth"] = truth};
@@ -308,11 +314,6 @@ namespace IinAll.Edit.Logic
             truth.Add (new JObject {
                ["order"] = t.Order,
                ["truthid"] = t.Id,
-               ["left"] = t.Left,
-               ["right"] = t.Right,
-               ["head"] = t.Header,
-               ["foot"] = t.Footer,
-               ["footindex"] = t.FooterIndex,
                ["alias"] = t.Alias,
                ["loveid"] = t.Love.Id
             });
@@ -462,17 +463,17 @@ namespace IinAll.Edit.Logic
          foreach (var t in result.truths) {
             var lights = new List <Light> ();
             foreach (var light in t.Value.l) {
-               lights.Add (new Light { Id = light.i, Text = light.t });
+               lights.Add (new Light { Id = light.id, Text = light.text });
             }
             var love = new Love {
-               Id = Convert.ToInt32 (t.Name),
+               Id = t.Value.id,
                Light = lights.Last ()
             };
             for (var a = 0; a < lights.Count - 1; a++) {
                love.Peace.Add (lights [a]);
             }
-            var truth = new Truth (this, Convert.ToInt32 (t.Value.id)) {
-               Order = t.Value.o,
+            var truth = new Truth (this, Convert.ToInt32 (t.Value.tid)) {
+               Order = t.Value.order,
                Love = love,
                IsModified = false
             };
@@ -480,7 +481,13 @@ namespace IinAll.Edit.Logic
                truth.Alias = Convert.ToInt32 (t.Value.a);
             }
             if (t.Value.b != null) {
-               int a = 0;
+               foreach (var body in t.Value.b) {
+                  truth.Bodies.Add (new Body(truth, Convert.ToInt32 (t.Value.id)) {
+                     Id = body.id,
+                     Text = body.text,
+                     Position = body.position
+                  });
+               }
             }
             this.Truth.Add (truth);
          }
@@ -546,15 +553,26 @@ namespace IinAll.Edit.Logic
             var text = match.Groups ["t"].Value.Replace ("\"", "&quot;").Trim ();
             var truth = new Truth (this) {
                IsNew = true,
-               Header = headerGroup.Success ? headerGroup.Value : null,
-               Footer = footerGroup.Success ? headerGroup.Value : null,
-               Left = number.ToString(),
-               Love = new Love {
-                  Light = new Light {
-                     Text = text
-                  }
-               }
+               Love = new Love { Light = new Light { Text = text } }
             };
+            if (numberGroup.Success || number.HasValue) {
+               truth.Bodies.Add (new Body (truth) {
+                  BodyType = BodyType.Left,
+                  Text = number.ToString ()
+               });
+            }
+            if (headerGroup.Success) {
+               truth.Bodies.Add (new Body (truth) {
+                  BodyType = BodyType.Header,
+                  Text = headerGroup.Value
+               });
+            }
+            if (footerGroup.Success) {
+               truth.Bodies.Add (new Body (truth) {
+                  BodyType = BodyType.Footer,
+                  Text = footerGroup.Value
+               });
+            }
             foreach (var light in this.Light) {
                truth.Love.Peace.Add (new Light (light));
             }

@@ -1,11 +1,12 @@
 import request from 'superagent';
+import { IinAllConstants } from '../constants/IinAllConstants';
 import { loginResponse, registerResponse, userResponse, logoutResponse } from '../actions/AccountActions';
 
 /**
  * Sends a login request to the server.
  */
 export function login (email, hash) {
-   request.post ('/IinAllDev/api/api.php?request=Login')
+   request.post (IinAllConstants.BASE_SITE + '/api/api.php?request=Login')
       .send ({email: email, hash: hash})
       .set ('Accept', 'application/json')
       .end ((err, response) => {
@@ -18,7 +19,7 @@ export function login (email, hash) {
  * Sends a logout request to the server.
  */
 export function logout () {
-   request.post ('/IinAllDev/api/api.php?request=Logout')
+   request.post (IinAllConstants.BASE_SITE + '/api/api.php?request=Logout')
       .set ('Accept', 'application/json')
       .end ((err, response) => {
          if (err) return console.error (err);
@@ -29,7 +30,7 @@ export function logout () {
  * Sends a register request to the server.
  */
 export function register (name, email, hash) {
-   request.post ('/IinAllDev/api/api.php?request=Register')
+   request.post (IinAllConstants.BASE_SITE + '/api/api.php?request=Register')
       .send ({name: name, email: email, hash: hash})
       .set ('Accept', 'application/json')
       .end ((err, response) => {
@@ -43,7 +44,7 @@ export function register (name, email, hash) {
  */
 export function checkUser ()
 {
-   request.get ('/IinAllDev/api/api.php?request=CheckUser')
+   request.get (IinAllConstants.BASE_SITE + '/api/api.php?request=CheckUser')
       .set ('Accept', 'application/json')
       .end ((err, response) => {
          if (err) return console.error (err);
