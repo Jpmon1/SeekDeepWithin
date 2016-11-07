@@ -1,0 +1,97 @@
+﻿<!--
+ Peter
+ Created by: Peter Development Team
+    http://peter.codeplex.com/
+ 
+ GNU General Public License version 2 (GPLv2)
+    http://peter.codeplex.com/license
+ 
+ This code is provided on an AS IS basis, with no WARRANTIES,
+ CONDITIONS or GUARANTEES of any kind.
+-->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:icons="clr-namespace:Peter.Common.Icons"
+                    xmlns:mainmenu="clr-namespace:Peter.Common.MainMenu">
+
+   <ResourceDictionary.MergedDictionaries>
+      <ResourceDictionary Source="/Peter.Common;component/Themes/Common.xaml" />
+   </ResourceDictionary.MergedDictionaries>
+
+   <mainmenu:MainMenuMenuItemStyleSelector x:Key="MenuItemStyleSelector" />
+
+   <Style TargetType="{x:Type mainmenu:MainMenuItem}">
+      <Setter Property="Visibility"
+              Value="{Binding Path=IsVisible, Converter={StaticResource boolConverter}}" />
+      <Setter Property="Template">
+         <Setter.Value>
+            <ControlTemplate TargetType="{x:Type mainmenu:MainMenuItem}">
+               <Border x:Name="PART_Border"
+                       BorderBrush="{TemplateBinding BorderBrush}"
+                       BorderThickness="{TemplateBinding BorderThickness}">
+                  <Grid>
+                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                     </Grid.ColumnDefinitions>
+                     <Button MinWidth="{Binding Path=IconSize, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type mainmenu:MainMenuItemsControl}}, Converter={StaticResource mmHeightConverter}}"
+                             Height="{Binding Path=IconSize, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type mainmenu:MainMenuItemsControl}}, Converter={StaticResource mmHeightConverter}}"
+                             x:Name="PART_Button"
+                             Grid.Column="0"
+                             HorizontalContentAlignment="Center"
+                             VerticalContentAlignment="Center"
+                             ToolTip="{Binding Path=ToolTip}"
+                             Command="{Binding Path=Command}"
+                             Style="{DynamicResource MainMenuItemButtonStyle}"
+                             CommandParameter="{Binding Path=CommandParameter}">
+                        <Button.Content>
+                           <StackPanel Orientation="Horizontal"
+                                       Focusable="False"
+                                       x:Name="PART_MainButtonContent"
+                                       HorizontalAlignment="Center">
+                              <icons:IconDisplay IconSize="{Binding Path=IconSize, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type mainmenu:MainMenuItemsControl}}}"
+                                                 x:Name="PART_Icon"
+                                                 Icon="{Binding Path=Icon}"
+                                                 Focusable="False" />
+                           </StackPanel>
+                        </Button.Content>
+                     </Button>
+                     <Button x:Name="PART_DropDown"
+                             Grid.Column="1"
+                             Margin="0,0,4,0"
+                             Focusable="False"
+                             BorderThickness="1,0,0,0"
+                             VerticalContentAlignment="Center"
+                             HorizontalContentAlignment="Center"
+                             Style="{DynamicResource MainMenuItemDropDownStyle}">
+                        <Button.ContextMenu>
+                           <ContextMenu ItemsSource="{Binding Path=Children}"
+                                        ItemContainerStyleSelector="{StaticResource MenuItemStyleSelector}" />
+                        </Button.ContextMenu>
+                     </Button>
+                  </Grid>
+               </Border>
+
+               <ControlTemplate.Triggers>
+
+                  <DataTrigger Binding="{Binding Path=Children}"
+                               Value="{x:Null}">
+                     <Setter TargetName="PART_DropDown"
+                             Property="Visibility"
+                             Value="Collapsed" />
+                  </DataTrigger>
+
+                  <DataTrigger Binding="{Binding Path=Children.Count}"
+                               Value="0">
+                     <Setter TargetName="PART_DropDown"
+                             Property="Visibility"
+                             Value="Collapsed" />
+                  </DataTrigger>
+
+               </ControlTemplate.Triggers>
+            </ControlTemplate>
+         </Setter.Value>
+      </Setter>
+   </Style>
+
+</ResourceDictionary>

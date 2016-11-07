@@ -6,6 +6,8 @@ require_once ($dir . 'api_base.php');
 require_once ($dir . 'IinAllDb.php');
 require_once ($dir . 'LoveController.php');
 require_once ($dir . 'BodyController.php');
+require_once ($dir . 'StyleController.php');
+require_once ($dir . 'AliasController.php');
 require_once ($dir . 'LightController.php');
 require_once ($dir . 'TruthController.php');
 
@@ -138,24 +140,19 @@ class IinAllApi extends Api
       $controller = new LightController ();
       try {
          if ($this->method == 'GET') {
-            $data = $controller->Get (25);
+            // TODO:... (suggest)
          } elseif ($this->method == 'POST') {
             $light = $params["l"];
             if (empty ($light)) { throw new Exception ('No light given'); }
             $data['status'] = 'success';
             $data['id'] = $controller->Create ($light);
          } elseif ($this->method == 'PUT') {
-            $lightId = $params["text"];
-            $id = $params["id"];
-            if (empty ($lightId)) {
-               throw new Exception ('No light given');
-            } elseif (empty ($id)) {
-               throw new Exception ('No id given');
-            }
+            $text = $params["text"];
+            $id = intval ($params["id"]);
+            if (empty ($text)) { throw new Exception ('No light given'); }
+            if (empty ($id)) { throw new Exception ('No id given'); }
             $data['status'] = 'success';
-            $controller->Update ($id, $lightId);
-         } elseif ($this->method == 'DELETE') {
-            throw new Exception ('The delete has not been implemented yet.');
+            $controller->Update ($id, $text);
          }
       } catch (Exception $ex) {
          throw $ex;
@@ -188,8 +185,9 @@ class IinAllApi extends Api
             if (array_key_exists ("love", $params)) {
                $love = $params["love"];
             }
+            $format = array_key_exists ("f", $params);
             if (empty ($light) && empty ($love)) { throw new Exception ('No data given'); }
-            $truths = $controller->Get ($light, $love);
+            $truths = $controller->Get ($light, $love, $format);
             $data["status"] = "success";
             $data = array_merge($data, $truths);
          } elseif ($this->method == 'POST') {
@@ -203,7 +201,9 @@ class IinAllApi extends Api
             $controller->Update ($tData);
             $data["status"] = "success";
          } elseif ($this->method == 'DELETE') {
-   
+            $id = $params["id"];
+            $controller->Delete ($id);
+            $data["status"] = "success";
          }
       } catch (Exception $ex) {
          throw $ex;
@@ -228,20 +228,23 @@ class IinAllApi extends Api
       $controller = new LoveController ();
       try {
          if ($this->method == 'GET') {
-            $peaceIds = $params["p"];
-            if (empty ($peaceIds)) { throw new Exception('No peace given'); }
-            $love = $controller->Get ($peaceIds);
-            $data["status"] = "success";
-            $data["love"] = $love;
+            $love = null;
+            $format = array_key_exists ("f", $params);
+            $token = array_key_exists ("t", $params) ? $params["t"] : null;
+            $count = array_key_exists ("c", $params) ? $params["c"] : 25;
+            $peace = array_key_exists ("p", $params) ? $params["p"] : null;
+            if (!empty ($peace)) {
+               $love = $controller->Get ($peace);
+            } elseif (!empty ($token)) {
+               $love = $controller->Search ($token, $format);
+            } else {
+               $love = $controller->Random ($count, $format);
+            }
+            $data['status'] = 'success';
+            $data['love'] = $love;
          } elseif ($this->method == 'POST') {
-            $data = $params["d"];
-            //$log = $controller->Create ($data);
-            $data["status"] = "success";
-            $data["log"] = $log;
-         } elseif ($this->method == 'PUT') {
-   
-         } elseif ($this->method == 'DELETE') {
-   
+         } elseif ($this->method == 'PUT') {   
+         } elseif ($this->method == 'DELETE') {   
          }
       } catch (Exception $ex) {
          throw $ex;
@@ -266,15 +269,21 @@ class IinAllApi extends Api
       $controller = new BodyController ();
       try {
          if ($this->method == 'GET') {
-         } elseif ($this->method == 'POST') {
-            $position = $params["p"];
-            $text = $params["t"];
             $loveId = $params["l"];
+            if (empty ($loveId)) { throw new Exception('No love given'); }
+            $body = $controller->Get ($loveId);
+            $data["status"] = "success";
+            $data["body"] = $body;
+         } elseif ($this->method == 'POST') {
+            $text = $params["t"];
+            $loveId = intval ($params["l"]);
+            $position = intval ($params["p"]);
+            if (empty ($position)) { throw new Exception('No position given'); }
+            if (empty ($text)) { throw new Exception('No text given'); }
+            if (empty ($loveId)) { throw new Exception('No love given'); }
             $id = $controller->Create ($position, $text, $loveId);
             $data["status"] = "success";
             $data["id"] = $id;
-         } elseif ($this->method == 'PUT') {
-   
          } elseif ($this->method == 'DELETE') {
             $id = $params["id"];
             $controller->Delete ($id);
@@ -292,61 +301,90 @@ class IinAllApi extends Api
    }
 
    /**
-    * Random operations.
+    * Style operations.
     * @param $params array The passed in parameters.
     * @return array The results.
     * @throws Exception Error when unknown action is requested.
     */
-   protected function Random ($params)
+   protected function Style ($params)
    {
       $data = array();
-      $controller = new LoveController ();
-      $love = $controller->Get ("");
-      $data['status'] = 'success';
-      $data['love'] = $love;
-      return $data;
+      $controller = new StyleController ();
+      try {
+         if ($this->method == 'GET') {
+            $loveId = $params["l"];
+            if (empty ($loveId)) { throw new Exception('No love given'); }
+            $style = $controller->Get ($loveId);
+            $data["status"] = "success";
+            $data["style"] = $style;
+         } elseif ($this->method == 'POST') {
+            $css = $params["c"];
+            $tag = $params["t"];
+            $endIndex = intval ($params["e"]);
+            $startIndex = intval ($params["s"]);
+            $loveId = intval ($params["l"]);
+            if (empty ($tag)) { throw new Exception('No tag given'); }
+            if (empty ($loveId)) { throw new Exception('No love given'); }
+            if ($startIndex < 0) { throw new Exception('No start index given'); }
+            if ($endIndex <= $startIndex) { throw new Exception('End index cannot be less than start index.'); }
+            $id = $controller->Create ($loveId, $tag, $startIndex, $endIndex, $css);
+            $data["status"] = "success";
+            $data["id"] = $id;
+         } elseif ($this->method == 'DELETE') {
+            $id = $params["id"];
+            $controller->Delete ($id);
+            $data["status"] = "success";
+         }
+      } catch (Exception $ex) {
+         throw $ex;
+      } finally {
+         $controller->close ();
+      }
+      if (!empty($data)) {
+         return $data;
+      }
+      throw new Exception('An unknown error occurred.');
    }
-   
+
    /**
-    * Creates a new love.
+    * Alias operations.
+    * @param $params array The passed in parameters.
+    * @return array The results.
+    * @throws Exception Error when unknown action is requested.
     */
-   protected function createLove ($params)
+   protected function Alias ($params)
    {
-      if ($this->method == 'GET'){
-         throw new Exception('An unknown error occured.');
+      $data = array();
+      $controller = new AliasController ();
+      try {
+         if ($this->method == 'GET') {
+            $loveId = intval ($params["l"]);
+            if (empty ($loveId)) { throw new Exception('No love given'); }
+            $alias = $controller->Get ($loveId);
+            $data["status"] = "success";
+            $data["alias"] = $alias;
+         } elseif ($this->method == 'POST') {
+            $loveId = intval ($params["l"]);
+            $aliasId = intval ($params["a"]);
+            if (empty ($loveId)) { throw new Exception('No love given'); }
+            if (empty ($aliasId)) { throw new Exception('No alias given'); }
+            $id = $controller->Create ($loveId, $aliasId);
+            $data["status"] = "success";
+         } elseif ($this->method == 'DELETE') {
+            $loveId = $params["l"];
+            if (empty ($loveId)) { throw new Exception('No love given'); }
+            $controller->Delete ($loveId);
+            $data["status"] = "success";
+         }
+      } catch (Exception $ex) {
+         throw $ex;
+      } finally {
+         $controller->close ();
       }
-      $userDb = new UserDb ();
-      if (!$userDb->verifyToken ($params['user'], $params['token'])) {
-         throw new Exception ('Invalid User.');
+      if (!empty($data)) {
+         return $data;
       }
-      $db = new IinAllDb ();
-      $lightId = $params["light"];
-      if (empty ($lightId)) throw new Exception('No light given');
-      $id = $db->createLove ($lightId);
-      $db->close ();
-      return Array('status' => 'success', 'id' => $id);
-   }
-   
-   public function format ($params)
-   {
-      if ($this->method == 'GET') {
-         throw new Exception('An unknown error occurred.');
-      }
-      $userDb = new UserDb ();
-      if (!$userDb->verifyToken ($params['user'], $params['token'])) {
-         throw new Exception ('Invalid User.');
-      }
-      $love = $params["l"];
-      $data = $params["d"];
-      $regex = $params["r"];
-      $order = $params["o"];
-      $number = $params["n"];
-      if (empty ($data)) throw new Exception('No data given');
-      if (empty ($regex)) throw new Exception('Cannot parse data without instructions');
-      $db = new IinAllDb ();
-      $formattedData = $db->format ($love, $data, $regex, $order, $number);
-      $db->close ();
-      return Array('status' => 'success', 'data' => $formattedData);
+      throw new Exception('An unknown error occurred.');
    }
    
    /**

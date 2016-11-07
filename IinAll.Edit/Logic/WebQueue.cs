@@ -98,6 +98,7 @@ namespace IinAll.Edit.Logic
       public void Post (string url, NameValueCollection parameters, 
          Action<NameValueCollection, dynamic> success = null)
       {
+         AddUserInfo (parameters);
          this.m_PostQueue.Enqueue (new RequestData {Url = url, Parameters = parameters, Success = success, RequestType = "POST"});
          if (!this.m_IsPosting)
             this.PostAll ();
@@ -112,6 +113,7 @@ namespace IinAll.Edit.Logic
       public void Put (string url, NameValueCollection parameters,
          Action<NameValueCollection, dynamic> success = null)
       {
+         AddUserInfo (parameters);
          this.m_PostQueue.Enqueue (new RequestData { Url = url, Parameters = parameters, Success = success, RequestType = "PUT" });
          if (!this.m_IsPosting)
             this.PostAll ();
@@ -126,9 +128,20 @@ namespace IinAll.Edit.Logic
       public void Delete (string url, NameValueCollection parameters,
          Action<NameValueCollection, dynamic> success = null)
       {
+         AddUserInfo (parameters);
          this.m_PostQueue.Enqueue (new RequestData { Url = url, Parameters = parameters, Success = success, RequestType = "DELETE" });
          if (!this.m_IsPosting)
             this.PostAll ();
+      }
+
+      /// <summary>
+      /// Adds the user information to the parameter list.
+      /// </summary>
+      /// <param name="parameters"></param>
+      private void AddUserInfo (NameValueCollection parameters)
+      {
+         parameters.Add ("user", this.UserId.ToString ());
+         parameters.Add ("token", this.Token);
       }
 
       /// <summary>

@@ -26,6 +26,7 @@ AppDispatcher.register ((payload) => {
   switch (action.actionType) {
 
     case IinAllConstants.GET_RANDOM:
+    case IinAllConstants.GET_SEARCH:
     case IinAllConstants.GET_TRUTH:
       _dataStore.isLoading = true;
       DataStore.emit (CHANGE_EVENT);
@@ -54,6 +55,7 @@ AppDispatcher.register ((payload) => {
       DataStore.emit (CHANGE_EVENT);
       break;
 
+    case IinAllConstants.GET_SEARCH_RESPONSE:
     case IinAllConstants.GET_RANDOM_RESPONSE:
       const response = action.response;
       const loves = response.love;

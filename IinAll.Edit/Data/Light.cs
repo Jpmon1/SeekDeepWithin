@@ -1,5 +1,8 @@
-﻿using System.Windows.Input;
+﻿using System.Collections.Specialized;
+using System.Windows.Input;
+using IinAll.Edit.Interfaces;
 using IinAll.Edit.Logic;
+using Peter.Common;
 
 namespace IinAll.Edit.Data
 {
@@ -8,6 +11,7 @@ namespace IinAll.Edit.Data
    /// </summary>
    public class Light
    {
+      private bool m_IsBusy;
       private RelayCommand m_CmdSave;
       private RelayCommand m_CmdRemove;
 
@@ -59,7 +63,7 @@ namespace IinAll.Edit.Data
       /// </summary>
       public ICommand SaveCommand
       {
-         get { return this.m_CmdSave ?? (this.m_CmdSave = new RelayCommand (this.OnSave, CanSave)); }
+         get { return this.m_CmdSave ?? (this.m_CmdSave = new RelayCommand (this.OnSave, this.CanSave)); }
       }
 
       /// <summary>
@@ -67,9 +71,9 @@ namespace IinAll.Edit.Data
       /// </summary>
       /// <param name="obj">Command Parameter, not used.</param>
       /// <returns>True if command can execute, otherwise false.</returns>
-      private static bool CanSave (object obj)
+      private bool CanSave (object obj)
       {
-         return WebQueue.Instance.IsAuthenticated;
+         return WebQueue.Instance.IsAuthenticated && !this.m_IsBusy;
       }
 
       /// <summary>
@@ -78,7 +82,23 @@ namespace IinAll.Edit.Data
       /// <param name="obj">Command Parameter, not used.</param>
       private void OnSave (object obj)
       {
-         
+         this.m_IsBusy = true;
+         var parameters = new NameValueCollection {
+               {"text", this.Text},
+               {"id", this.Id.ToString ()}
+            };
+         WebQueue.Instance.Put (Constants.URL_LIGHT, parameters, this.OnSaveSuccess);
+      }
+
+      /// <summary>
+      /// Occurs when the save was successful.
+      /// </summary>
+      /// <param name="arg1"></param>
+      /// <param name="result"></param>
+      private void OnSaveSuccess (NameValueCollection arg1, dynamic result)
+      {
+         this.m_IsBusy = false;
+         CommandManager.InvalidateRequerySuggested ();
       }
 
       /// <summary>

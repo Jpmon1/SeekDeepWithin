@@ -28,7 +28,8 @@ export default class Header extends React.Component {
       //     <Login userData={this.props.userData} />
       //   </div>;
       // }
-      return (<h2 className="textCenter">I in All</h2>);
+    const styles = {head: {textAlign: 'center', paddingTop: '2.25rem'}};
+      return (<h2 style={styles.head}>I in All</h2>);
       /*<div className="ui stackable menu">
             <div className="header item">I in All</div>
             <div className="item">

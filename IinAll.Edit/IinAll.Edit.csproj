@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>IinAll.Edit</RootNamespace>
     <AssemblyName>IinAll.Edit</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -40,6 +40,10 @@
     <ApplicationIcon>icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -47,14 +51,6 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
-    <Reference Include="System.Net.Http.Extensions, Version=2.2.29.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Net.Http.2.2.29\lib\net45\System.Net.Http.Extensions.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Net.Http.Primitives, Version=4.2.29.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Net.Http.2.2.29\lib\net45\System.Net.Http.Primitives.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System.Net.Http.WebRequest" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
@@ -79,6 +75,11 @@
     <Compile Include="Data\Light.cs" />
     <Compile Include="Data\LightType.cs" />
     <Compile Include="Data\Love.cs" />
+    <Compile Include="Data\Save\SaveData.cs" />
+    <Compile Include="Data\Save\SaveEnvironment.cs" />
+    <Compile Include="Data\Save\SaveLight.cs" />
+    <Compile Include="Data\Save\SaveLove.cs" />
+    <Compile Include="Data\Style.cs" />
     <Compile Include="Data\Truth.cs" />
     <Compile Include="DragAndDrop\Adorners\DataTemplateAdorner.cs" />
     <Compile Include="DragAndDrop\Adorners\DragNDropAdorner.cs" />
@@ -91,10 +92,12 @@
     <Compile Include="DragAndDrop\LightDropController.cs" />
     <Compile Include="DragAndDrop\LightTextDropController.cs" />
     <Compile Include="DragAndDrop\VisualHelpers.cs" />
+    <Compile Include="Interfaces\IBodyContainer.cs" />
+    <Compile Include="Interfaces\ILightContainer.cs" />
+    <Compile Include="Interfaces\IStyleContainer.cs" />
     <Compile Include="Logic\BaseTabItem.cs" />
-    <Compile Include="Logic\BaseViewModel.cs" />
+    <Compile Include="Logic\Crypto.cs" />
     <Compile Include="Logic\EnumerationExtension.cs" />
-    <Compile Include="Logic\ILightContainer.cs" />
     <Compile Include="Logic\LightViewModel.cs" />
     <Compile Include="Logic\LoveViewModel.cs" />
     <Compile Include="Views\BodyView.xaml.cs">
@@ -108,6 +111,9 @@
     </Compile>
     <Compile Include="Views\LoveView.xaml.cs">
       <DependentUpon>LoveView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\StyleView.xaml.cs">
+      <DependentUpon>StyleView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\TruthView.xaml.cs">
       <DependentUpon>TruthView.xaml</DependentUpon>
@@ -125,9 +131,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Logic\MainViewModel.cs" />
-    <Compile Include="Logic\RelayCommand.cs" />
     <Compile Include="Logic\WebQueue.cs" />
-    <Compile Include="Logic\WebRequestEventArgs.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -192,13 +196,16 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\StyleView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\TruthView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -228,6 +235,12 @@
     <Resource Include="icon.ico" />
     <Content Include="iinallco_data.sql" />
     <Content Include="iinallco_user.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Peter.Common\Peter.Common.csproj">
+      <Project>{D0B0260D-FE4D-40CB-8FAE-D6B48F5B01CD}</Project>
+      <Name>Peter.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" />

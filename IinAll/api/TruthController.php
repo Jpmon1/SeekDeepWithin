@@ -18,7 +18,7 @@ class TruthController extends BaseController
     * @param $loveId int The love ID.
     * @return array The array of requested truth.
     */
-   function Get ($light, $loveId)
+   function Get ($light, $loveId, $format)
    {
       $truths = Array ();
       $lights = Array ();
@@ -30,12 +30,12 @@ class TruthController extends BaseController
                                   FROM `peace` 
                                   INNER JOIN `light` ON `peace`.`light_id`=`light`.`id`
                                   INNER JOIN `truth` ON `peace`.`love_id`=`truth`.`truth_id`
-                                  WHERE `peace`.`love_id` IN
-                                    (SELECT `truth`.`truth_id`
+                                  WHERE (`peace`.`love_id`, `truth`.`id`) IN
+                                    (SELECT `truth`.`truth_id`, `truth`.`id`
                                      FROM `truth`
                                      WHERE `truth`.`love_id`=?
                                      ORDER BY `truth`.`sequence`)
-                                  ORDER BY `peace`.`love_id` ASC, `peace`.`sequence` ASC;");
+                                  ORDER BY `truthorder` ASC, `peace`.`love_id` ASC, `peace`.`sequence` ASC;");
          $stmt->bind_param ("i", $loveId);
          $stmt->execute ();
          $stmt->bind_result ($love_Id, $lightId, $peaceOrder, $text, $truthId, $truthOrder);
@@ -60,6 +60,13 @@ class TruthController extends BaseController
             $body = $this->GetBody ($loveIds);
             foreach ($body as $key => $value) {
                 $truths[$key]["b"] = $value;
+            }
+            $style = $this->GetStyle ($loveIds);
+            foreach ($style as $key => $value) {
+                $truths[$key]["s"] = $value;
+            }
+            if ($format) {
+               $truths = $this->format($truths);
             }
          } else {
             $this->addNoData ($loveId);
@@ -121,20 +128,53 @@ class TruthController extends BaseController
     */
    function Update ($jsonData)
    {
-      $hasAlias = false;
       $data = json_decode ($jsonData);
       $itemCount = count ($data->truth);
-      $aliasQuery = "REPLACE INTO `iinallco_data`.`alias` (`love_id`, `alias`) VALUES ";
+      $this->beginTransaction ();
       for ($j = 0; $j < $itemCount; $j++) {
          $item = $data->truth[$j];
-         if ($item->alias != null) {
-            $hasAlias = true;
-            $aliasQuery .= "('".$item->loveid."','".$item->alias."'),";
-         }
+         $id = $item->truthid;
+         $order = $item->order;
+         $this->query ("UPDATE `truth` SET `truth`.`sequence`=$order WHERE `truth`.`id`=$id;");
+         $error = $this->lastError();
       }
-      if ($hasAlias){
-         $this->query (rtrim ($aliasQuery, ','));
-      }
+      $this->endTransaction ();
+   }
+
+   /**
+    * Deletes the given truth.
+    * @param int $id The id of the truth to delete.
+    */
+   function Delete ($id)
+   {
+      $stmt = $this->prepare ("DELETE FROM `truth` WHERE `id`=?;");
+      $stmt->bind_param ("i", $id);
+      $stmt->execute ();
+      $stmt->close ();
+   }
+
+   /**
+    * Adds an item to the no data table.
+    * @param int $loveId The id of the love with no data.
+    */
+   function addNoData ($loveId)
+   {
+      $stmt = $this->prepare ("REPLACE INTO `no_data` (`love_id`) VALUES (?);");
+      $stmt->bind_param ("i", $loveId);
+      $stmt->execute ();
+      $stmt->close ();
+   }
+
+   /**
+    * Removes an item from the no data table.
+    * @param int $loveId The id of the love that had no data.
+    */
+   function removeNoData ($loveId)
+   {
+      $stmt = $this->prepare ("DELETE FROM `no_data` WHERE `love_id`=?;");
+      $stmt->bind_param ("i", $loveId);
+      $stmt->execute ();
+      $stmt->close ();
    }
 }
 ?>

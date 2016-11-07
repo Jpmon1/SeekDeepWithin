@@ -1,32 +1,34 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using System.Windows.Input;
-using IinAll.Edit.Annotations;
+using System.Windows.Threading;
 using IinAll.Edit.Data;
+using IinAll.Edit.Data.Save;
+using Peter.Common;
+using Peter.Common.Utilities;
 
 namespace IinAll.Edit.Logic
 {
    /// <summary>
    /// The main view model for IinAll.Edit.
    /// </summary>
-   public class MainViewModel : INotifyPropertyChanged
+   public class MainViewModel : ViewModelBase
    {
+      private bool m_UseLocal;
       private string m_UserName;
+      private bool m_UseProduction;
+      private SaveEnvironment m_SaveData;
       private RelayCommand m_LoginCommand;
       private RelayCommand m_NewLoveCommand;
-      private LoveViewModel m_SelectedLove;
-      private bool m_UseProduction;
-      private bool m_UseLocal;
 
       /// <summary>
-      /// Propert changed event.
+      /// Event occurs when a love is added.
       /// </summary>
-      public event PropertyChangedEventHandler PropertyChanged;
+      public event EventHandler LoveAdded;
 
       /// <summary>
       /// Initializes a new main view model.
@@ -35,7 +37,13 @@ namespace IinAll.Edit.Logic
       {
          this.UseLocal = true;
          this.Light = new LightViewModel ();
+         this.m_SaveData = new SaveEnvironment();
          this.Love = new ObservableCollection <LoveViewModel> ();
+         var timer = new DispatcherTimer (DispatcherPriority.Normal, Dispatcher.CurrentDispatcher) {
+            Interval = new TimeSpan (0, 1, 0)
+         };
+         timer.Tick += this.OnTimerTick;
+         timer.Start ();
          Instance = this;
       }
 
@@ -73,19 +81,6 @@ namespace IinAll.Edit.Logic
       public ObservableCollection <LoveViewModel> Love { get; }
 
       /// <summary>
-      /// Gets or Sets the selected Love.
-      /// </summary>
-      public LoveViewModel SelectedLove
-      {
-         get { return this.m_SelectedLove; }
-         set
-         {
-            this.m_SelectedLove = value;
-            this.OnPropertyChanged ();
-         }
-      }
-
-      /// <summary>
       /// Gets the login command.
       /// </summary>
       public ICommand LoginCommand
@@ -110,9 +105,13 @@ namespace IinAll.Edit.Logic
          set
          {
             if (this.m_UseLocal != value) {
+               this.Save ();
                this.m_UseLocal = value;
                this.OnPropertyChanged ();
-               this.UseProduction = !this.m_UseLocal;
+               this.m_UseProduction = !this.m_UseLocal;
+               this.OnPropertyChanged (nameof (UseProduction));
+               WebQueue.Instance.UseProduction (this.m_UseProduction);
+               this.LoadData ();
             }
          }
       }
@@ -126,10 +125,13 @@ namespace IinAll.Edit.Logic
          set
          {
             if (this.m_UseProduction != value) {
+               this.Save ();
                this.m_UseProduction = value;
                this.OnPropertyChanged ();
-               this.UseLocal = !this.m_UseProduction;
+               this.m_UseLocal = !this.m_UseProduction;
+               this.OnPropertyChanged (nameof (UseLocal));
                WebQueue.Instance.UseProduction (this.m_UseProduction);
+               this.LoadData ();
             }
          }
       }
@@ -140,7 +142,8 @@ namespace IinAll.Edit.Logic
       /// <param name="obj">Command Parameter, not used.</param>
       private void OnNewLove (object obj)
       {
-         this.Love.Add(new LoveViewModel { IsSelected = true });
+         this.Love.Insert (0, new LoveViewModel { IsExpanded = true });
+         this.OnLoveAdded ();
       }
 
       /// <summary>
@@ -158,12 +161,13 @@ namespace IinAll.Edit.Logic
       /// <param name="truth">Truth to edit.</param>
       public void EditTruth (Truth truth)
       {
-         var love = new LoveViewModel { IsUpdating = true, IsSelected = true };
+         var love = new LoveViewModel { IsUpdating = true, IsExpanded = true };
          foreach (var light in truth.Love.Peace)
             love.Light.Add (new Light (light));
          love.IsUpdating = false;
          love.Light.Add (truth.Love.Light);
-         this.Love.Add (love);
+         this.Love.Insert (0, love);
+         this.OnLoveAdded ();
       }
 
       /// <summary>
@@ -194,15 +198,88 @@ namespace IinAll.Edit.Logic
          };
          WebQueue.Instance.Post (Constants.URL_LOGIN_REQUEST, values);
       }
+      
+      /// <summary>
+      /// Loads any saved data.
+      /// </summary>
+      public void Load ()
+      {
+         if (File.Exists (Constants.SAVE_FILE)) {
+            this.m_SaveData = Serialization.Deserialize <SaveEnvironment> (Constants.SAVE_FILE);
+            if (this.m_SaveData.UseProduction)
+               this.UseProduction = true;
+            else
+               this.LoadData ();
+         }
+      }
 
       /// <summary>
-      /// Property changed method.
+      /// Sets the data baseed on the current environment.
       /// </summary>
-      /// <param name="propertyName">Name of property that changed.</param>
-      [NotifyPropertyChangedInvocator]
-      protected virtual void OnPropertyChanged ([CallerMemberName] string propertyName = null)
+      private void LoadData ()
       {
-         PropertyChanged?.Invoke (this, new PropertyChangedEventArgs (propertyName));
+         if (this.m_SaveData == null) return;
+         var data = this.UseProduction ? this.m_SaveData.ProductionData : this.m_SaveData.LocalData;
+         this.UserName = data.User;
+         this.Light.SearchText = data.SearchText;
+         this.Light.SearchResults.Clear ();
+         foreach (var light in data.SearchLight) {
+            this.Light.SearchResults.Add (new Light {
+               Id = light.Id,
+               Text = light.Text
+            });
+         }
+         this.Light.Light.Clear ();
+         foreach (var light in data.StagedLight) {
+            this.Light.Light.Add (new Light {
+               Id = light.Id,
+               Text = light.Text
+            });
+         }
+
+         this.Love.Clear ();
+         foreach (var l in data.Love) {
+            var love = new LoveViewModel { IsUpdating = true, IsExpanded = l.IsExpanded};
+            for (var i = 0; i < l.Light.Count; i++) {
+               var light = l.Light [i];
+               if (i == l.Light.Count - 1)
+                  love.IsUpdating = false;
+               love.Light.Add (new Light {
+                  Id = light.Id,
+                  Text = light.Text
+               });
+            }
+            this.Love.Add (love);
+         }
+      }
+
+      /// <summary>
+      /// Saves the data when the timer ticks.
+      /// </summary>
+      /// <param name="sender"></param>
+      /// <param name="e"></param>
+      private void OnTimerTick (object sender, EventArgs e)
+      {
+         this.Save ();
+      }
+
+      /// <summary>
+      /// Saves the data.
+      /// </summary>
+      public void Save ()
+      {
+         if (this.m_SaveData != null) {
+            this.m_SaveData.SetData (this);
+            this.m_SaveData.Serialize (Constants.SAVE_FILE);
+         }
+      }
+
+      /// <summary>
+      /// Raises the love added event.
+      /// </summary>
+      private void OnLoveAdded ()
+      {
+         this.LoveAdded?.Invoke (this, EventArgs.Empty);
       }
    }
 }

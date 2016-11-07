@@ -29,6 +29,8 @@ namespace IinAll.Edit.Properties {
 <ArrayOfString xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
   <string>(?&lt;c&gt;\d+):(?&lt;n&gt;\d+)(?&lt;t&gt;\D+)</string>
   <string>(?&lt;t&gt;.+)</string>
+  <string>(?&lt;t&gt;\D+)(?&lt;n&gt;\d+)</string>
+  <string>\[Pg\s*\d+\]</string>
 </ArrayOfString>")]
         public global::System.Collections.Specialized.StringCollection RegExes {
             get {

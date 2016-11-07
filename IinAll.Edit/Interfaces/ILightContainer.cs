@@ -1,6 +1,6 @@
 ﻿using IinAll.Edit.Data;
 
-namespace IinAll.Edit.Logic
+namespace IinAll.Edit.Interfaces
 {
    public interface ILightContainer
    {

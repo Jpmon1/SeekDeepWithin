@@ -1,0 +1,13 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:dialog="clr-namespace:Peter.Common.Dialog">
+   <DataTemplate DataType="{x:Type dialog:ModelPasswordRequest}">
+      <dialog:ViewPasswordRequest />
+   </DataTemplate>
+   <DataTemplate DataType="{x:Type dialog:ModelTextInputRequest}">
+      <dialog:ViewTextInputRequest />
+   </DataTemplate>
+   <DataTemplate DataType="{x:Type dialog:ModelMessageDialog}">
+      <dialog:ViewMessageDialog />
+   </DataTemplate>
+</ResourceDictionary>

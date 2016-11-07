@@ -1,13 +1,15 @@
-﻿namespace IinAll.Edit.Logic
+﻿using Peter.Common;
+
+namespace IinAll.Edit.Logic
 {
    /// <summary>
    /// A base class for a tab item.
    /// </summary>
-   public class BaseTabItem : BaseViewModel
+   public class BaseTabItem : ViewModelBase
    {
       private string m_Title;
       private string m_ToolTip;
-      private bool m_IsSelected;
+      private bool m_IsExpanded;
 
       /// <summary>
       /// Gets or Sets the title
@@ -36,14 +38,14 @@
       }
 
       /// <summary>
-      /// Gets or Sets if this item is selected or not.
+      /// Gets or Sets if this item is expanded or not.
       /// </summary>
-      public bool IsSelected
+      public bool IsExpanded
       {
-         get { return this.m_IsSelected; }
+         get { return this.m_IsExpanded; }
          set
          {
-            this.m_IsSelected = value;
+            this.m_IsExpanded = value;
             this.OnPropertyChanged ();
          }
       }

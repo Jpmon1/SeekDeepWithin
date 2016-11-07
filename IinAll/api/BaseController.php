@@ -1,6 +1,7 @@
 <?php
 
 require_once (__DIR__."/db.php");
+require_once (__DIR__."/LoveRenderer.php");
 
 class BaseController extends Database
 {
@@ -260,20 +261,61 @@ class BaseController extends Database
       return $body;
    }
 
-   function addNoData ($loveId)
+   /**
+    * Gets the style for the given love.
+    * @param $loveIds string A list of love ids.
+    * @return array The array of requested style.
+    */
+   function GetStyle ($loveIds)
    {
-      $stmt = $this->prepare ("REPLACE INTO `no_data` (`love_id`) VALUES (?);");
-      $stmt->bind_param ("i", $loveId);
-      $stmt->execute ();
-      $stmt->close ();
+      $style = Array ();
+      if (!empty ($loveIds)) {
+         $idString = implode(",", $loveIds);
+         $stmt = $this->prepare ("SELECT `love_style`.`id`, `love_style`.`love_id`, `love_style`.`start_index`, `love_style`.`end_index`, `style_tag`.`tag`, `style`.`css`
+                                  FROM `love_style`
+                                  INNER JOIN `style_tag` ON `love_style`.`style_tag_id`=`style_tag`.`id`
+                                  LEFT OUTER JOIN `style` ON `love_style`.`style_id`=`style`.`id`
+                                  WHERE `love_style`.`love_id` IN ($idString);");
+         $stmt->execute ();
+         $stmt->bind_result ($id, $loveId, $startIndex, $endIndex, $tag, $css);
+         while ($stmt->fetch ()) {
+            if (!array_key_exists ($loveId, $style)) {
+                  $style[$loveId] = Array();
+            }
+            $style[$loveId][] = Array ("id" => $id, "start" => $startIndex, "end" => $endIndex, "tag" => $tag, "css" => $css);
+         } 
+         $stmt->free_result ();
+         $stmt->close ();
+      }
+      return $style;
    }
 
-   function removeNoData ($loveId)
+   /**
+    * Formats the given data.
+    * @param array $data The data to format.
+    * @param string $searchText The text searched for.
+    * @return array The formatted data.
+    */
+   protected function format ($data, $searchText = "")
    {
-      $stmt = $this->prepare ("DELETE FROM `no_data` WHERE `love_id`=?;");
-      $stmt->bind_param ("i", $loveId);
-      $stmt->execute ();
-      $stmt->close ();
+      $renderer = new LoveRenderer ($searchText);
+      foreach ($data as $key => $value) {
+         $body = null;
+         if (array_key_exists("b", $value)) {
+            $body = $data[$key]["b"];
+         }
+         $style = null;
+         if (array_key_exists("s", $value)) {
+         $style = $data[$key]["s"];
+         }
+         if ($body != null || $style != null) {
+            $light = $data[$key]["l"];
+            $index = count($light) - 1;
+            $text = $light[$index]["text"];
+            $data[$key]["l"][$index]["text"] = $renderer->Render ($text, $body, $style);
+         }
+      }
+      return $data;
    }
    
    /**

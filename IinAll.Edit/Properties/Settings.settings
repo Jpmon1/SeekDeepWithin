@@ -7,6 +7,8 @@
 &lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
   &lt;string&gt;(?&amp;lt;c&amp;gt;\d+):(?&amp;lt;n&amp;gt;\d+)(?&amp;lt;t&amp;gt;\D+)&lt;/string&gt;
   &lt;string&gt;(?&amp;lt;t&amp;gt;.+)&lt;/string&gt;
+  &lt;string&gt;(?&amp;lt;t&amp;gt;\D+)(?&amp;lt;n&amp;gt;\d+)&lt;/string&gt;
+  &lt;string&gt;\[Pg\s*\d+\]&lt;/string&gt;
 &lt;/ArrayOfString&gt;</Value>
     </Setting>
     <Setting Name="CurrentRegEx" Type="System.String" Scope="User">

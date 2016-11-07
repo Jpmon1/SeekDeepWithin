@@ -8,13 +8,13 @@
          <ResourceDictionary.MergedDictionaries>
             <ResourceDictionary Source="pack://application:,,,/IinAll.Edit;component/Themes/LightColors.xaml" />
             <ResourceDictionary Source="pack://application:,,,/IinAll.Edit;component/Themes/CheckBox.xaml" />
-            <ResourceDictionary Source="pack://application:,,,/IinAll.Edit;component/Themes/TextBox.xaml" />
             <ResourceDictionary Source="pack://application:,,,/IinAll.Edit;component/Themes/ScrollViewer.xaml" />
             <ResourceDictionary Source="pack://application:,,,/IinAll.Edit;component/Themes/ComboBox.xaml" />
             <ResourceDictionary Source="pack://application:,,,/IinAll.Edit;component/Themes/RadioButton.xaml" />
             <ResourceDictionary Source="pack://application:,,,/IinAll.Edit;component/Themes/Button.xaml" />
             <ResourceDictionary Source="pack://application:,,,/IinAll.Edit;component/Themes/ToggleButton.xaml" />
             <ResourceDictionary Source="pack://application:,,,/IinAll.Edit;component/Themes/TextBlock.xaml" />
+            <ResourceDictionary Source="pack://application:,,,/IinAll.Edit;component/Themes/TextBox.xaml" />
             <ResourceDictionary Source="pack://application:,,,/IinAll.Edit;component/Themes/Light.xaml" />
          </ResourceDictionary.MergedDictionaries>
       </ResourceDictionary>

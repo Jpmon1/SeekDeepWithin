@@ -13,9 +13,21 @@ class BodyController extends BaseController
    }
    
    /**
+    * Gets the body for the given love.
+    * @param int $loveId The id of the love that has the body.
+    * @return array The current body.
+    */
+   function Get ($loveId)
+   {
+      $body = $this->GetBody (array($loveId));
+      return empty($body) ? $body : $body [$loveId];
+   }
+   
+   /**
     * Adds the given body to the database.
     * @param int $position The position of the body to add.
     * @param string $text The text of the body to add.
+    * @param int $loveId The id of the love that has the body.
     * @return int The ID of the added body.
     */
    function Create ($position, $text, $loveId)

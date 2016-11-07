@@ -5,8 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:logic="clr-namespace:IinAll.Edit.Logic"
         xmlns:views="clr-namespace:IinAll.Edit.Views"
+        xmlns:controls="clr-namespace:Peter.Common.Controls;assembly=Peter.Common"
         mc:Ignorable="d"
-        Title="MainWindow" Height="768" Width="1024"
+        Icon="icon.ico"
+        FontFamily="Segoe UI"
+        FontSize="14"
+        Title="I in All Editor" Height="768" Width="1024"
         d:DataContext="{d:DesignInstance logic:MainViewModel}">
    <Grid>
       <Grid.RowDefinitions>
@@ -16,22 +20,14 @@
       
       <Grid Grid.Row="0">
          <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"
-                              MinWidth="200"/>
-            <ColumnDefinition Width="3" />
+            <ColumnDefinition Width="200" />
             <ColumnDefinition Width="*" />
          </Grid.ColumnDefinitions>
-         
-         <Grid.Resources>
-            <DataTemplate DataType="{x:Type logic:LoveViewModel}">
-               <views:LoveView />
-            </DataTemplate>
-         </Grid.Resources>
 
          <views:LightView Grid.Column="0"
                           DataContext="{Binding Path=Light}" />
 
-         <Grid Grid.Column="2">
+         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
                <RowDefinition Height="Auto" />
                <RowDefinition Height="*" />
@@ -39,9 +35,51 @@
             <StackPanel Orientation="Horizontal">
                <Button Width="125"
                        Content="New Love"
+                       Style="{DynamicResource GreenButtonStyle}"
                        Command="{Binding Path=NewLoveCommand}" />
             </StackPanel>
-            <TabControl Grid.Row="1"
+            <ScrollViewer Grid.Row="1"
+                          x:Name="LoveScroller">
+               <ItemsControl ItemsSource="{Binding Path=Love}">
+                  <ItemsControl.ItemsPanel>
+                     <ItemsPanelTemplate>
+                        <StackPanel Orientation="Vertical"
+                                    HorizontalAlignment="Stretch"
+                                    CanHorizontallyScroll="False"
+                                    CanVerticallyScroll="True" />
+                     </ItemsPanelTemplate>
+                  </ItemsControl.ItemsPanel>
+                  <ItemsControl.ItemTemplate>
+                     <DataTemplate>
+                        <controls:Pane Margin="5,5,5,0"
+                                       CanCollapse="True"
+                                       ToolTip="{Binding Path=ToolTip}"
+                                       IsExpanded="{Binding Path=IsExpanded}">
+                           <controls:Pane.Header>
+                              <Grid>
+                                 <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                 </Grid.ColumnDefinitions>
+                                 <Button Grid.Column="0"
+                                         Padding="0"
+                                         Content="x"
+                                         Margin="0,0,10,0"
+                                         Style="{DynamicResource RedButtonStyle}"
+                                         Command="{Binding Path=CloseCommand}" />
+                                 <TextBlock Text="{Binding Path=Title}"
+                                            FontSize="18"
+                                            Grid.Column="1"
+                                            FontWeight="SemiBold" />
+                              </Grid>
+                           </controls:Pane.Header>
+                           <views:LoveView />
+                        </controls:Pane>
+                     </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+               </ItemsControl>
+            </ScrollViewer>
+            <!--<TabControl Grid.Row="1"
                         ItemsSource="{Binding Path=Love}"
                         SelectedValue="{Binding Path= SelectedLove}">
                <TabControl.ItemContainerStyle>
@@ -54,13 +92,8 @@
                              Value="{Binding Path=IsSelected, Mode=TwoWay}" />
                   </Style>
                </TabControl.ItemContainerStyle>
-            </TabControl>
+            </TabControl>-->
          </Grid>
-
-         <GridSplitter Grid.Column="1"
-                       VerticalAlignment="Stretch"
-                       HorizontalAlignment="Stretch"
-                       Width="3"/>
       </Grid>
       
       <Grid Grid.Row="1">

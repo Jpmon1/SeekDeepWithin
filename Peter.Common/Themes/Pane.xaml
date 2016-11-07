@@ -1,0 +1,114 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="clr-namespace:Peter.Common.Controls"
+                    xmlns:icons="clr-namespace:Peter.Common.Icons">
+
+   <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+
+   <Style TargetType="{x:Type controls:Pane}">
+      <Setter Property="FontSize"
+              Value="18" />
+      <Setter Property="FontFamily"
+              Value="Segoe UI" />
+      <Setter Property="Foreground"
+              Value="{DynamicResource ForegroundBrush}" />
+      <Setter Property="Template">
+         <Setter.Value>
+            <ControlTemplate TargetType="{x:Type controls:Pane}">
+               <Grid>
+                  <Grid.RowDefinitions>
+                     <RowDefinition Height="Auto" />
+                     <RowDefinition Height="*" />
+                     <RowDefinition Height="Auto" />
+                  </Grid.RowDefinitions>
+                  <Border Padding="15,5,10,5"
+                          Background="{DynamicResource SecondaryBrush}"
+                          x:Name="PART_Header"
+                          BorderBrush="{DynamicResource MainBorderBrush}"
+                          BorderThickness="0">
+                     <Grid>
+                        <Grid.ColumnDefinitions>
+                           <ColumnDefinition Width="*" />
+                           <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0"
+                                    Orientation="Horizontal">
+                           <ContentPresenter Content="{TemplateBinding Header}"
+                                             ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                             ContentTemplateSelector="{TemplateBinding HeaderTemplateSelector}" />
+                           <controls:StatusIcon Status="{TemplateBinding Status}"
+                                                Margin="5,0,0,0"
+                                                x:Name="PART_StatusIcon" />
+                        </StackPanel>
+                        <icons:IconDisplay x:Name="PART_CollapseToggle"
+                                           Grid.Column="1"
+                                           FontSize="12"
+                                           Icon="ChevronDown"
+                                           HorizontalAlignment="Left"
+                                           Visibility="{TemplateBinding Converter={StaticResource BoolToVisibility}, Property=CanCollapse}" />
+                     </Grid>
+                  </Border>
+                  <ScrollViewer Grid.Row="1"
+                                VerticalScrollBarVisibility="Auto"
+                                HorizontalScrollBarVisibility="Auto">
+                     <ItemsPresenter x:Name="PART_ItemsPresenter" />
+                  </ScrollViewer>
+                  <Border Padding="15,10"
+                          Grid.Row="2"
+                          BorderBrush="{DynamicResource MainBorderBrush}"
+                          BorderThickness="0,1,0,0"
+                          x:Name="PART_Footer"
+                          Background="{DynamicResource FooterBackgroundBrush}">
+                     <ContentPresenter Content="{TemplateBinding Footer}" />
+                  </Border>
+                  <Border Background="{TemplateBinding Background}"
+                          BorderBrush="{DynamicResource MainBorderBrush}"
+                          BorderThickness="1"
+                          Grid.Row="0"
+                          Grid.RowSpan="3"
+                          x:Name="PART_MainBorder" />
+               </Grid>
+               <ControlTemplate.Triggers>
+                  <Trigger Property="Footer"
+                           Value="{x:Null}">
+                     <Setter TargetName="PART_Footer"
+                             Property="Visibility"
+                             Value="Collapsed" />
+                  </Trigger>
+                  <Trigger Property="IsExpanded"
+                           Value="False">
+                     <Setter TargetName="PART_CollapseToggle"
+                             Property="Icon"
+                             Value="ChevronRight" />
+                     <Setter TargetName="PART_Footer"
+                             Property="Visibility"
+                             Value="Collapsed" />
+                     <Setter TargetName="PART_ItemsPresenter"
+                             Property="Visibility"
+                             Value="Collapsed" />
+
+                     <Setter TargetName="PART_Header"
+                             Property="BorderThickness"
+                             Value="1" />
+                     <Setter TargetName="PART_MainBorder"
+                             Property="BorderThickness"
+                             Value="0" />
+                  </Trigger>
+                  <Trigger Property="IsEnabled"
+                           Value="False">
+                     <Setter TargetName="PART_Header"
+                             Property="Background"
+                             Value="{DynamicResource DisabledBackgroundBrush}" />
+                     <Setter Property="Foreground"
+                             Value="{DynamicResource DisabledForegroundBrush}" />
+                     <Setter TargetName="PART_StatusIcon"
+                             Property="Foreground"
+                             Value="{DynamicResource DisabledForegroundBrush}" />
+                  </Trigger>
+               </ControlTemplate.Triggers>
+            </ControlTemplate>
+         </Setter.Value>
+      </Setter>
+   </Style>
+
+</ResourceDictionary>

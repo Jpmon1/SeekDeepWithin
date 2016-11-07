@@ -9,7 +9,8 @@ class LoveList extends React.Component {
   constructor(props) {
     super(props);
     this.items = [];
-    this.columns = [];
+    this.lefts = [];
+    this.heights = [];
     this.transform = this.getSupportedTransform ();
     window.onresize = () => Throttle (this.componentDidUpdate(), 300);
   }
@@ -37,18 +38,23 @@ class LoveList extends React.Component {
     return false;
   }
 
+  /**
+   * Positions all of the items in the list.
+   */
   layoutItems (){
     var i = 0;
     var totalHeight = 0;
+    this.heights = [0,0,0];
     var container = this.refs["container"];
-    var totalWidth = container.offsetWidth + 4;
-    this.columns = [{top: 0, left: 0, right: totalWidth, bottom: 0, width: totalWidth, index: 0}];
+    var itemWidth = container.offsetWidth / 3;
+    this.lefts = [0, itemWidth, itemWidth * 2];
+    //this.columns = [{top: 0, left: 0, right: totalWidth, bottom: 0, width: totalWidth, index: 0}];
     for (const item in this.items) {
       var ref = "item" + this.items[item].props.item.key;
       var domEl = this.refs[ref].domEl;
       var width = domEl.offsetWidth;
       var height = domEl.offsetHeight;
-      var postion = this.getPosition (width, height, totalWidth);
+      var postion = this.getPosition (width, height);
       if (width <=0 || height <= 0)
         console.log("width or height is zero");
       domEl.style.position = 'absolute';
@@ -56,7 +62,7 @@ class LoveList extends React.Component {
         domEl.style.top = postion.top + 'px';
         domEl.style.left = postion.left + 'px';
       } else {
-        if (domEl.className.indexOf("loveContainer") == -1) {
+        if (domEl.className.indexOf ("loveContainer") == -1) {
           domEl.className += " loveContainer";
         }
         domEl.style.transform = "translate3d(" + postion.left +"px, " + postion.top + "px, 0)";
@@ -69,8 +75,29 @@ class LoveList extends React.Component {
       container.style.height = totalHeight + 'px';
     }
   }
+  
+  
+  /**
+   * Gets the position of an item needing layout.
+   * @param width The width of the item.
+   * @param height The height of the item.
+   */
+  getPosition (width, height) {
+    var top = 0, left = 0;
+    if (width > this.lefts[2]) {
+      var index = this.heights.indexOf (Math.max.apply (Math, this.heights));
+      top = this.heights [index];
+      this.heights[0] = this.heights[1] = this.heights[2] = top + height;
+    } else {
+      var index = this.heights.indexOf (Math.min.apply (Math, this.heights));
+      top = this.heights [index];
+      left = this.lefts[index];
+      this.heights[index] += height;
+    }
+    return {top: top, left: left};
+  }
 
-  getPosition (width, height, totalWidth) {
+  /*getPosition (width, height, totalWidth) {
     var orderedColumns = this.columns.slice(0);
     orderedColumns.sort (function (a, b) {
       if (a.bottom < b.bottom) { return -1; }
@@ -225,7 +252,7 @@ class LoveList extends React.Component {
       columnWidth += nextWidth;
     }
     return {fits: fits, span: span, dir: dir};
-  }
+  }*/
 
   /**
    * Renders the love list.

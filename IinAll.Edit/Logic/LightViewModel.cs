@@ -1,26 +1,22 @@
 ﻿using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Web;
+using System.Windows;
 using System.Windows.Input;
-using IinAll.Edit.Annotations;
+using System.Xml.Serialization;
 using IinAll.Edit.Data;
+using IinAll.Edit.Interfaces;
+using Peter.Common;
 
 namespace IinAll.Edit.Logic
 {
-   public class LightViewModel : ILightContainer
+   public class LightViewModel : ViewModelBase, ILightContainer
    {
       private string m_SearchText;
       private Light m_SelectedSearchResult;
       private RelayCommand m_SearchCommand;
       private RelayCommand m_CreateCommand;
-
-      /// <summary>
-      /// Propert changed event.
-      /// </summary>
-      public event PropertyChangedEventHandler PropertyChanged;
 
       /// <summary>
       /// Initializes a new light view model.
@@ -62,6 +58,7 @@ namespace IinAll.Edit.Logic
       /// <summary>
       /// Gets or Sets the selected item in the search results.
       /// </summary>
+      [XmlIgnore]
       public Light SelectedSearchResult
       {
          get { return this.m_SelectedSearchResult; }
@@ -85,6 +82,7 @@ namespace IinAll.Edit.Logic
       /// <summary>
       /// Gets the search command.
       /// </summary>
+      [XmlIgnore]
       public ICommand SearchCommand
       {
          get { return this.m_SearchCommand ?? (this.m_SearchCommand = new RelayCommand (this.OnSearch, this.CanSearch)); }
@@ -93,6 +91,7 @@ namespace IinAll.Edit.Logic
       /// <summary>
       /// Gets the create command.
       /// </summary>
+      [XmlIgnore]
       public ICommand CreateCommand
       {
          get { return this.m_CreateCommand ?? (this.m_CreateCommand = new RelayCommand (this.OnCreate, this.CanCreate)); }
@@ -114,12 +113,13 @@ namespace IinAll.Edit.Logic
       /// <param name="obj"></param>
       private void OnCreate (object obj)
       {
-         var data = new NameValueCollection {
-            { "l", this.SearchText },
-            { "user", WebQueue.Instance.UserId.ToString () },
-            { "token", WebQueue.Instance.Token}
-         };
-         WebQueue.Instance.Post (Constants.URL_LIGHT, data, this.OnLightCreated);
+         var result = MessageBox.Show (Application.Current.MainWindow,
+            "Are you sure you want to illuminate this light?\n" + this.SearchText,
+            "I in All", MessageBoxButton.YesNo, MessageBoxImage.Question);
+         if (result == MessageBoxResult.Yes) {
+            var data = new NameValueCollection { {"l", this.SearchText} };
+            WebQueue.Instance.Post (Constants.URL_LIGHT, data, this.OnLightCreated);
+         }
       }
 
       /// <summary>
@@ -179,16 +179,6 @@ namespace IinAll.Edit.Logic
       public void RemoveLight (Light light, LightType type)
       {
          this.Light.Remove (light);
-      }
-
-      /// <summary>
-      /// Property changed method.
-      /// </summary>
-      /// <param name="propertyName">Name of property that changed.</param>
-      [NotifyPropertyChangedInvocator]
-      protected virtual void OnPropertyChanged ([CallerMemberName] string propertyName = null)
-      {
-         PropertyChanged?.Invoke (this, new PropertyChangedEventArgs (propertyName));
       }
    }
 }

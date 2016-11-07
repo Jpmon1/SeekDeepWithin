@@ -14,7 +14,7 @@
 using System;
 using System.Windows.Input;
 
-namespace IinAll.Edit.Logic
+namespace Peter.Common
 {
    /// <summary>
    /// A class for a generic command that can check for execution and execute.

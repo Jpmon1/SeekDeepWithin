@@ -23,6 +23,11 @@
       /// <summary>
       /// Text on the right of the passage.
       /// </summary>
-      Right
+      Right,
+
+      /// <summary>
+      /// Text on the bottom of the passage.
+      /// </summary>
+      Bottom
    }
 }

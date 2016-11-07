@@ -8,11 +8,8 @@ export default class Footer extends React.Component {
 
    render () {
       var year = new Date().getFullYear();
-      return (
-         <div className="end-stuff">
-            <p>&copy; { year } - I in all</p>
-         </div>
-      );
+      const end = {margin:'0 1rem'};
+      return (<div style={end}><p>&copy; { year } - I in all</p></div>);
    }
    
 }

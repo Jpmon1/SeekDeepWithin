@@ -1,0 +1,295 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{D0B0260D-FE4D-40CB-8FAE-D6B48F5B01CD}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Peter.Common</RootNamespace>
+    <AssemblyName>Peter.Common</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <Utf8Output>true</Utf8Output>
+    <ExpressionBlendVersion>4.0.20525.0</ExpressionBlendVersion>
+    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+    <NoStdLib>False</NoStdLib>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DebugSymbols>true</DebugSymbols>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <CodeAnalysisRuleSet>..\Peter\PeterCodeAnalysis.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+    <DocumentationFile>..\..\bin\Debug\Peter.Common.XML</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>None</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DebugSymbols>false</DebugSymbols>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <BaseAddress>4194304</BaseAddress>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ICSharpCode.AvalonEdit, Version=5.0.3.0, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
+      <HintPath>..\packages\AvalonEdit.5.0.3\lib\Net40\ICSharpCode.AvalonEdit.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Data.Entity.Design" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AutoComplete\AutoComplete.cs" />
+    <Compile Include="AutoComplete\AutoCompletePopup.xaml.cs">
+      <DependentUpon>AutoCompletePopup.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AutoComplete\IAutoCompleteDataProvider.cs" />
+    <Compile Include="AutoComplete\PopupController.cs" />
+    <Compile Include="BindingConverters\IconDisplayConverter.cs" />
+    <Compile Include="BindingConverters\IntToVisibilityConverter.cs" />
+    <Compile Include="BindingConverters\LeftMarginMultiplierConverter.cs" />
+    <Compile Include="BindingConverters\NullNotEnabledConverter.cs" />
+    <Compile Include="BindingConverters\NullNotVisibleConverter.cs" />
+    <Compile Include="BindingConverters\PluralizeConverter.cs" />
+    <Compile Include="BindingConverters\TypeVisibilityConverter.cs" />
+    <Compile Include="BindingConverters\ViewRegistryConverter.cs" />
+    <Compile Include="Controls\ComboBoxEx.cs" />
+    <Compile Include="Controls\DockMan\DockMan.cs" />
+    <Compile Include="Controls\Ex.cs" />
+    <Compile Include="Controls\Explorer.cs" />
+    <Compile Include="Controls\ExplorerItem.cs" />
+    <Compile Include="Controls\InsightBar.cs" />
+    <Compile Include="Controls\InsightHighlight.cs" />
+    <Compile Include="Controls\Pane.cs" />
+    <Compile Include="Controls\PaneItem.cs" />
+    <Compile Include="Controls\RichTextEditor.cs" />
+    <Compile Include="Controls\StateButton.cs" />
+    <Compile Include="Controls\StatusIcon.cs" />
+    <Compile Include="Controls\DoubleValidator.cs" />
+    <Compile Include="Controls\Toast.cs" />
+    <Compile Include="Dialog\MainWindowDialog.xaml.cs">
+      <DependentUpon>MainWindowDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\NumericUpDown.cs" />
+    <Compile Include="Controls\CommandTextBox.cs" />
+    <Compile Include="Controls\TreeViewEx.cs" />
+    <Compile Include="Controls\WatermarkAdorner.cs" />
+    <Compile Include="Controls\WatermarkService.cs" />
+    <Compile Include="Dialog\ModelMessageDialog.cs" />
+    <Compile Include="Dialog\ModelPasswordRequest.cs" />
+    <Compile Include="Dialog\ModelTextInputRequest.cs" />
+    <Compile Include="Dialog\ViewMessageDialog.xaml.cs">
+      <DependentUpon>ViewMessageDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialog\ViewPasswordRequest.xaml.cs">
+      <DependentUpon>ViewPasswordRequest.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialog\ViewTextInputRequest.xaml.cs">
+      <DependentUpon>ViewTextInputRequest.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Events\FileEventArgs.cs" />
+    <Compile Include="Icons\Shell32.cs" />
+    <Compile Include="Icons\ShellIcons.cs" />
+    <Compile Include="Icons\User32.cs" />
+    <Compile Include="MainMenu\IMainMenuQuickAccessItem.cs" />
+    <Compile Include="MainMenu\MainMenuMenuItemStyleSelector.cs" />
+    <Compile Include="MainMenu\MainMenuTextBox.cs" />
+    <Compile Include="Dialog\DialogAction.cs" />
+    <Compile Include="Dialog\DialogBase.cs" />
+    <Compile Include="Dialog\DialogCloser.cs" />
+    <Compile Include="Dialog\DialogViewModelBase.cs" />
+    <Compile Include="State.cs" />
+    <Compile Include="Status.cs" />
+    <Compile Include="TextBoxProperties.cs" />
+    <Compile Include="Tree\EditableTreeViewItem.cs" />
+    <Compile Include="Tree\FileTreeViewItem.cs" />
+    <Compile Include="EditAction.cs" />
+    <Compile Include="TextEventArgs.cs" />
+    <Compile Include="Tree\TreeViewItemExtensions.cs" />
+    <Compile Include="Utilities\ClipboardFiles.cs" />
+    <Compile Include="Utilities\CommandPrompt.cs" />
+    <Compile Include="Utilities\Crypto.cs" />
+    <Compile Include="Utilities\TreeViewItemBehavior.cs" />
+    <Compile Include="Utilities\ViewRegistry.cs" />
+    <Compile Include="DragAndDrop\Adorners\DataTemplateAdorner.cs" />
+    <Compile Include="DragAndDrop\Adorners\DragNDropAdorner.cs" />
+    <Compile Include="DragAndDrop\Adorners\InsertAdorner.cs" />
+    <Compile Include="DragAndDrop\DragController.cs" />
+    <Compile Include="DragAndDrop\DragNDrop.cs" />
+    <Compile Include="DragAndDrop\DropController.cs" />
+    <Compile Include="Icons\IconDisplay.cs" />
+    <Compile Include="Icons\IconSize.cs" />
+    <Compile Include="Icons\IconSizeConverter.cs" />
+    <Compile Include="MainMenu\MainMenuHeightConverter.cs" />
+    <Compile Include="MainMenu\MainMenuIcon.cs" />
+    <Compile Include="MainMenu\IMainMenuHeader.cs" />
+    <Compile Include="MainMenu\IMainMenuItem.cs" />
+    <Compile Include="MainMenu\MainMenu.cs" />
+    <Compile Include="MainMenu\MainMenuHeader.cs" />
+    <Compile Include="MainMenu\MainMenuIconConverter.cs" />
+    <Compile Include="MainMenu\MainMenuItem.cs" />
+    <Compile Include="MainMenu\MainMenuItemsControl.cs" />
+    <Compile Include="MainMenu\MainMenuSeperator.cs" />
+    <Compile Include="MainWindowViewModelBase.cs" />
+    <Compile Include="SearchDirection.cs" />
+    <Compile Include="SearchOptions.cs" />
+    <Compile Include="StatusTimeDelay.cs" />
+    <Compile Include="StatusType.cs" />
+    <Compile Include="CommonUtilities.cs" />
+    <Compile Include="Utilities\CopyObjects.cs" />
+    <Compile Include="Utilities\DependencyObjectHelper.cs" />
+    <Compile Include="RelayCommand.cs" />
+    <Compile Include="Utilities\EnumExtensions.cs" />
+    <Compile Include="Utilities\FocusExtension.cs" />
+    <Compile Include="Utilities\ItemControlHelpers.cs" />
+    <Compile Include="Utilities\Serialization.cs" />
+    <Compile Include="Utilities\SingleInstance.cs" />
+    <Compile Include="Utilities\StringHelpers.cs" />
+    <Compile Include="Utilities\VisualHelpers.cs" />
+    <Page Include="AutoComplete\AutoCompletePopup.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialog\MainWindowDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialog\ViewMessageDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialog\ViewPasswordRequest.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialog\ViewTextInputRequest.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\Common.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Generic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\MainMenu.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\MainMenuItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\NumericUpDown.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\Pane.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\PaneItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\StateButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\StatusIcon.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\Toast.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\Views.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Tree\ModelTreeViewItem.cs" />
+    <Compile Include="ViewModelBase.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <Resource Include="Icons\webhostinghub-glyphs.ttf" />
+    <None Include="app.config" />
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\SIL OFL Font License WebHostingHub Glyphs.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\blank_file.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

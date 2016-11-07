@@ -1,0 +1,113 @@
+﻿<!--
+ Peter
+ Created by: Peter Development Team
+    http://peter.codeplex.com/
+ 
+ GNU General Public License version 2 (GPLv2)
+    http://peter.codeplex.com/license
+
+ This code is provided on an AS IS basis, with no WARRANTIES,
+ CONDITIONS or GUARANTEES of any kind.
+    
+-->
+<UserControl x:Class="Peter.Common.Dialog.MainWindowDialog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:bc="clr-namespace:Peter.Common.BindingConverters"
+             xmlns:common="clr-namespace:Peter.Common"
+             mc:Ignorable="d"
+             d:DesignHeight="300"
+             d:DesignWidth="300"
+             Visibility="{Binding Path=DialogContent.IsVisible, Converter={StaticResource BoolToVisi}, FallbackValue=Collapsed}"
+             d:DataContext="{d:DesignInstance common:MainWindowViewModelBase}">
+
+   <UserControl.Resources>
+      <BooleanToVisibilityConverter x:Key="BoolToVisi" />
+      <bc:ViewRegistryConverter x:Key="_ViewConverter" />
+
+      <SolidColorBrush x:Key="_DialogBacking"
+                       Color="DarkGray"
+                       Opacity="0.4" />
+   </UserControl.Resources>
+   
+   <Grid Background="{StaticResource _DialogBacking}">
+
+      <Border Width="{Binding Path=DialogContent.Width}"
+              Height="{Binding Path=DialogContent.Height}"
+              Background="White"
+              BorderBrush="#B0B0B0"
+              BorderThickness="1"
+              CornerRadius="5">
+         <Grid Margin="10">
+            <Grid.RowDefinitions>
+               <RowDefinition Height="Auto" />
+               <RowDefinition Height="*" />
+               <RowDefinition Height="Auto" />
+               <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Border Grid.Row="0"
+                    BorderBrush="#858585"
+                    BorderThickness="0,0,0,1">
+               <TextBlock Text="{Binding Path=DialogContent.Title}"
+                          HorizontalAlignment="Center"
+                          FontWeight="Bold"
+                          FontSize="16" />
+            </Border>
+            
+            <ContentControl Content="{Binding Path=DialogContent, Converter={StaticResource _ViewConverter}}"
+                            HorizontalContentAlignment="Center"
+                            Grid.Row="1" />
+
+            <StackPanel Orientation="Horizontal"
+                        Margin="0,10,0,0"
+                        HorizontalAlignment="Right"
+                        Grid.Row="2">
+               <Button Content="{Binding Path=DialogContent.OkButtonText}"
+                       Margin="0,0,5,0"
+                       Width="75"
+                       Command="{Binding Path=DialogContent.DialogOkCommand}"
+                       Visibility="{Binding Path=DialogContent.ShowOkButton, Converter={StaticResource BoolToVisi}}" />
+               <Button Content="{Binding Path=DialogContent.YesButtonText}"
+                       Margin="0,0,5,0"
+                       Width="75"
+                       Command="{Binding Path=DialogContent.DialogYesCommand}"
+                       Visibility="{Binding Path=DialogContent.ShowYesButton, Converter={StaticResource BoolToVisi}}" />
+               <Button Content="{Binding Path=DialogContent.NoButtonText}"
+                       Margin="0,0,5,0"
+                       Width="75"
+                       Command="{Binding Path=DialogContent.DialogNoCommand}"
+                       Visibility="{Binding Path=DialogContent.ShowNoButton, Converter={StaticResource BoolToVisi}}" />
+               <Button Content="{Binding Path=DialogContent.CancelButtonText}"
+                       Width="75"
+                       Command="{Binding Path=DialogContent.DialogCancelCommand}"
+                       Visibility="{Binding Path=DialogContent.ShowCancelButton, Converter={StaticResource BoolToVisi}}" />
+            </StackPanel>
+            <TextBlock Text="{Binding Path=DialogContent.ErrorText}"
+                       TextWrapping="Wrap"
+                       Foreground="White"
+                       Grid.Row="3">
+               <TextBlock.Resources>
+                  <Style TargetType="TextBlock">
+                     <Style.Triggers>
+                        <Trigger Property="Text"
+                                 Value="">
+                           <Setter Property="Visibility"
+                                   Value="Collapsed"/>
+                        </Trigger>
+                        <Trigger Property="Text"
+                                 Value="{x:Null}">
+                           <Setter Property="Visibility"
+                                   Value="Collapsed" />
+                        </Trigger>
+                     </Style.Triggers>
+                  </Style>
+               </TextBlock.Resources>
+            </TextBlock>
+         </Grid>
+      </Border>
+   </Grid>
+   
+</UserControl>

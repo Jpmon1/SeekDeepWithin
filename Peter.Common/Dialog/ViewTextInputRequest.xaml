@@ -1,0 +1,25 @@
+﻿<UserControl x:Class="Peter.Common.Dialog.ViewTextInputRequest"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:dialog="clr-namespace:Peter.Common.Dialog"
+             xmlns:controls="clr-namespace:Peter.Common.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300"
+             d:DataContext="{d:DesignInstance dialog:ModelTextInputRequest}">
+   <Grid VerticalAlignment="Center">
+      <Grid.RowDefinitions>
+         <RowDefinition Height="Auto" />
+         <RowDefinition Height="Auto" />
+      </Grid.RowDefinitions>
+      <TextBlock Text="{Binding Path=Prompt}"
+                 HorizontalAlignment="Center"
+                 FontSize="16"
+                 Grid.Row="0" />
+      <TextBox Grid.Row="1"
+               Margin="0,5"
+               controls:WatermarkService.Watermark="{Binding Path=Placeholder}"
+               Text="{Binding Path=Input, UpdateSourceTrigger=PropertyChanged}" />
+   </Grid>
+</UserControl>

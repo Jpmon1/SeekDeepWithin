@@ -1,20 +1,22 @@
 ﻿using System.Collections.Specialized;
 using System.Windows.Input;
+using IinAll.Edit.Interfaces;
 using IinAll.Edit.Logic;
+using Peter.Common;
 
 namespace IinAll.Edit.Data
 {
    /// <summary>
    /// A body item (header, footer, left, right)
    /// </summary>
-   public class Body : BaseViewModel
+   public class Body : ViewModelBase
    {
       private int m_Id;
       private int m_Index;
       private string m_Text;
       private BodyType m_BodyType;
       private readonly int m_LoveId;
-      private readonly Truth m_Truth;
+      private readonly IBodyContainer m_Parent;
       private RelayCommand m_SaveCommand;
       private RelayCommand m_DeleteCommand;
       private bool m_NeedsIndex;
@@ -24,9 +26,9 @@ namespace IinAll.Edit.Data
       /// </summary>
       /// <param name="parent">The parent truth.</param>
       /// <param name="loveId">The id of the love the body is for.</param>
-      public Body (Truth parent, int loveId = -1)
+      public Body (IBodyContainer parent, int loveId = -1)
       {
-         this.m_Truth = parent;
+         this.m_Parent = parent;
          this.m_LoveId = loveId;
          this.BodyType = BodyType.Left;
       }
@@ -54,7 +56,7 @@ namespace IinAll.Edit.Data
          {
             if (this.m_BodyType != value) {
                this.m_BodyType = value;
-               this.OnPropertyChanged ("BodyTypeInt");
+               this.OnPropertyChanged (nameof (BodyTypeInt));
                this.NeedsIndex = this.m_BodyType == BodyType.Footer;
             }
          }
@@ -154,9 +156,7 @@ namespace IinAll.Edit.Data
          var parameters = new NameValueCollection {
                {"t", this.Text},
                {"l", this.m_LoveId.ToString ()},
-               {"p", this.GetPosition().ToString ()},
-               {"user", WebQueue.Instance.UserId.ToString ()},
-               {"token", WebQueue.Instance.Token}
+               {"p", this.GetPosition().ToString ()}
             };
          WebQueue.Instance.Post (Constants.URL_BODY, parameters, this.OnSaveSuccess);
       }
@@ -189,13 +189,9 @@ namespace IinAll.Edit.Data
       private void OnDelete (object obj)
       {
          if (this.Id <= 0) {
-            this.m_Truth.RemoveBody (this);
+            this.m_Parent.RemoveBody (this);
          } else {
-            var parameters = new NameValueCollection {
-               {"id", this.Id.ToString ()},
-               {"user", WebQueue.Instance.UserId.ToString ()},
-               {"token", WebQueue.Instance.Token}
-            };
+            var parameters = new NameValueCollection { {"id", this.Id.ToString ()} };
             WebQueue.Instance.Delete (Constants.URL_BODY, parameters, this.OnDeleteSuccess);
          }
       }
@@ -207,7 +203,7 @@ namespace IinAll.Edit.Data
       /// <param name="results">The result.</param>
       private void OnDeleteSuccess (NameValueCollection parameters, dynamic results)
       {
-         this.m_Truth.RemoveBody (this);
+         this.m_Parent.RemoveBody (this);
       }
 
       /// <summary>
@@ -222,6 +218,8 @@ namespace IinAll.Edit.Data
             this.BodyType = BodyType.Header;
          else if (position == -3)
             this.BodyType = BodyType.Right;
+         else if (position == -4)
+            this.BodyType = BodyType.Bottom;
          else {
             this.BodyType = BodyType.Footer;
             this.Index = position;
@@ -240,6 +238,8 @@ namespace IinAll.Edit.Data
             return -2;
          if (this.BodyType == BodyType.Right)
             return -3;
+         if (this.BodyType == BodyType.Bottom)
+            return -4;
          return this.Index;
       }
    }

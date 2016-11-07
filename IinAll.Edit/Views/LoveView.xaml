@@ -15,7 +15,11 @@
    <Grid>
       <Grid.RowDefinitions>
          <RowDefinition Height="Auto" />
-         <RowDefinition Height="Auto"/>
+         <RowDefinition Height="Auto" />
+         <RowDefinition Height="Auto" />
+         <RowDefinition Height="Auto" />
+         <RowDefinition Height="Auto" />
+         <RowDefinition Height="Auto" />
          <RowDefinition Height="*" />
       </Grid.RowDefinitions>
 
@@ -25,20 +29,25 @@
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
          </Grid.ColumnDefinitions>
          <TextBlock Text="Love ID: "
                     Grid.Column="0" />
          <TextBlock Text="{Binding Path=LoveId}"
-                    Grid.Column="1" />
-         <Button Grid.Column="3"
-                 Padding="0"
-                 Content="x"
-                 Command="{Binding Path=CloseCommand}"/>
+                    Grid.Column="1"
+                    Margin="4,0"/>
+         <TextBlock Text="Alias: "
+                    Grid.Column="3" />
+         <TextBlock Text="{Binding Path=AliasId}"
+                    Grid.Column="4"
+                    Margin="4,0" />
       </Grid>
       <ScrollViewer Grid.Row="1"
                     VerticalScrollBarVisibility="Hidden"
                     HorizontalScrollBarVisibility="Auto">
-         <ItemsControl Height="150"
+         <ItemsControl Height="30"
                        Background="DarkGray"
                        ItemsSource="{Binding Path=Light}"
                        dnd:DragNDrop.IsDropTarget="True"
@@ -51,8 +60,106 @@
             </ItemsControl.ItemsPanel>
          </ItemsControl>
       </ScrollViewer>
+      <ScrollViewer Grid.Row="2"
+                    x:Name="TextScroller"
+                    MaxHeight="96"
+                    VerticalScrollBarVisibility="Auto"
+                    HorizontalScrollBarVisibility="Auto">
+      <TextBox MaxHeight="96"
+               x:Name="Text"
+               TextWrapping="Wrap"
+               AcceptsReturn="True"
+               PreviewKeyUp="OnKeyUp"
+               PreviewMouseUp="OnMouseUp"
+               VerticalScrollBarVisibility="Auto"
+               HorizontalScrollBarVisibility="Auto"
+                  Text="{Binding Path=Text.Text}"
+               Width="{Binding ElementName=TextScroller, Path=ViewportWidth}"/>
+      </ScrollViewer>
+      <Grid Grid.Row="3">
+         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+         </Grid.ColumnDefinitions>
+         <TextBlock Text="Start Index:"
+                    Grid.Column="0"/>
+         <TextBox Grid.Column="1"
+                  Margin="5,0"
+                  x:Name="StartIndex"
+                  Width="64"
+                  IsReadOnly="True"
+                  Text="{Binding Path=StartIndex, Mode=TwoWay}" />
+         <TextBlock Text="End Index:"
+                    Grid.Column="2" />
+         <TextBox Grid.Column="3"
+                  Margin="5,0"
+                  Width="64"
+                  IsReadOnly="True"
+                  x:Name="EndIndex"
+                  Text="{Binding Path=EndIndex, Mode=TwoWay}" />
+         <Button Grid.Column="5"
+                 Width="100"
+                 Content="Save"
+                 Command="{Binding Path=Text.SaveCommand}" />
+      </Grid>
+      <Grid Grid.Row="4">
+         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+         </Grid.ColumnDefinitions>
+         <ItemsControl Grid.Column="0"
+                       Margin="0,0,5,0"
+                       ItemsSource="{Binding Path=Bodies}">
+            <ItemsControl.ItemsPanel>
+               <ItemsPanelTemplate>
+                  <StackPanel Orientation="Vertical" />
+               </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+               <DataTemplate>
+                  <views:BodyView />
+               </DataTemplate>
+            </ItemsControl.ItemTemplate>
+         </ItemsControl>
+         <Button Content="Add Body"
+                 Height="30"
+                 Grid.Column="1"
+                 VerticalAlignment="Top"
+                 Style="{DynamicResource GreenButtonStyle}"
+                 Command="{Binding Path=AddBodyCommand}"/>
+      </Grid>
+      <Grid Grid.Row="5">
+         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+         </Grid.ColumnDefinitions>
+         <ItemsControl Grid.Column="0"
+                       Margin="0,0,5,0"
+                       ItemsSource="{Binding Path=Styles}">
+            <ItemsControl.ItemsPanel>
+               <ItemsPanelTemplate>
+                  <StackPanel Orientation="Vertical" />
+               </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+               <DataTemplate>
+                  <views:StyleView />
+               </DataTemplate>
+            </ItemsControl.ItemTemplate>
+         </ItemsControl>
+         <Button Content="Add Style"
+                 Height="30"
+                 Grid.Column="1"
+                 VerticalAlignment="Top"
+                 Style="{DynamicResource GreenButtonStyle}"
+                 Command="{Binding Path=AddStyleCommand}" />
+      </Grid>
 
-      <TabControl Grid.Row="2">
+      <TabControl Grid.Row="6">
          <TabItem Header="Current Truth"
                   IsSelected="True">
             <Grid>
@@ -61,26 +168,28 @@
                   <RowDefinition Height="Auto" />
                   <RowDefinition Height="Auto" />
                </Grid.RowDefinitions>
-               <ScrollViewer HorizontalScrollBarVisibility="Hidden"
-                             VerticalScrollBarVisibility="Auto">
-                  <ItemsControl ItemsSource="{Binding Path=Truth}"
-                                dnd:DragNDrop.IsDropTarget="True"
-                                dnd:DragNDrop.IsDragSource="True">
+               <ScrollViewer MaxHeight="300"
+                             x:Name="Scroller">
+                  <ItemsControl ItemsSource="{Binding Path=Truth}">
                      <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                           <StackPanel Orientation="Vertical" />
+                           <StackPanel Orientation="Vertical"
+                                       HorizontalAlignment="Stretch"
+                                       CanHorizontallyScroll="False"
+                                       CanVerticallyScroll="True" />
                         </ItemsPanelTemplate>
                      </ItemsControl.ItemsPanel>
 
                      <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                           <views:TruthView />
+                           <views:TruthView Width="{Binding ElementName=Scroller, Path=ViewportWidth}" />
                         </DataTemplate>
                      </ItemsControl.ItemTemplate>
                   </ItemsControl>
                </ScrollViewer>
 
-               <Grid Grid.Row="1">
+               <Grid Grid.Row="1"
+                     Margin="0,5">
                   <Grid.ColumnDefinitions>
                      <ColumnDefinition Width="Auto" />
                      <ColumnDefinition Width="*" />
@@ -89,7 +198,6 @@
                   <TextBlock VerticalAlignment="Center"
                              Text="{Binding Path=EditLoveId}"/>
                   <ScrollViewer Grid.Column="1"
-                                Margin="5,0"
                                 VerticalScrollBarVisibility="Hidden"
                                 HorizontalScrollBarVisibility="Auto">
                      <ItemsControl Height="30"
@@ -105,21 +213,21 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                            <DataTemplate>
-                           <Grid Margin="2,0">
-                              <Grid.ColumnDefinitions>
-                                 <ColumnDefinition Width="Auto" />
-                                 <ColumnDefinition Width="Auto" />
-                              </Grid.ColumnDefinitions>
-                              <TextBlock Text="{Binding Path=Text}"
-                                         VerticalAlignment="Center"
-                                         FontSize="12" />
-                              <Button Content="X"
-                                      Padding="0"
-                                      FontSize="8"
-                                      Margin="2,0,0,0"
-                                      Grid.Column="1"
-                                      Command="{Binding Path=RemoveCommand}" />
-                           </Grid>
+                              <Grid Margin="2,0">
+                                 <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                 </Grid.ColumnDefinitions>
+                                 <TextBlock Text="{Binding Path=Text}"
+                                            VerticalAlignment="Center"
+                                            FontSize="12" />
+                                 <Button Content="X"
+                                         Padding="0"
+                                         FontSize="8"
+                                         Margin="2,0,0,0"
+                                         Grid.Column="1"
+                                         Command="{Binding Path=RemoveCommand}" />
+                              </Grid>
                            </DataTemplate>
                         </ItemsControl.ItemTemplate>
                      </ItemsControl>
@@ -128,10 +236,23 @@
                           Content="Add"
                           Command="{Binding Path=AddEditLightCommand}"/>
                </Grid>
-               <Button Grid.Row="2"
-                       Content="Send To Server"
-                       Width="175"
-                       Command="{Binding Path=SaveCommand}" />
+               <Grid Grid.Row="2">
+                  <Grid.ColumnDefinitions>
+                     <ColumnDefinition Width="135" />
+                     <ColumnDefinition Width="*" />
+                     <ColumnDefinition Width="100" />
+                     <ColumnDefinition Width="100" />
+                  </Grid.ColumnDefinitions>
+                  <Button Grid.Column="0"
+                          Content="Send To Server"
+                          Command="{Binding Path=SaveCommand}" />
+                  <Button Grid.Column="2"
+                          Content="Move Up"
+                          Command="{Binding Path=MoveUpCommand}" />
+                  <Button Grid.Column="3"
+                          Content="Move Down"
+                          Command="{Binding Path=MoveDownCommand}" />
+               </Grid>
             </Grid>
          </TabItem>
          <TabItem Header="Add Truth">
@@ -151,9 +272,10 @@
                   <TextBox Grid.Row="1"
                            Grid.Column="0"
                            AcceptsReturn="True"
-                           TextWrapping="WrapWithOverflow"
+                           MaxHeight="360"
+                           MaxWidth="400"
+                           TextWrapping="Wrap"
                            VerticalScrollBarVisibility="Auto"
-                           HorizontalScrollBarVisibility="Auto"
                            dnd:DragNDrop.IsDropTarget="True"
                            dnd:DragNDrop.DropController="{StaticResource LightTextDropController}"
                            Text="{Binding Path=TextToFormat, UpdateSourceTrigger=PropertyChanged}" />
@@ -169,6 +291,7 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                      </Grid.RowDefinitions>
                      <ComboBox Grid.Row="0"
                                SelectedValue="{Binding Path=CurrentRegex}"
@@ -179,7 +302,7 @@
                               Text="{Binding Path=CurrentRegex}" />
                      <Grid Grid.Row="3">
                         <Grid.ColumnDefinitions>
-                           <ColumnDefinition Width="*" />
+                           <ColumnDefinition Width="Auto" />
                            <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
@@ -193,6 +316,11 @@
                                  Grid.Row="1"
                                  HorizontalContentAlignment="Right"
                                  Text="{Binding Path=StartOrder}" />-->
+                        <CheckBox Grid.Row="1"
+                                  Grid.Column="0"
+                                  Margin="0,0,5,0"
+                                  IsChecked="{Binding Path=AppendFormattedText}"
+                                  Content="Append to Current"/>
                         <TextBlock Grid.Row="0"
                                    Grid.Column="1"
                                    Text="Start Number:" />
@@ -205,6 +333,10 @@
                              Margin="0,5,0,0"
                              Content="Format"
                              Command="{Binding Path=FormatCommand}" />
+                     <Button Grid.Row="5"
+                             Margin="0,5,0,0"
+                             Content="Remove"
+                             Command="{Binding Path=RemoveCommand}" />
                   </Grid>
                </Grid>
             </Grid>

@@ -83,6 +83,9 @@ abstract class Api
         }
     }
 
+    /**
+     * Gets the parameters passed in for a post.
+     */
     function retrievePostData() {
         // First check to see if $_POST is not empty.
         if (count($_POST)) {
@@ -107,6 +110,9 @@ abstract class Api
         return FALSE;
     }
     
+    /**
+     * Processes the api call.
+     */
     public function process() {
         if (method_exists($this, $this->endpoint)) {
             return $this->_response($this->{$this->endpoint}($this->params));
@@ -114,11 +120,18 @@ abstract class Api
         return $this->_response("No Endpoint: $this->endpoint", 404);
     }
 
+    /**
+     * Returns the repsonse.
+     */
     private function _response($data, $status = 200) {
         header("HTTP/1.1 " . $status . " " . $this->_requestStatus($status));
         return json_encode($data);
     }
 
+    /**
+     * Cleans the passed in parameters.
+     * @param mixed $data The data to clean.
+     */
     private function _cleanInputs($data) {
         $clean_input = Array();
         if (is_array($data)) {
@@ -131,6 +144,10 @@ abstract class Api
         return $clean_input;
     }
 
+    /**
+     * The response status text.
+     * @param int $code The status code.
+     */
     private function _requestStatus($code) {
         $status = array(  
             200 => 'OK',

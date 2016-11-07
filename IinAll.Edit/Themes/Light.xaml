@@ -3,34 +3,22 @@
                     xmlns:data="clr-namespace:IinAll.Edit.Data">
 
    <DataTemplate DataType="{x:Type data:Light}">
-      <Border Margin="5"
-              Padding="5"
-              Height="125"
-              BorderBrush="DarkGray"
-              BorderThickness="1"
-              Background="LightGray">
-         <Grid>
-            <Grid.RowDefinitions>
-               <RowDefinition Height="*" />
-               <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <TextBox Text="{Binding Path=Text}"
-                     Grid.Row="0"
-                     Margin="0,0,0,5"
-                     TextWrapping="WrapWithOverflow" />
-            <Grid Grid.Row="1">
-               <Grid.ColumnDefinitions>
-                  <ColumnDefinition Width="* " />
-                  <ColumnDefinition Width="* " />
-               </Grid.ColumnDefinitions>
-               <Button Content="Remove"
-                       Grid.Column="0"
-                       Command="{Binding Path=RemoveCommand}" />
-               <Button Content="Save"
-                       Grid.Column="1" />
-            </Grid>
-         </Grid>
-      </Border>
+      <Grid Margin="2,0">
+         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+         </Grid.ColumnDefinitions>
+         <TextBlock Text="{Binding Path=Text}"
+                    VerticalAlignment="Center"
+                    FontSize="12"
+                    MaxWidth="200"/>
+         <Button Content="X"
+                 Padding="0"
+                 FontSize="8"
+                 Margin="2,0,0,0"
+                 Grid.Column="1"
+                 Command="{Binding Path=RemoveCommand}" />
+      </Grid>
    </DataTemplate>
 
 </ResourceDictionary>

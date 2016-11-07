@@ -1,20 +1,26 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.Windows;
 using System.Windows.Input;
+using IinAll.Edit.Interfaces;
 using IinAll.Edit.Logic;
+using Peter.Common;
 
 namespace IinAll.Edit.Data
 {
    /// <summary>
    /// Represents a truth.
    /// </summary>
-   public class Truth : BaseViewModel
+   public class Truth : ViewModelBase, IBodyContainer
    {
       private int m_Order;
       private int? m_Alias;
+      private bool m_IsSelected;
       private RelayCommand m_EditCommand;
+      private RelayCommand m_LinkCommand;
+      private RelayCommand m_RemoveCommand;
       private RelayCommand m_AddBodyCommand;
-      private RelayCommand m_LinkEditCommand;
 
       /// <summary>
       /// Initializes a new truth model.
@@ -51,6 +57,19 @@ namespace IinAll.Edit.Data
       public Love Love { get; set; }
 
       /// <summary>
+      /// Gets or Sets if this item is selected or not.
+      /// </summary>
+      public bool IsSelected
+      {
+         get { return this.m_IsSelected; }
+         set
+         {
+            this.m_IsSelected = value;
+            this.OnPropertyChanged ();
+         }
+      }
+
+      /// <summary>
       /// Gets or Sets the Id of the alias.
       /// </summary>
       public int? Alias
@@ -61,7 +80,6 @@ namespace IinAll.Edit.Data
             if (this.m_Alias != value) {
                this.m_Alias = value;
                this.OnPropertyChanged ();
-               this.IsModified = true;
             }
          }
       }
@@ -101,11 +119,11 @@ namespace IinAll.Edit.Data
       }
 
       /// <summary>
-      /// Gets or Sets the command used to grab the alias.
+      /// Gets or Sets the command used for links.
       /// </summary>
-      public ICommand LinkEditCommand
+      public ICommand LinkCommand
       {
-         get { return this.m_LinkEditCommand ?? (this.m_LinkEditCommand = new RelayCommand (this.OnAddLink, this.CanAddLink)); }
+         get { return this.m_LinkCommand ?? (this.m_LinkCommand = new RelayCommand (this.OnLink, this.CanLink)); }
       }
 
       /// <summary>
@@ -114,6 +132,53 @@ namespace IinAll.Edit.Data
       public ICommand AddBodyCommand
       {
          get { return this.m_AddBodyCommand ?? (this.m_AddBodyCommand = new RelayCommand (this.OnAddBody, this.CanAddBody)); }
+      }
+
+      /// <summary>
+      /// Gets or Sets the command used to remove the truth.
+      /// </summary>
+      public ICommand RemoveCommand
+      {
+         get { return this.m_RemoveCommand ?? (this.m_RemoveCommand = new RelayCommand (this.OnRemove, this.CanRemove)); }
+      }
+
+      /// <summary>
+      /// Verifies if the remove command can execute.
+      /// </summary>
+      /// <param name="obj">Command Parameter, not used.</param>
+      /// <returns>True if we can, otherwise false.</returns>
+      private bool CanRemove (object obj)
+      {
+         return this.Id <= 0 || WebQueue.Instance.IsAuthenticated;
+      }
+
+      /// <summary>
+      /// Executes the remove command.
+      /// </summary>
+      /// <param name="obj">Command Parameter, not used.</param>
+      private void OnRemove (object obj)
+      {
+         if (this.Id > 0) {
+            var result = MessageBox.Show (Application.Current.MainWindow,
+               "Are you certain you want to remove this truth?",
+               "I in All", MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
+            if (result == MessageBoxResult.Yes) {
+               var parameters = new NameValueCollection {{"id", this.Id.ToString ()}};
+               WebQueue.Instance.Delete (Constants.URL_TRUTH, parameters, this.OnDelete);
+            }
+         } else {
+            this.Parent.RemoveTruth (this);
+         }
+      }
+
+      /// <summary>
+      /// Occurs when the remove truth request returns successfully.
+      /// </summary>
+      /// <param name="parameters">The original parameters.</param>
+      /// <param name="result">The result.</param>
+      private void OnDelete (NameValueCollection parameters, dynamic result)
+      {
+         this.Parent.RemoveTruth (this);
       }
 
       /// <summary>
@@ -132,7 +197,7 @@ namespace IinAll.Edit.Data
       /// <param name="obj">Command Parameter, not used.</param>
       private void OnAddBody (object obj)
       {
-         this.Bodies.Add(new Body (this, this.Love.Id));
+         this.Bodies.Add (new Body (this, this.Love.Id));
       }
 
       /// <summary>
@@ -140,16 +205,46 @@ namespace IinAll.Edit.Data
       /// </summary>
       /// <param name="obj">Command Parameter, not used.</param>
       /// <returns>True if we can, otherwise false.</returns>
-      private bool CanAddLink (object obj)
+      private bool CanLink (object obj)
       {
-         return this.Parent.EditLight.Count > 0 && this.Parent.EditLoveId != -1;
+         return WebQueue.Instance.IsAuthenticated &&
+                (this.Alias != null ||
+                 (this.Love != null && this.Love.Id > 0 && this.Parent.EditLight.Count > 0 &&
+                  this.Parent.EditLoveId != -1));
       }
 
       /// <summary>
       /// Executes the add link command.
       /// </summary>
       /// <param name="obj">Command Parameter, not used.</param>
-      private void OnAddLink (object obj)
+      private void OnLink (object obj)
+      {
+         var parameters = new NameValueCollection {
+            {"l", this.Love.Id.ToString ()},
+            {"a", this.Parent.EditLoveId.ToString ()}
+         };
+         if (this.Alias.HasValue)
+            WebQueue.Instance.Delete (Constants.URL_ALIAS, parameters, this.OnLinkDelete);
+         else
+            WebQueue.Instance.Post (Constants.URL_ALIAS, parameters, this.OnLinkAdd);
+      }
+
+      /// <summary>
+      /// Occurs when the add alias was successful.
+      /// </summary>
+      /// <param name="parameters">The original parameters.</param>
+      /// <param name="results">The result.</param>
+      private void OnLinkDelete (NameValueCollection parameters, dynamic results)
+      {
+         this.Alias = null;
+      }
+
+      /// <summary>
+      /// Occurs when the add alias was successful.
+      /// </summary>
+      /// <param name="parameters">The original parameters.</param>
+      /// <param name="results">The result.</param>
+      private void OnLinkAdd (NameValueCollection parameters, dynamic results)
       {
          this.Alias = this.Parent.EditLoveId;
       }
@@ -177,7 +272,7 @@ namespace IinAll.Edit.Data
       /// Removes a body from the bodies.
       /// </summary>
       /// <param name="body">The body to remove.</param>
-      internal void RemoveBody (Body body)
+      public void RemoveBody (Body body)
       {
          this.Bodies.Remove (body);
       }

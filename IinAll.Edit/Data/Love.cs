@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using IinAll.Edit.Interfaces;
 using IinAll.Edit.Logic;
 
 namespace IinAll.Edit.Data
@@ -40,8 +41,10 @@ namespace IinAll.Edit.Data
       /// <param name="e"></param>
       private void OnPeaceChanged (object sender, NotifyCollectionChangedEventArgs e)
       {
-         foreach (Light light in e.NewItems) {
-            light.Parent = this;
+         if (e.NewItems != null) {
+            foreach (Light light in e.NewItems) {
+               light.Parent = this;
+            }
          }
       }
 

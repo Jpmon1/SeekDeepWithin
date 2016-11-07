@@ -36,12 +36,15 @@ class LoveItem extends React.Component {
         subText += lights[a].text;
       }
     }
-    var subDisplay = null;
-    if (subText.length > 0) {
-      subDisplay = <div className="extra content textCenter">{subText}</div>;
-    }
+    //<div style={{float:'left'}}><img src="http://iinall.com/img/icon-heart.svg"/></div>
+    //<div style={{float:'right'}}><img src="http://iinall.com/img/icon-menu.svg"/></div>
+    var subDisplay = <div className="extra content textCenter">                       
+                       {(subText.length > 0) ? subText : "I in All"}
+                     </div>;
     let footers = [];
+    let bottoms = [];
     var header = null;
+    var text = null;
     var columns = "small-12 medium-4";
     var body = this.props.item.body;
     if (body != null) {
@@ -52,18 +55,27 @@ class LoveItem extends React.Component {
           if (this.props.item.type == "truth") {
             columns = "small-12"
           }
-          mainText = <div className="description">
+          text = <div className="description">
             <div className="row">
               <div className="small-1 columns">{body[b].text}</div>
-              <div className="small-11 columns">{mainText}</div>
+              <div className="small-11 columns" dangerouslySetInnerHTML={{ __html: mainText }}></div>
             </div>
           </div>;
         } else if (body[b].position == -3) {
-
+          // Right Content...
+        } else if (body[b].position == -4) {
+          bottoms.push (<div key={body[b].id} className="extra content textCenter">{body[b].text}</div>);
         } else {
-          footers.push(<div className="extra content textCenter">{body[b].text}</div>);
+          footers.push (<li key={body[b].id}>{body[b].text}</li>);
         }
       }
+    }
+    if (text == null) {
+      text = <span dangerouslySetInnerHTML={{ __html: mainText }}></span>;
+    }
+    var foot = null;
+    if (footers.length > 0) {
+      foot = <div className="extra content"><ol>{footers}</ol></div>
     }
     var click = null;
     if (!this.props.item.isSelected){
@@ -74,9 +86,10 @@ class LoveItem extends React.Component {
           <div className="love">
             <div className="content">
               {header}
-              {mainText}
+              {text}
             </div>
-            {footers}
+            {bottoms}
+            {foot}
             {subDisplay}
           </div>
         </div>

@@ -8,35 +8,40 @@
              mc:Ignorable="d" 
              d:DesignHeight="35" d:DesignWidth="700"
              d:DataContext="{d:DesignInstance data:Body}">
-   
+
    <Grid>
-      <Grid>
-         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="100" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="66" />
-            <ColumnDefinition Width="76" />
-            <ColumnDefinition Width="66" />
-         </Grid.ColumnDefinitions>
-         <ComboBox SelectedIndex="0"
-                   SelectedValuePath="Value"
-                   DisplayMemberPath="Description"
-                   SelectedValue="{Binding Path=BodyTypeInt}"
-                   ItemsSource="{Binding Source={logic:EnumerationExtension {x:Type data:BodyType}}}"
-                   Grid.Column="0"/>
-         <TextBox Grid.Column="1"
-                  Margin="5,0"
-                  Text="{Binding Path=Text, UpdateSourceTrigger=PropertyChanged}" />
-         <TextBox Grid.Column="2"
-                  Text="{Binding Path=Index}"
-                  IsEnabled="{Binding Path=NeedsIndex}" />
-         <Button Grid.Column="3"
-                 Margin="5,0"
-                 Content="Save"
-                 Command="{Binding Path=SaveCommand}" />
-         <Button Grid.Column="4"
-                 Content="Delete"
-                 Command="{Binding Path=DeleteCommand}" />
-      </Grid>
+      <Grid.ColumnDefinitions>
+         <ColumnDefinition Width="100" />
+         <ColumnDefinition Width="*" />
+         <ColumnDefinition Width="66" />
+         <ColumnDefinition Width="76" />
+         <ColumnDefinition Width="66" />
+      </Grid.ColumnDefinitions>
+      <ComboBox SelectedIndex="0"
+                SelectedValuePath="Value"
+                DisplayMemberPath="Description"
+                SelectedValue="{Binding Path=BodyTypeInt}"
+                ItemsSource="{Binding Source={logic:EnumerationExtension {x:Type data:BodyType}}}"
+                Grid.Column="0" />
+      <TextBox Grid.Column="1"
+               Margin="5,0"
+               MaxHeight="64"
+               TextWrapping="Wrap"
+               AcceptsReturn="True"
+               VerticalScrollBarVisibility="Auto"
+               HorizontalScrollBarVisibility="Auto"
+               Text="{Binding Path=Text, UpdateSourceTrigger=PropertyChanged}" />
+      <TextBox Grid.Column="2"
+               Text="{Binding Path=Index}"
+               IsEnabled="{Binding Path=NeedsIndex}" />
+      <Button Grid.Column="3"
+              Margin="5,0"
+              Content="Save"
+              Style="{DynamicResource GreenButtonStyle}"
+              Command="{Binding Path=SaveCommand}" />
+      <Button Grid.Column="4"
+              Content="Delete"
+              Style="{DynamicResource RedButtonStyle}"
+              Command="{Binding Path=DeleteCommand}" />
    </Grid>
 </UserControl>

@@ -3,6 +3,7 @@ import Header from './Header';
 import LoveList from './LoveList';
 import Footer from './Footer';
 import Loader from './Loader';
+import Search from './Search';
 import { Throttle } from '../api/Utils';
 import DataStore from '../stores/DataStore';
 import { requestRandom } from '../actions/DataActions';
@@ -47,9 +48,10 @@ export default class IinAll extends React.Component {
       var edit = <span />;
       return (
          <div>
+            <Search />
             <Header userData={this.state.userData} />
             <Loader isLoading={this.state.Data.isLoading} />
-            <div className="main-content pTop pBottomBig">
+            <div className="main-content pTop pBottom">
                <LoveList children={this.state.Data.list}
                          userData={this.state.userData} />
             </div>

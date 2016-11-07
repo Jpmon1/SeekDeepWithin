@@ -1,6 +1,4 @@
 ﻿using System.Reflection;
-using System.Resources;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows;
 
@@ -10,9 +8,9 @@ using System.Windows;
 [assembly: AssemblyTitle ("IinAll.Edit")]
 [assembly: AssemblyDescription ("")]
 [assembly: AssemblyConfiguration ("")]
-[assembly: AssemblyCompany ("Halliburton")]
+[assembly: AssemblyCompany ("IinAll")]
 [assembly: AssemblyProduct ("IinAll.Edit")]
-[assembly: AssemblyCopyright ("Copyright © Halliburton 2016")]
+[assembly: AssemblyCopyright ("Copyright © IinAll 2016")]
 [assembly: AssemblyTrademark ("")]
 [assembly: AssemblyCulture ("")]
 

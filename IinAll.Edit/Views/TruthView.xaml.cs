@@ -1,28 +1,32 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace IinAll.Edit.Views
 {
    /// <summary>
    /// Interaction logic for TruthView.xaml
    /// </summary>
-   public partial class TruthView : UserControl
+   public partial class TruthView
    {
       public TruthView ()
       {
          InitializeComponent ();
+      }
+
+      private void OnKeyUp (object sender, KeyEventArgs e)
+      {
+         this.SetSelection ();
+      }
+
+      private void OnMouseUp (object sender, MouseButtonEventArgs e)
+      {
+         this.SetSelection ();
+      }
+
+      private void SetSelection ()
+      {
+         this.StartIndex.Text = this.Text.SelectionStart.ToString ();
+         this.EndIndex.Text = " - " + Convert.ToString (this.Text.SelectionStart + this.Text.SelectionLength);
       }
    }
 }

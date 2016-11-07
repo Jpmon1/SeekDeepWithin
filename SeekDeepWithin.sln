@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeekDeepWithin.Tests", "See
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IinAll.Edit", "IinAll.Edit\IinAll.Edit.csproj", "{E19EC35F-C58E-4C61-915A-A156CB79D71C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Peter.Common", "Peter.Common\Peter.Common.csproj", "{D0B0260D-FE4D-40CB-8FAE-D6B48F5B01CD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{E19EC35F-C58E-4C61-915A-A156CB79D71C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E19EC35F-C58E-4C61-915A-A156CB79D71C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E19EC35F-C58E-4C61-915A-A156CB79D71C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0B0260D-FE4D-40CB-8FAE-D6B48F5B01CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0B0260D-FE4D-40CB-8FAE-D6B48F5B01CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0B0260D-FE4D-40CB-8FAE-D6B48F5B01CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0B0260D-FE4D-40CB-8FAE-D6B48F5B01CD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
